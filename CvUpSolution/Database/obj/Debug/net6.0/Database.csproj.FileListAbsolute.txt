@@ -1,0 +1,14 @@
+C:\KB\CvUp\CvUpSolution\Database\bin\Debug\net6.0\Database.deps.json
+C:\KB\CvUp\CvUpSolution\Database\bin\Debug\net6.0\Database.runtimeconfig.json
+C:\KB\CvUp\CvUpSolution\Database\bin\Debug\net6.0\Database.dll
+C:\KB\CvUp\CvUpSolution\Database\bin\Debug\net6.0\Database.pdb
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.csproj.AssemblyReference.cache
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.GeneratedMSBuildEditorConfig.editorconfig
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.AssemblyInfoInputs.cache
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.AssemblyInfo.cs
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.csproj.CoreCompileInputs.cache
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.dll
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\refint\Database.dll
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.pdb
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\Database.genruntimeconfig.cache
+C:\KB\CvUp\CvUpSolution\Database\obj\Debug\net6.0\ref\Database.dll

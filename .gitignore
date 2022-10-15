@@ -2,6 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+.vs/
+CvUpSolution/.vs/
+/CvUpSolution/.vs/
+
 /CvUpSolution/LuceneLibrary/Index
 /CvUpSolution/CvUpAPI/bin
 /CvUpSolution/CvUpAPI/obj
+

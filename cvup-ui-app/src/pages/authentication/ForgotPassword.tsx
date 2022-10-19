@@ -1,14 +1,12 @@
 import { AuthCardWrapper } from "./AuthCardWrapper";
 import { AuthWrapper } from "./AuthWrapper";
-import { RegisterWrapper } from "./RegisterWrapper";
+import { ForgotPasswordWrapper } from "./ForgotPasswordWrapper";
 
-interface props {}
-
-export const Register = ({}: props) => {
+export const ForgotPassword = () => {
   return (
     <AuthWrapper>
       <AuthCardWrapper>
-        <RegisterWrapper />
+        <ForgotPasswordWrapper />
       </AuthCardWrapper>
     </AuthWrapper>
   );

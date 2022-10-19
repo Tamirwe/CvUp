@@ -1,14 +1,21 @@
-import { Box } from "@mui/material";
-import MainCard from "../../components/MainCard";
+import { Card, CardContent, useTheme } from "@mui/material";
+import { RegisterWrapper } from "./RegisterWrapper";
 
 interface props {
   children: React.ReactNode;
 }
 
 export const AuthCardWrapper = ({ children }: props) => {
+  const theme = useTheme();
+
   return (
-    <MainCard
+    <Card
       sx={{
+        border: "1px solid",
+        borderColor: theme.palette.primary.light + 75,
+        ":hover": {
+          boxShadow: "0 2px 14px 0 rgb(32 40 45 / 8%)",
+        },
         maxWidth: { xs: 400, lg: 475 },
         margin: { xs: 2.5, md: 3 },
         "& > *": {
@@ -16,10 +23,8 @@ export const AuthCardWrapper = ({ children }: props) => {
           flexBasis: "50%",
         },
       }}
-      content={false}
-      // {...other}
     >
-      <Box sx={{ p: { xs: 2, sm: 3, xl: 5 } }}>{children}</Box>
-    </MainCard>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 };

@@ -1,8 +1,6 @@
 import { Box, Button, TextField } from "@mui/material";
 
-interface props {}
-
-export const ForgotPasswordForm = ({}: props) => {
+export const ForgotPasswordForm = () => {
   const handleUserNameChange = () => {};
 
   return (

@@ -11,6 +11,7 @@ import { Login } from "./pages/authentication/Login";
 import { Register } from "./pages/authentication/Register";
 import { ForgotPassword } from "./pages/authentication/ForgotPassword";
 import { Terms } from "./pages/authentication/Terms";
+import { ThemeCustomization } from "./themes/ThemeCustomization";
 
 function App() {
   const rootStore = new RootStore();

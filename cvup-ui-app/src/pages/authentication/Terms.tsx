@@ -1,8 +1,7 @@
 import { Grid } from "@mui/material";
 
-interface props {}
 
-export const Terms = ({}: props) => {
+export const Terms = () => {
   return (
     <Grid container>
       <Grid item xs={12} sx={{ margin: 4 }}>

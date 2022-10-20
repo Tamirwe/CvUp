@@ -43,6 +43,9 @@ export const theme = () => {
   const themeOptions = {
     // direction: "ltr",
     palette: themePalette(themeOption),
+    props: {
+      MuiInput: { inputProps: { spellCheck: "false" } },
+    },
     // mixins: {
     //   toolbar: {
     //     minHeight: "48px",
@@ -55,6 +58,8 @@ export const theme = () => {
     typography: themeTypography(themeOption),
   };
 
+
+  
   const themes = createTheme(themeOptions);
 
   // const themes = createTheme({

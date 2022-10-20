@@ -3,26 +3,27 @@ import { MdOutlineVisibility } from "react-icons/md";
 import { IconType } from "react-icons";
 import React from "react";
 
-interface TextFieldFormInterface {
+interface TextFieldCustomInterface {
   value?: string;
   id?: string;
   label?: string;
   variant?: "outlined" | "standard" | "filled" | undefined;
+  margin?: "none" | "dense" | "normal" | undefined;
   helperText?: string;
   placeholder?: string;
   iconButton?: IconType;
-  isError?: boolean;
-  isFullWidth?: boolean;
-  isDisabled?: boolean;
-  isRequired?: boolean;
-  isMultiline?: boolean;
-  rowsNumber?: number;
+  error?: boolean;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  multiline?: boolean;
+  rows?: number;
   onIconClick?: () => void;
   onChange?: (event: object) => void;
   type?: string;
 }
 
-export const TextFieldForm = ({
+export const TextFieldCustom = ({
   value = "",
   id = "",
   label = "",
@@ -30,24 +31,25 @@ export const TextFieldForm = ({
   helperText = "",
   placeholder = "",
   iconButton = undefined,
-  isError = false,
-  isFullWidth = true,
-  isDisabled = false,
-  isRequired = false,
-  isMultiline = false,
-  rowsNumber = 2,
+  error = false,
+  fullWidth = true,
+  disabled = false,
+  required = false,
+  multiline = false,
+  rows = 1,
   type = "text",
+  margin = "normal",
   onIconClick = undefined,
   onChange = undefined,
-}: TextFieldFormInterface) => {
+}: TextFieldCustomInterface) => {
   return (
     <TextField
-      required={isRequired}
-      fullWidth={isFullWidth}
-      disabled={isDisabled}
-      error={isError}
-      multiline={isMultiline}
-      rows={rowsNumber}
+      required={required}
+      fullWidth={fullWidth}
+      disabled={disabled}
+      error={error}
+      multiline={multiline}
+      rows={rows}
       id={id}
       label={label}
       variant={variant}
@@ -55,6 +57,7 @@ export const TextFieldForm = ({
       helperText={helperText}
       placeholder={placeholder}
       type={type}
+      margin={margin}
       onChange={onChange}
       InputProps={{
         endAdornment: iconButton ? (

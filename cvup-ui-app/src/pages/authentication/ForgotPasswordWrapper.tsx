@@ -1,10 +1,8 @@
-import { Grid, Stack, Typography, useTheme } from "@mui/material";
+import { Grid, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
-interface props {}
-
-export const ForgotPasswordWrapper = ({}: props) => {
+export const ForgotPasswordWrapper = () => {
   const theme = useTheme();
 
   return (

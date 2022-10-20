@@ -3,28 +3,22 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Grid,
   IconButton,
   InputAdornment,
   Stack,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-interface props {}
-
-export const LoginForm = ({}: props) => {
+export const LoginForm = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const handlePasswordChange = () => {};
   const handleUserNameChange = () => {};
-  const handleCompanyChange = () => {};
 
   return (
     <form noValidate>

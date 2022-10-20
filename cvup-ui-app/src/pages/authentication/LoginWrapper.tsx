@@ -1,20 +1,9 @@
-import {
-  Grid,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Divider,
-  responsiveFontSizes,
-} from "@mui/material";
+import { Grid, Stack, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { LoginForm } from "./LoginForm";
 
-interface props {}
-
-export const LoginWrapper = ({}: props) => {
+export const LoginWrapper = () => {
   const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Grid container>

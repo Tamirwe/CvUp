@@ -1,10 +1,18 @@
+import { makeAutoObservable } from "mobx";
 import { UserRegistrationModel } from "../models/Auth";
+import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
 export class AuthStore {
+  private authApi;
   userName = "Tamir";
 
-  constructor(rootStore: RootStore) {}
+  constructor(private rootStore: RootStore) {
+    makeAutoObservable(this);
+    this.authApi = new AuthApi();
+  }
 
-  registerUser(registrationInfo: UserRegistrationModel) {}
+  registerUser(registrationInfo: UserRegistrationModel) {
+    this.authApi.registerUser(registrationInfo);
+  }
 }

@@ -1,5 +1,4 @@
 import { Card, CardContent, useTheme } from "@mui/material";
-import { RegisterWrapper } from "./RegisterWrapper";
 
 interface props {
   children: React.ReactNode;

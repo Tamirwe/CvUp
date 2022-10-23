@@ -1,11 +1,15 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosInstance } from "axios";
 
-function AxiosService(url: string, header: string) {
+export default function axiosService(
+  baseURL?: string,
+  headers?: any
+): AxiosInstance {
   const instance = axios.create({
-    baseURL: url,
+    baseURL: baseURL,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json; charset=utf-8",
+      ...headers,
     },
   });
 
@@ -24,8 +28,32 @@ function AxiosService(url: string, header: string) {
     }
   );
 
-  const genericInstance = <T>(config: AxiosRequestConfig) =>
-    instance.request<any, T>(config);
+  instance.interceptors.request.use(
+    async (response) => {
+      // const token = await getToken();
+      // if (token) {
+      //   config.headers.Authorization = token;
+      // }
 
-  return genericInstance;
+      // if (logRequests) {
+      //   console.log(
+      //     `%c ${config?.method?.toUpperCase()} - ${getUrl(config)}:`,
+      //     "color: #0086b3; font-weight: bold",
+      //     config
+      //   );
+      // }
+
+      // config.paramsSerializer = (params) => {
+      //   return qs.stringify(params, {
+      //     serializeDate: (date: Date) =>
+      //       moment(date).format("YYYY-MM-DDTHH:mm:ssZ"),
+      //   });
+      // };
+
+      return response;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  return instance;
 }

@@ -8,6 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+string CorsPolicy = "_corsPolicy";
+
+builder.Services.AddCors(options =>    options.AddPolicy(name: CorsPolicy,
+                      builder =>                      builder.WithOrigins("http://localhost:3000",
+                                          "http://localhost:3001").AllowAnyHeader().AllowAnyMethod())
+);
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,6 +74,8 @@ builder.Services.RegisterServices(builder);
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors(CorsPolicy);
 
 // Configure the HTTP request pipeline.
 app.ConfigureSwagger();

@@ -2,9 +2,7 @@ import { AuthCardWrapper } from "./AuthCardWrapper";
 import { AuthWrapper } from "./AuthWrapper";
 import { RegisterWrapper } from "./RegisterWrapper";
 
-interface props {}
-
-export const Register = ({}: props) => {
+export const Register = () => {
   return (
     <AuthWrapper>
       <AuthCardWrapper>

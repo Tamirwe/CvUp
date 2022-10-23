@@ -37,3 +37,4 @@ bld/
 /CvUpSolution/CvUpAPI/bin
 /CvUpSolution/CvUpAPI/obj
 
+cvup-ui-app/.favorites.json

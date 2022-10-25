@@ -20,7 +20,7 @@ namespace DataModelsLibrary.Enums
         NOT_ACTIVE = 30,
     }
 
-    public enum UserLoginStatus
+    public enum UserAuthStatus
     {
         Authenticated = 1,
         not_registered = 2,

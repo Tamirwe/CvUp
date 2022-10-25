@@ -1,4 +1,4 @@
-import { UserRegistrationModel } from "../../models/Auth";
+import { UserLoginModel, UserRegistrationModel } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
 export default class AuthApi extends BaseApi {
@@ -8,13 +8,26 @@ export default class AuthApi extends BaseApi {
   }
 
   async registerUser(registrationInfo: UserRegistrationModel) {
-    return await this.promiseWrapper(async () => {
-      //   const response = await this.http.get<any>("Search");
-
-      //   return response.data;
-
-      const response = await this.http.post("Registration", registrationInfo);
-      return response.data;
+    const response = await this.apiWrapper(async () => {
+      return await this.http.post("Registration", registrationInfo);
     });
+
+    return response;
+  }
+
+  async loginUser(loginInfo: UserLoginModel) {
+    const response = await this.apiWrapper(async () => {
+      return await this.http.post("Login", loginInfo);
+    });
+
+    return response;
+  }
+
+  async forgotPassword(email: string) {
+    const response = await this.apiWrapper(async () => {
+      return await this.http.post("ForgotPassword", email);
+    });
+
+    return response;
   }
 }

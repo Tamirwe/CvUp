@@ -17,18 +17,15 @@ import { SetStateAction, useEffect, useState } from "react";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { UserRegistrationModel } from "../../models/Auth";
+import {
+  textFieldInterface,
+  UserRegistrationModel,
+} from "../../models/AuthModels";
 import {
   emailValidte,
   passwordValidate,
   textFieldValidte,
 } from "../../utils/Validation";
-
-interface textFieldInterface {
-  error?: boolean;
-  value: string;
-  helperText?: string;
-}
 
 export const RegisterForm = () => {
   const rootStore = useStore();
@@ -37,8 +34,9 @@ export const RegisterForm = () => {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const [isDirty, setIsDirty] = useState(false);
-  const [isTermsValid, setIsTermsValid] = useState(true);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
   const [firstNameProps, setFirstNameProps] = useState<textFieldInterface>({
     value: "",
   });
@@ -54,7 +52,7 @@ export const RegisterForm = () => {
   const [passwordProps, setPasswordProps] = useState<textFieldInterface>({
     value: "",
   });
-  const [isTerms, setTerms] = useState(false);
+  const [isTerms, setIsTerms] = useState(false);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -66,6 +64,7 @@ export const RegisterForm = () => {
 
   const handleKeyDown = () => {
     setIsDirty(true);
+    setSubmitError("");
   };
 
   const validateField = (
@@ -119,10 +118,14 @@ export const RegisterForm = () => {
     isFormValid =
       validateField("password", passwordProps, setPasswordProps) && isFormValid;
 
+    if (!isTerms) {
+      setSubmitError("you must agree to the terms and conditions");
+      isFormValid = false;
+    }
     return isFormValid;
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const registrationInfo: UserRegistrationModel = {
       firstName: firstNameProps.value,
       lastName: lastNameProps.value,
@@ -130,7 +133,14 @@ export const RegisterForm = () => {
       email: emailProps.value,
       password: passwordProps.value,
     };
-    authStore.registerUser(registrationInfo);
+
+    const response = await authStore.registerUser(registrationInfo);
+
+    if (!response.isSuccess) {
+      if (response.error === "duplicateUserPass") {
+        setSubmitError("This user already exists");
+      }
+    }
   };
 
   return (
@@ -261,9 +271,8 @@ export const RegisterForm = () => {
               <Checkbox
                 checked={isTerms}
                 onChange={(e) => {
-                  setTerms(e.target.checked);
+                  setIsTerms(e.target.checked);
                   setIsDirty(true);
-                  setIsTermsValid(true);
                 }}
               />
             }
@@ -277,11 +286,9 @@ export const RegisterForm = () => {
             }
           />
         </Grid>
-        {!isTermsValid && (
+        {submitError && (
           <Grid item xs={12}>
-            <FormHelperText error>
-              you must agree to the terms and conditions
-            </FormHelperText>
+            <FormHelperText error>{submitError}</FormHelperText>
           </Grid>
         )}
         <Grid item xs={12}>
@@ -293,14 +300,13 @@ export const RegisterForm = () => {
               type="submit"
               variant="contained"
               color="secondary"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+
                 setIsDirty(false);
                 if (validateForm()) {
-                  if (isTerms) {
-                    submitForm();
-                  } else {
-                    setIsTermsValid(false);
-                  }
+                  submitForm();
                 }
               }}
             >

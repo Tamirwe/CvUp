@@ -21,16 +21,20 @@ function App() {
     <StoreProvider store={rootStore}>
       <Routes>
         <Route element={<Layout />}>
-          <Route element={<LayoutAuth />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-          <Route element={<LayoutNotAuth />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/terms" element={<Terms />} />
-          </Route>
+          {rootStore.authStore.isLoggedIn ? (
+            <Route element={<LayoutAuth />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+          ) : (
+            <Route element={<LayoutNotAuth />}>
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/terms" element={<Terms />} />
+            </Route>
+          )}
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -20,7 +20,7 @@ namespace DataModelsLibrary.Models
     {
         public string email { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
-        public int companyId { get; set; } = 0;
+        public int? companyId { get; set; } = 0;
 
     }
 

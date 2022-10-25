@@ -27,19 +27,11 @@ namespace ServicesLibrary.RegisterCompanyAndUser
         {
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                try
-                {
                     company newCompany = AddNewCompany(data.companyName, data.companyDescr);
                     user newUser = AddNewUser(newCompany.id, data.companyName, data.email, data.password, data.firstName, data.lastName, UsersRole.Admin, "Registered");
                     SendEmailModel emailToSend = AddEmailSent(EmailType.REGISTRATION_CONFIRMATION, newUser);
                     scope.Complete();
                     SendRegistrationConfitmationEmail(emailToSend);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Error occurred.");
-                    throw;
-                }
             }
         }
 

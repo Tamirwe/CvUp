@@ -6,6 +6,9 @@ namespace ServicesLibrary.UserLogin
 {
     public interface IUserLoginServise
     {
-        public user? Login(UserLoginModel dataa, out UserLoginStatus status);
+        public user? Login(UserLoginModel dataa, out UserAuthStatus status);
+        public List<IdNameModel> UserCompanies(string email);
+        public user? ForgotPassword(string email, out UserAuthStatus status);
+
     }
 }

@@ -17,9 +17,28 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        public void Post(CompanyAndUserRegisetModel data)
+        public IActionResult Post(CompanyAndUserRegisetModel data)
         {
-            _registerCompanyAndUserServise.Register(data);
+            try
+            {
+                _registerCompanyAndUserServise.Register(data);
+
+
+                return Ok();
+     
+            }
+            catch(Exception ex)
+            {
+                string msg = "";
+                string? innerEx = ex.InnerException?.Message;
+
+                if (innerEx != null && innerEx.Contains("Duplicate entry"))
+                {
+                    msg = "duplicateUserPass";
+                }
+
+                return BadRequest(new { ErrorMessage = msg, Ex = ex.Message,ExInner=ex.InnerException?.Message,Stack= ex.StackTrace });
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace CvUpAPI.Controllers
         {
             try
             {
-                user? authenticateUser = _userLoginServise.Login(data, out UserLoginStatus status);
+                user? authenticateUser = _userLoginServise.Login(data, out UserAuthStatus status);
 
                 if (authenticateUser != null)
                 {
@@ -53,12 +53,37 @@ namespace CvUpAPI.Controllers
 
                     return Ok(new JwtSecurityTokenHandler().WriteToken(token));
                 }
+                else if(status == UserAuthStatus.more_then_one_company_per_email)
+                {
+                    return Ok(_userLoginServise.UserCompanies(data.email));
+
+                }
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest("An error occurred in generating the token");
+                return BadRequest(new { Message= "An error occurred in generating the token", ExMessage = ex.Message }); 
             }
+
             return Unauthorized();
+
+        }
+
+        [HttpPost]
+        public IActionResult Post(string email)
+        {
+            user? authenticateUser = _userLoginServise.ForgotPassword(email, out UserAuthStatus status);
+
+            if (authenticateUser != null)
+            {
+                return Ok("emailSent");
+            }
+            else if (status == UserAuthStatus.more_then_one_company_per_email)
+            {
+                var userCompanies = _userLoginServise.UserCompanies(email);
+                return Ok(userCompanies);
+            }
+
+            return Ok("userNotFound");
 
         }
     }

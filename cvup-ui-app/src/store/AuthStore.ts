@@ -1,18 +1,27 @@
 import { makeAutoObservable } from "mobx";
-import { UserRegistrationModel } from "../models/Auth";
+import { UserLoginModel, UserRegistrationModel } from "../models/AuthModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
 export class AuthStore {
   private authApi;
   userName = "Tamir";
+  isLoggedIn = false;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
     this.authApi = new AuthApi();
   }
 
-  registerUser(registrationInfo: UserRegistrationModel) {
-    this.authApi.registerUser(registrationInfo);
+  async registerUser(registrationInfo: UserRegistrationModel) {
+    return await this.authApi.registerUser(registrationInfo);
+  }
+
+  async loginUser(loginInfo: UserLoginModel) {
+    return await this.authApi.loginUser(loginInfo);
+  }
+
+  async forgotPassword(email: string) {
+    return await this.authApi.forgotPassword(email);
   }
 }

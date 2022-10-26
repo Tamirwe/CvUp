@@ -23,9 +23,10 @@ import {
   textFieldValidte,
 } from "../../utils/Validation";
 
-export const LoginForm = () => {
+export const PasswordResetForm = () => {
   const rootStore = useStore();
   const { authStore } = rootStore;
+  const params = new URLSearchParams(window.location.search);
 
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -36,8 +37,6 @@ export const LoginForm = () => {
   const [passwordProps, setPasswordProps] = useState<textFieldInterface>({
     value: "",
   });
-
-  const [isRemember, setIsRemember] = useState(false);
 
   const validateField = (
     typeValidate: string,
@@ -97,7 +96,8 @@ export const LoginForm = () => {
     const loginInfo: UserLoginModel = {
       email: emailProps.value,
       password: passwordProps.value,
-      rememberMe: isRemember,
+      rememberMe: false,
+      key: params.get("sk") || "",
     };
 
     const response = await authStore.loginUser(loginInfo);
@@ -148,7 +148,7 @@ export const LoginForm = () => {
             margin="normal"
             type={isShowPassword ? "text" : "password"}
             id="passwordTxt"
-            label="Password"
+            label="New Password"
             variant="outlined"
             InputProps={{
               endAdornment: (
@@ -175,35 +175,6 @@ export const LoginForm = () => {
             }}
             value={passwordProps.value}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={1}
-          >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isRemember}
-                  onChange={(e) => {
-                    setIsRemember(e.target.checked);
-                  }}
-                />
-              }
-              label={
-                <Typography variant="subtitle2">Keep me sign in</Typography>
-              }
-            />
-            <Typography
-              component={Link}
-              to="/forgot-password"
-              variant="subtitle2"
-            >
-              Forgot Password?
-            </Typography>
-          </Stack>
         </Grid>
         {submitError && (
           <Grid item xs={12}>

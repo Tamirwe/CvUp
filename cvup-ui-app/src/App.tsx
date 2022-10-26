@@ -11,6 +11,7 @@ import { Login } from "./pages/authentication/Login";
 import { Register } from "./pages/authentication/Register";
 import { ForgotPassword } from "./pages/authentication/ForgotPassword";
 import { Terms } from "./pages/authentication/Terms";
+import { PasswordReset } from "./pages/authentication/PasswordReset";
 // import { ThemeCustomization } from "./themes/ThemeCustomization";
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
               <Route path="/terms" element={<Terms />} />
             </Route>
           )}

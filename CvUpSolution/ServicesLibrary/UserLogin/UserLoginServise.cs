@@ -4,6 +4,7 @@ using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using EmailsLibrary.Models;
+using System.Security.Cryptography;
 
 namespace ServicesLibrary.UserLogin
 {
@@ -52,6 +53,8 @@ namespace ServicesLibrary.UserLogin
             else if (users.Count == 1)
             {
                 status = UserAuthStatus.Authenticated;
+                string key = generateSecretKey();
+                
                 SendForgotPasswordEmail(users[0]);
                 return users[0];
             }
@@ -60,6 +63,13 @@ namespace ServicesLibrary.UserLogin
                 status = UserAuthStatus.more_then_one_company_per_email;
                 return null;
             }
+        }
+
+        private string generateSecretKey()
+        {
+            var hmac = new HMACSHA256();
+            var key = Convert.ToBase64String(hmac.Key);
+            return key;
         }
 
         private EmailModel SendForgotPasswordEmail(user user)

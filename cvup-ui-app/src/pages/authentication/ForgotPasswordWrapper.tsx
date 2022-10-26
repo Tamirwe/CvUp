@@ -1,7 +1,8 @@
-import { Grid, Typography, useTheme } from "@mui/material";
+import { Grid, Stack, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
+import { FiCheckCircle } from "react-icons/fi";
 
 export const ForgotPasswordWrapper = () => {
   const theme = useTheme();
@@ -10,7 +11,34 @@ export const ForgotPasswordWrapper = () => {
 
   return (
     <>
-      {!isEmailResetSent ? (
+      {isEmailResetSent ? (
+        <Grid container>
+          <Grid item xs={12} textAlign="center" mb={4}>
+            <FiCheckCircle fontSize={55} color="green" />
+          </Grid>
+          <Grid item xs={12} textAlign="center" mb={4}>
+            <Typography variant="h5">Password Reset Email Sent</Typography>
+          </Grid>
+          <Grid item xs={12} mb={2} textAlign="center">
+            <Typography variant="subtitle2">
+              An email has been sent to your email address,
+            </Typography>
+          </Grid>
+          <Grid item xs={12} textAlign="center">
+            <Typography variant="subtitle2">{email}</Typography>
+          </Grid>
+          <Grid item xs={12} textAlign="center" mb={2}>
+            <Typography variant="body2">
+              Follow the directions in the email to reset your password.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} mb={2} textAlign="center">
+            <Typography variant="subtitle2" component="p">
+              Need help? Contact support.
+            </Typography>
+          </Grid>
+        </Grid>
+      ) : (
         <Grid container>
           <Grid item xs={12}>
             <Typography
@@ -40,21 +68,6 @@ export const ForgotPasswordWrapper = () => {
               Return to Login
             </Typography>
           </Grid>
-        </Grid>
-      ) : (
-        <Grid container>
-          <Typography variant="subtitle2">Check your email</Typography>
-          <Typography variant="subtitle2">
-            We've sent password reset instructions to:
-          </Typography>
-          <Typography variant="subtitle2">{email}</Typography>
-          <Typography variant="subtitle2">
-            If it doesn't arrive soon, check your spam folder or
-          </Typography>
-          <Typography variant="subtitle2">send the email again</Typography>
-          <Typography variant="subtitle2">
-            Need help? Contact support.
-          </Typography>
         </Grid>
       )}
     </>

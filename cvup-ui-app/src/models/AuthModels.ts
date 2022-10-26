@@ -15,6 +15,7 @@ export interface UserLoginModel {
   email: string;
   password: string;
   rememberMe: boolean;
+  key?: string;
 }
 
 export interface ResponseModel {

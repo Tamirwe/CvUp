@@ -28,4 +28,5 @@ export class AuthStore {
   async forgotPassword(info: ForgotPasswordModel) {
     return await this.authApi.forgotPassword(info);
   }
+
 }

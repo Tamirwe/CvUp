@@ -2,15 +2,21 @@
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using EmailsLibrary;
+using EmailsLibrary.Models;
 
 namespace ServicesLibrary.UserLogin
 {
     public class UserLoginServise: IUserLoginServise
     {
         private ILoginQueries _loginQueries;
-        public UserLoginServise(ILoginQueries loginQueries)
+        private IEmailSendService _emailService;
+        private IEmailQueries _emailQueries;
+        public UserLoginServise(ILoginQueries loginQueries, IEmailSendService emailService, IEmailQueries emailQueries)
         {
             _loginQueries = loginQueries;
+            _emailService = emailService;
+            _emailQueries = emailQueries;
         }
 
         public user? Login(UserLoginModel data, out UserAuthStatus status)
@@ -34,9 +40,9 @@ namespace ServicesLibrary.UserLogin
             }
         }
 
-        public user? ForgotPassword(string email, out UserAuthStatus status)
+        public user? ForgotPassword(string email, int? companyId, out UserAuthStatus status)
         {
-            var users = _loginQueries.getUsersByEmail(email);
+            List<user> users = _loginQueries.getUsers(email, companyId);
 
             if (users.Count == 0)
             {
@@ -46,6 +52,7 @@ namespace ServicesLibrary.UserLogin
             else if (users.Count == 1)
             {
                 status = UserAuthStatus.Authenticated;
+                SendForgotPasswordEmail(users[0]);
                 return users[0];
             }
             else
@@ -53,6 +60,19 @@ namespace ServicesLibrary.UserLogin
                 status = UserAuthStatus.more_then_one_company_per_email;
                 return null;
             }
+        }
+
+        private EmailModel SendForgotPasswordEmail(user user)
+        {
+            var email = new EmailModel
+            {
+                To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
+                Subject = "Reset Password",
+                Body = "follow this link"
+            };
+
+            _emailService.Send(email);
+            return email;
         }
 
         public List<IdNameModel> UserCompanies(string email)

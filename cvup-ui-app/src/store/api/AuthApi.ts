@@ -1,4 +1,8 @@
-import { UserLoginModel, UserRegistrationModel } from "../../models/AuthModels";
+import {
+  ForgotPasswordModel,
+  UserLoginModel,
+  UserRegistrationModel,
+} from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
 export default class AuthApi extends BaseApi {
@@ -23,9 +27,9 @@ export default class AuthApi extends BaseApi {
     return response;
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword(info: ForgotPasswordModel) {
     const response = await this.apiWrapper(async () => {
-      return await this.http.post("ForgotPassword", email);
+      return await this.http.post("ForgotPassword", info);
     });
 
     return response;

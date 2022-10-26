@@ -27,40 +27,39 @@ namespace ServicesLibrary.RegisterCompanyAndUser
         {
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                    company newCompany = AddNewCompany(data.companyName, data.companyDescr);
-                    user newUser = AddNewUser(newCompany.id, data.companyName, data.email, data.password, data.firstName, data.lastName, UsersRole.Admin, "Registered");
-                    SendEmailModel emailToSend = AddEmailSent(EmailType.REGISTRATION_CONFIRMATION, newUser);
-                    scope.Complete();
-                    SendRegistrationConfitmationEmail(emailToSend);
+                company newCompany = AddNewCompany(data.companyName, data.companyDescr);
+                user newUser = AddNewUser(newCompany.id, data.companyName, data.email, data.password, data.firstName, data.lastName, UsersRole.Admin, "Registered");
+                EmailModel sentEmail = SendRegistrationConfitmationEmail(newUser);
+                AddEmailSent(EmailType.REGISTRATION_CONFIRMATION, newUser, sentEmail);
+                scope.Complete();
             }
         }
 
-        private SendEmailModel AddEmailSent(EmailType emailType, user user)
+        private void AddEmailSent(EmailType emailType, user user, EmailModel sentEmail)
         {
-            var email = new SendEmailModel
+            _emailQueries.AddNewEmailSent(user.id, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
+        }
+
+        private user AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UsersRole role, string log)
+        {
+            user user = _registrationQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActivateStatus.REGISTRATION_NOT_COMPLETED, role, log);
+            return user;
+        }
+
+        private EmailModel SendRegistrationConfitmationEmail(user user)
+        {
+            var email = new EmailModel
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Complete Registration",
                 Body = "follow this link"
             };
 
-            _emailQueries.AddNewEmailSent(user.id, emailType, user.email, email.From.Address, email.Subject, email.Body);
-
+            _emailService.Send(email);
             return email;
         }
 
-        private user AddNewUser(int companyId,  string companyName, string email, string password, string firstName, string lastName, UsersRole role,string log )
-        {
-            user user = _registrationQueries.AddNewUser(companyId, email,  password,  firstName,  lastName, UserActivateStatus.REGISTRATION_NOT_COMPLETED,role, log);
-            return user;
-        }
-
-        private void SendRegistrationConfitmationEmail(SendEmailModel emailToSend)
-        {
-            _emailService.Send(emailToSend);
-        }
-
-        private company AddNewCompany(string companyName,string? companyDescr)
+        private company AddNewCompany(string companyName, string? companyDescr)
         {
             var company = _registrationQueries.AddNewCompany(companyName, companyDescr, CompanyActivateStatus.WAITE_FOR_FIRST_USER_TO_COMPLETE_REGISTRATION);
             return company;

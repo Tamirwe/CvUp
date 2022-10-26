@@ -4,6 +4,6 @@ namespace EmailsLibrary
 {
     public interface IEmailSendService
     {
-        public void Send(SendEmailModel eml);
+        public void Send(EmailModel eml);
     }
 }

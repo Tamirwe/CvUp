@@ -10,15 +10,20 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { textFieldInterface } from "../../models/AuthModels";
 import { SelectModel } from "../../models/GeneralModels";
 import { emailValidte } from "../../utils/Validation";
 
-export const ForgotPasswordForm = () => {
+interface props {
+  resetPasswordSent: (email: string) => void;
+}
+
+export const ForgotPasswordForm = (props: props) => {
   const rootStore = useStore();
   const { authStore } = rootStore;
+  const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [emailProps, setEmailProps] = useState<textFieldInterface>({
     value: "",
@@ -66,11 +71,33 @@ export const ForgotPasswordForm = () => {
   };
 
   const submitForm = async () => {
-    const response = await authStore.forgotPassword(emailProps.value);
+    const response = await authStore.forgotPassword({
+      email: emailProps.value,
+      companyId,
+    });
 
     if (!response.isSuccess) {
       setSubmitError("Incorrect email address or password, please try again");
+    } else if (Array.isArray(response.data)) {
+      setUserCompanies(response.data);
+    } else if (response.data === "userNotFound") {
+      setSubmitError("Email not found");
+    } else if (response.data === "emailSent") {
+      props.resetPasswordSent(emailProps.value);
     }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const handleKeyDown = () => {
+    setIsDirty(true);
+    setSubmitError("");
   };
 
   return (
@@ -103,23 +130,22 @@ export const ForgotPasswordForm = () => {
               value={companyId.toString()}
               label="Company"
               onChange={(event: SelectChangeEvent) => {
+                setIsDirty(true);
                 setCompanyId(parseInt(event.target.value));
               }}
             >
-              <>
-                <MenuItem value="0">
-                  <em></em>
-                </MenuItem>
-                {userCompanies?.map((company) => {
-                  return (
-                    <MenuItem key={company.id} value={company.id}>
-                      {company.name}
-                    </MenuItem>
-                  );
-                })}
-              </>
+              <MenuItem value="0" key="0"></MenuItem>
+              {userCompanies?.map((company) => {
+                return (
+                  <MenuItem key={company.id} value={company.id}>
+                    {company.name}
+                  </MenuItem>
+                );
+              })}
             </Select>
-            <FormHelperText>With label + helper text</FormHelperText>
+            <FormHelperText error>
+              {!companyId && "please select a company"}
+            </FormHelperText>
           </FormControl>
         </Grid>
       )}
@@ -132,6 +158,7 @@ export const ForgotPasswordForm = () => {
         <Box sx={{ mt: 4 }}>
           <Button
             fullWidth
+            disabled={!isDirty}
             size="large"
             type="submit"
             variant="contained"
@@ -139,6 +166,8 @@ export const ForgotPasswordForm = () => {
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
+
+              setIsDirty(false);
 
               if (validateForm()) {
                 submitForm();

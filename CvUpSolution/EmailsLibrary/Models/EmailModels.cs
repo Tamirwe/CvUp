@@ -13,7 +13,7 @@ namespace EmailsLibrary.Models
 
     }
 
-    public class SendEmailModel
+    public class EmailModel
     {
         public List<EmailAddress> To { get; set; }= new List<EmailAddress>();
         public List<EmailAddress> Cc { get; set; }= new List<EmailAddress>();

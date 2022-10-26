@@ -1,5 +1,9 @@
 import { makeAutoObservable } from "mobx";
-import { UserLoginModel, UserRegistrationModel } from "../models/AuthModels";
+import {
+  ForgotPasswordModel,
+  UserLoginModel,
+  UserRegistrationModel,
+} from "../models/AuthModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
@@ -21,7 +25,7 @@ export class AuthStore {
     return await this.authApi.loginUser(loginInfo);
   }
 
-  async forgotPassword(email: string) {
-    return await this.authApi.forgotPassword(email);
+  async forgotPassword(info: ForgotPasswordModel) {
+    return await this.authApi.forgotPassword(info);
   }
 }

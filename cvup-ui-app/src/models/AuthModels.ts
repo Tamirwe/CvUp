@@ -18,7 +18,12 @@ export interface UserLoginModel {
 }
 
 export interface ResponseModel {
-  data?: any;
+  data: any;
   isSuccess: boolean;
-  error?: string;
+  error: string;
+}
+
+export interface ForgotPasswordModel {
+  email: string;
+  companyId?: number;
 }

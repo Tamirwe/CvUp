@@ -68,23 +68,5 @@ namespace CvUpAPI.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult Post(string email)
-        {
-            user? authenticateUser = _userLoginServise.ForgotPassword(email, out UserAuthStatus status);
-
-            if (authenticateUser != null)
-            {
-                return Ok("emailSent");
-            }
-            else if (status == UserAuthStatus.more_then_one_company_per_email)
-            {
-                var userCompanies = _userLoginServise.UserCompanies(email);
-                return Ok(userCompanies);
-            }
-
-            return Ok("userNotFound");
-
-        }
     }
 }

@@ -20,7 +20,7 @@ namespace EmailsLibrary
 
         }
 
-        public void Send(SendEmailModel eml)
+        public void Send(EmailModel eml)
         {
             var message = new MimeMessage();
 
@@ -54,27 +54,27 @@ namespace EmailsLibrary
                 Text = eml.Body
             };
 
-            Thread emailThread = new Thread(delegate ()
+            //Thread emailThread = new Thread(delegate ()
+            //{
+            using (var client = new SmtpClient())
             {
-                using (var client = new SmtpClient())
-                {
-                    client.Connect("smtp.gmail.com", 587);
+                client.Connect("smtp.gmail.com", 587);
 
 
-                    // Note: since we don't have an OAuth2 token, disable
-                    // the XOAUTH2 authentication mechanism.
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                // Note: since we don't have an OAuth2 token, disable
+                // the XOAUTH2 authentication mechanism.
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                    // Note: only needed if the SMTP server requires authentication
-                    client.Authenticate(_gmailSettings.GetSection("userName").Value, _gmailSettings.GetSection("password").Value);
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate(_gmailSettings.GetSection("userName").Value, _gmailSettings.GetSection("password").Value);
 
-                    client.Send(message);
-                    client.Disconnect(true);
-                }
-            });
+                client.Send(message);
+                client.Disconnect(true);
+            }
+            //});
 
-            emailThread.IsBackground = true;
-            emailThread.Start();
+            //    emailThread.IsBackground = true;
+            //    emailThread.Start();
         }
     }
 }

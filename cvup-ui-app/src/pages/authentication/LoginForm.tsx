@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -26,6 +26,7 @@ import {
 export const LoginForm = () => {
   const rootStore = useStore();
   const { authStore } = rootStore;
+  const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [emailProps, setEmailProps] = useState<textFieldInterface>({
@@ -103,6 +104,19 @@ export const LoginForm = () => {
     if (!response.isSuccess) {
       setSubmitError("Incorrect email address or password, please try again");
     }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const handleKeyDown = () => {
+    setIsDirty(true);
+    setSubmitError("");
   };
 
   return (
@@ -199,6 +213,7 @@ export const LoginForm = () => {
           <Box sx={{ mt: 2 }}>
             <Button
               fullWidth
+              disabled={!isDirty}
               size="large"
               type="submit"
               variant="contained"
@@ -206,6 +221,8 @@ export const LoginForm = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
+
+                setIsDirty(false);
 
                 if (validateForm()) {
                   submitForm();

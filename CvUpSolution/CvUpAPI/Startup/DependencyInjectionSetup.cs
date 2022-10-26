@@ -1,7 +1,6 @@
 ﻿using EmailsLibrary;
 using LuceneLibrary;
-using ServicesLibrary.UserLogin;
-using ServicesLibrary.RegisterCompanyAndUser;
+using ServicesLibrary.Authentication;
 using DataModelsLibrary.Queries;
 
 namespace CvUpAPI.Startup
@@ -16,10 +15,8 @@ namespace CvUpAPI.Startup
 
             services.AddTransient<ILuceneService, LuceneService>();
             services.AddTransient<IEmailQueries, EmailQueries>();
-            services.AddTransient<IRegistrationQueries, RegistrationQueries>();
-            services.AddTransient<IRegisterCompanyAndUserServise, RegisterCompanyAndUserServise>();
-            services.AddTransient<ILoginQueries, LoginQueries>();
-            services.AddTransient<IUserLoginServise, UserLoginServise>();
+            services.AddTransient<IAuthQueries, AuthQueries>();
+            services.AddTransient<IAuthServise, AuthServise>();
 
             return services;
         }

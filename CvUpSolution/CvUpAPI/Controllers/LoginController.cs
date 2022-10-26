@@ -4,7 +4,7 @@ using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using ServicesLibrary.UserLogin;
+using ServicesLibrary.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,11 +16,11 @@ namespace CvUpAPI.Controllers
     public class LoginController : ControllerBase
     {
         public IConfiguration _configuration;
-        private IUserLoginServise _userLoginServise;
-        public LoginController(IConfiguration config, IUserLoginServise userLoginServise)
+        private IAuthServise _authServise;
+        public LoginController(IConfiguration config, IAuthServise authServise)
         {
             _configuration = config;
-            _userLoginServise = userLoginServise;
+            _authServise = authServise;
         }
 
         [HttpPost]
@@ -28,7 +28,7 @@ namespace CvUpAPI.Controllers
         {
             try
             {
-                user? authenticateUser = _userLoginServise.Login(data, out UserAuthStatus status);
+                user? authenticateUser = _authServise.Login(data, out UserAuthStatus status);
 
                 if (authenticateUser != null)
                 {
@@ -55,7 +55,7 @@ namespace CvUpAPI.Controllers
                 }
                 else if(status == UserAuthStatus.more_then_one_company_per_email)
                 {
-                    return Ok(_userLoginServise.UserCompanies(data.email));
+                    return Ok(_authServise.UserCompanies(data.email));
 
                 }
             }

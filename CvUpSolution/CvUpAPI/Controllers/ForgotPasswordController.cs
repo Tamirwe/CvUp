@@ -3,7 +3,7 @@ using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServicesLibrary.UserLogin;
+using ServicesLibrary.Authentication;
 
 namespace CvUpAPI.Controllers
 {
@@ -12,18 +12,18 @@ namespace CvUpAPI.Controllers
     public class ForgotPasswordController : ControllerBase
     {
         public IConfiguration _configuration;
-        private IUserLoginServise _userLoginServise;
+        private IAuthServise _authServise;
 
-        public ForgotPasswordController(IConfiguration config, IUserLoginServise userLoginServise)
+        public ForgotPasswordController(IConfiguration config, IAuthServise authServise)
         {
             _configuration = config;
-            _userLoginServise = userLoginServise;
+            _authServise = authServise;
         }
 
         [HttpPost]
         public IActionResult Post(ForgotPasswordModel data)
         {
-            user? authenticateUser = _userLoginServise.ForgotPassword(data.email, data.companyId, out UserAuthStatus status);
+            user? authenticateUser = _authServise.ForgotPassword(data.email, data.companyId, out UserAuthStatus status);
 
             if (authenticateUser != null)
             {
@@ -32,7 +32,7 @@ namespace CvUpAPI.Controllers
             }
             else if (status == UserAuthStatus.more_then_one_company_per_email)
             {
-                var userCompanies = _userLoginServise.UserCompanies(data.email);
+                var userCompanies = _authServise.UserCompanies(data.email);
                 return Ok(userCompanies);
             }
 

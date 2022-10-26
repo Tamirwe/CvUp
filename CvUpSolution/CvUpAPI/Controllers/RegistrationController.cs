@@ -2,7 +2,7 @@
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServicesLibrary.RegisterCompanyAndUser;
+using ServicesLibrary.Authentication;
 
 namespace CvUpAPI.Controllers
 {
@@ -10,10 +10,10 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class RegistrationController : ControllerBase
     {
-        private IRegisterCompanyAndUserServise _registerCompanyAndUserServise;
-        public RegistrationController(IRegisterCompanyAndUserServise registerCompanyAndUserServise)
+        private IAuthServise _authServise;
+        public RegistrationController(IAuthServise authServise)
         {
-            _registerCompanyAndUserServise = registerCompanyAndUserServise;
+            _authServise = authServise;
         }
 
         [HttpPost]
@@ -21,7 +21,7 @@ namespace CvUpAPI.Controllers
         {
             try
             {
-                _registerCompanyAndUserServise.Register(data);
+                _authServise.Register(data);
 
 
                 return Ok();

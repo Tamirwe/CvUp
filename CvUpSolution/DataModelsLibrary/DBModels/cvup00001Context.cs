@@ -24,6 +24,7 @@ namespace Database.models
         public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
         public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
+        public virtual DbSet<password_reset> password_resets { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -68,8 +69,6 @@ namespace Database.models
                 entity.HasIndex(e => e.email_type, "fk_emails_sent_email_type_enum_email_type_id");
 
                 entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
 
                 entity.Property(e => e.body).HasMaxLength(1500);
 
@@ -155,13 +154,28 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<password_reset>(entity =>
+            {
+                entity.ToTable("password_reset");
+
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.email).HasMaxLength(250);
+
+                entity.Property(e => e.key).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<user>(entity =>
             {
                 entity.HasIndex(e => e.activate_status_id, "fk_users_activate_status_id_enum_user_activate_status_id");
 
+                entity.HasIndex(e => e.company_id, "fk_users_company_id_companies_id");
+
                 entity.HasIndex(e => e.role, "fk_users_role_enum_roles_id");
 
-                entity.HasIndex(e => new { e.company_id, e.email }, "uk_users_company_id_email")
+                entity.HasIndex(e => new { e.email, e.passwaord }, "uq_users_email_password")
                     .IsUnique();
 
                 entity.Property(e => e.date_created)
@@ -187,6 +201,7 @@ namespace Database.models
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users)
                     .HasForeignKey(d => d.company_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_users_company_id_companies_id");
 
                 entity.HasOne(d => d.roleNavigation)

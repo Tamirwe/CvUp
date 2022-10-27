@@ -46,7 +46,7 @@ export const ForgotPasswordWrapper = () => {
               gutterBottom
               variant="h5"
             >
-              Reset Your Password
+              Forgot Your Password?
             </Typography>
           </Grid>
           <Grid item xs={12} sx={{ mt: 4 }}>

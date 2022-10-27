@@ -20,7 +20,10 @@ namespace CvUpAPI.Controllers
         {
             try
             {
-                _authServise.Register(data);
+                string origin = Request.Headers["Origin"].First();
+
+
+                _authServise.Register(origin,data);
 
 
                 return Ok();

@@ -23,7 +23,9 @@ namespace CvUpAPI.Controllers
         [HttpPost]
         public IActionResult Post(ForgotPasswordModel data)
         {
-            user? authenticateUser = _authServise.ForgotPassword(data.email, data.companyId, out UserAuthStatus status);
+            string origin = Request.Headers["Origin"].First();
+
+            user? authenticateUser = _authServise.ForgotPassword(origin,data.email, data.companyId, out UserAuthStatus status);
 
             if (authenticateUser != null)
             {
@@ -40,5 +42,7 @@ namespace CvUpAPI.Controllers
             //return Ok(new { data = "userNotFound" } );
 
         }
+
+      
     }
 }

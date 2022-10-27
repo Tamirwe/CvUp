@@ -201,7 +201,7 @@ export const PasswordResetForm = () => {
                 }
               }}
             >
-              Sign in
+              Reset Password
             </Button>
           </Box>
         </Grid>

@@ -8,8 +8,8 @@ namespace ServicesLibrary.Authentication
     {
         public user? Login(UserLoginModel dataa, out UserAuthStatus status);
         public List<IdNameModel> UserCompanies(string email);
-        public user? ForgotPassword(string email,int? companyId, out UserAuthStatus status);
+        public user? ForgotPassword(string origin, string email,int? companyId, out UserAuthStatus status);
 
-        void Register(CompanyAndUserRegisetModel data);
+        void Register(string origin, CompanyAndUserRegisetModel data);
     }
 }

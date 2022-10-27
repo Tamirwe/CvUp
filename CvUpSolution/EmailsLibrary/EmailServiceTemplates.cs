@@ -13,10 +13,10 @@ namespace EmailsLibrary
     public partial class EmailService : IEmailService
     {
 
-        public string RegistrationEmailBody()
+        public string RegistrationEmailBody(string origin, string key)
         {
             string body = string.Empty;
-            string htmlFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"EmailTemplates\RegistrationTemplate.html");
+            string htmlFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"EmailTemplates\RegistrationCompleteTemplate.html");
 
             //string sFilePath = Path.GetFullPath(htmlFile);
 
@@ -24,10 +24,25 @@ namespace EmailsLibrary
             {
                 body = reader.ReadToEnd();
             }
-            body = body.Replace("{loginLink}", "http://localhost:3000/login");
+            body = body.Replace("{loginLink}", origin + "/login?sk=" + key);
 
             return body;
         }
 
+        public string ResetPasswordEmailBody(string origin,string key)
+        {
+            string body = string.Empty;
+            string htmlFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"EmailTemplates\PasswordResetTemplate.html");
+
+            //string sFilePath = Path.GetFullPath(htmlFile);
+
+            using (StreamReader reader = new StreamReader(htmlFile))
+            {
+                body = reader.ReadToEnd();
+            }
+            body = body.Replace("{loginLink}", origin + "/login?sk=" + key);
+
+            return body;
+        }
     }
 }

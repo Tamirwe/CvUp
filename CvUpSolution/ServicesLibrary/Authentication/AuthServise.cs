@@ -22,7 +22,13 @@ namespace ServicesLibrary.Authentication
 
         public user? Login(UserLoginModel data, out UserAuthStatus status)
         {
+            if (data.key != null)
+            {
+
+            }
+
             var users = _authQueries.getUsersByEmailPassword(data.email,data.password);
+
 
             if (users.Count == 0)
             {
@@ -41,7 +47,7 @@ namespace ServicesLibrary.Authentication
             }
         }
 
-        public user? ForgotPassword(string email, int? companyId, out UserAuthStatus status)
+        public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status)
         {
             List<user> users = _authQueries.getUsers(email, companyId);
 
@@ -54,8 +60,8 @@ namespace ServicesLibrary.Authentication
             {
                 status = UserAuthStatus.Authenticated;
                 string key = generateSecretKey();
-                SendForgotPasswordEmail(users[0]);
                 _authQueries.addUserPasswordReset(key, users[0]);
+                SendResetPasswordEmail(origin, key,users[0]);
                 return users[0];
             }
             else
@@ -71,13 +77,13 @@ namespace ServicesLibrary.Authentication
             return guid;
         }
 
-        private EmailModel SendForgotPasswordEmail(user user)
+        private EmailModel SendResetPasswordEmail(string origin, string key, user user)
         {
             var email = new EmailModel
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Reset Password",
-                Body = _emailService.RegistrationEmailBody()
+                Body = _emailService.ResetPasswordEmailBody(origin, key)
             };
 
             _emailService.Send(email);
@@ -89,13 +95,15 @@ namespace ServicesLibrary.Authentication
             return _authQueries.getUserCompanies(email);
         }
 
-        public void Register(CompanyAndUserRegisetModel data)
+        public void Register(string origin, CompanyAndUserRegisetModel data)
         {
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
                 company newCompany = AddNewCompany(data.companyName, data.companyDescr);
                 user newUser = AddNewUser(newCompany.id, data.companyName, data.email, data.password, data.firstName, data.lastName, UsersRole.Admin, "Registered");
-                EmailModel sentEmail = SendRegistrationConfitmationEmail(newUser);
+                string key = generateSecretKey();
+                _authQueries.addUserPasswordReset(key, newUser);
+                EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key,newUser);
                 AddEmailSent(EmailType.REGISTRATION_CONFIRMATION, newUser, sentEmail);
                 scope.Complete();
             }
@@ -112,13 +120,13 @@ namespace ServicesLibrary.Authentication
             return user;
         }
 
-        private EmailModel SendRegistrationConfitmationEmail(user user)
+        private EmailModel SendRegistrationConfitmationEmail(string origin, string key, user user)
         {
             var email = new EmailModel
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Complete Registration",
-                Body = "follow this link"
+                Body = _emailService.ResetPasswordEmailBody(origin, key)
             };
 
             _emailService.Send(email);

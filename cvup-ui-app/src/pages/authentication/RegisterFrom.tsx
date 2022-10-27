@@ -27,7 +27,11 @@ import {
   textFieldValidte,
 } from "../../utils/Validation";
 
-export const RegisterForm = () => {
+interface props {
+  registerFormComplete: (email: string) => void;
+}
+
+export const RegisterForm = (props: props) => {
   const rootStore = useStore();
   const { authStore } = rootStore;
 
@@ -140,6 +144,8 @@ export const RegisterForm = () => {
       if (response.error === "duplicateUserPass") {
         setSubmitError("This user already exists");
       }
+    } else {
+      props.registerFormComplete(emailProps.value);
     }
   };
 

@@ -19,7 +19,7 @@ export const PasswordResetWrapper = () => {
             gutterBottom
             variant="h5"
           >
-            Password Reset
+            Reset Password
           </Typography>
         </Stack>
       </Grid>

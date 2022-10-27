@@ -174,7 +174,7 @@ export const ForgotPasswordForm = (props: props) => {
               }
             }}
           >
-            Reset Password
+            Request Password Reset
           </Button>
         </Box>
       </Grid>

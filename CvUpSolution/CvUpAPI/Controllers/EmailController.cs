@@ -1,5 +1,4 @@
-﻿using CvUpAPI.Services;
-using EmailsLibrary;
+﻿using EmailsLibrary;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,17 +9,17 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class EmailController : ControllerBase
     {
-        private IEmailsImportService _emailsImportService;
-        public EmailController(IEmailsImportService emailsImportService)
+        private IEmailService _emailService;
+        public EmailController(IEmailService emailService)
         {
-            _emailsImportService = emailsImportService;
+            _emailService = emailService;
         }
 
         // GET: api/<EmailController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _emailsImportService.ReadNotSeenEmails();
+            //_emailsImportService.ReadNotSeenEmails();
 
             return new string[] { "value1", "value2" };
         }

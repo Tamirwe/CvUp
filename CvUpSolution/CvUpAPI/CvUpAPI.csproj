@@ -25,4 +25,13 @@
     <ProjectReference Include="..\ServicesLibrary\ServicesLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="EmailTemplates\RegistrationTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="EmailTemplates\ResetPasswordTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

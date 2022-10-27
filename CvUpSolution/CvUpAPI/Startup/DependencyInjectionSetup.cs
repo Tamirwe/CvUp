@@ -10,8 +10,7 @@ namespace CvUpAPI.Startup
         public static IServiceCollection RegisterServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
             //services.AddScoped<IEmailService, EmailService>();
-            services.AddTransient<IEmailsImportService, EmailsImportService>();
-            services.AddTransient<IEmailSendService, EmailSendService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddTransient<ILuceneService, LuceneService>();
             services.AddTransient<IEmailQueries, EmailQueries>();

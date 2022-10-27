@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace EmailsLibrary
 {
-    public class EmailSendService : IEmailSendService
+    public partial class EmailService : IEmailService
     {
         private IConfigurationSection _gmailSettings;
 
-        public EmailSendService(IConfiguration config)
+        public EmailService(IConfiguration config)
         {
             _gmailSettings = config.GetRequiredSection("GmailSettings");
 
@@ -49,7 +49,7 @@ namespace EmailsLibrary
 
             message.Subject = eml.Subject;
 
-            message.Body = new TextPart("plain")
+            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = eml.Body
             };
@@ -76,5 +76,7 @@ namespace EmailsLibrary
             //    emailThread.IsBackground = true;
             //    emailThread.Start();
         }
+
+     
     }
 }

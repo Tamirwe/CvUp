@@ -2,8 +2,9 @@
 
 namespace EmailsLibrary
 {
-    public interface IEmailSendService
+    public interface IEmailService
     {
         public void Send(EmailModel eml);
+        public string RegistrationEmailBody();
     }
 }

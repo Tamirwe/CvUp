@@ -11,9 +11,9 @@ namespace ServicesLibrary.Authentication
     public class AuthServise: IAuthServise
     {
         private IAuthQueries _authQueries;
-        private IEmailSendService _emailService;
+        private IEmailService _emailService;
         private IEmailQueries _emailQueries;
-        public AuthServise(IAuthQueries authQueries, IEmailSendService emailService, IEmailQueries emailQueries)
+        public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries)
         {
             _authQueries = authQueries;
             _emailService = emailService;
@@ -77,7 +77,7 @@ namespace ServicesLibrary.Authentication
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Reset Password",
-                Body = "follow this link"
+                Body = _emailService.RegistrationEmailBody()
             };
 
             _emailService.Send(email);

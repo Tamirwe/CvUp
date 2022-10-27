@@ -1,5 +1,4 @@
-﻿using CvUpAPI.Services;
-using DataModelsLibrary.Models;
+﻿using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesLibrary.Authentication;

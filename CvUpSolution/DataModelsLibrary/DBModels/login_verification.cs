@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.models
 {
-    public partial class password_reset
+    public partial class login_verification
     {
         public string id { get; set; } = null!;
         public string email { get; set; } = null!;

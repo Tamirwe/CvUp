@@ -24,7 +24,7 @@ namespace Database.models
         public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
         public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
-        public virtual DbSet<password_reset> password_resets { get; set; } = null!;
+        public virtual DbSet<login_verification> login_verifications { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -154,17 +154,17 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<password_reset>(entity =>
+            modelBuilder.Entity<login_verification>(entity =>
             {
-                entity.ToTable("password_reset");
+                entity.ToTable("login_verification");
+
+                entity.Property(e => e.id).HasMaxLength(100);
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email).HasMaxLength(250);
-
-                entity.Property(e => e.key).HasMaxLength(50);
             });
 
             modelBuilder.Entity<user>(entity =>

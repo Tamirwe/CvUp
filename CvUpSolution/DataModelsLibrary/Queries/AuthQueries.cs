@@ -22,87 +22,117 @@ namespace DataModelsLibrary.Queries
 
         public List<user> getUsersByEmailPassword(string email, string password)
         {
-            var usersList = dbContext.users.Where(x => x.email == email && x.passwaord == password && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
-            return usersList;
+            using (var db = dbContext)
+            {
+                var usersList = db.users.Where(x => x.email == email && x.passwaord == password && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+                return usersList;
+            }
+        }
+
+        public login_verification? getloginVerification(string key)
+        {
+            using (var db = dbContext)
+            {
+                var loginVerification = db.login_verifications.Where(x => x.id == key).FirstOrDefault();
+                return loginVerification;
+            }
         }
 
         public List<IdNameModel> getUserCompanies(string email)
         {
-            using (dbContext)
+            using (var db = dbContext)
             {
-                dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
                 string sql = @"SELECT c.id id, c.name
                         FROM users u INNER JOIN companies c ON u.company_id=c.id
                         WHERE u.email='" + email + "'" +
                         @"AND  u.activate_status_id = " + (int)UserActivateStatus.ACTIVE;
 
-                var userCompaniesList = dbContext.idNameModelDB.FromSqlRaw(sql).ToList();
+                var userCompaniesList = db.idNameModelDB.FromSqlRaw(sql).ToList();
                 return userCompaniesList;
             }
         }
 
         public List<user> getUsers(string email, int? companyId)
         {
-            if (companyId != 0)
+            using (var db = dbContext)
             {
-                return dbContext.users.Where(x => x.email == email && x.company_id == companyId && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
-            }
+                if (companyId != 0)
+                {
+                    return db.users.Where(x => x.email == email && x.company_id == companyId && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+                }
 
-            return dbContext.users.Where(x => x.email == email && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+                return db.users.Where(x => x.email == email && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+            }
         }
 
         public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status)
         {
-            var company = new company
+            using (var db = dbContext)
             {
-                name = companyName,
-                descr = companyDescr,
-                activate_status_id = (int)status,
-            };
+                var company = new company
+                {
+                    name = companyName,
+                    descr = companyDescr,
+                    activate_status_id = (int)status,
+                };
 
-            dbContext.companies.Add(company);
-            dbContext.SaveChanges();
-            return company;
+                db.companies.Add(company);
+                db.SaveChanges();
+                return company;
+            }
         }
 
         public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UsersRole role, string log)
         {
-            var user = new user
+            using (var db = dbContext)
             {
-                company_id = companyId,
-                email = email,
-                passwaord = password,
-                first_name = firstName,
-                last_name = lastName,
-                activate_status_id = (int)status,
-                role = (int)role,
-                log_info = log
-            };
+                var user = new user
+                {
+                    company_id = companyId,
+                    email = email,
+                    passwaord = password,
+                    first_name = firstName,
+                    last_name = lastName,
+                    activate_status_id = (int)status,
+                    role = (int)role,
+                    log_info = log
+                };
 
-            dbContext.users.Add(user);
-            dbContext.SaveChanges();
-            return user;
+                db.users.Add(user);
+                db.SaveChanges();
+                return user;
+            }
         }
 
         public company updateCompany(company _company)
         {
-            var result = dbContext.companies.Update(_company);
-            dbContext.SaveChanges();
-            return _company;
+            using (var db = dbContext)
+            {
+                var result = db.companies.Update(_company);
+                db.SaveChanges();
+                return _company;
+            }
         }
 
         public void addUserPasswordReset(string key, user user)
         {
-            var pr = new password_reset
+            using (var db = dbContext)
             {
-                email = user.email,
-                user_id = user.id,
-                key = key,
-            };
+                FormattableString sql = $@"DELETE FROM password_reset WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                int rowsUpdated = db.Database.ExecuteSqlRaw(sql.ToString());
 
-            dbContext.password_resets.Add(pr);
-            dbContext.SaveChanges();
+                var pr = new login_verification
+                {
+                    email = user.email,
+                    user_id = user.id,
+                    id = key,
+                };
+
+                db.login_verifications.Add(pr);
+                db.SaveChanges();
+            }
         }
     }
 }

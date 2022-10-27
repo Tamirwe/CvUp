@@ -22,11 +22,6 @@ namespace ServicesLibrary.Authentication
 
         public user? Login(UserLoginModel data, out UserAuthStatus status)
         {
-            if (data.key != null)
-            {
-
-            }
-
             var users = _authQueries.getUsersByEmailPassword(data.email,data.password);
 
 
@@ -37,6 +32,20 @@ namespace ServicesLibrary.Authentication
             }
             else if (users.Count == 1)
             {
+                if (data.key != null)
+                {
+                    var loginVerification = _authQueries.getloginVerification(data.key);
+
+                    if (loginVerification != null)
+                    {
+                        if ( loginVerification.email != users[0].email || loginVerification.user_id != users[0].id)
+                        {
+                            status = UserAuthStatus.not_registered;
+                            return null;
+                        }
+                    }
+                }
+
                 status = UserAuthStatus.Authenticated;
                 return users[0];
             }

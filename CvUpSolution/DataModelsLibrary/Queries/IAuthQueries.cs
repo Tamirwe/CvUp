@@ -13,5 +13,6 @@ namespace DataModelsLibrary.Queries
         user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UsersRole role, string log);
         company updateCompany(company newCompany);
         void addUserPasswordReset(string key, user user);
+        login_verification getloginVerification(string key);
     }
 }

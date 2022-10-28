@@ -4,6 +4,7 @@ export const textFieldValidte = (
   txt: string,
   notEmpty: boolean = true,
   twoCharsMin: boolean = true,
+  startWithLetters: boolean = false,
   onlyLetters: boolean = false
 ) => {
   if (notEmpty && txt.trim().length < 1) {
@@ -12,6 +13,10 @@ export const textFieldValidte = (
 
   if (twoCharsMin && txt.trim().length < 2) {
     return "Field is too short";
+  }
+
+  if (startWithLetters && !/^.*[\p{L}\s]{2,}.*$/u.test(txt.trim())) {
+    return "Must start with at least two letter.";
   }
 
   if (onlyLetters && !/^[\p{L}\s'`-]*$/u.test(txt.trim())) {

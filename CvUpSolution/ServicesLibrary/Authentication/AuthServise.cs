@@ -25,29 +25,47 @@ namespace ServicesLibrary.Authentication
             var users = _authQueries.getUsersByEmailPassword(data.email,data.password);
 
 
-            if (users.Count == 0)
+           if (users.Count == 1)
             {
-                status = UserAuthStatus.not_registered;
-                return null;
-            }
-            else if (users.Count == 1)
-            {
-                if (data.key != null)
+                if (data.key != "")
                 {
                     var loginVerification = _authQueries.getloginVerification(data.key);
 
-                    if (loginVerification != null)
+                    if (loginVerification == null)
                     {
-                        if ( loginVerification.email != users[0].email || loginVerification.user_id != users[0].id)
-                        {
-                            status = UserAuthStatus.not_registered;
-                            return null;
-                        }
+                        status = UserAuthStatus.not_registered;
+                        return null;
                     }
-                }
+                    else if (loginVerification.email != users[0].email || loginVerification.user_id != users[0].id)
+                    {
+                        status = UserAuthStatus.not_registered;
+                        return null;
+                    }
 
-                status = UserAuthStatus.Authenticated;
-                return users[0];
+                    if (users[0].activate_status_id != (int)UserActivateStatus.ACTIVE)
+                    {
+                        _authQueries.activateUser(users[0]);
+                    }
+
+                    status = UserAuthStatus.Authenticated;
+                    return users[0];
+                }
+                else
+                {
+                    if (users[0].activate_status_id != (int)UserActivateStatus.ACTIVE)
+                    {
+                        status = UserAuthStatus.not_registered;
+                        return null;
+                    }
+
+                    status = UserAuthStatus.Authenticated;
+                    return users[0];
+                }
+            }
+            else if (users.Count == 0)
+            {
+                status = UserAuthStatus.not_registered;
+                return null;
             }
             else
             {
@@ -135,7 +153,7 @@ namespace ServicesLibrary.Authentication
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = String.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Complete Registration",
-                Body = _emailService.ResetPasswordEmailBody(origin, key)
+                Body = _emailService.RegistrationEmailBody(origin, key)
             };
 
             _emailService.Send(email);

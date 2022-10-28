@@ -11,7 +11,7 @@ export const RegisterWrapper = () => {
 
   return (
     <>
-      {!isVerificationEmailSent ? (
+      {isVerificationEmailSent ? (
         <Grid container>
           <Grid item xs={12} textAlign="center" mb={4}>
             <FiCheckCircle fontSize={55} color="green" />

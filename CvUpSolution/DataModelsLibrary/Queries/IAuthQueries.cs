@@ -14,5 +14,6 @@ namespace DataModelsLibrary.Queries
         company updateCompany(company newCompany);
         void addUserPasswordReset(string key, user user);
         login_verification getloginVerification(string key);
+        void activateUser(user user);
     }
 }

@@ -28,6 +28,7 @@ namespace DataModelsLibrary.Enums
     }
     public enum UsersRole
     {
+        AppManager = 1,
         Admin = 10,
         User = 20,
     }

@@ -26,6 +26,7 @@ import {
 export const LoginForm = () => {
   const rootStore = useStore();
   const { authStore } = rootStore;
+  const params = new URLSearchParams(window.location.search);
 
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -98,6 +99,7 @@ export const LoginForm = () => {
       email: emailProps.value,
       password: passwordProps.value,
       rememberMe: isRemember,
+      key: params.get("sk") || "",
     };
 
     const response = await authStore.loginUser(loginInfo);

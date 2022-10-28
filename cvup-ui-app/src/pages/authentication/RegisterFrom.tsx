@@ -142,8 +142,10 @@ export const RegisterForm = (props: props) => {
 
     if (!response.isSuccess) {
       if (response.error === "duplicateUserPass") {
-        setSubmitError("This user already exists");
+        return setSubmitError("This user already exists");
       }
+
+      return setSubmitError("An Error Occurred Please Try Again Later");
     } else {
       props.registerFormComplete(emailProps.value);
     }

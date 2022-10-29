@@ -3,3 +3,10 @@ export interface SelectModel {
   name: string;
   isSelected?: boolean;
 }
+export interface ClaimsModel {
+  CompanyId?: string;
+  UserId?: string;
+  DisplayName?: string;
+  email?: string;
+  role?: string;
+}

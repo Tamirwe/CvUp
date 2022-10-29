@@ -4,29 +4,52 @@ import {
   UserLoginModel,
   UserRegistrationModel,
 } from "../models/AuthModels";
+import { ClaimsModel } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
 export class AuthStore {
   private authApi;
-  userName = "Tamir";
   isLoggedIn = false;
+  claims: ClaimsModel = {};
+  CompanyId = null;
+  UserId = null;
+  DisplayName = null;
+  email = null;
+  role = null;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
     this.authApi = new AuthApi();
+    const jwt = localStorage.getItem("jwt");
+
+    if (jwt) {
+      this.isLoggedIn = true;
+      this.claims = JSON.parse(window.atob(jwt.split(".")[1]));
+    }
   }
 
   async registerUser(registrationInfo: UserRegistrationModel) {
     return await this.authApi.registerUser(registrationInfo);
   }
 
-  async loginUser(loginInfo: UserLoginModel) {
-    return await this.authApi.loginUser(loginInfo);
+  async login(loginInfo: UserLoginModel) {
+    const response = await this.authApi.login(loginInfo);
+
+    if (response.isSuccess) {
+      this.isLoggedIn = true;
+      localStorage.setItem("jwt", response.data);
+    }
+
+    return response.isSuccess;
+  }
+
+  logout() {
+    this.claims = {};
+    localStorage.removeItem("jwt");
   }
 
   async forgotPassword(info: ForgotPasswordModel) {
     return await this.authApi.forgotPassword(info);
   }
-
 }

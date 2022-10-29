@@ -6,7 +6,7 @@ export const Home: React.FC = observer(() => {
 
   return (
     <div>
-      <div>{authStore.userName}</div>
+      <div>{authStore.claims.DisplayName}</div>
     </div>
   );
 });

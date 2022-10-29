@@ -19,7 +19,7 @@ export default class AuthApi extends BaseApi {
     return response;
   }
 
-  async loginUser(loginInfo: UserLoginModel) {
+  async login(loginInfo: UserLoginModel) {
     const response = await this.apiWrapper(async () => {
       return await this.http.post("Login", loginInfo);
     });

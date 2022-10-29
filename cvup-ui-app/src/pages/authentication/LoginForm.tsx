@@ -14,7 +14,7 @@ import {
 import { SetStateAction, useEffect, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { textFieldInterface, UserLoginModel } from "../../models/AuthModels";
 import {
@@ -24,6 +24,7 @@ import {
 } from "../../utils/Validation";
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
   const rootStore = useStore();
   const { authStore } = rootStore;
   const params = new URLSearchParams(window.location.search);
@@ -102,9 +103,11 @@ export const LoginForm = () => {
       key: params.get("sk") || "",
     };
 
-    const response = await authStore.loginUser(loginInfo);
+    const isSuccess = await authStore.login(loginInfo);
 
-    if (!response.isSuccess) {
+    if (isSuccess) {
+      navigate("/");
+    } else {
       setSubmitError("Incorrect email address or password, please try again");
     }
   };

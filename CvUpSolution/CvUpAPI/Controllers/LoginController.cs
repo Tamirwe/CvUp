@@ -37,6 +37,7 @@ namespace CvUpAPI.Controllers
                                 //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                                 //new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                                 new Claim("UserId", authenticateUser.id.ToString()),
+                                new Claim("CompanyId", authenticateUser.company_id.ToString()),
                                 new Claim("DisplayName", string.Format("{0} {1}",authenticateUser.first_name,authenticateUser.last_name)),
                                 new Claim("email", authenticateUser.email),
                                 new Claim("role",Enum.GetName(typeof(UsersRole), authenticateUser.role)?? ""),

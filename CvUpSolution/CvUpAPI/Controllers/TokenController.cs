@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AuthLibrary;
+using DataModelsLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
@@ -15,29 +18,41 @@ namespace CvUpAPI.Controllers
         //    this._userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
         //    this._tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         //}
+
+        //private IAuthServise _authServise;
+        //public TokenController(IAuthServise authServise)
+        //{
+        //    _authServise = authServise;
+        //}
+
         //[HttpPost]
         //[Route("refresh")]
-        //public IActionResult Refresh(TokenApiModel tokenApiModel)
+        //public IActionResult Refresh(RefreshTokenModel data)
         //{
-        //    if (tokenApiModel is null)
+        //    if (data is null)
         //        return BadRequest("Invalid client request");
-        //    string accessToken = tokenApiModel.AccessToken;
-        //    string refreshToken = tokenApiModel.RefreshToken;
-        //    var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+        //    string accessToken = data.token;
+        //    string refreshToken = data.refreshToken;
+        //    var principal = _authServise.GetPrincipalFromExpiredToken(accessToken);
         //    var username = principal.Identity.Name; //this is mapped to the Name claim by default
         //    var user = _userContext.LoginModels.SingleOrDefault(u => u.UserName == username);
+
         //    if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         //        return BadRequest("Invalid client request");
-        //    var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
-        //    var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        //    var newAccessToken = _authServise.GenerateAccessToken(principal.Claims);
+        //    var newRefreshToken = _authServise.GenerateRefreshToken();
         //    user.RefreshToken = newRefreshToken;
         //    _userContext.SaveChanges();
+
         //    return Ok(new AuthenticatedResponse()
         //    {
         //        Token = newAccessToken,
         //        RefreshToken = newRefreshToken
         //    });
         //}
+
         //[HttpPost, Authorize]
         //[Route("revoke")]
         //public IActionResult Revoke()

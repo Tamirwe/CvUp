@@ -38,7 +38,8 @@ export class AuthStore {
 
     if (response.isSuccess) {
       this.isLoggedIn = true;
-      localStorage.setItem("jwt", response.data);
+      localStorage.setItem("jwt", response.data.token);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
     }
 
     return response.isSuccess;

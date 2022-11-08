@@ -20,6 +20,8 @@ namespace Database.models
         public int activate_status_id { get; set; }
         public string? log_info { get; set; }
         public int role { get; set; }
+        public string? refresh_token { get; set; }
+        public DateTime? refresh_token_expiry { get; set; }
 
         public virtual enum_user_activate_status activate_status { get; set; } = null!;
         public virtual company company { get; set; } = null!;

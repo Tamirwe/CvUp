@@ -18,8 +18,8 @@ export interface UserLoginModel {
   key?: string;
 }
 
-export interface ResponseModel {
-  data: any;
+export interface ResponseModel<T> {
+  data: T;
   isSuccess: boolean;
   error: string;
 }
@@ -28,3 +28,9 @@ export interface ForgotPasswordModel {
   email: string;
   companyId?: number;
 }
+
+export interface TokensModel {
+  token: string;
+  refreshToken: string;
+}
+

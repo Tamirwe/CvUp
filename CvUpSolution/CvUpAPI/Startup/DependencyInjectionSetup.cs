@@ -1,7 +1,7 @@
 ﻿using EmailsLibrary;
 using LuceneLibrary;
-using ServicesLibrary.Authentication;
 using DataModelsLibrary.Queries;
+using AuthLibrary;
 
 namespace CvUpAPI.Startup
 {

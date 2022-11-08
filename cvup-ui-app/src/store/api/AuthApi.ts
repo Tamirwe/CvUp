@@ -1,5 +1,6 @@
 import {
   ForgotPasswordModel,
+  TokensModel,
   UserLoginModel,
   UserRegistrationModel,
 } from "../../models/AuthModels";
@@ -7,29 +8,28 @@ import BaseApi from "./BaseApi";
 
 export default class AuthApi extends BaseApi {
   // eslint-disable-next-line
-  constructor() {
-    super();
-  }
 
   async registerUser(registrationInfo: UserRegistrationModel) {
     const response = await this.apiWrapper(async () => {
-      return await this.http.post("Registration", registrationInfo);
+      const data = (await this.http.post("Registration", registrationInfo))
+        .data;
+      return data;
     });
 
     return response;
   }
 
   async login(loginInfo: UserLoginModel) {
-    const response = await this.apiWrapper(async () => {
-      return await this.http.post("Login", loginInfo);
+    return await this.apiWrapper(async () => {
+      const data = (await this.http.post<TokensModel>("Login", loginInfo)).data;
+      return data;
     });
-
-    return response;
   }
 
   async forgotPassword(info: ForgotPasswordModel) {
     const response = await this.apiWrapper(async () => {
-      return await this.http.post("ForgotPassword", info);
+      const data = (await this.http.post("ForgotPassword", info)).data;
+      return data;
     });
 
     return response;

@@ -26,9 +26,9 @@ namespace DataModelsLibrary.Queries
             return usersList;
         }
 
-        public login_verification? getloginVerification(string key)
+        public registeration_key? getloginVerification(string key)
         {
-            var loginVerification = dbContext.login_verifications.Where(x => x.id == key).FirstOrDefault();
+            var loginVerification = dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefault();
             return loginVerification;
         }
 
@@ -45,6 +45,11 @@ namespace DataModelsLibrary.Queries
             return userCompaniesList;
         }
 
+        public user? getUser(int userId)
+        {
+            return dbContext.users.Where(x => x.id == userId).FirstOrDefault();
+        }
+
         public List<user> getUsers(string email, int? companyId)
         {
             if (companyId != 0)
@@ -54,6 +59,16 @@ namespace DataModelsLibrary.Queries
 
             return dbContext.users.Where(x => x.email == email && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
         }
+
+        //public user? UserByRefreshToken(string refreshToken)
+        //{
+        //    var results = from u in dbContext.users
+        //                  join ur in dbContext.refresh_tokens on u.id equals ur.user_id
+        //                  where (ur.token == refreshToken) && (ur.expiry_time > DateTime.UtcNow)
+        //                  select u;
+
+        //    return results.FirstOrDefault();
+        //}
 
         public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status)
         {
@@ -100,14 +115,14 @@ namespace DataModelsLibrary.Queries
             FormattableString sql = $@"DELETE FROM login_verification WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
             int rowsUpdated = dbContext.Database.ExecuteSqlRaw(sql.ToString());
 
-            var pr = new login_verification
+            var pr = new registeration_key
             {
                 email = user.email,
                 user_id = user.id,
                 id = key,
             };
 
-            dbContext.login_verifications.Add(pr);
+            dbContext.registeration_keys.Add(pr);
             dbContext.SaveChanges();
         }
 
@@ -117,5 +132,13 @@ namespace DataModelsLibrary.Queries
             var result = dbContext.users.Update(user);
             dbContext.SaveChanges();
         }
+
+        public void SaveRefreshToken(string refreshToken, user authenticateUser)
+        {
+            authenticateUser.refresh_token = refreshToken;
+            var result = dbContext.users.Update(authenticateUser);
+            dbContext.SaveChanges();
+        }
+
     }
 }

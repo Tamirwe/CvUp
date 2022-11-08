@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailsLibrary", "EmailsLibr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneLibrary", "LuceneLibrary\LuceneLibrary.csproj", "{7417B6B6-9857-4B17-B731-45480F433D0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesLibrary", "ServicesLibrary\ServicesLibrary.csproj", "{98776BEE-E815-4FE6-9863-57086CED9398}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthLibrary", "AuthLibrary\AuthLibrary.csproj", "{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98776BEE-E815-4FE6-9863-57086CED9398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98776BEE-E815-4FE6-9863-57086CED9398}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98776BEE-E815-4FE6-9863-57086CED9398}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98776BEE-E815-4FE6-9863-57086CED9398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

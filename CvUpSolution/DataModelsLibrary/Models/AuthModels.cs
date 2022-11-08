@@ -20,8 +20,7 @@ namespace DataModelsLibrary.Models
     {
         public string email { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
-        public string? key { get; set; } = string.Empty;
-
+        public string key { get; set; } = string.Empty;
 
     }
 
@@ -29,6 +28,13 @@ namespace DataModelsLibrary.Models
     {
         public string email { get; set; } = string.Empty;
         public int? companyId { get; set; } = 0;
+
+    }
+
+    public class TokenModel
+    {
+        public string token { get; set; } = string.Empty;
+        public string refreshToken { get; set; } = string.Empty;
 
     }
 

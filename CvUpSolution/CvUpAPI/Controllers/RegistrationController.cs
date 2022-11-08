@@ -1,7 +1,6 @@
-﻿using DataModelsLibrary.Models;
-using Microsoft.AspNetCore.Http;
+﻿using AuthLibrary;
+using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
-using ServicesLibrary.Authentication;
 
 namespace CvUpAPI.Controllers
 {
@@ -21,13 +20,8 @@ namespace CvUpAPI.Controllers
             try
             {
                 string origin = Request.Headers["Origin"].First();
-
-
                 _authServise.Register(origin,data);
-
-
                 return Ok();
-     
             }
             catch(Exception ex)
             {

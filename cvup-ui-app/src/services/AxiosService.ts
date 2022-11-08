@@ -9,51 +9,52 @@ export default function axiosService(
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json; charset=utf-8",
+      Authorization: "Bearer " + localStorage.getItem("jwt"),
       ...headers,
     },
   });
 
-  instance.interceptors.response.use(
-    (res) => res.data,
-    (err) => {
-      if (err.response) {
-        return Promise.reject(err.response.data);
-      }
+  // instance.interceptors.response.use(
+  //   (res) => res,
+  //   (err) => {
+  //     if (err.response) {
+  //       return Promise.reject(err.response.data);
+  //     }
 
-      if (err.request) {
-        return Promise.reject(err.request);
-      }
+  //     if (err.request) {
+  //       return Promise.reject(err.request);
+  //     }
 
-      return Promise.reject(err.message);
-    }
-  );
+  //     return Promise.reject(err.message);
+  //   }
+  // );
 
-  instance.interceptors.request.use(
-    async (response) => {
-      // const token = await getToken();
-      // if (token) {
-      //   config.headers.Authorization = token;
-      // }
+  // instance.interceptors.request.use(
+  //   async (response) => {
+  //     // const token = await getToken();
+  //     // if (token) {
+  //     //   config.headers.Authorization = token;
+  //     // }
 
-      // if (logRequests) {
-      //   console.log(
-      //     `%c ${config?.method?.toUpperCase()} - ${getUrl(config)}:`,
-      //     "color: #0086b3; font-weight: bold",
-      //     config
-      //   );
-      // }
+  //     // if (logRequests) {
+  //     //   console.log(
+  //     //     `%c ${config?.method?.toUpperCase()} - ${getUrl(config)}:`,
+  //     //     "color: #0086b3; font-weight: bold",
+  //     //     config
+  //     //   );
+  //     // }
 
-      // config.paramsSerializer = (params) => {
-      //   return qs.stringify(params, {
-      //     serializeDate: (date: Date) =>
-      //       moment(date).format("YYYY-MM-DDTHH:mm:ssZ"),
-      //   });
-      // };
+  //     // config.paramsSerializer = (params) => {
+  //     //   return qs.stringify(params, {
+  //     //     serializeDate: (date: Date) =>
+  //     //       moment(date).format("YYYY-MM-DDTHH:mm:ssZ"),
+  //     //   });
+  //     // };
 
-      return response;
-    },
-    (error) => Promise.reject(error)
-  );
+  //     return response;
+  //   },
+  //   (error) => Promise.reject(error)
+  // );
 
   return instance;
 }

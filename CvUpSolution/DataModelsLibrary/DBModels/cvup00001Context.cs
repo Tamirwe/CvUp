@@ -24,7 +24,7 @@ namespace Database.models
         public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
         public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
-        public virtual DbSet<login_verification> login_verifications { get; set; } = null!;
+        public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -154,9 +154,9 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<login_verification>(entity =>
+            modelBuilder.Entity<registeration_key>(entity =>
             {
-                entity.ToTable("login_verification");
+                entity.ToTable("registeration_key");
 
                 entity.Property(e => e.id).HasMaxLength(100);
 
@@ -191,6 +191,10 @@ namespace Database.models
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 
                 entity.Property(e => e.passwaord).HasMaxLength(20);
+
+                entity.Property(e => e.refresh_token).HasMaxLength(100);
+
+                entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");
 
                 entity.HasOne(d => d.activate_status)
                     .WithMany(p => p.users)

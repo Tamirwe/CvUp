@@ -1,9 +1,9 @@
-﻿using Database.models;
+﻿using AuthLibrary;
+using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServicesLibrary.Authentication;
 
 namespace CvUpAPI.Controllers
 {

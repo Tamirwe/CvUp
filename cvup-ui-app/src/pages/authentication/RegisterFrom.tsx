@@ -32,8 +32,7 @@ interface props {
 }
 
 export const RegisterForm = (props: props) => {
-  const rootStore = useStore();
-  const { authStore } = rootStore;
+  const { authStore } = useStore();
 
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));

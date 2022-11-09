@@ -21,8 +21,7 @@ interface props {
 }
 
 export const ForgotPasswordForm = (props: props) => {
-  const rootStore = useStore();
-  const { authStore } = rootStore;
+  const { authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [emailProps, setEmailProps] = useState<textFieldInterface>({

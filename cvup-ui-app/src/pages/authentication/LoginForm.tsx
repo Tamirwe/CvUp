@@ -25,8 +25,7 @@ import {
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const rootStore = useStore();
-  const { authStore } = rootStore;
+  const { authStore } = useStore();
   const params = new URLSearchParams(window.location.search);
 
   const [isDirty, setIsDirty] = useState(false);

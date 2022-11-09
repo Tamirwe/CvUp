@@ -1,20 +1,16 @@
 import {
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
-  Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { textFieldInterface, UserLoginModel } from "../../models/AuthModels";
 import {
@@ -25,8 +21,7 @@ import {
 
 export const PasswordResetForm = () => {
   const navigate = useNavigate();
-  const rootStore = useStore();
-  const { authStore } = rootStore;
+  const { authStore } = useStore();
   const params = new URLSearchParams(window.location.search);
 
   const [isDirty, setIsDirty] = useState(false);

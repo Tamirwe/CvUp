@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
 {
-#if !DEBUG
     [Authorize]
-#endif
     [Route("api/[controller]")]
     [ApiController]
     public class SearchController : ControllerBase
@@ -22,9 +20,9 @@ namespace CvUpAPI.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _luceneService.BuildIndex();
-            _luceneService.WarmupSearch();
-            _luceneService.Search("הסכם");
+            //_luceneService.BuildIndex();
+            //_luceneService.WarmupSearch();
+            //_luceneService.Search("הסכם");
             
 
             return new string[] { "value1", "value2" };

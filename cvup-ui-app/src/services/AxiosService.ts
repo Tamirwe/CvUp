@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { TokensModel } from "../models/AuthModels";
 
 export default function axiosService(
   baseURL?: string,
@@ -7,54 +8,56 @@ export default function axiosService(
   const instance = axios.create({
     baseURL: baseURL,
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
-      Authorization: "Bearer " + localStorage.getItem("jwt"),
       ...headers,
     },
   });
 
-  // instance.interceptors.response.use(
-  //   (res) => res,
-  //   (err) => {
-  //     if (err.response) {
-  //       return Promise.reject(err.response.data);
-  //     }
+  const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem("refreshToken") || "";
+    const token = localStorage.getItem("jwt") || "";
+    const newTokens: TokensModel = { token, refreshToken };
+    return (await instance.post<TokensModel>("Auth/Refresh", newTokens)).data;
+  };
 
-  //     if (err.request) {
-  //       return Promise.reject(err.request);
-  //     }
+  instance.interceptors.request.use(
+    async (config) => {
+      const jwt = localStorage.getItem("jwt");
 
-  //     return Promise.reject(err.message);
-  //   }
-  // );
+      if (jwt) {
+        config.headers = {
+          ...config.headers,
+          Accept: "application/json",
+          "Content-Type": "application/json; charset=utf-8",
+          authorization: `Bearer ${jwt}`,
+        };
+      }
 
-  // instance.interceptors.request.use(
-  //   async (response) => {
-  //     // const token = await getToken();
-  //     // if (token) {
-  //     //   config.headers.Authorization = token;
-  //     // }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
 
-  //     // if (logRequests) {
-  //     //   console.log(
-  //     //     `%c ${config?.method?.toUpperCase()} - ${getUrl(config)}:`,
-  //     //     "color: #0086b3; font-weight: bold",
-  //     //     config
-  //     //   );
-  //     // }
+  instance.interceptors.response.use(
+    (res) => res,
+    async (error) => {
+      const originalRequest = error.config;
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        const newTokens = await refreshAccessToken();
 
-  //     // config.paramsSerializer = (params) => {
-  //     //   return qs.stringify(params, {
-  //     //     serializeDate: (date: Date) =>
-  //     //       moment(date).format("YYYY-MM-DDTHH:mm:ssZ"),
-  //     //   });
-  //     // };
+        if (newTokens) {
+          localStorage.setItem("jwt", newTokens.token);
+          localStorage.setItem("refreshToken", newTokens.refreshToken);
 
-  //     return response;
-  //   },
-  //   (error) => Promise.reject(error)
-  // );
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + newTokens.token;
+          return instance(originalRequest);
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
   return instance;
 }

@@ -48,6 +48,7 @@ export class AuthStore {
   logout() {
     this.claims = {};
     localStorage.removeItem("jwt");
+    localStorage.removeItem("refreshToken");
   }
 
   async forgotPassword(info: ForgotPasswordModel) {

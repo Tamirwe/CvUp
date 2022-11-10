@@ -95,39 +95,23 @@ namespace CvUpAPI.Controllers
 
         }
 
-        //[HttpPost]
-        //[Route("refresh")]
-        //public IActionResult Refresh(RefreshTokenModel data)
-        //{
-        //    if (data is null)
-        //        return BadRequest("Invalid client request");
+        [HttpPost]
+        [Route("Refresh")]
+        public IActionResult Refresh(TokenModel tokens)
+        {
+            if (tokens.refreshToken is null || tokens.token is null)
+                return BadRequest("Invalid client request");
 
-        //    string accessToken = data.token;
-        //    string refreshToken = data.refreshToken;
+            TokenModel? newToken = _authServise.RefreshToken(tokens.token, tokens.refreshToken);
 
-        //    Request.Headers.TryGetValue("Authorization", out var headerValue);
-        //    string jwt = headerValue.ToString();
+            if (newToken is null)
+            {
+                return Unauthorized();
+            }
 
-        //    var principal = _authServise.GetPrincipalFromExpiredToken(jwt.Substring(7));
+            return Ok(newToken);
 
-        //    //var principal = _authServise.GetPrincipalFromExpiredToken(accessToken);
-        //    //var username = principal.Identity.Name; //this is mapped to the Name claim by default
-        //    var user = _userContext.LoginModels.SingleOrDefault(u => u.UserName == username);
-
-        //    if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-        //        return BadRequest("Invalid client request");
-
-        //    var newAccessToken = _authServise.GenerateAccessToken(principal.Claims);
-        //    var newRefreshToken = _authServise.GenerateRefreshToken();
-        //    user.RefreshToken = newRefreshToken;
-        //    _userContext.SaveChanges();
-
-        //    return Ok(new AuthenticatedResponse()
-        //    {
-        //        Token = newAccessToken,
-        //        RefreshToken = newRefreshToken
-        //    });
-        //}
+        }
 
     }
 }

@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
+        //ClockSkew = TimeSpan.Zero
     };
 });
 

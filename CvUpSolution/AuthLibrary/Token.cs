@@ -15,33 +15,43 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-        public TokenModel RefreshToken(TokenModel data)
+        public TokenModel? RefreshToken(string token, string refreshToken)
         {
-            var principal = GetPrincipalFromExpiredToken(data.token.Substring(7));
+            var principal = GetPrincipalFromExpiredToken(token);
+            bool isUserId = int.TryParse(principal.Claims.Where(x => x.Type == "UserId").First().Value, out var userId);
 
-            //_authQueries.getUser()
+            if (isUserId)
+            {
+                var user = _authQueries.getUser(userId);
 
-            //string accessToken = data.token;
-            //string refreshToken = data.refreshToken;
-            //var principal = GetPrincipalFromExpiredToken(accessToken);
-            //var username = principal.Identity.Name; //this is mapped to the Name claim by default
-            //var user = _userContext.LoginModels.SingleOrDefault(u => u.UserName == username);
+                if (user != null && user.refresh_token == refreshToken)
+                {
+                    return GeneratedToken(principal.Claims, user);
+                }
+            }
 
-            //if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            //    return BadRequest("Invalid client request");
+            return null;
+        }
 
-            //var newAccessToken = _authServise.GenerateAccessToken(principal.Claims);
-            //var newRefreshToken = _authServise.GenerateRefreshToken();
-            //user.RefreshToken = newRefreshToken;
-            //_userContext.SaveChanges();
+        private TokenModel GeneratedToken(IEnumerable<Claim> claims, user authenticateUser)
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
 
-            //return Ok(new AuthenticatedResponse()
-            //{
-            //    Token = newAccessToken,
-            //    RefreshToken = newRefreshToken
-            //});
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-            return new TokenModel { token = "", refreshToken = "" };
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(1),
+                signingCredentials: signinCredentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            var refreshToken = GenerateRefreshToken();
+            _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+
+            return new TokenModel { token = tokenString, refreshToken = refreshToken };
         }
 
         public TokenModel GenerateAccessToken(user authenticateUser)
@@ -57,21 +67,23 @@ namespace AuthLibrary
                                 new Claim("role",Enum.GetName(typeof(UsersRole), authenticateUser.role)?? ""),
                             };
 
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddMinutes(1),
-                signingCredentials: signinCredentials
-            );
+            return GeneratedToken(claims, authenticateUser);
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            var refreshToken = GenerateRefreshToken();
-            _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+            //var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            //var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            //var token = new JwtSecurityToken(
+            //    issuer: _configuration["Jwt:Issuer"],
+            //    audience: _configuration["Jwt:Audience"],
+            //    claims,
+            //    expires: DateTime.UtcNow.AddMinutes(1),
+            //    signingCredentials: signinCredentials
+            //);
 
-            return new TokenModel { token = tokenString, refreshToken = refreshToken };
+            //var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            //var refreshToken = GenerateRefreshToken();
+            //_authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+
+            //return new TokenModel { token = tokenString, refreshToken = refreshToken };
 
         }
 
@@ -85,7 +97,7 @@ namespace AuthLibrary
             }
         }
 
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {

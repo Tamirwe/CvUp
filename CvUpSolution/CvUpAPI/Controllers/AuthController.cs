@@ -2,7 +2,6 @@
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
@@ -30,7 +29,7 @@ namespace CvUpAPI.Controllers
 
                 if (authenticateUser != null)
                 {
-                    TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser);
+                    TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
                     return Ok(tokens);
                 }
                 else if (status == UserAuthStatus.more_then_one_company_per_email)

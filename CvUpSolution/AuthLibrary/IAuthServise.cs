@@ -12,7 +12,7 @@ namespace AuthLibrary
         public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status);
         void Register(string origin, CompanyAndUserRegisetModel data);
         public string GenerateRefreshToken();
-        public TokenModel GenerateAccessToken(user authenticateUser);
+        public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember);
         public TokenModel? RefreshToken(string token, string refreshToken);
     }
 }

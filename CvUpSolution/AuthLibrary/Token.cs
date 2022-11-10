@@ -26,14 +26,14 @@ namespace AuthLibrary
 
                 if (user != null && user.refresh_token == refreshToken)
                 {
-                    return GeneratedToken(principal.Claims, user);
+                    return GeneratedToken(principal.Claims, user,true);
                 }
             }
 
             return null;
         }
 
-        private TokenModel GeneratedToken(IEnumerable<Claim> claims, user authenticateUser)
+        private TokenModel GeneratedToken(IEnumerable<Claim> claims, user authenticateUser, bool isRemember)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
 
@@ -48,13 +48,19 @@ namespace AuthLibrary
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            var refreshToken = GenerateRefreshToken();
-            _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+            string refreshToken = "";
+
+            if (isRemember)
+            {
+                refreshToken = GenerateRefreshToken();
+                _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+            }
+           
 
             return new TokenModel { token = tokenString, refreshToken = refreshToken };
         }
 
-        public TokenModel GenerateAccessToken(user authenticateUser)
+        public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember)
         {
             var claims = new[] {
                                 //new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
@@ -67,7 +73,7 @@ namespace AuthLibrary
                                 new Claim("role",Enum.GetName(typeof(UsersRole), authenticateUser.role)?? ""),
                             };
 
-            return GeneratedToken(claims, authenticateUser);
+            return GeneratedToken(claims, authenticateUser, isRemember);
 
             //var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             //var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);

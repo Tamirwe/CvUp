@@ -8,7 +8,7 @@ import { LayoutNotAuth } from "./layouts/LayoutNotAuth";
 import { Login } from "./pages/authentication/Login";
 import { Register } from "./pages/authentication/Register";
 import { ForgotPassword } from "./pages/authentication/ForgotPassword";
-import { Terms } from "./pages/authentication/Terms";
+import { Terms } from "./components/authentication/Terms";
 import { PasswordReset } from "./pages/authentication/PasswordReset";
 import { useStore } from "./Hooks/useStore";
 

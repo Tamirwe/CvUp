@@ -1,6 +1,6 @@
-import { AuthCardWrapper } from "./AuthCardWrapper";
-import { AuthWrapper } from "./AuthWrapper";
-import { RegisterWrapper } from "./RegisterWrapper";
+import { AuthCardWrapper } from "../../components/authentication/AuthCardWrapper";
+import { AuthWrapper } from "../../components/authentication/AuthWrapper";
+import { RegisterWrapper } from "../../components/authentication/RegisterWrapper";
 
 export const Register = () => {
   return (

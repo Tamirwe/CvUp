@@ -1,6 +1,6 @@
-import { AuthCardWrapper } from "./AuthCardWrapper";
-import { AuthWrapper } from "./AuthWrapper";
-import { PasswordResetWrapper } from "./PasswordResetWrapper";
+import { AuthCardWrapper } from "../../components/authentication/AuthCardWrapper";
+import { AuthWrapper } from "../../components/authentication/AuthWrapper";
+import { PasswordResetWrapper } from "../../components/authentication/PasswordResetWrapper";
 
 export const PasswordReset = () => {
   return (

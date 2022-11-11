@@ -1,5 +1,4 @@
 import { Grid, Stack, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
 import { PasswordResetForm } from "./PasswordResetForm";
 
 export const PasswordResetWrapper = () => {

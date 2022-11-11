@@ -1,6 +1,6 @@
-import { AuthCardWrapper } from "./AuthCardWrapper";
-import { AuthWrapper } from "./AuthWrapper";
-import { LoginWrapper } from "./LoginWrapper";
+import { AuthCardWrapper } from "../../components/authentication/AuthCardWrapper";
+import { AuthWrapper } from "../../components/authentication/AuthWrapper";
+import { LoginWrapper } from "../../components/authentication/LoginWrapper";
 
 export const Login = () => {
   return (

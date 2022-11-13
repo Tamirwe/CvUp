@@ -1,42 +1,53 @@
-import { useEffect, useState } from "react";
-import { observer } from "mobx-react";
+import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-} from "@mui/material";
-import { MdMenu } from "react-icons/md";
+import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
+import { MdMenu, MdLogout } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-export const TopBar = observer(() => {
+interface IProps {
+  onToggleDrawer: () => void;
+}
+
+export const TopBar = (props: IProps) => {
   const { authStore } = useStore();
 
-  const [id, setId] = useState(0);
-
   useEffect(() => {}, []);
+  const navigate = useNavigate();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MdMenu />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <AppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <Toolbar>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={(e) => {
+            props.onToggleDrawer();
+          }}
+        >
+          <MdMenu />
+        </IconButton>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1 }}
+        ></Typography>
+        <IconButton
+          color="inherit"
+          aria-label="add an alarm"
+          onClick={(e) => {
+            authStore.logout();
+            navigate("/login");
+          }}
+        >
+          <MdLogout />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
-});
+};

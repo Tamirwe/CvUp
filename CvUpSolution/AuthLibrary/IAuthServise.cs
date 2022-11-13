@@ -14,5 +14,6 @@ namespace AuthLibrary
         public string GenerateRefreshToken();
         public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember);
         public TokenModel? RefreshToken(string token, string refreshToken);
+        void RevokeToken(int userId);
     }
 }

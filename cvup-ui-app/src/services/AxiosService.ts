@@ -16,7 +16,12 @@ export default function axiosService(
     const refreshToken = localStorage.getItem("refreshToken") || "";
     const token = localStorage.getItem("jwt") || "";
     const newTokens: TokensModel = { token, refreshToken };
-    return (await instance.post<TokensModel>("Auth/Refresh", newTokens)).data;
+
+    try {
+      return (await instance.post<TokensModel>("Auth/Refresh", newTokens)).data;
+    } catch (error: any) {
+      return null;
+    }
   };
 
   instance.interceptors.request.use(
@@ -41,6 +46,7 @@ export default function axiosService(
     (res) => res,
     async (error) => {
       const originalRequest = error.config;
+
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         const newTokens = await refreshAccessToken();
@@ -52,6 +58,10 @@ export default function axiosService(
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + newTokens.token;
           return instance(originalRequest);
+        } else {
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("refreshToken");
+          document.location.href = "/";
         }
       }
 

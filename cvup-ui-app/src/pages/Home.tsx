@@ -11,7 +11,15 @@ export const Home: React.FC = observer(() => {
 
   return (
     <div>
+      sdfsdfsdf
       <div>{authStore.claims.DisplayName}</div>
+      <div>ddsfsdfdsf</div>
+      <div>ddsfsdfdsf</div>
+      <div>ddsfsdfdsf</div>
+      <div>ddsfsdfdsf</div>
+      <div>ddsfsdfdsf</div>
+      <div>ddsfsdfdsf</div>
+      asdasdasdasdasdasd
     </div>
   );
 });

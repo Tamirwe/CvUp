@@ -45,8 +45,9 @@ export class AuthStore {
     return response.isSuccess;
   }
 
-  logout() {
+  async logout() {
     this.claims = {};
+    await this.authApi.revoke();
     localStorage.removeItem("jwt");
     localStorage.removeItem("refreshToken");
   }

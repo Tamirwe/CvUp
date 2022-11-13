@@ -1,7 +1,9 @@
+using CvUpAPI;
 using CvUpAPI.Startup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +92,21 @@ app.ConfigureSwagger();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.Use(async (context, next) => {
+    if (context.User != null && context.User.Identity != null &&  context.User.Identity != null && context.User.Identity.IsAuthenticated )
+    {
+        var claimsIdentity = context.User.Identity as ClaimsIdentity;
+
+        if (claimsIdentity != null)
+        {
+            Globals.CompanyId =  Int32.Parse(claimsIdentity.FindFirst("CompanyId")!.Value);
+            Globals.UserId =  Int32.Parse(claimsIdentity.FindFirst("UserId")!.Value);
+        }
+    }
+
+    await next();
+});
 
 app.UseAuthorization();
 

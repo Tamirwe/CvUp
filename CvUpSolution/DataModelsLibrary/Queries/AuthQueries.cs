@@ -136,9 +136,24 @@ namespace DataModelsLibrary.Queries
         public void SaveRefreshToken(string refreshToken, user authenticateUser)
         {
             authenticateUser.refresh_token = refreshToken;
+            authenticateUser.refresh_token_expiry = DateTime.Now;
             var result = dbContext.users.Update(authenticateUser);
             dbContext.SaveChanges();
         }
+
+        public void RevokeUserToken(int userId)
+        {
+            user?  user = dbContext.users.Where(x => x.id == userId).FirstOrDefault();
+
+            if (user != null)
+            {
+                user.refresh_token = null;
+                user.refresh_token_expiry = null;
+                var result = dbContext.users.Update(user);
+                dbContext.SaveChanges();
+            }
+        }
+
 
     }
 }

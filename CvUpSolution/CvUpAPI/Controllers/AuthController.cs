@@ -2,6 +2,7 @@
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
@@ -23,6 +24,15 @@ namespace CvUpAPI.Controllers
         [Route("Login")]
         public IActionResult Login(UserLoginModel data)
         {
+            //var identity = HttpContext.User.Identity as ClaimsIdentity;
+            //if (identity != null)
+            //{
+            //    IEnumerable<Claim> claims = identity.Claims;
+            //    // or
+            //    identity.FindFirst("ClaimName").Value;
+
+            //}
+
             try
             {
                 user? authenticateUser = _authServise.Login(data, out UserAuthStatus status);
@@ -105,11 +115,19 @@ namespace CvUpAPI.Controllers
 
             if (newToken is null)
             {
-                return Unauthorized();
+                return Ok();
             }
 
             return Ok(newToken);
 
+        }
+
+        [HttpPost, Authorize]
+        [Route("revoke")]
+        public IActionResult Revoke()
+        {
+            _authServise.RevokeToken(Globals.UserId);
+            return NoContent();
         }
 
     }

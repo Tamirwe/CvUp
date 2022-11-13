@@ -1,30 +1,37 @@
-import { Button } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useStore } from "../Hooks/useStore";
-import { Link, useNavigate } from "react-router-dom";
+import { TopBar } from "../components/header/TopBar";
+import { DrawerLeft } from "../components/sideDrawer/DrawerLeft";
 
-export const LayoutAuth: React.FC = () => {
-  const navigate = useNavigate();
-  const rootStore = useStore();
-  const { authStore } = rootStore;
+export const LayoutAuth = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleDrawerToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <div>
-      <Button
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        color="secondary"
-        onClick={(e) => {
-          authStore.logout();
-          navigate("/login");
-        }}
-      >
-        Logout
-      </Button>
-      <div>Layout Auth</div>
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <TopBar onToggleDrawer={handleDrawerToggle} />
+      <DrawerLeft isOpen={isOpen} />
       <Outlet />
-    </div>
+    </Box>
+
+    // <div>
+    //   <Button
+    //     fullWidth
+    //     size="large"
+    //     type="submit"
+    //     variant="contained"
+    //     color="secondary"
+
+    //   >
+    //     Logout
+    //   </Button>
+    //   <div>Layout Auth</div>
+    //   <Outlet />
+    // </div>
   );
 };

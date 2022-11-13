@@ -27,11 +27,11 @@ import {
   textFieldValidte,
 } from "../../utils/Validation";
 
-interface props {
+interface IProps {
   registerFormComplete: (email: string) => void;
 }
 
-export const RegisterForm = (props: props) => {
+export const RegisterForm = (props: IProps) => {
   const { authStore } = useStore();
 
   const theme = useTheme();

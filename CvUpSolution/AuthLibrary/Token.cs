@@ -15,6 +15,7 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
+      
         public TokenModel? RefreshToken(string token, string refreshToken)
         {
             var principal = GetPrincipalFromExpiredToken(token);
@@ -24,7 +25,7 @@ namespace AuthLibrary
             {
                 var user = _authQueries.getUser(userId);
 
-                if (user != null && user.refresh_token == refreshToken)
+                if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry > DateTime.Now)
                 {
                     return GeneratedToken(principal.Claims, user,true);
                 }
@@ -121,5 +122,11 @@ namespace AuthLibrary
                 throw new SecurityTokenException("Invalid token");
             return principal;
         }
+
+        public void RevokeToken(int userId)
+        {
+            _authQueries.RevokeUserToken(userId);
+        }
+
     }
 }

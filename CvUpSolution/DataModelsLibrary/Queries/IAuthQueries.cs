@@ -17,6 +17,6 @@ namespace DataModelsLibrary.Queries
         registeration_key? getloginVerification(string key);
         void activateUser(user user);
         void SaveRefreshToken(string refreshToken, user authenticateUser);
-
+        void RevokeUserToken(int userId);
     }
 }

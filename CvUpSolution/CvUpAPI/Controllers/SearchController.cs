@@ -23,7 +23,7 @@ namespace CvUpAPI.Controllers
             //_luceneService.BuildIndex();
             //_luceneService.WarmupSearch();
             //_luceneService.Search("הסכם");
-            
+            var cid = Globals.CompanyId;
 
             return new string[] { "value1", "value2" };
         }

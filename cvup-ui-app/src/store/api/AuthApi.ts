@@ -33,4 +33,11 @@ export default class AuthApi extends BaseApi {
 
     return response;
   }
+
+  async revoke() {
+    return await this.apiWrapper(async () => {
+      const data = (await this.http.post<TokensModel>("Auth/revoke")).data;
+      return data;
+    });
+  }
 }

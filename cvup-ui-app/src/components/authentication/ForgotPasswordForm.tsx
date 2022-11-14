@@ -79,9 +79,9 @@ export const ForgotPasswordForm = (props: props) => {
       setSubmitError("Incorrect email address or password, please try again");
     } else if (Array.isArray(response.data)) {
       setUserCompanies(response.data);
-    } else if (response.data.data === "userNotFound") {
+    } else if (response.data === "userNotFound") {
       setSubmitError("Email not found");
-    } else if (response.data.data === "emailSent") {
+    } else if (response.data === "emailSent") {
       props.resetPasswordSent(emailProps.value);
     }
   };

@@ -40,4 +40,25 @@ export default class AuthApi extends BaseApi {
       return data;
     });
   }
+
+  async completeRegistration(loginInfo: UserLoginModel) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post<TokensModel>(
+          "Auth/CompleteRegistration",
+          loginInfo
+        )
+      ).data;
+      return data;
+    });
+  }
+
+  async passwordReset(loginInfo: UserLoginModel) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post<TokensModel>("Auth/PasswordReset", loginInfo)
+      ).data;
+      return data;
+    });
+  }
 }

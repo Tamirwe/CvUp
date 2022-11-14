@@ -6,58 +6,56 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-        public user? Login(UserLoginModel data, out UserAuthStatus status)
+        public user? Login(UserLoginModel data)
         {
-            var users = _authQueries.getUsersByEmailPassword(data.email, data.password);
+            var users = _authQueries.getUsersByEmail(data.email);
+            bool isVerify = false;
 
-
-            if (users.Count == 1)
+            foreach (var usr in users)
             {
-                if (data.key != "")
+                 isVerify = SecretHasher.Verify(data.password, usr.passwaord ?? "");
+
+                if (isVerify )
                 {
-                    var loginVerification = _authQueries.getloginVerification(data.key);
-
-                    if (loginVerification == null)
+                    if( usr.activate_status_id == (int)UserActivateStatus.ACTIVE)
                     {
-                        status = UserAuthStatus.not_registered;
-                        return null;
-                    }
-                    else if (loginVerification.email != users[0].email || loginVerification.user_id != users[0].id)
-                    {
-                        status = UserAuthStatus.not_registered;
-                        return null;
+                        return usr;
                     }
 
-                    if (users[0].activate_status_id != (int)UserActivateStatus.ACTIVE)
-                    {
-                        _authQueries.activateUser(users[0]);
-                    }
-
-                    status = UserAuthStatus.Authenticated;
-                    return users[0];
-                }
-                else
-                {
-                    if (users[0].activate_status_id != (int)UserActivateStatus.ACTIVE)
-                    {
-                        status = UserAuthStatus.not_registered;
-                        return null;
-                    }
-
-                    status = UserAuthStatus.Authenticated;
-                    return users[0];
+                    return null;
                 }
             }
-            else if (users.Count == 0)
-            {
-                status = UserAuthStatus.not_registered;
-                return null;
-            }
-            else
-            {
-                status = UserAuthStatus.more_then_one_company_per_email;
-                return null;
-            }
+
+            return null;
         }
+
+        public user? CompleteRegistration(UserLoginModel data)
+        {
+            registeration_key?  rKey = _authQueries.getRegistrationKey(data.key);
+
+            if (rKey is not null)
+            {
+                var user = _authQueries.getUser(rKey.user_id);
+
+                if (user is not null)
+                {
+                    bool isVerify = SecretHasher.Verify(data.password, user.passwaord ?? "");
+
+                    if (isVerify)
+                    {
+                        if (user.activate_status_id != (int)UserActivateStatus.ACTIVE)
+                        {
+                            _authQueries.activateUser(user);
+                        }
+
+                        return user;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        
     }
 }

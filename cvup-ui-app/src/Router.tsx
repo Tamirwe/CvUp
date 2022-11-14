@@ -11,6 +11,7 @@ import { ForgotPassword } from "./pages/authentication/ForgotPassword";
 import { Terms } from "./components/authentication/Terms";
 import { PasswordReset } from "./pages/authentication/PasswordReset";
 import { useStore } from "./Hooks/useStore";
+import { CompleteRegistration } from "./pages/authentication/CompleteRegistration";
 
 export default () => {
   return (
@@ -32,6 +33,10 @@ export default () => {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/complete-registration"
+            element={<CompleteRegistration />}
+          />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password-reset" element={<PasswordReset />} />
           <Route path="/terms" element={<Terms />} />

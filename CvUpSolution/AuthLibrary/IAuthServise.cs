@@ -7,13 +7,16 @@ namespace AuthLibrary
 {
     public interface IAuthServise
     {
-        public user? Login(UserLoginModel dataa, out UserAuthStatus status);
+        public user? Login(UserLoginModel dataa);
         public List<IdNameModel> UserCompanies(string email);
         public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status);
         void Register(string origin, CompanyAndUserRegisetModel data);
         public string GenerateRefreshToken();
         public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember);
         public TokenModel? RefreshToken(string token, string refreshToken);
-        void RevokeToken(int userId);
+        public void RevokeToken(int userId);
+        public user? CompleteRegistration(UserLoginModel data);
+        public user? PasswordReset(UserLoginModel data);
+        public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data);
     }
 }

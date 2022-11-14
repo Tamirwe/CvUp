@@ -24,7 +24,7 @@ namespace EmailsLibrary
             {
                 body = reader.ReadToEnd();
             }
-            body = body.Replace("{loginLink}", origin + "/login?sk=" + key);
+            body = body.Replace("{loginLink}", origin + "/complete-registration?sk=" + key);
 
             return body;
         }
@@ -40,7 +40,7 @@ namespace EmailsLibrary
             {
                 body = reader.ReadToEnd();
             }
-            body = body.Replace("{loginLink}", origin + "/login?sk=" + key);
+            body = body.Replace("{loginLink}", origin + "/password-reset?sk=" + key);
 
             return body;
         }

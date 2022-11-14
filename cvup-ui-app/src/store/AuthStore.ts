@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { LOGIN_TYPE } from "../constants/AuthConsts";
 import {
   ForgotPasswordModel,
   UserLoginModel,
@@ -33,16 +34,31 @@ export class AuthStore {
     return await this.authApi.registerUser(registrationInfo);
   }
 
-  async login(loginInfo: UserLoginModel) {
-    const response = await this.authApi.login(loginInfo);
+  async login(loginInfo: UserLoginModel, loginType: string) {
+    let response;
 
-    if (response.isSuccess) {
-      this.isLoggedIn = true;
-      localStorage.setItem("jwt", response.data.token);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+    switch (loginType) {
+      case LOGIN_TYPE.REGULAR_LOGIN:
+        response = await this.authApi.login(loginInfo);
+        break;
+      case LOGIN_TYPE.COMPLETE_REGISTRATION_LOGIN:
+        response = await this.authApi.completeRegistration(loginInfo);
+        break;
+      case LOGIN_TYPE.PASSWORD_RESET_LOGIN:
+        response = await this.authApi.passwordReset(loginInfo);
+        break;
     }
 
-    return response.isSuccess;
+    if (response) {
+      if (response.isSuccess) {
+        this.isLoggedIn = true;
+        localStorage.setItem("jwt", response.data.token);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+      }
+
+      return response.isSuccess;
+    }
+    return false;
   }
 
   async logout() {

@@ -23,7 +23,11 @@ import {
   textFieldValidte,
 } from "../../utils/Validation";
 
-export const LoginForm = () => {
+interface IProps {
+  loginType: string;
+}
+
+export const LoginForm = ({ loginType }: IProps) => {
   const navigate = useNavigate();
   const { authStore } = useStore();
   const params = new URLSearchParams(window.location.search);
@@ -89,7 +93,7 @@ export const LoginForm = () => {
       validateField("password", passwordProps, setPasswordProps) && isFormValid;
 
     if (!isFormValid) {
-      setSubmitError("Incorrect email address or password, please try again");
+      setSubmitError("Incorrect email address or password.");
     }
     return isFormValid;
   };
@@ -102,12 +106,12 @@ export const LoginForm = () => {
       key: params.get("sk") || "",
     };
 
-    const isSuccess = await authStore.login(loginInfo);
+    const isSuccess = await authStore.login(loginInfo, loginType);
 
     if (isSuccess) {
       navigate("/");
     } else {
-      setSubmitError("Incorrect email address or password, please try again");
+      setSubmitError("Incorrect email address or password.");
     }
   };
 
@@ -180,40 +184,43 @@ export const LoginForm = () => {
             value={passwordProps.value}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={1}
-          >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isRemember}
-                  onChange={(e) => {
-                    setIsRemember(e.target.checked);
-                  }}
-                />
-              }
-              label={
-                <Typography variant="subtitle2">Keep me sign in</Typography>
-              }
-            />
-            <Typography
-              component={Link}
-              to="/forgot-password"
-              variant="subtitle2"
+        {loginType == "login" && (
+          <Grid item xs={12}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              spacing={1}
             >
-              Forgot Password?
-            </Typography>
-          </Stack>
-        </Grid>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isRemember}
+                    onChange={(e) => {
+                      setIsRemember(e.target.checked);
+                    }}
+                  />
+                }
+                label={
+                  <Typography variant="subtitle2">Keep me sign in</Typography>
+                }
+              />
+              <Typography
+                component={Link}
+                to="/forgot-password"
+                variant="subtitle2"
+              >
+                Forgot Password?
+              </Typography>
+            </Stack>
+          </Grid>
+        )}
         {submitError && (
           <Grid item xs={12}>
             <FormHelperText error>{submitError}</FormHelperText>
           </Grid>
         )}
+
         <Grid item xs={12}>
           <Box sx={{ mt: 2 }}>
             <Button

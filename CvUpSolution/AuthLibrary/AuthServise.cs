@@ -24,6 +24,45 @@ namespace AuthLibrary
             _configuration = config;
         }
 
+        public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data)
+        {
+            List<user> usersList = _authQueries.getUsersByEmail(data.email);
+
+            if (usersList.Count > 0)
+            {
+                foreach (var usr in usersList)
+                {
+                    bool isVerify = SecretHasher.Verify(data.password, usr.passwaord ?? "");
+
+                    if (isVerify)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public user? PasswordReset(UserLoginModel data)
+        {
+            registeration_key? rKey = _authQueries.getRegistrationKey(data.key);
+
+            if (rKey is not null)
+            {
+                var user = _authQueries.getUser(rKey.user_id);
+
+                if (user is not null)
+                {
+                    user.passwaord = SecretHasher.Hash(data.password);
+                    _authQueries.UpdateUser(user);
+                    return user;
+                }
+            }
+
+            return null;
+        }
+
         public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status)
         {
             List<user> users = _authQueries.getUsers(email, companyId);

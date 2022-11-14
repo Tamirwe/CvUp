@@ -13,7 +13,8 @@ namespace AuthLibrary
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
                 company newCompany = AddNewCompany(data.companyName, data.companyDescr);
-                user newUser = AddNewUser(newCompany.id, data.companyName, data.email, data.password, data.firstName, data.lastName, UsersRole.Admin, "Registered");
+                string hashPassword = SecretHasher.Hash(data.password);
+                user newUser = AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UsersRole.Admin, "Registered");
                 string key = generateSecretKey();
                 _authQueries.addUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
@@ -51,5 +52,7 @@ namespace AuthLibrary
             var company = _authQueries.AddNewCompany(companyName, companyDescr, CompanyActivateStatus.WAITE_FOR_FIRST_USER_TO_COMPLETE_REGISTRATION);
             return company;
         }
+
+
     }
 }

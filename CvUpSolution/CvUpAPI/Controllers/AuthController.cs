@@ -24,60 +24,61 @@ namespace CvUpAPI.Controllers
         [Route("Login")]
         public IActionResult Login(UserLoginModel data)
         {
-            //var identity = HttpContext.User.Identity as ClaimsIdentity;
-            //if (identity != null)
-            //{
-            //    IEnumerable<Claim> claims = identity.Claims;
-            //    // or
-            //    identity.FindFirst("ClaimName").Value;
+            user? authenticateUser = _authServise.Login(data);
 
-            //}
-
-            try
+            if (authenticateUser != null)
             {
-                user? authenticateUser = _authServise.Login(data, out UserAuthStatus status);
-
-                if (authenticateUser != null)
-                {
-                    TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
-                    return Ok(tokens);
-                }
-                else if (status == UserAuthStatus.more_then_one_company_per_email)
-                {
-                    return Ok(_authServise.UserCompanies(data.email));
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = "An error occurred in generating the token", ExMessage = ex.Message });
+                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                return Ok(tokens);
             }
 
-            return Unauthorized();
+            return BadRequest();
+        }
 
+        [HttpPost]
+        [Route("CompleteRegistration")]
+        public IActionResult CompleteRegistration(UserLoginModel data)
+        {
+            user? authenticateUser = _authServise.CompleteRegistration(data);
+
+            if (authenticateUser != null)
+            {
+                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                return Ok(tokens);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("PasswordReset")]
+        public IActionResult PasswordReset(UserLoginModel data)
+        {
+            user? authenticateUser = _authServise.PasswordReset(data);
+
+            if (authenticateUser != null)
+            {
+                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                return Ok(tokens);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
         [Route("Registration")]
         public IActionResult Registration(CompanyAndUserRegisetModel data)
         {
-            try
-            {
-                string origin = Request.Headers["Origin"].First();
-                _authServise.Register(origin, data);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                string msg = "";
-                string? innerEx = ex.InnerException?.Message;
+            bool isDuplicateUserPassword = _authServise.CheckDuplicateUserPassword(data);
 
-                if (innerEx != null && innerEx.Contains("Duplicate entry"))
-                {
-                    msg = "duplicateUserPass";
-                }
-
-                return BadRequest(new { ErrorMessage = msg, Ex = ex.Message, ExInner = ex.InnerException?.Message, Stack = ex.StackTrace });
+            if (isDuplicateUserPassword)
+            {
+                return Ok("duplicateUserPass");
             }
+
+            string origin = Request.Headers["Origin"].First();
+            _authServise.Register(origin, data);
+            return Ok();
         }
 
         [HttpPost]

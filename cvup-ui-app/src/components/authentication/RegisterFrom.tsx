@@ -139,14 +139,14 @@ export const RegisterForm = (props: IProps) => {
 
     const response = await authStore.registerUser(registrationInfo);
 
-    if (!response.isSuccess) {
-      if (response.error === "duplicateUserPass") {
-        return setSubmitError("This user already exists");
+    if (response.isSuccess) {
+      if (response.data === "duplicateUserPass") {
+        return setSubmitError("Duplcate User Name and Password.");
       }
 
-      return setSubmitError("An Error Occurred Please Try Again Later");
-    } else {
       props.registerFormComplete(emailProps.value);
+    } else {
+      return setSubmitError("An Error Occurred Please Try Again Later.");
     }
   };
 

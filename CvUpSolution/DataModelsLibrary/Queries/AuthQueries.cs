@@ -20,16 +20,20 @@ namespace DataModelsLibrary.Queries
             dbContext = new cvup00001Context();
         }
 
-        public List<user> getUsersByEmailPassword(string email, string password)
+        public List<user> getUsersByEmail(string email)
         {
-            var usersList = dbContext.users.Where(x => x.email == email && x.passwaord == password).ToList();
+            var usersList = dbContext.users.Where(x => x.email == email).ToList();
             return usersList;
         }
 
-        public registeration_key? getloginVerification(string key)
+        public registeration_key? getRegistrationKey(string key)
         {
-            var loginVerification = dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefault();
-            return loginVerification;
+            return dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefault();
+        }
+
+        public void removeRegistrationKey(registeration_key rkey)
+        {
+            var count = dbContext.registeration_keys.Remove(rkey);
         }
 
         public List<IdNameModel> getUserCompanies(string email)
@@ -59,16 +63,6 @@ namespace DataModelsLibrary.Queries
 
             return dbContext.users.Where(x => x.email == email && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
         }
-
-        //public user? UserByRefreshToken(string refreshToken)
-        //{
-        //    var results = from u in dbContext.users
-        //                  join ur in dbContext.refresh_tokens on u.id equals ur.user_id
-        //                  where (ur.token == refreshToken) && (ur.expiry_time > DateTime.UtcNow)
-        //                  select u;
-
-        //    return results.FirstOrDefault();
-        //}
 
         public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status)
         {
@@ -112,7 +106,7 @@ namespace DataModelsLibrary.Queries
 
         public void addUserPasswordReset(string key, user user)
         {
-            FormattableString sql = $@"DELETE FROM login_verification WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
+            FormattableString sql = $@"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
             int rowsUpdated = dbContext.Database.ExecuteSqlRaw(sql.ToString());
 
             var pr = new registeration_key
@@ -152,6 +146,12 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.users.Update(user);
                 dbContext.SaveChanges();
             }
+        }
+
+        public void UpdateUser(user user)
+        {
+            var result = dbContext.users.Update(user);
+            dbContext.SaveChanges();
         }
 
 

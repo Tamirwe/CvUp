@@ -21,6 +21,7 @@ import {
   emailValidte,
   passwordValidate,
   textFieldValidte,
+  validateField,
 } from "../../utils/Validation";
 
 interface IProps {
@@ -43,44 +44,6 @@ export const LoginForm = ({ loginType }: IProps) => {
   });
 
   const [isRemember, setIsRemember] = useState(false);
-
-  const validateField = (
-    typeValidate: string,
-    field: textFieldInterface,
-    setField: (value: SetStateAction<textFieldInterface>) => void
-  ) => {
-    let isFormValid = true;
-    let fieldError = "";
-
-    switch (typeValidate) {
-      case "email":
-        fieldError = emailValidte(field.value);
-        break;
-      case "password":
-        fieldError = passwordValidate(field.value);
-        break;
-      default:
-        fieldError = textFieldValidte(field.value, true, true, true);
-        break;
-    }
-
-    setField((currentProps) => ({
-      ...currentProps,
-      error: false,
-      helperText: "",
-    }));
-
-    if (fieldError) {
-      isFormValid = false;
-      setField((currentProps) => ({
-        ...currentProps,
-        error: true,
-        helperText: fieldError,
-      }));
-    }
-
-    return isFormValid;
-  };
 
   const validateForm = () => {
     setSubmitError("");

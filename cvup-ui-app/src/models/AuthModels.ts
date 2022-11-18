@@ -34,3 +34,7 @@ export interface TokensModel {
   refreshToken: string;
 }
 
+export interface PositionFormModel {
+  name: string;
+  descr: string;
+}

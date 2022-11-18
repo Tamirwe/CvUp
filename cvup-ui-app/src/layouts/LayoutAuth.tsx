@@ -5,17 +5,17 @@ import { TopBar } from "../components/header/TopBar";
 import { DrawerLeft } from "../components/sideDrawer/DrawerLeft";
 
 export const LayoutAuth = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
 
-  const handleDrawerToggle = () => {
-    setIsOpen(!isOpen);
-  };
+  // const handleDrawerToggle = () => {
+  //   setIsOpen(!isOpen);
+  // };
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <TopBar onToggleDrawer={handleDrawerToggle} />
-      <DrawerLeft isOpen={isOpen} />
+      {/* <CssBaseline /> */}
+      {/* <TopBar onToggleDrawer={handleDrawerToggle} /> */}
+      <DrawerLeft />
       <Outlet />
     </Box>
 

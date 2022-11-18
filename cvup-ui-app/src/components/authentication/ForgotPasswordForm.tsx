@@ -14,7 +14,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { textFieldInterface } from "../../models/AuthModels";
 import { SelectModel } from "../../models/GeneralModels";
-import { emailValidte } from "../../utils/Validation";
+import { emailValidte, validateField } from "../../utils/Validation";
 
 interface props {
   resetPasswordSent: (email: string) => void;
@@ -31,37 +31,13 @@ export const ForgotPasswordForm = (props: props) => {
   const [companyId, setCompanyId] = useState(0);
   const [userCompanies, setUserCompanies] = useState<SelectModel[]>();
 
-  const validateField = (
-    field: textFieldInterface,
-    setField: (value: SetStateAction<textFieldInterface>) => void
-  ) => {
-    let isFormValid = true;
-    let fieldError = emailValidte(field.value);
-
-    setField((currentProps) => ({
-      ...currentProps,
-      error: false,
-      helperText: "",
-    }));
-
-    if (fieldError) {
-      isFormValid = false;
-      setField((currentProps) => ({
-        ...currentProps,
-        error: true,
-        helperText: fieldError,
-      }));
-    }
-
-    return isFormValid;
-  };
-
   const validateForm = () => {
     setSubmitError("");
 
     let isFormValid = true;
 
-    isFormValid = validateField(emailProps, setEmailProps) && isFormValid;
+    isFormValid =
+      validateField("email", emailProps, setEmailProps) && isFormValid;
 
     if (!isFormValid) {
       setSubmitError("Incorrect email address, please try again");

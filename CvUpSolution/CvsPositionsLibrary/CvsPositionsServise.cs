@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServicesLibrary.Authentication
+namespace CvsPositionsLibrary
 {
-    public interface ITokenService
+    public class CvsPositionsServise: ICvsPositionsServise
     {
     }
 }

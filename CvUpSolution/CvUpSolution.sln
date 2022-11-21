@@ -11,7 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneLibrary", "LuceneLibr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthLibrary", "AuthLibrary\AuthLibrary.csproj", "{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthLibrary", "AuthLibrary\AuthLibrary.csproj", "{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsWorkerService", "CvsWorkerService\CvsWorkerService.csproj", "{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImportCvsLibrary", "ImportCvsLibrary\ImportCvsLibrary.csproj", "{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CvsPositionsLibrary", "CvsPositionsLibrary\CvsPositionsLibrary.csproj", "{3AF38A62-CE91-442E-B81F-19C19EC06128}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

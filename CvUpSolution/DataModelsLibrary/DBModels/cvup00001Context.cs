@@ -88,11 +88,18 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.activate_status_id, "fk_companies_activate_status_id_enum_company_activate_status_id");
 
+                entity.HasIndex(e => e.key_email, "uq_companies_key_email")
+                    .IsUnique();
+
+                entity.Property(e => e.cvs_email).HasMaxLength(200);
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.descr).HasMaxLength(500);
+
+                entity.Property(e => e.key_email).HasMaxLength(15);
 
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 

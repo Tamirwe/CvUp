@@ -15,6 +15,9 @@ namespace AuthLibrary
                 company newCompany = AddNewCompany(data.companyName, data.companyDescr);
                 string hashPassword = SecretHasher.Hash(data.password);
                 user newUser = AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UsersRole.Admin, "Registered");
+                newCompany.key_email = "ui" + newUser.id + "ci" + newCompany.id;
+                newCompany.cvs_email = "cvup.files+" + newCompany.key_email + "@gmail.com";
+                _authQueries.updateCompany(newCompany);
                 string key = generateSecretKey();
                 _authQueries.addUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);

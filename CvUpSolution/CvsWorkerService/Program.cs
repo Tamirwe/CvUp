@@ -1,12 +1,13 @@
 using CvsWorkerService;
 using ImportCvsLibrary;
 using CvsPositionsLibrary;
+using DataModelsLibrary.Queries;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
+        services.AddTransient<ICvsPositionsQueries, CvsPositionsQueries>();
         services.AddTransient<ICvsPositionsServise, CvsPositionsServise>();
-        //services.AddScoped<ICvsPositionsQueries, CvsPositionsQueries>();
         services.AddSingleton<IImportCvs, ImportCvs>();
         services.AddHostedService<CvsImportWorker>();
     })

@@ -2,5 +2,6 @@
 {
     public interface ICvsPositionsServise
     {
+        public int GetUniqueCvId();
     }
 }

@@ -20,6 +20,7 @@ namespace Database.models
         public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
+        public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
@@ -30,6 +31,7 @@ namespace Database.models
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
+        public virtual DbSet<positions_incremental> positions_incrementals { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
@@ -142,6 +144,13 @@ namespace Database.models
                     .WithMany(p => p.cvs)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_cvs_stage_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<cvs_incremental>(entity =>
+            {
+                entity.ToTable("cvs_incremental");
+
+                entity.Property(e => e.name).HasMaxLength(2);
             });
 
             modelBuilder.Entity<emails_sent>(entity =>
@@ -301,6 +310,13 @@ namespace Database.models
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.position_id)
                     .HasConstraintName("fk_position_cvs_position_id_positions_id");
+            });
+
+            modelBuilder.Entity<positions_incremental>(entity =>
+            {
+                entity.ToTable("positions_incremental");
+
+                entity.Property(e => e.name).HasMaxLength(2);
             });
 
             modelBuilder.Entity<registeration_key>(entity =>

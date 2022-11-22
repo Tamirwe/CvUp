@@ -34,65 +34,75 @@ namespace ImportCvsLibrary
             using (var client = new ImapClient())
             {
                 client.Connect("imap.gmail.com", 993, true);
-
                 client.Authenticate(importMailAddress, importMailPassword);
-
-                // The Inbox folder is always available on all IMAP servers...
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadWrite);
-
                 var uids = client.Inbox.Search(SearchQuery.NotSeen);
-
-                Console.WriteLine("Total messages: {0}", inbox.Count);
-                Console.WriteLine("Recent messages: {0}", inbox.Recent);
 
                 foreach (var uid in uids)
                 {
                     var message = inbox.GetMessage(uid);
-
-                    string companyId = GetCompanyIdFromAddress(message.To);
-
-                    if (companyId == "")
-                    {
-                        return;
-                    }
-
-                    foreach (MimeEntity attachment in message.Attachments)
-                    {
-                        var fileName = cvFilesPath + attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
-
-                        string fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
-
-                        //string day = DateTime.Now.Day.ToString("00");
-                        //string month = DateTime.Now.Month.ToString("00");
-                        //string year = DateTime.Now.Year.ToString("0000");
-
-                        if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".pdf")
-                        {
-                            using (var stream = File.Create(fileName))
-                            {
-                                if (attachment is MessagePart)
-                                {
-                                    var rfc822 = (MessagePart)attachment;
-
-                                    rfc822.Message.WriteTo(stream);
-                                }
-                                else
-                                {
-                                    var part = (MimePart)attachment;
-
-                                    part.Content.DecodeTo(stream);
-                                }
-                            }
-                        }
-                    }
-
+                    SaveEmailAttachments(message);
                     Console.WriteLine("Subject: {0}", message.Subject);
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
                 }
 
                 client.Disconnect(true);
             }
+        }
+
+        private void SaveEmailAttachments(MimeMessage message)
+        {
+            string companyId = GetCompanyIdFromAddress(message.To);
+            int uqId = _cvsPositionsServise.GetUniqueCvId();
+
+            if (companyId == "")
+            {
+                return;
+            }
+
+            foreach (MimeEntity attachment in message.Attachments)
+            {
+                int counter = 0;
+                string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
+                string fileExtension = Path.GetExtension(originalFileName).ToLower();
+                string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, ++counter, fileExtension);
+
+                if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".pdf")
+                {
+                    using (var stream = File.Create(fileNamePath))
+                    {
+                        if (attachment is MessagePart)
+                        {
+                            var rfc822 = (MessagePart)attachment;
+                            rfc822.Message.WriteTo(stream);
+                        }
+                        else
+                        {
+                            var part = (MimePart)attachment;
+                            part.Content.DecodeTo(stream);
+                        }
+                    }
+                }
+            }
+        }
+
+        private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int counter, string fileExtension)
+        {
+            string companyFolder = "c" + companyId;
+            string yearFolder = "y" + DateTime.Now.Year.ToString("0000");
+            string monthFolder = "m" + DateTime.Now.Month.ToString("00");
+
+            Directory.CreateDirectory(cvFilesPath + companyFolder);
+            Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder);
+            Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder);
+
+            string cvDay = "d" + DateTime.Now.Day.ToString("00");
+            string cvTime = "t" + DateTime.Now.ToString("HHmm");
+
+            string fileName = companyFolder + yearFolder + monthFolder + cvDay + cvTime + "q" + counter.ToString() + fileExtension;
+            var fileNamePath = cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder + "\\" + fileName;
+            return fileNamePath;
         }
 
         private string GetCompanyIdFromAddress(InternetAddressList addressList)

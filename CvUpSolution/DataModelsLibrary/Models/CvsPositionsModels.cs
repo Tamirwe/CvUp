@@ -15,5 +15,6 @@ namespace DataModelsLibrary.Models
         public string phone { get; set; } = "";
         public string email { get; set; } = "";
         public int candidateId { get; set; }
+        public string cvId { get; set; } = "";
     }
 }

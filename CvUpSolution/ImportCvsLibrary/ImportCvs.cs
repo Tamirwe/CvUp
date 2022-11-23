@@ -48,10 +48,17 @@ namespace ImportCvsLibrary
 
                 foreach (var uid in uids)
                 {
-                    var message = inbox.GetMessage(uid);
-                    SaveEmailAttachmentToFile(message, cvsList);
-                    Console.WriteLine("Subject: {0}", message.Subject);
-                    inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    try
+                    {
+                        var message = inbox.GetMessage(uid);
+                        SaveEmailAttachmentToFile(message, cvsList);
+                        Console.WriteLine("Subject: {0}", message.Subject);
+                        inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    }
+                    catch (Exception)
+                    {
+                        //log
+                    }
                 }
 
                 client.Disconnect(true);
@@ -76,7 +83,7 @@ namespace ImportCvsLibrary
                 int counter = 0;
                 string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
                 string fileExtension = Path.GetExtension(originalFileName).ToLower();
-                string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, ++counter, fileExtension);
+                string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, uqId,++counter, fileExtension, out string cvId);
 
                 if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".pdf")
                 {
@@ -93,7 +100,7 @@ namespace ImportCvsLibrary
                             part.Content.DecodeTo(stream);
                         }
 
-                        cvsList.Add(new ImportCvModel { companyId = companyId, fileExtension = fileExtension, fileNamePath = fileNamePath });
+                        cvsList.Add(new ImportCvModel { companyId = companyId, cvId = cvId, fileExtension = fileExtension, fileNamePath = fileNamePath });
                     }
                 }
             }
@@ -116,6 +123,9 @@ namespace ImportCvsLibrary
                 if (item.email.Length > 0)
                 {
                     _cvsPositionsServise.GetAddCandidateId(item);
+                    //_cvsPositionsServise.AddImportedCv(item.companyId, item.candidateId, );
+
+
                 }
             }
         }
@@ -150,20 +160,22 @@ namespace ImportCvsLibrary
             item.cvTxt = document.GetText();
         }
 
-        private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int counter, string fileExtension)
+        private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int uqId, int counter, string fileExtension, out string cvId)
         {
-            string companyFolder = "c" + companyId;
-            string yearFolder = "y" + DateTime.Now.Year.ToString("0000");
-            string monthFolder = "m" + DateTime.Now.Month.ToString("00");
+            string companyFolder = companyId+"_";
+            
+            string yearFolder =  DateTime.Now.Year.ToString("0000")+"_";
+            string monthFolder = DateTime.Now.Month.ToString("00") + "_";
 
             Directory.CreateDirectory(cvFilesPath + companyFolder);
             Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder);
             Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder);
 
-            string cvDay = "d" + DateTime.Now.Day.ToString("00");
-            string cvTime = "t" + DateTime.Now.ToString("HHmm");
+            string cvDay =  DateTime.Now.Day.ToString("00") + "_";
+            string cvTime =  DateTime.Now.ToString("HHmm") + "_";
 
-            string fileName = companyFolder + yearFolder + monthFolder + cvDay + cvTime + "q" + counter.ToString() + fileExtension;
+            cvId = companyFolder + yearFolder + monthFolder + cvDay + cvTime + "_" + uqId.ToString() + counter.ToString();
+            string fileName = cvId + fileExtension;
             var fileNamePath = cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder + "\\" + fileName;
             return fileNamePath;
         }

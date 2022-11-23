@@ -73,7 +73,7 @@ namespace DataModelsLibrary.Queries
                 activate_status_id = (int)status,
             };
 
-            dbContext.candidate.Add(company);
+            dbContext.companies.Add(company);
             dbContext.SaveChanges();
             return company;
         }
@@ -99,7 +99,7 @@ namespace DataModelsLibrary.Queries
 
         public company updateCompany(company _company)
         {
-            var result = dbContext.candidate.Update(_company);
+            var result = dbContext.companies.Update(_company);
             dbContext.SaveChanges();
             return _company;
         }

@@ -19,6 +19,11 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries = cvsPositionsQueries;
         }
 
+        public void AddImportedCv(string companyId, string cvId, int candidateId, string cvTxt, string emailId, string subject, string from)
+        {
+            _cvsPositionsQueries.AddImportedCv(companyId, cvId, candidateId, cvTxt, emailId, subject, from);
+        }
+
         public void GetAddCandidateId(ImportCvModel item)
         {
            candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(item.email);

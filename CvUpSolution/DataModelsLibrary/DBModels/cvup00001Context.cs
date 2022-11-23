@@ -18,7 +18,7 @@ namespace Database.models
 
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
-        public virtual DbSet<company> candidate { get; set; } = null!;
+        public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
@@ -120,19 +120,17 @@ namespace Database.models
 
                 entity.HasIndex(e => e.company_id, "fk_cvs_stage_company_id_companies_id");
 
-                entity.Property(e => e.cv1)
-                    .HasMaxLength(4000)
-                    .HasColumnName("cv");
+                entity.Property(e => e.id).HasMaxLength(30);
+
+                entity.Property(e => e.cv_text).HasMaxLength(4000);
 
                 entity.Property(e => e.date_added).HasColumnType("datetime");
 
-                entity.Property(e => e.file_extension).HasMaxLength(5);
+                entity.Property(e => e.email_id).HasMaxLength(300);
 
                 entity.Property(e => e.from).HasMaxLength(200);
 
-                entity.Property(e => e.mail_id).HasMaxLength(300);
-
-                entity.Property(e => e.title).HasMaxLength(500);
+                entity.Property(e => e.subject).HasMaxLength(500);
 
                 entity.HasOne(d => d.candidate)
                     .WithMany(p => p.cvs)
@@ -290,6 +288,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.position_id, "fk_position_cvs_position_id_positions_id");
 
+                entity.Property(e => e.cv_id).HasMaxLength(30);
+
                 entity.HasOne(d => d.candidate_stage)
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.candidate_stage_id)
@@ -304,6 +304,7 @@ namespace Database.models
                 entity.HasOne(d => d.cv)
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.cv_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_position_cvs_cv_id_cvs_id");
 
                 entity.HasOne(d => d.position)

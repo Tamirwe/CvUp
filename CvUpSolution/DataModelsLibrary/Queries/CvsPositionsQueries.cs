@@ -18,9 +18,21 @@ namespace DataModelsLibrary.Queries
             dbContext = new cvup00001Context();
         }
 
-    public void AddCv()
+        public void AddImportedCv(string companyId, string cvId, int candidateId, string cvTxt, string emailId, string subject, string from)
         {
+            var cv = new cv
+            {
+                id = cvId,
+                company_id = Convert.ToInt32(companyId),
+                candidate_id = candidateId,
+                cv_text = cvTxt,
+                email_id = emailId,
+                subject = subject,
+                from = from,
+            };
 
+            dbContext.cvs.Add(cv);
+            dbContext.SaveChanges();
         }
 
         public int GetUniqueCvId()

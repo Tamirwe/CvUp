@@ -8,7 +8,7 @@ namespace Database.models
         public int id { get; set; }
         public int company_id { get; set; }
         public int position_id { get; set; }
-        public int cv_id { get; set; }
+        public string cv_id { get; set; } = null!;
         public int candidate_stage_id { get; set; }
 
         public virtual candidate_position_stage candidate_stage { get; set; } = null!;

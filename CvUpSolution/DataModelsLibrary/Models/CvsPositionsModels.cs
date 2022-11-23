@@ -8,6 +8,7 @@ namespace DataModelsLibrary.Models
 {
     public class ImportCvModel
     {
+
         public string companyId { get; set; } = "";
         public string fileNamePath { get; set; } = "";
         public string fileExtension { get; set; } = "";
@@ -16,5 +17,8 @@ namespace DataModelsLibrary.Models
         public string email { get; set; } = "";
         public int candidateId { get; set; }
         public string cvId { get; set; } = "";
+        public string emailId { get; set; } = "";
+        public string subject { get; set; } = "";
+        public string from { get; set; } = "";
     }
 }

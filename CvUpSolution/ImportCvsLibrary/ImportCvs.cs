@@ -51,7 +51,7 @@ namespace ImportCvsLibrary
                     try
                     {
                         var message = inbox.GetMessage(uid);
-                        SaveEmailAttachmentToFile(message, cvsList);
+                        SaveEmailAttachmentToFile(message, uid, cvsList);
                         Console.WriteLine("Subject: {0}", message.Subject);
                         inbox.SetFlags(uid, MessageFlags.Seen, true);
                     }
@@ -68,7 +68,7 @@ namespace ImportCvsLibrary
             SaveAttachmentsToDb(cvsList);
         }
 
-        private void SaveEmailAttachmentToFile(MimeMessage message, List<ImportCvModel> cvsList)
+        private void SaveEmailAttachmentToFile(MimeMessage message,UniqueId uid, List<ImportCvModel> cvsList)
         {
             string companyId = GetCompanyIdFromAddress(message.To);
             int uqId = _cvsPositionsServise.GetUniqueCvId();
@@ -100,7 +100,14 @@ namespace ImportCvsLibrary
                             part.Content.DecodeTo(stream);
                         }
 
-                        cvsList.Add(new ImportCvModel { companyId = companyId, cvId = cvId, fileExtension = fileExtension, fileNamePath = fileNamePath });
+                        cvsList.Add(new ImportCvModel { companyId = companyId, 
+                            cvId = cvId, 
+                            fileExtension = fileExtension, 
+                            fileNamePath = fileNamePath, 
+                            emailId= uid.ToString(),
+                            subject = message.Subject,
+                            from = message.From.ToString(),
+                        });
                     }
                 }
             }
@@ -123,7 +130,7 @@ namespace ImportCvsLibrary
                 if (item.email.Length > 0)
                 {
                     _cvsPositionsServise.GetAddCandidateId(item);
-                    //_cvsPositionsServise.AddImportedCv(item.companyId, item.candidateId, );
+                    _cvsPositionsServise.AddImportedCv(item.companyId, item.cvId, item.candidateId, item.cvTxt, item.emailId, item.subject,item.from);
 
 
                 }
@@ -138,7 +145,7 @@ namespace ImportCvsLibrary
 
             if (matches.Count > 0)
             {
-                item.email = matches[0].Value;
+                item.phone = matches[0].Value;
             }
         }
 

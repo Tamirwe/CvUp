@@ -53,7 +53,9 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_candidates_company_id_companies_id");
 
-                entity.Property(e => e.date_created).HasColumnType("datetime");
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
@@ -124,7 +126,9 @@ namespace Database.models
 
                 entity.Property(e => e.cv_text).HasMaxLength(4000);
 
-                entity.Property(e => e.date_added).HasColumnType("datetime");
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email_id).HasMaxLength(300);
 
@@ -135,7 +139,6 @@ namespace Database.models
                 entity.HasOne(d => d.candidate)
                     .WithMany(p => p.cvs)
                     .HasForeignKey(d => d.candidate_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
 
                 entity.HasOne(d => d.company)

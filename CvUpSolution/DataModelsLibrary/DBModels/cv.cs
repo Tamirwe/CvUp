@@ -16,7 +16,7 @@ namespace Database.models
         public string? cv_text { get; set; }
         public string? subject { get; set; }
         public string? from { get; set; }
-        public DateTime date_added { get; set; }
+        public DateTime date_created { get; set; }
         public string? email_id { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;

@@ -9,6 +9,11 @@ using MailKit.Search;
 using MimeKit;
 using Microsoft.Extensions.Configuration;
 using CvsPositionsLibrary;
+using DataModelsLibrary.Models;
+using System.IO;
+using Spire.Doc;
+using Spire.Doc.Documents;
+using System.Text.RegularExpressions;
 
 namespace ImportCvsLibrary
 {
@@ -31,6 +36,8 @@ namespace ImportCvsLibrary
 
         public void ImportFromGmail()
         {
+            List<ImportCvModel> cvsList = new List<ImportCvModel>();
+
             using (var client = new ImapClient())
             {
                 client.Connect("imap.gmail.com", 993, true);
@@ -42,16 +49,19 @@ namespace ImportCvsLibrary
                 foreach (var uid in uids)
                 {
                     var message = inbox.GetMessage(uid);
-                    SaveEmailAttachments(message);
+                    SaveEmailAttachmentToFile(message, cvsList);
                     Console.WriteLine("Subject: {0}", message.Subject);
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
                 }
 
                 client.Disconnect(true);
             }
+
+            ExtractAttachmentsProps(cvsList);
+            SaveAttachmentsToDb(cvsList);
         }
 
-        private void SaveEmailAttachments(MimeMessage message)
+        private void SaveEmailAttachmentToFile(MimeMessage message, List<ImportCvModel> cvsList)
         {
             string companyId = GetCompanyIdFromAddress(message.To);
             int uqId = _cvsPositionsServise.GetUniqueCvId();
@@ -82,9 +92,62 @@ namespace ImportCvsLibrary
                             var part = (MimePart)attachment;
                             part.Content.DecodeTo(stream);
                         }
+
+                        cvsList.Add(new ImportCvModel { companyId = companyId, fileExtension = fileExtension, fileNamePath = fileNamePath });
                     }
                 }
             }
+        }
+
+        private void ExtractAttachmentsProps(List<ImportCvModel> cvsList)
+        {
+            foreach (var item in cvsList)
+            {
+                GetCvTxt(item);
+                GetCandidateEmail(item);
+                GetCandidatePhone(item);
+            }
+        }
+
+        private void SaveAttachmentsToDb(List<ImportCvModel> cvsList)
+        {
+            foreach (var item in cvsList)
+            {
+                if (item.email.Length > 0)
+                {
+                    _cvsPositionsServise.GetAddCandidateId(item);
+                }
+            }
+        }
+
+        private void GetCandidatePhone(ImportCvModel item)
+        {
+            const string MatchPhonePattern =       @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}";
+            Regex rx = new Regex(MatchPhonePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            MatchCollection matches = rx.Matches(item.cvTxt);
+
+            if (matches.Count > 0)
+            {
+                item.email = matches[0].Value;
+            }
+        }
+
+        private void GetCandidateEmail(ImportCvModel item)
+        {
+            Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*",
+            RegexOptions.IgnoreCase);
+            MatchCollection emailMatches = emailRegex.Matches(item.cvTxt);
+
+            if (emailMatches.Count>0)
+            {
+                item.email = emailMatches[0].Value;
+            }
+        }
+
+        private void GetCvTxt(ImportCvModel item)
+        {
+            Spire.Doc.Document document = new Spire.Doc.Document(item.fileNamePath);
+            item.cvTxt = document.GetText();
         }
 
         private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int counter, string fileExtension)

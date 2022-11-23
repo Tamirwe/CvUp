@@ -18,7 +18,7 @@ namespace Database.models
 
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
-        public virtual DbSet<company> companies { get; set; } = null!;
+        public virtual DbSet<company> candidate { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
@@ -57,7 +57,7 @@ namespace Database.models
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
-                entity.Property(e => e.mail).HasMaxLength(150);
+                entity.Property(e => e.email).HasMaxLength(150);
 
                 entity.Property(e => e.name).HasMaxLength(100);
 

@@ -1,4 +1,6 @@
-﻿using DataModelsLibrary.Queries;
+﻿using Database.models;
+using DataModelsLibrary.Models;
+using DataModelsLibrary.Queries;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,21 @@ namespace CvsPositionsLibrary
         public CvsPositionsServise(ICvsPositionsQueries cvsPositionsQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
+        }
+
+        public void GetAddCandidateId(ImportCvModel item)
+        {
+           candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(item.email);
+
+            if (cand == null)
+            {
+                cand = _cvsPositionsQueries.AddNewCandidate(item.email,item.phone);
+            }
+
+            if (cand != null)
+            {
+                item.candidateId = cand.id;
+            }
         }
 
         public int GetUniqueCvId()

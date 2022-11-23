@@ -35,5 +35,24 @@ namespace DataModelsLibrary.Queries
             return ci.id;
         }
 
+        public candidate AddNewCandidate(string email, string phone)
+        {
+            var cand = new candidate
+            {
+                email = email,
+                phone = phone
+            };
+
+            dbContext.candidates.Add(cand);
+            dbContext.SaveChanges();
+            return cand;
+        }
+
+        public candidate? GetCandidateByEmail(string email)
+        {
+            candidate? cand = dbContext.candidates.Where(x => x.email == email).FirstOrDefault();
+            return cand;
+        }
+
     }
 }

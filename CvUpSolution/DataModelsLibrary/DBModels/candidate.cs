@@ -13,7 +13,7 @@ namespace Database.models
         public int id { get; set; }
         public int? company_id { get; set; }
         public string? opinion { get; set; }
-        public string? mail { get; set; }
+        public string? email { get; set; }
         public string? name { get; set; }
         public string? phone { get; set; }
         public DateTime? date_created { get; set; }

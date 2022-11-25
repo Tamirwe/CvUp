@@ -18,14 +18,14 @@ namespace DataModelsLibrary.Queries
             dbContext = new cvup00001Context();
         }
 
-        public void AddImportedCv(string companyId, string cvId, int candidateId, string cvTxt, string emailId, string subject, string from)
+        public void AddImportedCv(string companyId, string cvId, int candidateId, int cvAsciiSum, string emailId, string subject, string from)
         {
             var cv = new cv
             {
                 id = cvId,
                 company_id = Convert.ToInt32(companyId),
                 candidate_id = candidateId,
-                cv_text = cvTxt,
+                cv_ascii_sum = cvAsciiSum,
                 email_id = emailId,
                 subject = subject,
                 from = from,
@@ -47,10 +47,11 @@ namespace DataModelsLibrary.Queries
             return ci.id;
         }
 
-        public candidate AddNewCandidate(string email, string phone)
+        public candidate AddNewCandidate(int companyId, string email, string phone)
         {
             var cand = new candidate
             {
+                company_id = companyId,
                 email = email,
                 phone = phone
             };

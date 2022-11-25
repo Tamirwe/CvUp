@@ -20,5 +20,6 @@ namespace DataModelsLibrary.Models
         public string emailId { get; set; } = "";
         public string subject { get; set; } = "";
         public string from { get; set; } = "";
+        public int cvAsciiSum { get; set; }
     }
 }

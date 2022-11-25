@@ -19,9 +19,9 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries = cvsPositionsQueries;
         }
 
-        public void AddImportedCv(string companyId, string cvId, int candidateId, string cvTxt, string emailId, string subject, string from)
+        public void AddImportedCv(string companyId, string cvId, int candidateId, int cvAsciiSum, string emailId, string subject, string from)
         {
-            _cvsPositionsQueries.AddImportedCv(companyId, cvId, candidateId, cvTxt, emailId, subject, from);
+            _cvsPositionsQueries.AddImportedCv(companyId, cvId, candidateId, cvAsciiSum, emailId, subject, from);
         }
 
         public void GetAddCandidateId(ImportCvModel item)
@@ -30,7 +30,7 @@ namespace CvsPositionsLibrary
 
             if (cand == null)
             {
-                cand = _cvsPositionsQueries.AddNewCandidate(item.email,item.phone);
+                cand = _cvsPositionsQueries.AddNewCandidate(Convert.ToInt32(item.companyId), item.email,item.phone);
             }
 
             if (cand != null)

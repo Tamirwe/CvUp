@@ -124,8 +124,6 @@ namespace Database.models
 
                 entity.Property(e => e.id).HasMaxLength(30);
 
-                entity.Property(e => e.cv_text).HasMaxLength(4000);
-
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");

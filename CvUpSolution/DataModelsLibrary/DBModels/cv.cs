@@ -13,11 +13,11 @@ namespace Database.models
         public string id { get; set; } = null!;
         public int company_id { get; set; }
         public int candidate_id { get; set; }
-        public string? cv_text { get; set; }
         public string? subject { get; set; }
         public string? from { get; set; }
         public DateTime date_created { get; set; }
         public string? email_id { get; set; }
+        public long? cv_ascii_sum { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual company company { get; set; } = null!;

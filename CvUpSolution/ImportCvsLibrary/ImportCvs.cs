@@ -14,29 +14,42 @@ using System.IO;
 using Spire.Doc;
 using Spire.Doc.Documents;
 using System.Text.RegularExpressions;
+//using Spire.Pdf;
+//using Spire.Pdf.Exporting.Text;
+using static DataModelsLibrary.GlobalConstant;
+//using iText.Kernel.Pdf;
+//using iText.Kernel.Pdf.Canvas.Parser.Listener;
+//using iText.Kernel.Pdf.Canvas.Parser;
+using Spire.Pdf.Exporting.XPS.Schema;
+using Spire.Pdf;
+using Spire.Pdf.Exporting.Text;
+using Spire.Pdf.Texts;
+using MySqlX.XDevAPI.Common;
 
 namespace ImportCvsLibrary
 {
     public class ImportCvs : IImportCvs
     {
+
         IConfiguration _configuration;
         ICvsPositionsServise _cvsPositionsServise;
         string importMailAddress;
         string importMailPassword;
-        string cvFilesPath;
+        string _cvFilesPath;
+        string _tempFolderPath;
 
         public ImportCvs(IConfiguration config, ICvsPositionsServise cvsPositionsServise)
         {
             _configuration = config;
             _cvsPositionsServise = cvsPositionsServise;
-            cvFilesPath = _configuration["AppSettings:CvFilesPath"];
+            _cvFilesPath = _configuration["AppSettings:CvFilesPath"];
+            _tempFolderPath = _cvFilesPath + @"temp\";
             importMailAddress = _configuration["AppSettings:ImportMailAddress"];
             importMailPassword = _configuration["AppSettings:ImportMailPassword"];
         }
 
         public void ImportFromGmail()
         {
-            List<ImportCvModel> cvsList = new List<ImportCvModel>();
 
             using (var client = new ImapClient())
             {
@@ -48,24 +61,24 @@ namespace ImportCvsLibrary
 
                 foreach (var uid in uids)
                 {
-                    try
-                    {
-                        var message = inbox.GetMessage(uid);
-                        SaveEmailAttachmentToFile(message, uid, cvsList);
-                        Console.WriteLine("Subject: {0}", message.Subject);
-                        inbox.SetFlags(uid, MessageFlags.Seen, true);
-                    }
-                    catch (Exception)
-                    {
-                        //log
-                    }
+                    //try
+                    //{
+                    var message = inbox.GetMessage(uid);
+                    inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    List<ImportCvModel> cvsList = new List<ImportCvModel>();
+                    SaveEmailAttachmentToFile(message, uid, cvsList);
+                    Console.WriteLine("Subject: {0}", message.Subject);
+                    ExtractAttachmentsProps(cvsList);
+                    SaveAttachmentsToDb(cvsList);
+                    //}
+                    //catch (Exception)
+                    //{
+                    //    //log
+                    //}
                 }
 
                 client.Disconnect(true);
             }
-
-            ExtractAttachmentsProps(cvsList);
-            SaveAttachmentsToDb(cvsList);
         }
 
         private void SaveEmailAttachmentToFile(MimeMessage message,UniqueId uid, List<ImportCvModel> cvsList)
@@ -82,10 +95,10 @@ namespace ImportCvsLibrary
             {
                 int counter = 0;
                 string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
-                string fileExtension = Path.GetExtension(originalFileName).ToLower();
+                string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
                 string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, uqId,++counter, fileExtension, out string cvId);
 
-                if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".pdf")
+                if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                 {
                     using (var stream = File.Create(fileNamePath))
                     {
@@ -117,7 +130,16 @@ namespace ImportCvsLibrary
         {
             foreach (var item in cvsList)
             {
-                GetCvTxt(item);
+                if (item.fileExtension == PDF_EXTENSION)
+                {
+                    item.cvTxt = GetCvTxtPdf(item.fileNamePath);
+                }
+                else
+                {
+                    item.cvTxt =  GetCvTxtWord(item.fileNamePath);
+                }
+
+                item.cvAsciiSum = GetCvAsciiSum(item.cvTxt);
                 GetCandidateEmail(item);
                 GetCandidatePhone(item);
             }
@@ -130,9 +152,7 @@ namespace ImportCvsLibrary
                 if (item.email.Length > 0)
                 {
                     _cvsPositionsServise.GetAddCandidateId(item);
-                    _cvsPositionsServise.AddImportedCv(item.companyId, item.cvId, item.candidateId, item.cvTxt, item.emailId, item.subject,item.from);
-
-
+                    _cvsPositionsServise.AddImportedCv(item.companyId, item.cvId, item.candidateId, item.cvAsciiSum, item.emailId, item.subject,item.from);
                 }
             }
         }
@@ -161,10 +181,52 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void GetCvTxt(ImportCvModel item)
+        private string GetCvTxtPdf(string fileNamePath)
         {
-            Spire.Doc.Document document = new Spire.Doc.Document(item.fileNamePath);
-            item.cvTxt = document.GetText();
+            StringBuilder cvTxtSB = new StringBuilder();
+            SimpleTextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+
+            Spire.Pdf.PdfDocument doc = new Spire.Pdf.PdfDocument();
+            doc.LoadFromFile(fileNamePath);
+
+            StringBuilder buffer = new StringBuilder();
+            PdfTextExtractOptions extractOptions = new PdfTextExtractOptions();
+            extractOptions.IsExtractAllText = true;
+
+            foreach (PdfPageBase page in doc.Pages)
+            {
+                PdfTextExtractor textExtractor = new PdfTextExtractor(page);
+                cvTxtSB.Append(textExtractor.ExtractText(extractOptions));
+            }
+
+            doc.Close();
+            string cvTxt = cvTxtSB.ToString();
+            cvTxt = Regex.Replace(cvTxt, @"\s+", " ");
+            return cvTxt;
+        }
+
+        private string GetCvTxtWord(string fileNamePath)
+        {
+            Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
+            string cvTxt = document.GetText();
+            cvTxt = Regex.Replace(cvTxt, @"\s+", " ");
+            return cvTxt;
+        }
+
+        private int GetCvAsciiSum(string cvTxt)
+        {
+            int docAsciiSum = 0;
+
+            foreach (char c in cvTxt)
+            {
+                try
+                {
+                    docAsciiSum += Convert.ToInt32(c);
+                }
+                catch (Exception) { }
+            }
+
+            return docAsciiSum;
         }
 
         private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int uqId, int counter, string fileExtension, out string cvId)
@@ -174,16 +236,16 @@ namespace ImportCvsLibrary
             string yearFolder =  DateTime.Now.Year.ToString("0000")+"_";
             string monthFolder = DateTime.Now.Month.ToString("00") + "_";
 
-            Directory.CreateDirectory(cvFilesPath + companyFolder);
-            Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder);
-            Directory.CreateDirectory(cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder);
+            Directory.CreateDirectory(_cvFilesPath + companyFolder);
+            Directory.CreateDirectory(_cvFilesPath + companyFolder + "\\" + yearFolder);
+            Directory.CreateDirectory(_cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder);
 
             string cvDay =  DateTime.Now.Day.ToString("00") + "_";
             string cvTime =  DateTime.Now.ToString("HHmm") + "_";
 
-            cvId = companyFolder + yearFolder + monthFolder + cvDay + cvTime + "_" + uqId.ToString() + counter.ToString();
+            cvId = companyFolder + yearFolder + monthFolder + cvDay + cvTime + uqId.ToString() + counter.ToString();
             string fileName = cvId + fileExtension;
-            var fileNamePath = cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder + "\\" + fileName;
+            var fileNamePath = _cvFilesPath + companyFolder + "\\" + yearFolder + "\\" + monthFolder + "\\" + fileName;
             return fileNamePath;
         }
 
@@ -199,7 +261,7 @@ namespace ImportCvsLibrary
                     {
                         var toAddress = x.ToString().Split('@')[0];
 
-                        if (toAddress.IndexOf(importMailAddress) == 0)
+                        if (toAddress.IndexOf(importMailAddress) > -1)
                         {
                             companyId = toAddress.Substring(toAddress.IndexOf("ci") + 2);
                         }

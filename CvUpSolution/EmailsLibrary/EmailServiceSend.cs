@@ -12,12 +12,17 @@ namespace EmailsLibrary
 {
     public partial class EmailService : IEmailService
     {
-        private IConfigurationSection _gmailSettings;
+        string _mailFromName;
+        string _mailFromAddress;
+        string _mailUserName;
+        string _mailPassword;
 
         public EmailService(IConfiguration config)
         {
-            _gmailSettings = config.GetRequiredSection("GmailSettings");
-
+            _mailFromName = config["GlobalSettings:MailFromName"];
+            _mailFromAddress = config["GlobalSettings:MailFromAddress"];
+            _mailUserName = config["GlobalSettings:gmailUserName"];
+            _mailPassword = config["GlobalSettings:gmailPassword"];
         }
 
         public void Send(EmailModel eml)
@@ -26,7 +31,7 @@ namespace EmailsLibrary
 
             if (eml.From.Address == null)
             {
-                message.From.Add(new MailboxAddress(_gmailSettings.GetSection("fromName").Value, _gmailSettings.GetSection("fromAddress").Value));
+                message.From.Add(new MailboxAddress(_mailFromName, _mailFromAddress));
             }
             else
             {
@@ -66,7 +71,7 @@ namespace EmailsLibrary
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                 // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(_gmailSettings.GetSection("userName").Value, _gmailSettings.GetSection("password").Value);
+                client.Authenticate(_mailUserName, _mailPassword);
 
                 client.Send(message);
                 client.Disconnect(true);

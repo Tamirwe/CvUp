@@ -9,7 +9,6 @@ namespace Database.models
         {
             candidate_position_stages = new HashSet<candidate_position_stage>();
             candidates = new HashSet<candidate>();
-            cvs = new HashSet<cv>();
             position_cvs = new HashSet<position_cv>();
             positions = new HashSet<position>();
             users = new HashSet<user>();
@@ -27,7 +26,6 @@ namespace Database.models
         public virtual enum_company_activate_status activate_status { get; set; } = null!;
         public virtual ICollection<candidate_position_stage> candidate_position_stages { get; set; }
         public virtual ICollection<candidate> candidates { get; set; }
-        public virtual ICollection<cv> cvs { get; set; }
         public virtual ICollection<position_cv> position_cvs { get; set; }
         public virtual ICollection<position> positions { get; set; }
         public virtual ICollection<user> users { get; set; }

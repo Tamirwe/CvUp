@@ -11,4 +11,8 @@
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+  </ItemGroup>
+
 </Project>

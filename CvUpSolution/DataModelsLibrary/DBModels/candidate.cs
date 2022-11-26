@@ -11,7 +11,7 @@ namespace Database.models
         }
 
         public int id { get; set; }
-        public int? company_id { get; set; }
+        public int company_id { get; set; }
         public string? opinion { get; set; }
         public string? email { get; set; }
         public string? name { get; set; }
@@ -19,7 +19,7 @@ namespace Database.models
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
 
-        public virtual company? company { get; set; }
+        public virtual company company { get; set; } = null!;
         public virtual ICollection<cv> cvs { get; set; }
     }
 }

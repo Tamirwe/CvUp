@@ -19,20 +19,30 @@ namespace DataModelsLibrary.Queries
             dbContext = new cvup00001Context();
         }
 
-        public void AddImportedCv(string companyId, string cvId, int candidateId, int cvAsciiSum, string emailId, string subject, string from)
+        public void AddImportedCv(ImportCvModel importCv)
         {
             var cv = new cv
             {
-                id = cvId,
-                company_id = Convert.ToInt32(companyId),
-                candidate_id = candidateId,
-                cv_ascii_sum = cvAsciiSum,
-                email_id = emailId,
-                subject = subject,
-                from = from,
+                id = importCv.cvId,
+                company_id = Convert.ToInt32(importCv.companyId),
+                candidate_id = importCv.candidateId,
+                cv_ascii_sum = importCv.cvAsciiSum,
+                email_id = importCv.emailId,
+                subject = importCv.subject,
+                from = importCv.from,
             };
 
             dbContext.cvs.Add(cv);
+
+            var cvTxt = new cvs_txt
+            {
+                cv_id = importCv.cvId,
+                company_id = Convert.ToInt32(importCv.companyId),
+                cv_txt = importCv.cvTxt.Length > 7999 ? importCv.cvTxt.Substring(0, 7999) : importCv.cvTxt
+            };
+
+            dbContext.cvs_txts.Add(cvTxt);
+
             dbContext.SaveChanges();
         }
 
@@ -68,11 +78,11 @@ namespace DataModelsLibrary.Queries
             return cand;
         }
 
-        public List<CompanyTextToIndexModel> GetCompanyTexstsToIndex(int companyId)
+        public List<CompanyTextToIndexModel> GetCompanyCvsToIndex(int companyId)
         {
             var query = from cand in dbContext.candidates
                         join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                        join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.id
+                        join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
                         where cand.company_id == companyId
                         select new CompanyTextToIndexModel
                         {

@@ -20,7 +20,6 @@ namespace Database.models
         public long? cv_ascii_sum { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
-        public virtual company company { get; set; } = null!;
         public virtual cvs_txt? cvs_txt { get; set; }
         public virtual ICollection<position_cv> position_cvs { get; set; }
     }

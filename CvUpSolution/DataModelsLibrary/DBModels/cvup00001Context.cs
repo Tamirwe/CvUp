@@ -71,7 +71,6 @@ namespace Database.models
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)
                     .HasForeignKey(d => d.company_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_candidates_company_id_companies_id");
             });
 
@@ -121,7 +120,7 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
 
-                entity.HasIndex(e => e.company_id, "fk_cvs_stage_company_id_companies_id");
+                entity.HasIndex(e => e.company_id, "ix_cvs_company_id");
 
                 entity.Property(e => e.id).HasMaxLength(30);
 
@@ -139,11 +138,6 @@ namespace Database.models
                     .WithMany(p => p.cvs)
                     .HasForeignKey(d => d.candidate_id)
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.cvs)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_cvs_stage_company_id_companies_id");
             });
 
             modelBuilder.Entity<cvs_incremental>(entity =>
@@ -155,16 +149,21 @@ namespace Database.models
 
             modelBuilder.Entity<cvs_txt>(entity =>
             {
+                entity.HasKey(e => e.cv_id)
+                    .HasName("PRIMARY");
+
                 entity.ToTable("cvs_txt");
 
-                entity.Property(e => e.id).HasMaxLength(30);
+                entity.HasIndex(e => e.company_id, "ix_cvs_txt_company_id");
+
+                entity.Property(e => e.cv_id).HasMaxLength(30);
 
                 entity.Property(e => e.cv_txt).HasMaxLength(8000);
 
-                entity.HasOne(d => d.idNavigation)
+                entity.HasOne(d => d.cv)
                     .WithOne(p => p.cvs_txt)
-                    .HasForeignKey<cvs_txt>(d => d.id)
-                    .HasConstraintName("fk_cvs_txt_id_cvs_id");
+                    .HasForeignKey<cvs_txt>(d => d.cv_id)
+                    .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
             });
 
             modelBuilder.Entity<emails_sent>(entity =>

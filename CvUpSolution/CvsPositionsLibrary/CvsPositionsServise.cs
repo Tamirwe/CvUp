@@ -23,9 +23,9 @@ namespace CvsPositionsLibrary
 
         }
 
-        public void AddImportedCv(string companyId, string cvId, int candidateId, int cvAsciiSum, string emailId, string subject, string from)
+        public void AddImportedCv(ImportCvModel importCv)
         {
-            _cvsPositionsQueries.AddImportedCv(companyId, cvId, candidateId, cvAsciiSum, emailId, subject, from);
+            _cvsPositionsQueries.AddImportedCv(importCv);
         }
 
         public void GetAddCandidateId(ImportCvModel item)
@@ -48,9 +48,10 @@ namespace CvsPositionsLibrary
             return _cvsPositionsQueries.GetUniqueCvId();
         }
 
-        public void BuildCompanyLuceneIndex(int companyId)
+        public void IndexCompanyCvs(int companyId)
         {
-           List< CompanyTextToIndexModel> CompanyTextToIndexList =  _cvsPositionsQueries.GetCompanyTexstsToIndex(companyId);
+            List<CompanyTextToIndexModel> CompanyTextToIndexList = _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
+            _luceneService.BuildCompanyIndex(companyId, CompanyTextToIndexList);
         }
     }
 }

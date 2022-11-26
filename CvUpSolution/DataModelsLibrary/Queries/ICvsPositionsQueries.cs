@@ -1,4 +1,5 @@
 ﻿using Database.models;
+using DataModelsLibrary.Models;
 
 namespace DataModelsLibrary.Queries
 {
@@ -7,6 +8,7 @@ namespace DataModelsLibrary.Queries
         public void AddImportedCv(string companyId, string cvId, int candidateId, int cvAsciiSum, string emailId, string subject, string from);
         public candidate AddNewCandidate(int companyId, string email, string phone);
         public candidate? GetCandidateByEmail(string email);
+        public List<CompanyTextToIndexModel> GetCompanyTexstsToIndex(int companyId);
         public int GetUniqueCvId();
     }
 }

@@ -21,6 +21,7 @@ namespace Database.models
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
+        public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
@@ -150,6 +151,20 @@ namespace Database.models
                 entity.ToTable("cvs_incremental");
 
                 entity.Property(e => e.name).HasMaxLength(2);
+            });
+
+            modelBuilder.Entity<cvs_txt>(entity =>
+            {
+                entity.ToTable("cvs_txt");
+
+                entity.Property(e => e.id).HasMaxLength(30);
+
+                entity.Property(e => e.cv_txt).HasMaxLength(8000);
+
+                entity.HasOne(d => d.idNavigation)
+                    .WithOne(p => p.cvs_txt)
+                    .HasForeignKey<cvs_txt>(d => d.id)
+                    .HasConstraintName("fk_cvs_txt_id_cvs_id");
             });
 
             modelBuilder.Entity<emails_sent>(entity =>

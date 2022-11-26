@@ -8,7 +8,6 @@ namespace DataModelsLibrary.Models
 {
     public class ImportCvModel
     {
-
         public string companyId { get; set; } = "";
         public string fileNamePath { get; set; } = "";
         public string fileExtension { get; set; } = "";
@@ -21,5 +20,17 @@ namespace DataModelsLibrary.Models
         public string subject { get; set; } = "";
         public string from { get; set; } = "";
         public int cvAsciiSum { get; set; }
+    }
+
+    public class CompanyTextToIndexModel
+    {
+        public int companyId { get; set; }
+        public string cvId { get; set; } = "";
+        public string? cvTxt { get; set; } = "";
+        public string? phone { get; set; } = "";
+        public string? email { get; set; } = "";
+        public string? emailSubject { get; set; } = "";
+        public string? candidateName { get; set; } = "";
+        public string? candidateOpinion { get; set; } = "";
     }
 }

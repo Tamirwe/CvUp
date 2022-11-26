@@ -86,7 +86,7 @@ namespace LuceneLibrary
             }
         }
 
-        public void DocumentAdd()
+        public void DocumentAdd(int companyId, string cvId, string cvTxt)
         {
             using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(mIndexPath)))
             {
@@ -97,7 +97,7 @@ namespace LuceneLibrary
 
                     //for (int i = 0; i < dataToIndex.Length; ++i)
                     //{
-                    //    var row = dataToIndex[i];
+                    //var row = dataToIndex[i];
 
                     //var doc = new Document();
                     //doc.Add(new Int32Field("Id", row.Id, Field.Store.YES));

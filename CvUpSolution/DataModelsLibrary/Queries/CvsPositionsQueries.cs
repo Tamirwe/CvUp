@@ -19,7 +19,7 @@ namespace DataModelsLibrary.Queries
             dbContext = new cvup00001Context();
         }
 
-        public void AddImportedCv(ImportCvModel importCv)
+        public void AddNewCvToDb(ImportCvModel importCv)
         {
             var cv = new cv
             {
@@ -78,13 +78,13 @@ namespace DataModelsLibrary.Queries
             return cand;
         }
 
-        public List<CompanyTextToIndexModel> GetCompanyCvsToIndex(int companyId)
+        public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId)
         {
             var query = from cand in dbContext.candidates
                         join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
                         join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
                         where cand.company_id == companyId
-                        select new CompanyTextToIndexModel
+                        select new CvPropsToIndexModel
                         {
                             companyId = companyId,
                             cvId = cvs.id,

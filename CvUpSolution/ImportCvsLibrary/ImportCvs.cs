@@ -1,31 +1,16 @@
 ﻿using MailKit.Net.Imap;
 using MailKit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using MailKit.Search;
 using MimeKit;
 using Microsoft.Extensions.Configuration;
 using CvsPositionsLibrary;
 using DataModelsLibrary.Models;
-using System.IO;
-using Spire.Doc;
-using Spire.Doc.Documents;
 using System.Text.RegularExpressions;
-//using Spire.Pdf;
-//using Spire.Pdf.Exporting.Text;
 using static DataModelsLibrary.GlobalConstant;
-//using iText.Kernel.Pdf;
-//using iText.Kernel.Pdf.Canvas.Parser.Listener;
-//using iText.Kernel.Pdf.Canvas.Parser;
-using Spire.Pdf.Exporting.XPS.Schema;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
-using MySqlX.XDevAPI.Common;
-using System.Xml.Linq;
 
 namespace ImportCvsLibrary
 {
@@ -63,12 +48,14 @@ namespace ImportCvsLibrary
                     //try
                     //{
                     var message = inbox.GetMessage(uid);
+                    Console.WriteLine("Subject: {0}", message.Subject);
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
                     List<ImportCvModel> cvsList = new List<ImportCvModel>();
                     SaveEmailAttachmentToFile(message, uid, cvsList);
-                    Console.WriteLine("Subject: {0}", message.Subject);
                     ExtractAttachmentsProps(cvsList);
-                    SaveAttachmentsToDb(cvsList);
+                    AddAttachmentsToDb(cvsList);
+                    AddCvsToIndex(cvsList);
+
                     //}
                     //catch (Exception)
                     //{
@@ -144,14 +131,25 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void SaveAttachmentsToDb(List<ImportCvModel> cvsList)
+        private void AddAttachmentsToDb(List<ImportCvModel> cvsList)
         {
             foreach (var item in cvsList)
             {
                 if (item.email.Length > 0)
                 {
-                    _cvsPositionsServise.GetAddCandidateId(item);
-                    _cvsPositionsServise.AddImportedCv(item);
+                    item.candidateId = _cvsPositionsServise.GetAddCandidateId( Convert.ToInt32(item.companyId), item.email,item.phone);
+                    _cvsPositionsServise.AddNewCvToDb(item);
+                }
+            }
+        }
+
+        private void AddCvsToIndex(List<ImportCvModel> cvsList)
+        {
+            foreach (var item in cvsList)
+            {
+                if (item.email.Length > 0)
+                {
+                    _cvsPositionsServise.AddNewCvToIndex(item);
                 }
             }
         }
@@ -240,16 +238,16 @@ namespace ImportCvsLibrary
             string yearFolder =  DateTime.Now.Year.ToString("0000")+"_";
             string monthFolder = DateTime.Now.Month.ToString("00") + "_";
 
-            Directory.CreateDirectory(_cvsRootFolder + companyFolder);
-            Directory.CreateDirectory(_cvsRootFolder + companyFolder + "\\" + yearFolder);
-            Directory.CreateDirectory(_cvsRootFolder + companyFolder + "\\" + yearFolder + "\\" + monthFolder);
+            Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}");
+            Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}");
+            Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}\\{monthFolder}");
 
             string cvDay =  DateTime.Now.Day.ToString("00") + "_";
             string cvTime =  DateTime.Now.ToString("HHmm") + "_";
 
             cvId = companyFolder + yearFolder + monthFolder + cvDay + cvTime + uqId.ToString() + counter.ToString();
             string fileName = cvId + fileExtension;
-            var fileNamePath = _cvsRootFolder + companyFolder + "\\" + yearFolder + "\\" + monthFolder + "\\" + fileName;
+            var fileNamePath = $"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}\\{monthFolder}\\{fileName}";
             return fileNamePath;
         }
 

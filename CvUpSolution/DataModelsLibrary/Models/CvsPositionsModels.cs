@@ -22,7 +22,7 @@ namespace DataModelsLibrary.Models
         public int cvAsciiSum { get; set; }
     }
 
-    public class CompanyTextToIndexModel
+    public class CvPropsToIndexModel
     {
         public int companyId { get; set; }
         public string cvId { get; set; } = "";

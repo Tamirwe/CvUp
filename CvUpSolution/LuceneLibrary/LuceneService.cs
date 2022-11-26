@@ -36,7 +36,7 @@ namespace LuceneLibrary
             mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
         }
 
-        public void BuildCompanyIndex(int companyId, List<CompanyTextToIndexModel> CompanyTextToIndexList)
+        public void BuildCompanyIndex(int companyId, List<CvPropsToIndexModel> CompanyTextToIndexList)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
@@ -57,90 +57,27 @@ namespace LuceneLibrary
                 }
             }
         }
-    
 
-    //public void BuildIndex()
-    //    {
-    //        if (System.IO.Directory.Exists(mIndexPath)) System.IO.Directory.Delete(mIndexPath, true);
+        public void DocumentAdd(int companyId, CvPropsToIndexModel cvPropsToIndex)
+        {
+            string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
-    //        using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(mIndexPath)))
-    //        {
-    //            var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
+            using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
+            {
+                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
 
-    //            using (var indexWriter = new IndexWriter(indexDir, config))
-    //            {
+                using (var indexWriter = new IndexWriter(indexDir, config))
+                {
 
-    //                //for (int i = 0; i < dataToIndex.Length; ++i)
-    //                //{
-    //                //    var row = dataToIndex[i];
-
-    //                var doc = new Document();
-    //                doc.Add(new Int32Field("Id", 1, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 111, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "שלבנון העבירה לאמריקנים את ההערות שלה לטיוטת בהסכם", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-
-    //                doc = new Document();
-    //                doc.Add(new Int32Field("Id", 2, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 111, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "הימים הקרובים יהיו המכריעים ביותר בשאלת החתימה על הסכם הגז של לבנון וישראל", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-
-    //                doc = new Document();
-    //                doc.Add(new Int32Field("Id", 3, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 222, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "גורם מדיני בכיר אמר שאם לבנון תדרוש להכניס שינויים מהותיים בטיוטת אבהסכם", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-
-
-    //                doc = new Document();
-    //                doc.Add(new Int32Field("Id", 4, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 222, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "החשיבות בהסכם בעת הזאת היא לבלום את ההשפעה העצומה של איראן וחיזבאללה", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-
-    //                doc = new Document();
-    //                doc.Add(new Int32Field("Id", 5, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 333, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "יציגו היום ראש הממשלה יאיר לפיד וצוות המשא ומתן הישראלי את טיוטת בעהסכם", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-
-
-    //                doc = new Document();
-    //                doc.Add(new Int32Field("Id", 6, Field.Store.YES));
-    //                doc.Add(new Int32Field("companyId", 333, Field.Store.YES));
-    //                doc.Add(new TextField("Name", "fff", Field.Store.YES));
-    //                indexWriter.AddDocument(doc);
-    //                //}
-    //            }
-    //        }
-    //    }
-
-        //public void DocumentAdd(int companyId, string cvId, string cvTxt)
-        //{
-        //    using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(mIndexPath)))
-        //    {
-        //        var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
-
-        //        using (var indexWriter = new IndexWriter(indexDir, config))
-        //        {
-
-        //            //for (int i = 0; i < dataToIndex.Length; ++i)
-        //            //{
-        //            //var row = dataToIndex[i];
-
-        //            //var doc = new Document();
-        //            //doc.Add(new Int32Field("Id", row.Id, Field.Store.YES));
-        //            //doc.Add(new TextField("Name", row.Name, Field.Store.YES));
-        //            //indexWriter.AddDocument(doc);
-        //            //}
-        //        }
-        //    }
-        //}
-
-
-
-
+                    string txtToIndex = $"{cvPropsToIndex.email}~~~{cvPropsToIndex.phone}~~~{cvPropsToIndex.emailSubject}~~~{cvPropsToIndex.cvTxt}";
+                    var doc = new Document();
+                    doc.Add(new TextField("Id", cvPropsToIndex.cvId, Field.Store.YES));
+                    doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
+                    indexWriter.AddDocument(doc);
+                }
+            }
+        }
+        
         public void DocumentDelete()
         {
         }

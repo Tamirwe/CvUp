@@ -23,24 +23,37 @@ namespace CvsPositionsLibrary
 
         }
 
-        public void AddImportedCv(ImportCvModel importCv)
+        public void AddNewCvToDb(ImportCvModel importCv)
         {
-            _cvsPositionsQueries.AddImportedCv(importCv);
+            _cvsPositionsQueries.AddNewCvToDb(importCv);
         }
 
-        public void GetAddCandidateId(ImportCvModel item)
+        public void AddNewCvToIndex(ImportCvModel importCv)
         {
-           candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(item.email);
+            CvPropsToIndexModel cvPropsToIndex = new CvPropsToIndexModel
+            {
+                candidateName = importCv.candidateName,
+                cvId = importCv.cvId,
+                cvTxt = importCv.cvTxt,
+                email = importCv.email,
+                phone = importCv.phone,
+                emailSubject = importCv.subject
+            };
+
+            _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);
+        }
+
+
+        public int GetAddCandidateId(int companyId, string email, string phone)
+        {
+            candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(email);
 
             if (cand == null)
             {
-                cand = _cvsPositionsQueries.AddNewCandidate(Convert.ToInt32(item.companyId), item.email,item.phone);
+                cand = _cvsPositionsQueries.AddNewCandidate(companyId, email, phone);
             }
 
-            if (cand != null)
-            {
-                item.candidateId = cand.id;
-            }
+            return cand.id;
         }
 
         public int GetUniqueCvId()
@@ -50,8 +63,8 @@ namespace CvsPositionsLibrary
 
         public void IndexCompanyCvs(int companyId)
         {
-            List<CompanyTextToIndexModel> CompanyTextToIndexList = _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
-            _luceneService.BuildCompanyIndex(companyId, CompanyTextToIndexList);
+            List<CvPropsToIndexModel> cvPropsToIndexList = _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
+            _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
         }
     }
 }

@@ -14,4 +14,9 @@ export class GeneralStore {
     const aaa = await this.generalApi.search();
     console.log(aaa);
   }
+
+  async getFileBase64() {
+    const aaa = await this.generalApi.getFileBase64();
+    return aaa.data;
+  }
 }

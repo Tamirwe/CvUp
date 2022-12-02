@@ -34,4 +34,13 @@ namespace DataModelsLibrary.Models
         public string? candidateName { get; set; } = "";
         public string? candidateOpinion { get; set; } = "";
     }
+
+    public class CvListItemModel
+    {
+        public string cvId { get; set; } = "";
+        public string? phone { get; set; } = "";
+        public string? email { get; set; } = "";
+        public string? emailSubject { get; set; } = "";
+        public string? candidateName { get; set; } = "";
+    }
 }

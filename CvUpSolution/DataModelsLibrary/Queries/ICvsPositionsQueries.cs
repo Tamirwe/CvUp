@@ -10,5 +10,6 @@ namespace DataModelsLibrary.Queries
         public candidate? GetCandidateByEmail(string email);
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
         public int GetUniqueCvId();
+        public List<CvListItemModel> GetCvsList(int companyId);
     }
 }

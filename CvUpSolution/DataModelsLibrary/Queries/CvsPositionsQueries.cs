@@ -99,5 +99,23 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
+        public List<CvListItemModel> GetCvsList(int companyId)
+        {
+            var query = from cand in dbContext.candidates
+                        join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
+                        join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
+                        where cand.company_id == companyId
+                        select new CvListItemModel
+                        {
+                            cvId = cvs.id,
+                            email = cand.email,
+                            emailSubject = cvs.subject,
+                            candidateName = cand.name,
+                            phone = cand.phone,
+                        };
+
+            return query.ToList();
+        }
+
     }
 }

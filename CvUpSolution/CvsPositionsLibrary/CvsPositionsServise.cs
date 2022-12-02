@@ -2,12 +2,6 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using LuceneLibrary;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CvsPositionsLibrary
 {
@@ -65,6 +59,12 @@ namespace CvsPositionsLibrary
         {
             List<CvPropsToIndexModel> cvPropsToIndexList = _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
             _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
+        }
+
+        public List<CvListItemModel> GetCvsList(int companyId)
+        {
+            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCvsList(companyId);
+            return cvsList;
         }
     }
 }

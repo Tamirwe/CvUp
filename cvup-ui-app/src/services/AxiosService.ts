@@ -61,7 +61,7 @@ export default function axiosService(
         } else {
           localStorage.removeItem("jwt");
           localStorage.removeItem("refreshToken");
-          document.location.href = "/";
+          // document.location.href = "/";
         }
       }
 

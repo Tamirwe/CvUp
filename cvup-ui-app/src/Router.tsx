@@ -1,6 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
+import { Home2 } from "./pages/Home2";
 import { Layout } from "./layouts/Layout";
 import { NotFound } from "./pages/NotFound";
 import { LayoutAuth } from "./layouts/LayoutAuth";

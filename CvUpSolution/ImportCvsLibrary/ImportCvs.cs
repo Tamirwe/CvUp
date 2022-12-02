@@ -11,6 +11,7 @@ using static DataModelsLibrary.GlobalConstant;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
+using System.Drawing.Imaging;
 
 namespace ImportCvsLibrary
 {
@@ -185,6 +186,7 @@ namespace ImportCvsLibrary
 
             Spire.Pdf.PdfDocument doc = new Spire.Pdf.PdfDocument();
             doc.LoadFromFile(fileNamePath);
+            //doc.SaveAsImage()
 
             StringBuilder buffer = new StringBuilder();
             PdfTextExtractOptions extractOptions = new PdfTextExtractOptions();
@@ -204,7 +206,15 @@ namespace ImportCvsLibrary
         private string GetCvTxtWord(string fileNamePath)
         {
             Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
+            //document.SaveToFile("Convert.PDF", Spire.Doc.FileFormat.PDF);
             string cvTxt = document.GetText();
+           System.Drawing.Image[] cvImages =  document.SaveToImages(Spire.Doc.Documents.ImageType.Bitmap);
+
+            //foreach (var item in cvImages)
+            //{
+            //    item.Save("sdf");
+            //}
+
             return RemoveCvExtraSpaces(cvTxt);
         }
 

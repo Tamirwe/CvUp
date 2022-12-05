@@ -7,14 +7,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { textFieldInterface } from "../../models/AuthModels";
+import { IForgotPassword } from "../../models/AuthModels";
 import { SelectModel } from "../../models/GeneralModels";
-import { emailValidte, validateField } from "../../utils/Validation";
+import { emailValidte } from "../../utils/Validation";
 
 interface props {
   resetPasswordSent: (email: string) => void;
@@ -24,55 +23,70 @@ export const ForgotPasswordForm = (props: props) => {
   const { authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [emailProps, setEmailProps] = useState<textFieldInterface>({
-    value: "",
+
+  const [formModel, setFormModel] = useState<IForgotPassword>({
+    email: "",
+    companyId: 0,
+  });
+  const [formValError, setFormValError] = useState({
+    email: false,
+    companyId: false,
+  });
+  const [formValErrorTxt, setFormValErrorTxt] = useState({
+    email: "",
+    companyId: "",
   });
 
-  const [companyId, setCompanyId] = useState(0);
-  const [userCompanies, setUserCompanies] = useState<SelectModel[]>();
+  const [userCompanies, setUserCompanies] = useState<SelectModel[]>([]);
+
+  const updateFieldError = (field: string, errTxt: string) => {
+    const isValid = errTxt === "" ? true : false;
+    setIsDirty(true);
+    setSubmitError("");
+
+    setFormValErrorTxt((currentProps) => ({
+      ...currentProps,
+      [field]: errTxt,
+    }));
+    setFormValError((currentProps) => ({
+      ...currentProps,
+      [field]: isValid === false,
+    }));
+
+    return isValid;
+  };
 
   const validateForm = () => {
     setSubmitError("");
 
     let isFormValid = true;
 
-    isFormValid =
-      validateField("email", emailProps, setEmailProps) && isFormValid;
+    let errTxt = emailValidte(formModel.email);
+    isFormValid = updateFieldError("email", errTxt) && isFormValid;
 
-    if (!isFormValid) {
-      setSubmitError("Incorrect email address, please try again");
+    if (userCompanies?.length > 0 && formModel.companyId === 0) {
+      isFormValid =
+        updateFieldError("companyId", "please select a company") && isFormValid;
     }
+
     return isFormValid;
   };
 
   const submitForm = async () => {
-    const response = await authStore.forgotPassword({
-      email: emailProps.value,
-      companyId,
-    });
+    const response = await authStore.forgotPassword(formModel);
 
-    if (!response.isSuccess) {
-      setSubmitError("Incorrect email address or password, please try again");
-    } else if (Array.isArray(response.data)) {
-      setUserCompanies(response.data);
-    } else if (response.data === "userNotFound") {
-      setSubmitError("Email not found");
-    } else if (response.data === "emailSent") {
-      props.resetPasswordSent(emailProps.value);
+    if (response.isSuccess) {
+      if (response.data === "emailSent") {
+        props.resetPasswordSent(formModel.email);
+      } else if (response.data === "userNotFound") {
+        setSubmitError("Email not found");
+      } else if (Array.isArray(response.data)) {
+        setUserCompanies(response.data);
+        updateFieldError("companyId", "please select a company");
+      }
+    } else {
+      setSubmitError("Incorrect email address, please try again");
     }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  const handleKeyDown = () => {
-    setIsDirty(true);
-    setSubmitError("");
   };
 
   return (
@@ -87,27 +101,34 @@ export const ForgotPasswordForm = (props: props) => {
           label="Email Address / Username"
           variant="outlined"
           onChange={(e) => {
-            setEmailProps((currentProps) => ({
+            setFormModel((currentProps) => ({
               ...currentProps,
-              value: e.target.value,
+              email: e.target.value,
             }));
+            updateFieldError("email", "");
           }}
-          value={emailProps.value}
+          error={formValError.email}
+          helperText={formValErrorTxt.email}
+          value={formModel.email}
         />
       </Grid>
-      {userCompanies?.length && (
+      {userCompanies.length > 0 && (
         <Grid item xs={12} mt={2}>
           <FormControl fullWidth>
             <InputLabel id="companylabel">Company</InputLabel>
             <Select
               labelId="companylabel"
               id="companySelect"
-              value={companyId.toString()}
               label="Company"
-              onChange={(event: SelectChangeEvent) => {
-                setIsDirty(true);
-                setCompanyId(parseInt(event.target.value));
+              onChange={(e) => {
+                setFormModel((currentProps) => ({
+                  ...currentProps,
+                  companyId: parseInt(e.target.value),
+                }));
+                updateFieldError("companyId", "");
               }}
+              error={formValError.companyId}
+              value={formModel.companyId.toString()}
             >
               <MenuItem value="0" key="0"></MenuItem>
               {userCompanies?.map((company) => {
@@ -118,9 +139,7 @@ export const ForgotPasswordForm = (props: props) => {
                 );
               })}
             </Select>
-            <FormHelperText error>
-              {!companyId && "please select a company"}
-            </FormHelperText>
+            <FormHelperText error>{formValErrorTxt.companyId}</FormHelperText>
           </FormControl>
         </Grid>
       )}

@@ -1,17 +1,11 @@
-export interface UserRegistrationModel {
+export interface IUserRegistration {
   firstName: string;
   lastName: string;
   companyName: string;
   email: string;
   password: string;
 }
-export interface textFieldInterface {
-  error?: boolean;
-  value: string;
-  helperText?: string;
-}
-
-export interface UserLoginModel {
+export interface IUserLogin {
   email: string;
   password: string;
   rememberMe: boolean;
@@ -24,9 +18,9 @@ export interface ResponseModel<T> {
   error: string;
 }
 
-export interface ForgotPasswordModel {
+export interface IForgotPassword {
   email: string;
-  companyId?: number;
+  companyId: number;
 }
 
 export interface TokensModel {

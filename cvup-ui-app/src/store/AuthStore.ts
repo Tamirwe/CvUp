@@ -1,9 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import { LOGIN_TYPE } from "../constants/AuthConsts";
 import {
-  ForgotPasswordModel,
-  UserLoginModel,
-  UserRegistrationModel,
+  IForgotPassword,
+  IUserLogin,
+  IUserRegistration,
 } from "../models/AuthModels";
 import { ClaimsModel } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
@@ -30,11 +30,11 @@ export class AuthStore {
     }
   }
 
-  async registerUser(registrationInfo: UserRegistrationModel) {
+  async registerUser(registrationInfo: IUserRegistration) {
     return await this.authApi.registerUser(registrationInfo);
   }
 
-  async login(loginInfo: UserLoginModel, loginType: string) {
+  async login(loginInfo: IUserLogin, loginType: string) {
     let response;
 
     switch (loginType) {
@@ -68,7 +68,7 @@ export class AuthStore {
     localStorage.removeItem("refreshToken");
   }
 
-  async forgotPassword(info: ForgotPasswordModel) {
+  async forgotPassword(info: IForgotPassword) {
     return await this.authApi.forgotPassword(info);
   }
 }

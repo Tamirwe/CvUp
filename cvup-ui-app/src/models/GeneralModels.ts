@@ -10,3 +10,13 @@ export interface ClaimsModel {
   email?: string;
   role?: string;
 }
+
+export interface CvListItemModel {
+  cvId: string;
+  encriptedId: string;
+  phone?: string;
+  email?: string;
+  emailSubject: string;
+  candidateName?: string;
+}
+

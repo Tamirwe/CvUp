@@ -12,20 +12,16 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import {
-  textFieldInterface,
-  UserRegistrationModel,
-} from "../../models/AuthModels";
+import { IUserRegistration } from "../../models/AuthModels";
 import {
   emailValidte,
   passwordValidate,
   textFieldValidte,
-  validateField,
 } from "../../utils/Validation";
 
 interface IProps {
@@ -40,49 +36,63 @@ export const RegisterForm = (props: IProps) => {
   const [isDirty, setIsDirty] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [submitError, setSubmitError] = useState("");
-
-  const [firstNameProps, setFirstNameProps] = useState<textFieldInterface>({
-    value: "",
-  });
-  const [lastNameProps, setLastNameProps] = useState<textFieldInterface>({
-    value: "",
-  });
-  const [companyProps, setCompanyProps] = useState<textFieldInterface>({
-    value: "",
-  });
-  const [emailProps, setEmailProps] = useState<textFieldInterface>({
-    value: "",
-  });
-  const [passwordProps, setPasswordProps] = useState<textFieldInterface>({
-    value: "",
-  });
   const [isTerms, setIsTerms] = useState(false);
+  const [formModel, setFormModel] = useState<IUserRegistration>({
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    email: "",
+    password: "",
+  });
+  const [formValError, setFormValError] = useState({
+    firstName: false,
+    lastName: false,
+    companyName: false,
+    email: false,
+    password: false,
+  });
+  const [formValErrorTxt, setFormValErrorTxt] = useState({
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    email: "",
+    password: "",
+  });
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  const handleKeyDown = () => {
+  const updateFieldError = (field: string, errTxt: string) => {
+    const isValid = errTxt === "" ? true : false;
     setIsDirty(true);
     setSubmitError("");
+
+    setFormValErrorTxt((currentProps) => ({
+      ...currentProps,
+      [field]: errTxt,
+    }));
+    setFormValError((currentProps) => ({
+      ...currentProps,
+      [field]: isValid === false,
+    }));
+
+    return isValid;
   };
 
   const validateForm = () => {
     let isFormValid = true;
 
-    isFormValid = validateField("text", firstNameProps, setFirstNameProps);
-    isFormValid =
-      validateField("text", lastNameProps, setLastNameProps) && isFormValid;
-    isFormValid =
-      validateField("text", companyProps, setCompanyProps) && isFormValid;
-    isFormValid =
-      validateField("email", emailProps, setEmailProps) && isFormValid;
-    isFormValid =
-      validateField("password", passwordProps, setPasswordProps) && isFormValid;
+    let errTxt = textFieldValidte(formModel.firstName, true, true, true);
+    isFormValid = updateFieldError("firstName", errTxt) && isFormValid;
+
+    errTxt = textFieldValidte(formModel.lastName, true, true, true);
+    isFormValid = updateFieldError("lastName", errTxt) && isFormValid;
+
+    errTxt = textFieldValidte(formModel.companyName, true, true, true);
+    isFormValid = updateFieldError("companyName", errTxt) && isFormValid;
+
+    errTxt = emailValidte(formModel.email);
+    isFormValid = updateFieldError("email", errTxt) && isFormValid;
+
+    errTxt = passwordValidate(formModel.password);
+    isFormValid = updateFieldError("password", errTxt) && isFormValid;
 
     if (!isTerms) {
       setSubmitError("you must agree to the terms and conditions");
@@ -92,22 +102,14 @@ export const RegisterForm = (props: IProps) => {
   };
 
   const submitForm = async () => {
-    const registrationInfo: UserRegistrationModel = {
-      firstName: firstNameProps.value,
-      lastName: lastNameProps.value,
-      companyName: companyProps.value,
-      email: emailProps.value,
-      password: passwordProps.value,
-    };
-
-    const response = await authStore.registerUser(registrationInfo);
+    const response = await authStore.registerUser(formModel);
 
     if (response.isSuccess) {
       if (response.data === "duplicateUserPass") {
         return setSubmitError("Duplcate User Name and Password.");
       }
 
-      props.registerFormComplete(emailProps.value);
+      props.registerFormComplete(formModel.email);
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }
@@ -128,14 +130,15 @@ export const RegisterForm = (props: IProps) => {
                 label="First Name"
                 variant="outlined"
                 onChange={(e) => {
-                  setFirstNameProps((currentProps) => ({
+                  setFormModel((currentProps) => ({
                     ...currentProps,
-                    value: e.target.value,
+                    firstName: e.target.value,
                   }));
+                  updateFieldError("firstName", "");
                 }}
-                error={firstNameProps.error}
-                helperText={firstNameProps.helperText}
-                value={firstNameProps.value}
+                error={formValError.firstName}
+                helperText={formValErrorTxt.firstName}
+                value={formModel.firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -148,14 +151,15 @@ export const RegisterForm = (props: IProps) => {
                 label="Last Name"
                 variant="outlined"
                 onChange={(e) => {
-                  setLastNameProps((currentProps) => ({
+                  setFormModel((currentProps) => ({
                     ...currentProps,
-                    value: e.target.value,
+                    lastName: e.target.value,
                   }));
+                  updateFieldError("lastName", "");
                 }}
-                error={lastNameProps.error}
-                helperText={lastNameProps.helperText}
-                value={lastNameProps.value}
+                error={formValError.lastName}
+                helperText={formValErrorTxt.lastName}
+                value={formModel.firstName}
               />
             </Grid>
           </Grid>
@@ -170,14 +174,15 @@ export const RegisterForm = (props: IProps) => {
             label="Company"
             variant="outlined"
             onChange={(e) => {
-              setCompanyProps((currentProps) => ({
+              setFormModel((currentProps) => ({
                 ...currentProps,
-                value: e.target.value,
+                companyName: e.target.value,
               }));
+              updateFieldError("companyName", "");
             }}
-            error={companyProps.error}
-            helperText={companyProps.helperText}
-            value={companyProps.value}
+            error={formValError.companyName}
+            helperText={formValErrorTxt.companyName}
+            value={formModel.companyName}
           />
         </Grid>
         <Grid item xs={12}>
@@ -190,14 +195,15 @@ export const RegisterForm = (props: IProps) => {
             label="Email Address / Username"
             variant="outlined"
             onChange={(e) => {
-              setEmailProps((currentProps) => ({
+              setFormModel((currentProps) => ({
                 ...currentProps,
-                value: e.target.value,
+                email: e.target.value,
               }));
+              updateFieldError("email", "");
             }}
-            error={emailProps.error}
-            helperText={emailProps.helperText}
-            value={emailProps.value}
+            error={formValError.email}
+            helperText={formValErrorTxt.email}
+            value={formModel.email}
           />
         </Grid>
         <Grid item xs={12}>
@@ -227,14 +233,15 @@ export const RegisterForm = (props: IProps) => {
               ),
             }}
             onChange={(e) => {
-              setPasswordProps((currentProps) => ({
+              setFormModel((currentProps) => ({
                 ...currentProps,
-                value: e.target.value,
+                password: e.target.value,
               }));
+              updateFieldError("password", "");
             }}
-            error={passwordProps.error}
-            helperText={passwordProps.helperText}
-            value={passwordProps.value}
+            error={formValError.password}
+            helperText={formValErrorTxt.password}
+            value={formModel.password}
           />
           <FormControlLabel
             control={

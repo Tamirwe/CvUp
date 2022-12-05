@@ -1,14 +1,13 @@
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { Grid } from "@mui/material";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
-import { PositionFormWrapper } from "../components/positions/PositionFormWrapper";
+import { CvsListWrapper } from "../components/cvs/CvsListWrapper";
 import { useStore } from "../Hooks/useStore";
 
 export const Home: React.FC = observer(() => {
-  const { authStore, generalStore } = useStore();
-  const [doc, setDoc] = useState(
-    "http://89.237.94.86:8010/api/Download/GetWord2"
-  );
+  const { cvsStore } = useStore();
+  // const [doc, setDoc] = useState(
+  //   "http://89.237.94.86:8010/api/Download/GetWord2"
+  // );
   // const docs: any = [];
 
   // useEffect(() => {
@@ -51,44 +50,56 @@ export const Home: React.FC = observer(() => {
   // const docs = [{ uri: https://localhost:7217/api/Download/GetCv }];
 
   return (
-    <div>
-      <button
-        onClick={() => {
-          setDoc("http://89.237.94.86:8010/api/Download/GetWord");
-        }}
-      >
-        word 1
-      </button>
-      <button
-        onClick={() => {
-          setDoc("http://89.237.94.86:8010/api/Download/GetWord2");
-        }}
-      >
-        word 2
-      </button>
-      <button
-        onClick={() => {
-          setDoc("http://89.237.94.86:8010/api/Download/GetCv");
-        }}
-      >
-        pdf
-      </button>
-      <div style={{ height: "100%" }}>
+    <Grid container>
+      <Grid item xs={12} md={8}>
+        {/* <div style={{ display: "flex" }}> */}
+        {/* <button
+          onClick={() => {
+            setDoc("http://89.237.94.86:8010/api/Download/GetWord");
+          }}
+        >
+          word 1
+        </button>
+        <button
+          onClick={() => {
+            setDoc("http://89.237.94.86:8010/api/Download/GetWord2");
+          }}
+        >
+          word 2
+        </button>
+        <button
+          onClick={() => {
+            setDoc("http://89.237.94.86:8010/api/Download/GetCv");
+          }}
+        >
+          pdf
+        </button> */}
+        {/* <div style={{ height: "100vh", width: "60vw", position: "relative" }}> */}
         {/* <img src="http://localhost:8010/api/Download/GetJpg" width={1500} /> */}
         <iframe
+          title="iViewDoc"
           seamless
           // src="https://drive.google.com/viewer?embedded=true&hl=en-US&url=http://89.237.94.86:8025/cv_57064.doc"
-          src={`https://drive.google.com/viewer?url=${doc}&embedded=true`}
+          src={`https://drive.google.com/viewer?url=${cvsStore.docIdEncript}&embedded=true`}
           style={{
             overflow: "hidden",
-            height: "100%",
-            width: "80%",
-            position: "absolute",
+            height: "99vh",
+            width: "100%",
+            border: "0",
+            margin: "0",
+            padding: "0",
           }}
           width="80%"
         />
-      </div>
-    </div>
+        {/* </div> */}
+      </Grid>
+      <Grid>
+        <div>
+          <CvsListWrapper />
+        </div>
+      </Grid>
+    </Grid>
+
     // <div>
     //   <img src="https://localhost:7217/api/Download/GetJpg" width={1500} />
     // </div>

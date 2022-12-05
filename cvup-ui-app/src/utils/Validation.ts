@@ -1,6 +1,3 @@
-import { SetStateAction } from "react";
-import { textFieldInterface } from "../models/AuthModels";
-
 /* eslint-disable no-useless-escape */
 
 export const textFieldValidte = (
@@ -67,45 +64,4 @@ export const passwordValidate = (p: string) => {
   }
 
   return "";
-};
-
-export const validateField = (
-  typeValidate: string,
-  field: textFieldInterface,
-  setField: (value: SetStateAction<textFieldInterface>) => void
-) => {
-  let isFormValid = true;
-  let fieldError = "";
-
-  switch (typeValidate) {
-    case "email":
-      fieldError = emailValidte(field.value);
-      break;
-    case "password":
-      fieldError = passwordValidate(field.value);
-      break;
-    case "text":
-      fieldError = textFieldValidte(field.value, true, true, true);
-      break;
-    default:
-      fieldError = textFieldValidte(field.value, true, true, true);
-      break;
-  }
-
-  setField((currentProps) => ({
-    ...currentProps,
-    error: false,
-    helperText: "",
-  }));
-
-  if (fieldError) {
-    isFormValid = false;
-    setField((currentProps) => ({
-      ...currentProps,
-      error: true,
-      helperText: fieldError,
-    }));
-  }
-
-  return isFormValid;
 };

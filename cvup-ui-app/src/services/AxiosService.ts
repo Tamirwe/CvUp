@@ -18,7 +18,9 @@ export default function axiosService(
     const newTokens: TokensModel = { token, refreshToken };
 
     try {
-      return (await instance.post<TokensModel>("Auth/Refresh", newTokens)).data;
+      const res = (await instance.post<TokensModel>("Auth/Refresh", newTokens))
+        .data;
+      return res;
     } catch (error: any) {
       return null;
     }

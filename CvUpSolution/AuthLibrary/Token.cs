@@ -25,7 +25,7 @@ namespace AuthLibrary
             {
                 var user = _authQueries.getUser(userId);
 
-                if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry > DateTime.Now)
+                if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry < DateTime.Now)
                 {
                     return GeneratedToken(principal.Claims, user,true);
                 }

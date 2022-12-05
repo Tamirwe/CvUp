@@ -1,13 +1,13 @@
 import {
-  ForgotPasswordModel,
+  IForgotPassword,
   TokensModel,
-  UserLoginModel,
-  UserRegistrationModel,
+  IUserLogin,
+  IUserRegistration,
 } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
 export default class AuthApi extends BaseApi {
-  async registerUser(registrationInfo: UserRegistrationModel) {
+  async registerUser(registrationInfo: IUserRegistration) {
     const response = await this.apiWrapper(async () => {
       const data = (await this.http.post("Auth/Registration", registrationInfo))
         .data;
@@ -17,7 +17,7 @@ export default class AuthApi extends BaseApi {
     return response;
   }
 
-  async login(loginInfo: UserLoginModel) {
+  async login(loginInfo: IUserLogin) {
     return await this.apiWrapper(async () => {
       const data = (await this.http.post<TokensModel>("Auth/Login", loginInfo))
         .data;
@@ -25,7 +25,7 @@ export default class AuthApi extends BaseApi {
     });
   }
 
-  async forgotPassword(info: ForgotPasswordModel) {
+  async forgotPassword(info: IForgotPassword) {
     const response = await this.apiWrapper(async () => {
       const data = (await this.http.post("Auth/ForgotPassword", info)).data;
       return data;
@@ -41,7 +41,7 @@ export default class AuthApi extends BaseApi {
     });
   }
 
-  async completeRegistration(loginInfo: UserLoginModel) {
+  async completeRegistration(loginInfo: IUserLogin) {
     return await this.apiWrapper(async () => {
       const data = (
         await this.http.post<TokensModel>(
@@ -53,7 +53,7 @@ export default class AuthApi extends BaseApi {
     });
   }
 
-  async passwordReset(loginInfo: UserLoginModel) {
+  async passwordReset(loginInfo: IUserLogin) {
     return await this.apiWrapper(async () => {
       const data = (
         await this.http.post<TokensModel>("Auth/PasswordReset", loginInfo)

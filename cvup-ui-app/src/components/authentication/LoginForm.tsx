@@ -11,18 +11,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { textFieldInterface, UserLoginModel } from "../../models/AuthModels";
-import {
-  emailValidte,
-  passwordValidate,
-  textFieldValidte,
-  validateField,
-} from "../../utils/Validation";
+import { IUserLogin } from "../../models/AuthModels";
+import { emailValidte, passwordValidate } from "../../utils/Validation";
 
 interface IProps {
   loginType: string;
@@ -32,63 +27,63 @@ export const LoginForm = ({ loginType }: IProps) => {
   const navigate = useNavigate();
   const { authStore } = useStore();
   const params = new URLSearchParams(window.location.search);
-
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [emailProps, setEmailProps] = useState<textFieldInterface>({
-    value: "",
+
+  const [formModel, setFormModel] = useState<IUserLogin>({
+    email: "",
+    password: "",
+    rememberMe: false,
+    key: params.get("sk") || "",
   });
-  const [passwordProps, setPasswordProps] = useState<textFieldInterface>({
-    value: "",
+  const [formValError, setFormValError] = useState({
+    email: false,
+    password: false,
+  });
+  const [formValErrorTxt, setFormValErrorTxt] = useState({
+    email: "",
+    password: "",
   });
 
-  const [isRemember, setIsRemember] = useState(false);
+  const updateFieldError = (field: string, errTxt: string) => {
+    const isValid = errTxt === "" ? true : false;
+    setIsDirty(true);
+    setSubmitError("");
+
+    setFormValErrorTxt((currentProps) => ({
+      ...currentProps,
+      [field]: errTxt,
+    }));
+    setFormValError((currentProps) => ({
+      ...currentProps,
+      [field]: isValid === false,
+    }));
+
+    return isValid;
+  };
 
   const validateForm = () => {
     setSubmitError("");
 
     let isFormValid = true;
+    let errTxt = emailValidte(formModel.email);
+    isFormValid = updateFieldError("email", errTxt) && isFormValid;
 
-    isFormValid =
-      validateField("email", emailProps, setEmailProps) && isFormValid;
-    isFormValid =
-      validateField("password", passwordProps, setPasswordProps) && isFormValid;
+    errTxt = passwordValidate(formModel.password);
+    isFormValid = updateFieldError("password", errTxt) && isFormValid;
 
-    if (!isFormValid) {
-      setSubmitError("Incorrect email address or password.");
-    }
     return isFormValid;
   };
 
   const submitForm = async () => {
-    const loginInfo: UserLoginModel = {
-      email: emailProps.value,
-      password: passwordProps.value,
-      rememberMe: isRemember,
-      key: params.get("sk") || "",
-    };
-
-    const isSuccess = await authStore.login(loginInfo, loginType);
+    const isSuccess = await authStore.login(formModel, loginType);
 
     if (isSuccess) {
       navigate("/");
     } else {
       setSubmitError("Incorrect email address or password.");
     }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  const handleKeyDown = () => {
-    setIsDirty(true);
-    setSubmitError("");
   };
 
   return (
@@ -104,12 +99,15 @@ export const LoginForm = ({ loginType }: IProps) => {
             label="Email Address / Username"
             variant="outlined"
             onChange={(e) => {
-              setEmailProps((currentProps) => ({
+              setFormModel((currentProps) => ({
                 ...currentProps,
-                value: e.target.value,
+                email: e.target.value,
               }));
+              updateFieldError("email", "");
             }}
-            value={emailProps.value}
+            error={formValError.email}
+            helperText={formValErrorTxt.email}
+            value={formModel.email}
           />
         </Grid>
         <Grid item xs={12}>
@@ -139,45 +137,54 @@ export const LoginForm = ({ loginType }: IProps) => {
               ),
             }}
             onChange={(e) => {
-              setPasswordProps((currentProps) => ({
+              setFormModel((currentProps) => ({
                 ...currentProps,
-                value: e.target.value,
+                password: e.target.value,
               }));
+              updateFieldError("password", "");
             }}
-            value={passwordProps.value}
+            value={formModel.password}
+            error={formValError.password}
+            helperText={formValErrorTxt.password}
           />
-        </Grid>
-        {loginType == "login" && (
-          <Grid item xs={12}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              spacing={1}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isRemember}
-                    onChange={(e) => {
-                      setIsRemember(e.target.checked);
-                    }}
-                  />
-                }
-                label={
-                  <Typography variant="subtitle2">Keep me sign in</Typography>
-                }
-              />
-              <Typography
-                component={Link}
-                to="/forgot-password"
-                variant="subtitle2"
+        </Grid>;
+        {
+          loginType === "login" && (
+            <Grid item xs={12}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                spacing={1}
               >
-                Forgot Password?
-              </Typography>
-            </Stack>
-          </Grid>
-        )}
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formModel.rememberMe}
+                      onChange={(e) => {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          rememberMe: e.target.checked,
+                        }));
+                        updateFieldError("rememberMe", "");
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography variant="subtitle2">Keep me sign in</Typography>
+                  }
+                />
+                <Typography
+                  component={Link}
+                  to="/forgot-password"
+                  variant="subtitle2"
+                >
+                  Forgot Password?
+                </Typography>
+              </Stack>
+            </Grid>
+          );
+        }
         {submitError && (
           <Grid item xs={12}>
             <FormHelperText error>{submitError}</FormHelperText>

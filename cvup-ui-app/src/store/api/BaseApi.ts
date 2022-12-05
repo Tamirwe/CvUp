@@ -7,6 +7,7 @@ export default abstract class BaseApi {
   async apiWrapper<T>(apiCall: () => Promise<T>): Promise<ResponseModel<T>> {
     try {
       const data = await apiCall();
+      // return Promise.resolve({ data, isSuccess: true, error: "" });
       return Promise.resolve({ data, isSuccess: true, error: "" });
     } catch (error: any) {
       const { errorMessage } = error;

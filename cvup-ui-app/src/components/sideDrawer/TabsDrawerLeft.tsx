@@ -1,5 +1,6 @@
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react";
+import { CvsList } from "../cvs/CvsList";
 
 interface IProps {
   tabSelected: number;
@@ -11,6 +12,8 @@ export const TabsDrawerLeft = ({ tabSelected }: IProps) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const handleCvClick = () => {};
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -25,11 +28,9 @@ export const TabsDrawerLeft = ({ tabSelected }: IProps) => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Positions
+        <CvsList />
       </TabPanel>
-      <TabPanel value={value} index={1}>
-        Candidates
-      </TabPanel>
+      <TabPanel value={value} index={1}></TabPanel>
     </Box>
   );
 };
@@ -51,11 +52,7 @@ function TabPanel(props: ITabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }

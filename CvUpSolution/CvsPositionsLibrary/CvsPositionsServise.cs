@@ -1,17 +1,21 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using GeneralLibrary;
 using LuceneLibrary;
+using Microsoft.Extensions.Configuration;
 
 namespace CvsPositionsLibrary
 {
     public class CvsPositionsServise: ICvsPositionsServise
     {
+        private IConfiguration _configuration;
         private ICvsPositionsQueries _cvsPositionsQueries;
         private ILuceneService _luceneService;
 
-        public CvsPositionsServise(ICvsPositionsQueries cvsPositionsQueries, ILuceneService luceneService)
+        public CvsPositionsServise(IConfiguration config, ICvsPositionsQueries cvsPositionsQueries, ILuceneService luceneService)
         {
+            _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneService = luceneService;
 
@@ -64,6 +68,12 @@ namespace CvsPositionsLibrary
         public List<CvListItemModel> GetCvsList(int companyId)
         {
             List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCvsList(companyId);
+
+            foreach (var item in cvsList)
+            {
+                item.encriptedId= Encriptor.Encrypt($"{item.cvId}~{DateTime.Now.ToString("yyyy-MM-dd")}", _configuration["GlobalSettings:cvsEncryptorKey"]);
+            }
+
             return cvsList;
         }
     }

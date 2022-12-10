@@ -9,17 +9,15 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useState } from "react";
-import { DrawerToolbar } from "./DrawerToolbar";
 import { TabsDrawerLeft } from "./TabsDrawerLeft";
 import { MdMenu, MdLogout } from "react-icons/md";
 
-export const DrawerLeft = () => {
-  const drawerWidth = 340;
-  const [isOpen, setIsOpen] = useState(true);
+interface IProps {
+  isOpen: boolean;
+}
 
-  const handleDrawerToggle = () => {
-    setIsOpen(!isOpen);
-  };
+export const DrawerLeft = ({ isOpen }: IProps) => {
+  const drawerWidth = 340;
 
   return (
     <Drawer
@@ -35,8 +33,8 @@ export const DrawerLeft = () => {
         },
       }}
     >
-      <DrawerToolbar onToggleDrawer={handleDrawerToggle} />
-      <Box sx={{ display: "flex" }}>
+      <Toolbar />
+      <Box sx={{ overflow: "auto", display: "flex" }}>
         <List>
           {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>

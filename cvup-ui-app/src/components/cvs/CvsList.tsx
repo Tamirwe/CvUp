@@ -25,7 +25,7 @@ export const CvsList = observer(() => {
           <ListItem key={cv.cvId}>
             <ListItemButton
               onClick={() => {
-                cvsStore.setDoc(cv.encriptedId);
+                cvsStore.setDoc(cv.cvId);
               }}
             >
               <ListItemText primary={cv.emailSubject} />

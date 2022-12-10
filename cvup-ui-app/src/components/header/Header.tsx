@@ -8,7 +8,7 @@ interface IProps {
   onToggleDrawer: () => void;
 }
 
-export const TopBar = (props: IProps) => {
+export const Header = (props: IProps) => {
   const { authStore } = useStore();
 
   useEffect(() => {}, []);
@@ -17,6 +17,7 @@ export const TopBar = (props: IProps) => {
   return (
     <AppBar
       position="fixed"
+      component="nav"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar>

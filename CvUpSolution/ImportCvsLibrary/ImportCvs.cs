@@ -206,7 +206,10 @@ namespace ImportCvsLibrary
         private string GetCvTxtWord(string fileNamePath)
         {
             Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
-            //document.SaveToFile("Convert.PDF", Spire.Doc.FileFormat.PDF);
+
+            //MemoryStream dstStream = new MemoryStream();
+            //document.SaveToFile(dstStream, Spire.Doc.FileFormat.PDF);
+
             string cvTxt = document.GetText();
            System.Drawing.Image[] cvImages =  document.SaveToImages(Spire.Doc.Documents.ImageType.Bitmap);
 
@@ -241,21 +244,21 @@ namespace ImportCvsLibrary
             return docAsciiSum;
         }
 
-        private string GetSaveAttachmentLocation(MimeEntity attachment,string companyId,int uqId, int counter, string fileExtension, out string cvId)
+        private string GetSaveAttachmentLocation(MimeEntity attachment, string companyId, int uqId, int counter, string fileExtension, out string cvId)
         {
-            string companyFolder = companyId+"_";
-            
-            string yearFolder =  DateTime.Now.Year.ToString("0000")+"_";
+            string companyFolder = companyId + "_";
+
+            string yearFolder = DateTime.Now.Year.ToString("0000") + "_";
             string monthFolder = DateTime.Now.Month.ToString("00") + "_";
 
             Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}");
             Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}");
             Directory.CreateDirectory($"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}\\{monthFolder}");
 
-            string cvDay =  DateTime.Now.Day.ToString("00") + "_";
-            string cvTime =  DateTime.Now.ToString("HHmm") + "_";
+            string cvDay = DateTime.Now.Day.ToString("00") + "_";
+            string cvTime = DateTime.Now.ToString("HHmm") + "_";
 
-            cvId = companyFolder + yearFolder + monthFolder + cvDay + cvTime + uqId.ToString() + counter.ToString();
+            cvId = $"{companyFolder}{yearFolder}{monthFolder}{cvDay}{cvTime}{uqId}{counter}_{fileExtension.Remove(0, 1)}";
             string fileName = cvId + fileExtension;
             var fileNamePath = $"{_cvsRootFolder}\\{companyFolder}\\{yearFolder}\\{monthFolder}\\{fileName}";
             return fileNamePath;

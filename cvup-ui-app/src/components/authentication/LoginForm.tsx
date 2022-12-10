@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -87,11 +87,12 @@ export const LoginForm = ({ loginType }: IProps) => {
   };
 
   return (
-    <form noValidate spellCheck="false">
+    <form noValidate spellCheck="false" autoComplete="off">
       <Grid container>
         <Grid item xs={12}>
           <TextField
             fullWidth
+            autoFocus
             required
             margin="normal"
             type="text"
@@ -105,9 +106,10 @@ export const LoginForm = ({ loginType }: IProps) => {
               }));
               updateFieldError("email", "");
             }}
+            InputLabelProps={{ shrink: true }}
+            value={formModel.email}
             error={formValError.email}
             helperText={formValErrorTxt.email}
-            value={formModel.email}
           />
         </Grid>
         <Grid item xs={12}>
@@ -143,48 +145,47 @@ export const LoginForm = ({ loginType }: IProps) => {
               }));
               updateFieldError("password", "");
             }}
+            InputLabelProps={{ shrink: true }}
             value={formModel.password}
             error={formValError.password}
             helperText={formValErrorTxt.password}
           />
-        </Grid>;
-        {
-          loginType === "login" && (
-            <Grid item xs={12}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={1}
+        </Grid>
+        {loginType === "login" && (
+          <Grid item xs={12}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              spacing={1}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formModel.rememberMe}
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        rememberMe: e.target.checked,
+                      }));
+                      updateFieldError("rememberMe", "");
+                    }}
+                  />
+                }
+                label={
+                  <Typography variant="subtitle2">Keep me sign in</Typography>
+                }
+              />
+              <Typography
+                component={Link}
+                to="/forgot-password"
+                variant="subtitle2"
               >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formModel.rememberMe}
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          rememberMe: e.target.checked,
-                        }));
-                        updateFieldError("rememberMe", "");
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography variant="subtitle2">Keep me sign in</Typography>
-                  }
-                />
-                <Typography
-                  component={Link}
-                  to="/forgot-password"
-                  variant="subtitle2"
-                >
-                  Forgot Password?
-                </Typography>
-              </Stack>
-            </Grid>
-          );
-        }
+                Forgot Password?
+              </Typography>
+            </Stack>
+          </Grid>
+        )}
         {submitError && (
           <Grid item xs={12}>
             <FormHelperText error>{submitError}</FormHelperText>

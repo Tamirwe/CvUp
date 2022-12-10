@@ -1,7 +1,6 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
-import { Layout } from "./layouts/Layout";
 import { NotFound } from "./pages/NotFound";
 import { LayoutAuth } from "./layouts/LayoutAuth";
 import { LayoutNotAuth } from "./layouts/LayoutNotAuth";
@@ -12,6 +11,8 @@ import { Terms } from "./components/authentication/Terms";
 import { PasswordReset } from "./pages/authentication/PasswordReset";
 import { useStore } from "./Hooks/useStore";
 import { CompleteRegistration } from "./pages/authentication/CompleteRegistration";
+import { Home2 } from "./pages/Home2";
+import { Cvs } from "./pages/Cvs";
 
 const AuthRoutes = () => {
   const rootStore = useStore();
@@ -21,33 +22,29 @@ const AuthRoutes = () => {
 };
 
 const Router = () => {
+  const { authStore } = useStore();
+
   return (
     <Routes>
-      <Route element={<Layout />}>
-        {/* {rootStore.authStore.isLoggedIn ? (
-            <Route element={<LayoutAuth />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-          ) : ( */}
-        <Route element={<AuthRoutes />}>
-          <Route element={<LayoutAuth />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
+      <Route element={<AuthRoutes />}>
+        <Route element={<LayoutAuth />}>
+          <Route path="/" element={<Cvs />} />
+          <Route path="/h1" element={<Home />} />
+          <Route path="/h2" element={<Home2 />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-        <Route element={<LayoutNotAuth />}>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/complete-registration"
-            element={<CompleteRegistration />}
-          />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/password-reset" element={<PasswordReset />} />
-          <Route path="/terms" element={<Terms />} />
-        </Route>
+      </Route>
+      <Route element={<LayoutNotAuth />}>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/complete-registration"
+          element={<CompleteRegistration />}
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
+        <Route path="/terms" element={<Terms />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

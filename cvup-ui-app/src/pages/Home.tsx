@@ -80,7 +80,7 @@ export const Home: React.FC = observer(() => {
           title="iViewDoc"
           seamless
           // src="https://drive.google.com/viewer?embedded=true&hl=en-US&url=http://89.237.94.86:8025/cv_57064.doc"
-          src={`https://drive.google.com/viewer?url=${cvsStore.docIdEncript}&embedded=true`}
+          src={`https://drive.google.com/viewer?embedded=true&url=${cvsStore.cvId}`}
           style={{
             overflow: "hidden",
             height: "99vh",

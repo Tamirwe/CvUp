@@ -6,7 +6,7 @@ import { RootStore } from "./RootStore";
 export class CvsStore {
   private cvsApi;
   cvsList: CvListItemModel[] = [];
-  docIdEncript: string = "http://89.237.94.86:8010/api/Download/GetWord2";
+  cvId: string = "";
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -20,8 +20,10 @@ export class CvsStore {
     });
   }
 
-  setDoc(docIdEncript: string) {
-    this.docIdEncript = docIdEncript;
+  setDoc(cvId: string) {
+    runInAction(() => {
+      this.cvId = cvId;
+    });
   }
   //   async search() {
   //     const aaa = await this.cvsApi.search();

@@ -14,9 +14,7 @@ string CorsPolicy = "_corsPolicy";
 
 builder.Services.AddCors(options =>    options.AddPolicy(name: CorsPolicy,
                       builder => builder.WithOrigins("http://localhost:3000",
-                      "http://docs.google.com",
-                      "https://6094-89-237-94-86.eu.ngrok.io",
-                      "http://localhost:3001").AllowAnyHeader().AllowAnyMethod())
+                      "http://efc5-89-237-94-86.eu.ngrok.io").AllowAnyHeader().AllowAnyMethod())
 );
 
 
@@ -91,7 +89,7 @@ app.ConfigureSwagger();
 //    app.UseSwaggerUI();
 //}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

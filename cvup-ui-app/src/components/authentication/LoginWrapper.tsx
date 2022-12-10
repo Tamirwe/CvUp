@@ -1,4 +1,5 @@
 import { Grid, Stack, Typography, useTheme } from "@mui/material";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { LOGIN_TYPE } from "../../constants/AuthConsts";
 import { LoginForm } from "./LoginForm";
@@ -8,7 +9,12 @@ interface IProps {
 }
 
 export const LoginWrapper = ({ loginType }: IProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const theme = useTheme();
+
+  useEffect(() => {
+    ref.current?.click();
+  });
 
   const title = () => {
     switch (loginType) {
@@ -22,7 +28,7 @@ export const LoginWrapper = ({ loginType }: IProps) => {
   };
 
   return (
-    <Grid container>
+    <Grid container ref={ref}>
       <Grid item xs={12}>
         <Stack
           direction="row"

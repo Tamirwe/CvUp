@@ -19,9 +19,11 @@ namespace Database.models
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
+        public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
+        public virtual DbSet<department> departments { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
@@ -30,8 +32,11 @@ namespace Database.models
         public virtual DbSet<enum_position_status> enum_position_statuses { get; set; } = null!;
         public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
+        public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
+        public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
+        public virtual DbSet<position_user> position_users { get; set; } = null!;
         public virtual DbSet<positions_incremental> positions_incrementals { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -116,6 +121,31 @@ namespace Database.models
                     .HasConstraintName("fk_companies_activate_status_id_enum_company_activate_status_id");
             });
 
+            modelBuilder.Entity<contact>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_contacts_company_id_companies_id");
+
+                entity.HasIndex(e => e.hr_company_id, "fk_contacts_hr_company_id_hr_companies_id");
+
+                entity.Property(e => e.email).HasMaxLength(150);
+
+                entity.Property(e => e.name).HasMaxLength(100);
+
+                entity.Property(e => e.phone).HasMaxLength(20);
+
+                entity.Property(e => e.position).HasMaxLength(100);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.contacts)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_contacts_company_id_companies_id");
+
+                entity.HasOne(d => d.hr_company)
+                    .WithMany(p => p.contacts)
+                    .HasForeignKey(d => d.hr_company_id)
+                    .HasConstraintName("fk_contacts_hr_company_id_hr_companies_id");
+            });
+
             modelBuilder.Entity<cv>(entity =>
             {
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
@@ -164,6 +194,18 @@ namespace Database.models
                     .WithOne(p => p.cvs_txt)
                     .HasForeignKey<cvs_txt>(d => d.cv_id)
                     .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
+            });
+
+            modelBuilder.Entity<department>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_departments_company_id_companies_id");
+
+                entity.Property(e => e.name).HasMaxLength(100);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.departments)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_departments_company_id_companies_id");
             });
 
             modelBuilder.Entity<emails_sent>(entity =>
@@ -267,9 +309,23 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<hr_company>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_hr_companies_company_id_companies_id");
+
+                entity.Property(e => e.name).HasMaxLength(100);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.hr_companies)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_hr_companies_company_id_companies_id");
+            });
+
             modelBuilder.Entity<position>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_positions_company_id_companies_id");
+
+                entity.HasIndex(e => e.department_id, "fk_positions_department_id_departments_id");
 
                 entity.HasIndex(e => e.status_id, "fk_positions_status_id_enum_position_status_id");
 
@@ -285,6 +341,11 @@ namespace Database.models
                     .WithMany(p => p.positions)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_positions_company_id_companies_id");
+
+                entity.HasOne(d => d.department)
+                    .WithMany(p => p.positions)
+                    .HasForeignKey(d => d.department_id)
+                    .HasConstraintName("fk_positions_department_id_departments_id");
 
                 entity.HasOne(d => d.status)
                     .WithMany(p => p.positions)
@@ -326,6 +387,57 @@ namespace Database.models
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.position_id)
                     .HasConstraintName("fk_position_cvs_position_id_positions_id");
+            });
+
+            modelBuilder.Entity<position_hr_company>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_hr_companies_company_id_companies_id");
+
+                entity.HasIndex(e => e.hr_company_id, "fk_position_hr_companies_hr_company_id_hr_companies_id");
+
+                entity.HasIndex(e => e.position_id, "fk_position_hr_companies_position_id_positions_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_hr_companies)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_position_hr_companies_company_id_companies_id");
+
+                entity.HasOne(d => d.hr_company)
+                    .WithMany(p => p.position_hr_companies)
+                    .HasForeignKey(d => d.hr_company_id)
+                    .HasConstraintName("fk_position_hr_companies_hr_company_id_hr_companies_id");
+
+                entity.HasOne(d => d.position)
+                    .WithMany(p => p.position_hr_companies)
+                    .HasForeignKey(d => d.position_id)
+                    .HasConstraintName("fk_position_hr_companies_position_id_positions_id");
+            });
+
+            modelBuilder.Entity<position_user>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_users_company_id_companies_id");
+
+                entity.HasIndex(e => e.position_id, "fk_position_users_position_id_positions_id");
+
+                entity.HasIndex(e => e.user_id, "fk_position_users_user_id_users_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_users)
+                    .HasForeignKey(d => d.company_id)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_position_users_company_id_companies_id");
+
+                entity.HasOne(d => d.position)
+                    .WithMany(p => p.position_users)
+                    .HasForeignKey(d => d.position_id)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_position_users_position_id_positions_id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.position_users)
+                    .HasForeignKey(d => d.user_id)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_position_users_user_id_users_id");
             });
 
             modelBuilder.Entity<positions_incremental>(entity =>

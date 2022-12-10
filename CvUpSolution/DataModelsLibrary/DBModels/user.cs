@@ -8,6 +8,7 @@ namespace Database.models
         public user()
         {
             emails_sents = new HashSet<emails_sent>();
+            position_users = new HashSet<position_user>();
         }
 
         public int id { get; set; }
@@ -27,5 +28,6 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual enum_role roleNavigation { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }
+        public virtual ICollection<position_user> position_users { get; set; }
     }
 }

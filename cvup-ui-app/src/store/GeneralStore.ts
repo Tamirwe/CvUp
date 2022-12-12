@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { IDepartment, IHrCompany } from "../models/AuthModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 
@@ -18,5 +19,13 @@ export class GeneralStore {
   async getFileBase64() {
     const aaa = await this.generalApi.getFileBase64();
     return aaa.data;
+  }
+
+  async addUpdateHrCompany(hrCompany: IHrCompany) {
+    return await this.generalApi.addUpdateHrCompany(hrCompany);
+  }
+
+  async addUpdateDepartment(department: IDepartment) {
+    return await this.generalApi.addUpdateDepartment(department);
   }
 }

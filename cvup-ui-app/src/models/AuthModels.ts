@@ -7,6 +7,7 @@ export interface IUserRegistration {
 }
 
 export interface IPosition {
+  id: number;
   name: string;
   descr: string;
 }
@@ -33,7 +34,23 @@ export interface TokensModel {
   refreshToken: string;
 }
 
-export interface PositionFormModel {
+export interface IContact {
+  id: number;
   name: string;
-  descr: string;
+  email: string;
+  phone: string;
+  position: string;
+  companyId: number;
+}
+
+export interface IHrCompany {
+  id: number;
+  name: string;
+  companyId: number;
+  contacts: IContact[];
+}
+
+export interface IDepartment {
+  id: number;
+  name: string;
 }

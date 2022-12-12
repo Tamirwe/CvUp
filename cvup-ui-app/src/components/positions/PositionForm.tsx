@@ -18,11 +18,7 @@ import { useState } from "react";
 import { MdOutlineVisibilityOff, MdOutlineVisibility } from "react-icons/md";
 
 import { useStore } from "../../Hooks/useStore";
-import {
-  IPosition,
-  IUserRegistration,
-  PositionFormModel,
-} from "../../models/AuthModels";
+import { IPosition, IUserRegistration } from "../../models/AuthModels";
 import {
   textFieldValidte,
   emailValidte,
@@ -39,6 +35,7 @@ export const PositionForm = () => {
   const [submitError, setSubmitError] = useState("");
   const [isTerms, setIsTerms] = useState(false);
   const [formModel, setFormModel] = useState<IPosition>({
+    id: 0,
     name: "",
     descr: "",
   });

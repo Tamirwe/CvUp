@@ -7,7 +7,7 @@ namespace Database.models
     {
         public hr_company()
         {
-            contacts = new HashSet<contact>();
+            hr_contacts = new HashSet<hr_contact>();
             position_hr_companies = new HashSet<position_hr_company>();
         }
 
@@ -16,7 +16,7 @@ namespace Database.models
         public int company_id { get; set; }
 
         public virtual company company { get; set; } = null!;
-        public virtual ICollection<contact> contacts { get; set; }
+        public virtual ICollection<hr_contact> hr_contacts { get; set; }
         public virtual ICollection<position_hr_company> position_hr_companies { get; set; }
     }
 }

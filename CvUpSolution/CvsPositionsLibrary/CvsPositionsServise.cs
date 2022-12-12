@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CvsPositionsLibrary
 {
-    public class CvsPositionsServise: ICvsPositionsServise
+    public partial class CvsPositionsServise: ICvsPositionsServise
     {
         private IConfiguration _configuration;
         private ICvsPositionsQueries _cvsPositionsQueries;

@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { IPosition } from "../models/AuthModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 
@@ -10,8 +11,7 @@ export class PositionsStore {
     this.positionApi = new PositionsApi();
   }
 
-  //   async search() {
-  //     const aaa = await this.positionApi.search();
-  //     console.log(aaa);
-  //   }
+  async addUpdatePosition(position: IPosition) {
+    return await this.positionApi.addUpdatePosition(position);
+  }
 }

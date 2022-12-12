@@ -5,6 +5,7 @@ import { Header } from "../components/header/Header";
 // import { DrawerLeft } from "../components/drawer/DrawerLeft";
 import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { PositionListWrapper } from "../components/positions/PositionListWrapper";
 
 const drawerWidth = 340;
 
@@ -15,7 +16,7 @@ const Main = styled("main", {
   matches?: boolean;
 }>(({ theme, isOpen, matches }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(1),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -78,6 +79,7 @@ const DrawerDesktop = ({ isOpen }: IPropsDrawerDesktop) => {
       }}
     >
       <Toolbar />
+      <PositionListWrapper />
     </Drawer>
   );
 };
@@ -105,6 +107,7 @@ const DrawerMobile = ({ isOpen, onClose }: IPropsDrawerMobile) => {
       }}
     >
       <Toolbar />
+      <PositionListWrapper />
     </Drawer>
   );
 };

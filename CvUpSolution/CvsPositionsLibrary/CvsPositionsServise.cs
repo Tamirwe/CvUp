@@ -76,5 +76,12 @@ namespace CvsPositionsLibrary
 
             return cvsList;
         }
+
+        public position AddUpdatePosition(position data)
+        {
+
+            return data;
+        }
+
     }
 }

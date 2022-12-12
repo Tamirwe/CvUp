@@ -1,4 +1,5 @@
-﻿using DataModelsLibrary.Models;
+﻿using Database.models;
+using DataModelsLibrary.Models;
 
 namespace CvsPositionsLibrary
 {
@@ -10,6 +11,6 @@ namespace CvsPositionsLibrary
         public int GetUniqueCvId();
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
-
+        public position AddUpdatePosition(position data);
     }
 }

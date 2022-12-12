@@ -5,6 +5,11 @@ export interface IUserRegistration {
   email: string;
   password: string;
 }
+
+export interface IPosition {
+  name: string;
+  descr: string;
+}
 export interface IUserLogin {
   email: string;
   password: string;

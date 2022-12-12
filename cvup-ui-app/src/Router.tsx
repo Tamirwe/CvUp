@@ -12,7 +12,8 @@ import { PasswordReset } from "./pages/authentication/PasswordReset";
 import { useStore } from "./Hooks/useStore";
 import { CompleteRegistration } from "./pages/authentication/CompleteRegistration";
 import { Home2 } from "./pages/Home2";
-import { Cvs } from "./pages/Cvs";
+import { Cv } from "./pages/Cv";
+import { Position } from "./pages/Position";
 
 const AuthRoutes = () => {
   const rootStore = useStore();
@@ -28,7 +29,8 @@ const Router = () => {
     <Routes>
       <Route element={<AuthRoutes />}>
         <Route element={<LayoutAuth />}>
-          <Route path="/" element={<Cvs />} />
+          <Route path="/" element={<Cv />} />
+          <Route path="/position" element={<Position />} />
           <Route path="/h1" element={<Home />} />
           <Route path="/h2" element={<Home2 />} />
           <Route path="/dashboard" element={<Dashboard />} />

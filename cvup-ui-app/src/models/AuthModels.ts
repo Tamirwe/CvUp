@@ -50,7 +50,7 @@ export interface IHrCompany {
   contacts: IContact[];
 }
 
-export interface IDepartment {
+export interface IIdName {
   id: number;
   name: string;
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -112,6 +113,51 @@ namespace DataModelsLibrary.Queries
                             emailSubject = cvs.subject,
                             candidateName = cand.name,
                             phone = cand.phone,
+                        };
+
+            return query.ToList();
+        }
+
+        public department AddNewDepartment(IdNameModel data)
+        {
+            var dep = new department
+            {
+                name = data.name,
+                company_id = data.companyId ?? 0
+            };
+
+            dbContext.departments.Add(dep);
+            dbContext.SaveChanges();
+            return dep;
+        }
+
+        public department updateDepartment(department dep)
+        {
+            var result = dbContext.departments.Update(dep);
+            dbContext.SaveChanges();
+            return result.Entity;
+        }
+
+        public hr_company AddNewHrCompany(IdNameModel data)
+        {
+            var newRec = new hr_company
+            {
+                name = data.name,
+            };
+
+            dbContext.hr_companies.Add(newRec);
+            dbContext.SaveChanges();
+            return newRec;
+        }
+
+        public List<IdNameModel> GetCompanyDepartments(int companyId)
+        {
+            var query = from dep in dbContext.departments
+                        where dep.company_id == companyId
+                        select new IdNameModel
+                        {
+                            id = dep.id,
+                            name = dep.name,
                         };
 
             return query.ToList();

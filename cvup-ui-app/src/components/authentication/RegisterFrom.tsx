@@ -32,7 +32,7 @@ export const RegisterForm = (props: IProps) => {
   const { authStore } = useStore();
 
   const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
+  const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
   const [isDirty, setIsDirty] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -119,7 +119,7 @@ export const RegisterForm = (props: IProps) => {
     <form noValidate spellCheck="false">
       <Grid container>
         <Grid item>
-          <Grid container spacing={matchDownSM ? 0 : 2}>
+          <Grid container spacing={matchDownMd ? 0 : 2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth

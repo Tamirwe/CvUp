@@ -1,10 +1,11 @@
-import { makeAutoObservable } from "mobx";
-import { IDepartment, IHrCompany } from "../models/AuthModels";
+import { makeAutoObservable, runInAction } from "mobx";
+import { IIdName, IHrCompany } from "../models/AuthModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 
 export class GeneralStore {
   private generalApi;
+  departmentsList: IIdName[] | undefined;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -25,7 +26,14 @@ export class GeneralStore {
     return await this.generalApi.addUpdateHrCompany(hrCompany);
   }
 
-  async addUpdateDepartment(department: IDepartment) {
+  async addUpdateDepartment(department: IIdName) {
     return await this.generalApi.addUpdateDepartment(department);
+  }
+
+  async getCompanyDepartments() {
+    const res = await this.generalApi.getCompanyDepartments();
+    runInAction(() => {
+      this.departmentsList = res.data;
+    });
   }
 }

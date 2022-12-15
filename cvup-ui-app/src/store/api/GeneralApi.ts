@@ -1,4 +1,4 @@
-import { IDepartment, IHrCompany } from "../../models/AuthModels";
+import { IIdName, IHrCompany } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
 export default class GeneralApi extends BaseApi {
@@ -18,18 +18,30 @@ export default class GeneralApi extends BaseApi {
 
   async addUpdateHrCompany(hrCompany: IHrCompany) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Auth/AddUpdateHrCompany", hrCompany))
-        .data;
+      const data = (
+        await this.http.post("General/AddUpdateHrCompany", hrCompany)
+      ).data;
       return data;
     });
 
     return response;
   }
 
-  async addUpdateDepartment(department: IDepartment) {
+  async addUpdateDepartment(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.post("Auth/AddUpdateDepartment", department)
+        await this.http.post("General/AddUpdateDepartment", department)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async getCompanyDepartments() {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<IIdName[]>("General/GetCompanyDepartments")
       ).data;
       return data;
     });

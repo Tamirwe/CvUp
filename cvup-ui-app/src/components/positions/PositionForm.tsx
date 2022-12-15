@@ -1,39 +1,17 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { MdOutlineVisibilityOff, MdOutlineVisibility } from "react-icons/md";
 
 import { useStore } from "../../Hooks/useStore";
-import { IPosition, IUserRegistration } from "../../models/AuthModels";
-import {
-  textFieldValidte,
-  emailValidte,
-  passwordValidate,
-} from "../../utils/Validation";
+import { IPosition } from "../../models/AuthModels";
+import { textFieldValidte } from "../../utils/Validation";
+import { DepartmentListDialog } from "../departments/DepartmentListDialog";
 
 export const PositionForm = () => {
   const { positionsStore } = useStore();
 
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const [isDirty, setIsDirty] = useState(false);
-  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [openDepartments, setOpenDepartments] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [isTerms, setIsTerms] = useState(false);
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
     name: "",
@@ -136,7 +114,27 @@ export const PositionForm = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} lg={6}></Grid>
+        <Grid item xs={12} lg={6}>
+          <div>
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                setOpenDepartments(true);
+              }}
+            >
+              Save
+            </Button>
+            {openDepartments && (
+              <DepartmentListDialog
+                isOpen={openDepartments}
+                close={() => setOpenDepartments(false)}
+              />
+            )}
+          </div>
+        </Grid>
         {submitError && (
           <Grid item xs={12}>
             <FormHelperText error>{submitError}</FormHelperText>

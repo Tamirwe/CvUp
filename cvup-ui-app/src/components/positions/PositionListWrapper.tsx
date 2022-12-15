@@ -1,8 +1,11 @@
-import { Box, Button, Link, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import { PositionList } from "./PositionList";
 import { GoPlus } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 export const PositionListWrapper = () => {
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -13,13 +16,9 @@ export const PositionListWrapper = () => {
         },
       }}
     >
-      <Link href="/position" underline="hover">
-        <Stack direction="row" alignItems="center" gap={1}>
-          <GoPlus color="primary" />
-          New Position
-        </Stack>
-      </Link>
-
+      <Button onClick={() => navigate("/position")} startIcon={<GoPlus />}>
+        New Position
+      </Button>
       <Paper elevation={3}>
         <PositionList />
       </Paper>

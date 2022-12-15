@@ -12,8 +12,8 @@ namespace CvsPositionsLibrary
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
         public position AddUpdatePosition(position data);
-        public HrCompanyModel AddUpdateHrCompany(HrCompanyModel data);
-
-
+        public hr_company AddUpdateHrCompany(IdNameModel data);
+        public department AddUpdateDepartment(IdNameModel data);
+        public List<IdNameModel> GetCompanyDepartments(int companyId);
     }
 }

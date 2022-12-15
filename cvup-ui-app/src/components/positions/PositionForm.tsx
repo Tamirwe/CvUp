@@ -1,6 +1,5 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
@@ -8,7 +7,6 @@ import { DepartmentListDialog } from "../departments/DepartmentListDialog";
 
 export const PositionForm = () => {
   const { positionsStore } = useStore();
-
   const [isDirty, setIsDirty] = useState(false);
   const [openDepartments, setOpenDepartments] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -30,7 +28,6 @@ export const PositionForm = () => {
     const isValid = errTxt === "" ? true : false;
     setIsDirty(true);
     setSubmitError("");
-
     setFormValErrorTxt((currentProps) => ({
       ...currentProps,
       [field]: errTxt,
@@ -45,10 +42,8 @@ export const PositionForm = () => {
 
   const validateForm = () => {
     let isFormValid = true;
-
     let errTxt = textFieldValidte(formModel.name, true, true, true);
     isFormValid = updateFieldError("name", errTxt) && isFormValid;
-
     return isFormValid;
   };
 

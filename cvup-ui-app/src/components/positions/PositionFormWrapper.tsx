@@ -1,5 +1,4 @@
-import { Card, CardContent, Grid, Typography, useTheme } from "@mui/material";
-import theme from "../../themes";
+import { Card, CardContent, Grid, useTheme } from "@mui/material";
 import { PositionForm } from "./PositionForm";
 
 export const PositionFormWrapper = () => {

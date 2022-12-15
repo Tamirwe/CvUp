@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { List } from "@mui/material";
 
 export const PositionList = () => {
   return (

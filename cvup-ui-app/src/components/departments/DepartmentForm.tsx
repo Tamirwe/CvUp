@@ -1,6 +1,5 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
@@ -12,7 +11,6 @@ interface IProps {
 
 export const DepartmentForm = ({ department, onClose }: IProps) => {
   const { generalStore } = useStore();
-
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IIdName>({
@@ -49,10 +47,8 @@ export const DepartmentForm = ({ department, onClose }: IProps) => {
 
   const validateForm = () => {
     let isFormValid = true;
-
     let errTxt = textFieldValidte(formModel.name, true, true, true);
     isFormValid = updateFieldError("name", errTxt) && isFormValid;
-
     return isFormValid;
   };
 

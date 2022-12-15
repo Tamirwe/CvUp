@@ -1,12 +1,4 @@
-import {
-  Button,
-  Hidden,
-  Link,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
@@ -16,7 +8,7 @@ export const CvsList = observer(() => {
 
   useEffect(() => {
     cvsStore.getCvsList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <List dense={true} sx={{ maxWidth: "20rem" }}>

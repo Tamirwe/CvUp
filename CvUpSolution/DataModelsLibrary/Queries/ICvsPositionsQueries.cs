@@ -11,8 +11,8 @@ namespace DataModelsLibrary.Queries
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
         public int GetUniqueCvId();
         public List<CvListItemModel> GetCvsList(int companyId);
-        public department AddNewDepartment(IdNameModel newDepartment);
-        public department updateDepartment(department dep);
+        public department AddDepartment(IdNameModel newDepartment);
+        public department? UpdateDepartment(IdNameModel dep);
         public hr_company AddNewHrCompany(IdNameModel data);
         public List<IdNameModel> GetCompanyDepartments(int companyId);
         public department? DeleteCompanyDepartment(int companyId, int id);

@@ -32,7 +32,17 @@ namespace CvUpAPI.Controllers
         public IActionResult AddUpdateDepartment(IdNameModel data)
         {
             data.companyId = Globals.CompanyId;
-            department department = _cvsPosService.AddUpdateDepartment(data);
+            department? department;
+
+            if (data.id == 0)
+            {
+                department = _cvsPosService.AddDepartment(data);
+            }
+            else
+            {
+                department = _cvsPosService.UpdateDepartment(data);
+            }
+
             return Ok(department);
         }
 

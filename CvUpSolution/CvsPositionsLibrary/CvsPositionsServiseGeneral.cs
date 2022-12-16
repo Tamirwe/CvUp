@@ -16,9 +16,15 @@ namespace CvsPositionsLibrary
             return newRec;
         }
 
-        public department AddUpdateDepartment(IdNameModel data)
+        public department AddDepartment(IdNameModel data)
         {
-            department newRec = _cvsPositionsQueries.AddNewDepartment(data);
+            department newRec = _cvsPositionsQueries.AddDepartment(data);
+            return newRec;
+        }
+
+        public department? UpdateDepartment(IdNameModel data)
+        {
+            department? newRec = _cvsPositionsQueries.UpdateDepartment(data);
             return newRec;
         }
 

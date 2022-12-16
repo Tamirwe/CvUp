@@ -13,7 +13,8 @@ namespace CvsPositionsLibrary
         public List<CvListItemModel> GetCvsList(int companyId);
         public position AddUpdatePosition(position data);
         public hr_company AddUpdateHrCompany(IdNameModel data);
-        public department AddUpdateDepartment(IdNameModel data);
+        public department AddDepartment(IdNameModel data);
+        public department? UpdateDepartment(IdNameModel data);
         public List<IdNameModel> GetCompanyDepartments(int companyId);
         public department? DeleteCompanyDepartment(int companyId, int id);
     }

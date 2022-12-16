@@ -119,7 +119,7 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
-        public department AddNewDepartment(IdNameModel data)
+        public department AddDepartment(IdNameModel data)
         {
             var dep = new department
             {
@@ -132,11 +132,17 @@ namespace DataModelsLibrary.Queries
             return dep;
         }
 
-        public department updateDepartment(department dep)
+        public department? UpdateDepartment(IdNameModel data)
         {
-            var result = dbContext.departments.Update(dep);
-            dbContext.SaveChanges();
-            return result.Entity;
+            if (data.companyId != null)
+            {
+                department dep = new department { id = data.id, name = data.name, company_id = (int)data.companyId };
+                var result = dbContext.departments.Update(dep);
+                dbContext.SaveChanges();
+                return result.Entity;
+            }
+
+            return null;
         }
 
         public hr_company AddNewHrCompany(IdNameModel data)
@@ -155,6 +161,7 @@ namespace DataModelsLibrary.Queries
         {
             var query = from dep in dbContext.departments
                         where dep.company_id == companyId
+                        orderby dep.name
                         select new IdNameModel
                         {
                             id = dep.id,

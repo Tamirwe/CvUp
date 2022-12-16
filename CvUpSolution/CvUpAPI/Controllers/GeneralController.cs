@@ -43,5 +43,13 @@ namespace CvUpAPI.Controllers
            List<IdNameModel> departments = _cvsPosService.GetCompanyDepartments(Globals.CompanyId);
             return Ok(departments);
         }
+
+        [HttpDelete]
+        [Route("DeleteCompanyDepartment")]
+        public IActionResult DeleteCompanyDepartment(int id)
+        {
+            department? result = _cvsPosService.DeleteCompanyDepartment(Globals.CompanyId, id);
+            return Ok(result);
+        }
     }
 }

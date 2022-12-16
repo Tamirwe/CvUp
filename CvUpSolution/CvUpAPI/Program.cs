@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 string CorsPolicy = "_corsPolicy";
 
 builder.Services.AddCors(options =>    options.AddPolicy(name: CorsPolicy,
-                      builder => builder.WithOrigins("http://localhost:3000",
+                      builder => builder.WithOrigins("http://localhost:3030",
                       "http://efc5-89-237-94-86.eu.ngrok.io").AllowAnyHeader().AllowAnyMethod())
 );
 

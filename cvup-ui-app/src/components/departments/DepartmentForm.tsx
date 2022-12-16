@@ -2,14 +2,22 @@ import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
+import { CrudTypes } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
   department?: IIdName;
-  onClose: () => void;
+  crudType?: CrudTypes;
+  onSaved: () => void;
+  onCancel: () => void;
 }
 
-export const DepartmentForm = ({ department, onClose }: IProps) => {
+export const DepartmentForm = ({
+  department,
+  crudType,
+  onSaved,
+  onCancel,
+}: IProps) => {
   const { generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -56,7 +64,17 @@ export const DepartmentForm = ({ department, onClose }: IProps) => {
     const response = await generalStore.addUpdateDepartment(formModel);
 
     if (response.isSuccess) {
-      onClose();
+      onSaved();
+    } else {
+      return setSubmitError("An Error Occurred Please Try Again Later.");
+    }
+  };
+
+  const deleteRecord = async () => {
+    const response = await generalStore.deleteDepartment(formModel);
+
+    if (response.isSuccess) {
+      onSaved();
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }
@@ -69,6 +87,7 @@ export const DepartmentForm = ({ department, onClose }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
+            disabled={crudType === CrudTypes.Delete}
             margin="normal"
             type="text"
             id="title"
@@ -97,24 +116,37 @@ export const DepartmentForm = ({ department, onClose }: IProps) => {
                   fullWidth
                   variant="contained"
                   color="secondary"
-                  onClick={() => onClose()}
+                  onClick={() => onCancel()}
                 >
                   Cancel
                 </Button>
-                <Button
-                  disabled={!isDirty}
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    setIsDirty(false);
-                    if (validateForm()) {
-                      submitForm();
-                    }
-                  }}
-                >
-                  Save
-                </Button>
+                {crudType === CrudTypes.Delete ? (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="warning"
+                    onClick={() => {
+                      deleteRecord();
+                    }}
+                  >
+                    Delete
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={!isDirty}
+                    fullWidth
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                      setIsDirty(false);
+                      if (validateForm()) {
+                        submitForm();
+                      }
+                    }}
+                  >
+                    Save
+                  </Button>
+                )}
               </Stack>
             </Grid>
           </Grid>

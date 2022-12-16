@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { CvsListWrapper } from "../components/cvs/CvsListWrapper";
 import { useStore } from "../Hooks/useStore";
 
-export const Home: React.FC = observer(() => {
+export const Home = observer(() => {
   const { cvsStore } = useStore();
   // const [doc, setDoc] = useState(
   //   "http://89.237.94.86:8010/api/Download/GetWord2"

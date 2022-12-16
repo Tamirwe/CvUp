@@ -28,5 +28,12 @@ namespace CvsPositionsLibrary
             return depList;
         }
 
+        public department? DeleteCompanyDepartment(int companyId, int id)
+        {
+            var result = _cvsPositionsQueries.DeleteCompanyDepartment(companyId, id);
+            return result;
+        }
+
+
     }
 }

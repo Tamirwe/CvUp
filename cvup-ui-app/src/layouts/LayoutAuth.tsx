@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 // import { DrawerLeft } from "../components/drawer/DrawerLeft";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionListWrapper } from "../components/positions/PositionListWrapper";
 

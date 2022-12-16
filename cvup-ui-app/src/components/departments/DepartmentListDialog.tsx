@@ -8,7 +8,9 @@ import {
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { MdClose } from "react-icons/md";
+import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
+import { CrudTypes } from "../../models/GeneralEnums";
 import { DepartmentFormDialog } from "./DepartmentFormDialog";
 import { DepartmentsList } from "./DepartmentsList";
 
@@ -18,17 +20,28 @@ interface IProps {
 }
 
 export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
+  const { generalStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openDepartmentForm, setOpenDepartmentForm] = useState(false);
   const [editDepartment, setEditDepartment] = useState<IIdName>();
+  const [crudType, setCrudType] = useState<CrudTypes>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEdit = (department: IIdName) => {
+  const handleAddEditDelete = (department: IIdName, type: CrudTypes) => {
     setEditDepartment(department);
+    setCrudType(type);
     setOpenDepartmentForm(true);
+  };
+
+  const handleFormClose = (isSaved: boolean) => {
+    setOpenDepartmentForm(false);
+
+    if (isSaved) {
+      generalStore.getCompanyDepartments();
+    }
   };
 
   return (
@@ -49,9 +62,11 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DepartmentsList onAddEdit={handleAddEdit} />
+        <DepartmentsList onAddEditDeleteclick={handleAddEditDelete} />
         <Button
-          onClick={() => handleAddEdit({ id: 0, name: "" })}
+          onClick={() =>
+            handleAddEditDelete({ id: 0, name: "" }, CrudTypes.Insert)
+          }
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
@@ -60,8 +75,9 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
         {openDepartmentForm && (
           <DepartmentFormDialog
             department={editDepartment}
+            crudType={crudType}
             isOpen={openDepartmentForm}
-            onClose={() => setOpenDepartmentForm(false)}
+            onClose={(isSaved) => handleFormClose(isSaved)}
           />
         )}
       </DialogContent>

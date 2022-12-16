@@ -7,7 +7,7 @@ import { useStore } from "../../Hooks/useStore";
 
 export const PdfViewer = observer(() => {
   const { cvsStore } = useStore();
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  // const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
     <>

@@ -30,6 +30,10 @@ export class GeneralStore {
     return await this.generalApi.addUpdateDepartment(department);
   }
 
+  async deleteDepartment(department: IIdName) {
+    return await this.generalApi.deleteDepartment(department);
+  }
+
   async getCompanyDepartments() {
     const res = await this.generalApi.getCompanyDepartments();
     runInAction(() => {

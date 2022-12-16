@@ -1,4 +1,4 @@
-export const NotFound: React.FC = () => {
+export const NotFound = () => {
   return (
     <div>
       <div>NotFound</div>

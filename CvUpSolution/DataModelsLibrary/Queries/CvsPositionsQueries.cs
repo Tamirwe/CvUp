@@ -1,5 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -161,6 +162,22 @@ namespace DataModelsLibrary.Queries
                         };
 
             return query.ToList();
+        }
+
+        public department? DeleteCompanyDepartment(int companyId, int id)
+        {
+            var dep = (from d in dbContext.departments
+                       where d.id == id && d.company_id == companyId
+                       select d).FirstOrDefault();
+
+            if (dep != null)
+            {
+                var result = dbContext.departments.Remove(dep);
+                dbContext.SaveChanges();
+                return result.Entity;
+            }
+
+            return null;
         }
 
     }

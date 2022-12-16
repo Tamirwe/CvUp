@@ -38,6 +38,19 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
+  async deleteDepartment(department: IIdName) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.delete<IIdName>(
+          `General/DeleteCompanyDepartment?id=${department.id}`
+        )
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
   async getCompanyDepartments() {
     const response = await this.apiWrapper(async () => {
       const data = (

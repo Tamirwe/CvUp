@@ -15,5 +15,6 @@ namespace CvsPositionsLibrary
         public hr_company AddUpdateHrCompany(IdNameModel data);
         public department AddUpdateDepartment(IdNameModel data);
         public List<IdNameModel> GetCompanyDepartments(int companyId);
+        public department? DeleteCompanyDepartment(int companyId, int id);
     }
 }

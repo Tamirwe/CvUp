@@ -15,5 +15,6 @@ namespace DataModelsLibrary.Queries
         public department updateDepartment(department dep);
         public hr_company AddNewHrCompany(IdNameModel data);
         public List<IdNameModel> GetCompanyDepartments(int companyId);
+        public department? DeleteCompanyDepartment(int companyId, int id);
     }
 }

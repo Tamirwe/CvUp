@@ -22,7 +22,7 @@ export const DepartmentsList = observer((props: IProps) => {
   const { generalStore } = useStore();
 
   useEffect(() => {
-    generalStore.getCompanyDepartments();
+    generalStore.getCompanyDepartments(false);
   }, []);
 
   return (

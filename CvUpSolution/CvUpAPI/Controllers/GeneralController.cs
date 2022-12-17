@@ -18,14 +18,7 @@ namespace CvUpAPI.Controllers
             _configuration = config;
             _cvsPosService = cvsPosService;
         }
-
-        [HttpPost]
-        [Route("AddUpdateHrCompany")]
-        public IActionResult AddUpdateHrCompany(IdNameModel data)
-        {
-            hr_company hrCompanyModel = _cvsPosService.AddUpdateHrCompany(data);
-            return Ok(hrCompanyModel);
-        }
+        
 
         [HttpPost]
         [Route("AddUpdateDepartment")]
@@ -48,17 +41,52 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCompanyDepartments")]
-        public IActionResult GetCompanyDepartments()
+        public IActionResult GetDepartments()
         {
-           List<IdNameModel> departments = _cvsPosService.GetCompanyDepartments(Globals.CompanyId);
+           List<IdNameModel> departments = _cvsPosService.GetDepartments(Globals.CompanyId);
             return Ok(departments);
         }
 
         [HttpDelete]
-        [Route("DeleteCompanyDepartment")]
-        public IActionResult DeleteCompanyDepartment(int id)
+        [Route("DeleteDepartment")]
+        public IActionResult DeleteDepartment(int id)
         {
-            department? result = _cvsPosService.DeleteCompanyDepartment(Globals.CompanyId, id);
+            department? result = _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("AddUpdateHrCompany")]
+        public IActionResult AddUpdateHrCompany(IdNameModel data)
+        {
+            data.companyId = Globals.CompanyId;
+            hr_company? hrCompany;
+
+            if (data.id == 0)
+            {
+                hrCompany = _cvsPosService.AddHrCompany(data);
+            }
+            else
+            {
+                hrCompany = _cvsPosService.UpdateHrCompany(data);
+            }
+
+            return Ok(hrCompany);
+        }
+
+        [HttpGet]
+        [Route("GetHrCompanies")]
+        public IActionResult GetHrCompanies()
+        {
+            List<IdNameModel> departments = _cvsPosService.GetHrCompanies(Globals.CompanyId);
+            return Ok(departments);
+        }
+
+        [HttpDelete]
+        [Route("DeleteHrCompany")]
+        public IActionResult DeleteHrCompany(int id)
+        {
+            hr_company? result = _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
             return Ok(result);
         }
     }

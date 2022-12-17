@@ -1,14 +1,31 @@
-import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
-import { useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+} from "@mui/material";
+import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
+import { MdFormatIndentIncrease, MdOutlineVisibility } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentListDialog } from "../departments/DepartmentListDialog";
 
-export const PositionForm = () => {
-  const { positionsStore } = useStore();
+export const PositionForm = observer(() => {
+  const { positionsStore, generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [openDepartments, setOpenDepartments] = useState(false);
+  const [department, setDepartment] = useState("");
+
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -23,6 +40,10 @@ export const PositionForm = () => {
     name: "",
     descr: "",
   });
+
+  useEffect(() => {
+    generalStore.getCompanyDepartments(false);
+  }, []);
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;
@@ -110,25 +131,36 @@ export const PositionForm = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} lg={6}>
-          <div>
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                setOpenDepartments(true);
-              }}
-            >
-              Save
-            </Button>
-            {openDepartments && (
-              <DepartmentListDialog
-                isOpen={openDepartments}
-                close={() => setOpenDepartments(false)}
-              />
-            )}
-          </div>
+          <Grid container>
+            <Grid item xs={12} lg={6}>
+              <FormControl fullWidth>
+                <InputLabel id="departmentLabel">Department</InputLabel>
+                <Select
+                  labelId="departmentLabel"
+                  id="demo-simple-select"
+                  value={department}
+                  label="Department"
+                  onChange={(event: SelectChangeEvent) => {
+                    setDepartment(event.target.value);
+                  }}
+                  sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
+                  endAdornment={
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setOpenDepartments(true)}
+                      edge="end"
+                    >
+                      <MdFormatIndentIncrease />
+                    </IconButton>
+                  }
+                >
+                  {generalStore.departmentsList?.map((item, i) => {
+                    return <MenuItem value={item.id}>{item.name}</MenuItem>;
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
         </Grid>
         {submitError && (
           <Grid item xs={12}>
@@ -181,6 +213,12 @@ export const PositionForm = () => {
           </Grid>
         </Grid>
       </Grid>
+      {openDepartments && (
+        <DepartmentListDialog
+          isOpen={openDepartments}
+          close={() => setOpenDepartments(false)}
+        />
+      )}
     </form>
   );
-};
+});

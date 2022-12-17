@@ -34,10 +34,12 @@ export class GeneralStore {
     return await this.generalApi.deleteDepartment(department);
   }
 
-  async getCompanyDepartments() {
-    const res = await this.generalApi.getCompanyDepartments();
-    runInAction(() => {
-      this.departmentsList = res.data;
-    });
+  async getCompanyDepartments(loadAgain: boolean) {
+    if (!this.departmentsList || loadAgain) {
+      const res = await this.generalApi.getCompanyDepartments();
+      runInAction(() => {
+        this.departmentsList = res.data;
+      });
+    }
   }
 }

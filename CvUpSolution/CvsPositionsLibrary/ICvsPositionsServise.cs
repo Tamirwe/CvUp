@@ -12,10 +12,14 @@ namespace CvsPositionsLibrary
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
         public position AddUpdatePosition(position data);
-        public hr_company AddUpdateHrCompany(IdNameModel data);
         public department AddDepartment(IdNameModel data);
         public department? UpdateDepartment(IdNameModel data);
-        public List<IdNameModel> GetCompanyDepartments(int companyId);
-        public department? DeleteCompanyDepartment(int companyId, int id);
+        public List<IdNameModel> GetDepartments(int companyId);
+        public department? DeleteDepartment(int companyId, int id);
+        public hr_company AddHrCompany(IdNameModel data);
+        public hr_company? UpdateHrCompany(IdNameModel data);
+        public List<IdNameModel> GetHrCompanies(int companyId);
+        public hr_company? DeleteHrCompany(int companyId, int id);
+
     }
 }

@@ -127,9 +127,9 @@ namespace DataModelsLibrary.Queries
                 company_id = data.companyId ?? 0
             };
 
-            dbContext.departments.Add(dep);
+            var result = dbContext.departments.Add(dep);
             dbContext.SaveChanges();
-            return dep;
+            return result.Entity;
         }
 
         public department? UpdateDepartment(IdNameModel data)
@@ -145,19 +145,7 @@ namespace DataModelsLibrary.Queries
             return null;
         }
 
-        public hr_company AddNewHrCompany(IdNameModel data)
-        {
-            var newRec = new hr_company
-            {
-                name = data.name,
-            };
-
-            dbContext.hr_companies.Add(newRec);
-            dbContext.SaveChanges();
-            return newRec;
-        }
-
-        public List<IdNameModel> GetCompanyDepartments(int companyId)
+        public List<IdNameModel> GetDepartments(int companyId)
         {
             var query = from dep in dbContext.departments
                         where dep.company_id == companyId
@@ -171,7 +159,7 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
-        public department? DeleteCompanyDepartment(int companyId, int id)
+        public department? DeleteDepartment(int companyId, int id)
         {
             var dep = (from d in dbContext.departments
                        where d.id == id && d.company_id == companyId
@@ -187,5 +175,58 @@ namespace DataModelsLibrary.Queries
             return null;
         }
 
+        public hr_company AddHrCompany(IdNameModel data)
+        {
+            var hr = new hr_company
+            {
+                name = data.name,
+                company_id = data.companyId ?? 0
+            };
+
+            var result = dbContext.hr_companies.Add(hr);
+            dbContext.SaveChanges();
+            return result.Entity;
+        }
+        public hr_company? UpdateHrCompany(IdNameModel data)
+        {
+            if (data.companyId != null)
+            {
+                hr_company hr = new hr_company { id = data.id, name = data.name, company_id = (int)data.companyId };
+                var result = dbContext.hr_companies.Update(hr);
+                dbContext.SaveChanges();
+                return result.Entity;
+            }
+
+            return null;
+        }
+        public List<IdNameModel> GetHrCompanies(int companyId)
+        {
+            var query = from hr in dbContext.hr_companies
+                        where hr.company_id == companyId
+                        orderby hr.name
+                        select new IdNameModel
+                        {
+                            id = hr.id,
+                            name = hr.name,
+                        };
+
+            return query.ToList();
+        }
+
+        public hr_company? DeleteHrCompany(int companyId, int id)
+        {
+            var hr = (from h in dbContext.hr_companies
+                      where h.id == id && h.company_id == companyId
+                      select h).FirstOrDefault();
+
+            if (hr != null)
+            {
+                var result = dbContext.hr_companies.Remove(hr);
+                dbContext.SaveChanges();
+                return result.Entity;
+            }
+
+            return null;
+        }
     }
 }

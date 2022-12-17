@@ -16,10 +16,10 @@ export default class GeneralApi extends BaseApi {
     });
   }
 
-  async addUpdateHrCompany(hrCompany: IHrCompany) {
+  async addUpdateDepartment(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.post("General/AddUpdateHrCompany", hrCompany)
+        await this.http.post("General/AddUpdateDepartment", department)
       ).data;
       return data;
     });
@@ -27,11 +27,10 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async addUpdateDepartment(department: IIdName) {
+  async getDepartments() {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.post("General/AddUpdateDepartment", department)
-      ).data;
+      const data = (await this.http.get<IIdName[]>("General/GetDepartments"))
+        .data;
       return data;
     });
 
@@ -51,10 +50,33 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async getCompanyDepartments() {
+  async addUpdateHrCompany(hrCompany: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<IIdName[]>("General/GetDepartments")
+        await this.http.post("General/AddUpdateHrCompany", hrCompany)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async getHrCompanies() {
+    const response = await this.apiWrapper(async () => {
+      const data = (await this.http.get<IIdName[]>("General/GetHrCompanies"))
+        .data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async deleteHrCompany(department: IIdName) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.delete<IIdName>(
+          `General/DeleteHrCompany?id=${department.id}`
+        )
       ).data;
       return data;
     });

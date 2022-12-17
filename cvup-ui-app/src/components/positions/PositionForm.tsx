@@ -1,12 +1,15 @@
 import {
   Button,
+  Checkbox,
   FormControl,
   FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
   InputLabel,
+  ListItemText,
   MenuItem,
+  OutlinedInput,
   Select,
   SelectChangeEvent,
   Stack,
@@ -14,18 +17,21 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { MdFormatIndentIncrease, MdOutlineVisibility } from "react-icons/md";
+import { MdFormatIndentIncrease } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentListDialog } from "../departments/DepartmentListDialog";
+import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 
 export const PositionForm = observer(() => {
   const { positionsStore, generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
-  const [openDepartments, setOpenDepartments] = useState(false);
-  const [department, setDepartment] = useState("");
-
+  const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
+  const [departmentId, setDepartmentId] = useState("");
+  const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
+  const [hrCompanyIds, setHrCompanyIds] = useState<number[]>([]);
+  const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -42,8 +48,53 @@ export const PositionForm = observer(() => {
   });
 
   useEffect(() => {
-    generalStore.getCompanyDepartments(false);
+    (async () => {
+      await Promise.all([
+        generalStore.getDepartments(false),
+        generalStore.getHrCompanies(false),
+      ]);
+    })();
   }, []);
+
+  const handleHrCompaniesChanged = (
+    event: SelectChangeEvent<typeof hrCompanyNames>,
+    node: any
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    const id = parseInt(node.props.id);
+    const isChecked = node.props.children[0].props.checked;
+    const selectedCompanyIds = [...hrCompanyIds];
+
+    if (isChecked) {
+      const ind = selectedCompanyIds.indexOf(id);
+      selectedCompanyIds.splice(ind, 1);
+    } else {
+      selectedCompanyIds.push(id);
+    }
+
+    setHrCompanyIds(selectedCompanyIds);
+    setHrCompanyNames(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleDepartmentsListClose = () => {
+    setOpenDepartmentsList(false);
+  };
+
+  const handleHrCompaniesClose = () => {
+    setOpenHrCompaniesList(false);
+
+    const hrCompaniesNamesArr: string[] = [];
+
+    hrCompanyIds.forEach((id) => {
+      const hrCompany = generalStore.hrCompaniesList?.find((x) => x.id === id);
+      hrCompaniesNamesArr.push(hrCompany?.name || "");
+    });
+
+    setHrCompanyNames(hrCompaniesNamesArr);
+  };
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;
@@ -138,16 +189,16 @@ export const PositionForm = observer(() => {
                 <Select
                   labelId="departmentLabel"
                   id="demo-simple-select"
-                  value={department}
+                  value={departmentId}
                   label="Department"
                   onChange={(event: SelectChangeEvent) => {
-                    setDepartment(event.target.value);
+                    setDepartmentId(event.target.value);
                   }}
                   sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
                   endAdornment={
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={() => setOpenDepartments(true)}
+                      onClick={() => setOpenDepartmentsList(true)}
                       edge="end"
                     >
                       <MdFormatIndentIncrease />
@@ -155,7 +206,49 @@ export const PositionForm = observer(() => {
                   }
                 >
                   {generalStore.departmentsList?.map((item, i) => {
-                    return <MenuItem value={item.id}>{item.name}</MenuItem>;
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel id="hrCompanyLabel">HR Company</InputLabel>
+                <Select
+                  labelId="hrCompanyLabel"
+                  id="demo-simple-select"
+                  multiple
+                  value={hrCompanyNames}
+                  renderValue={(selected) => selected.join(", ")}
+                  input={<OutlinedInput label="HR Company" />}
+                  onChange={handleHrCompaniesChanged}
+                  sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
+                  endAdornment={
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setOpenHrCompaniesList(true)}
+                      edge="end"
+                    >
+                      <MdFormatIndentIncrease />
+                    </IconButton>
+                  }
+                >
+                  {generalStore.hrCompaniesList?.map((item, i) => {
+                    return (
+                      <MenuItem
+                        key={item.id}
+                        id={item.id.toString()}
+                        value={item.name}
+                      >
+                        <Checkbox
+                          checked={hrCompanyNames.indexOf(item.name) > -1}
+                        />
+                        <ListItemText primary={item.name} />
+                      </MenuItem>
+                    );
                   })}
                 </Select>
               </FormControl>
@@ -213,10 +306,16 @@ export const PositionForm = observer(() => {
           </Grid>
         </Grid>
       </Grid>
-      {openDepartments && (
+      {openDepartmentsList && (
         <DepartmentListDialog
-          isOpen={openDepartments}
-          close={() => setOpenDepartments(false)}
+          isOpen={openDepartmentsList}
+          close={handleDepartmentsListClose}
+        />
+      )}
+      {openHrCompaniesList && (
+        <HrCompaniesListDialog
+          isOpen={openHrCompaniesList}
+          close={handleHrCompaniesClose}
         />
       )}
     </form>

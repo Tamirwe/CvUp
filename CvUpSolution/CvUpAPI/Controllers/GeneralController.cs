@@ -40,7 +40,7 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetCompanyDepartments")]
+        [Route("GetDepartments")]
         public IActionResult GetDepartments()
         {
            List<IdNameModel> departments = _cvsPosService.GetDepartments(Globals.CompanyId);

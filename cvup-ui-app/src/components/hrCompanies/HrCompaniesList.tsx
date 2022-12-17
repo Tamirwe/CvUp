@@ -9,21 +9,21 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
+import { MdOutlineDelete } from "react-icons/md";
 import { IIdName } from "../../models/AuthModels";
 import { observer } from "mobx-react";
 import { CrudTypes } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IIdName, type: CrudTypes) => void;
+  onAddEditDeleteclick: (hrCompany: IIdName, type: CrudTypes) => void;
 }
 
-export const DepartmentsList = observer((props: IProps) => {
+export const HrCompaniesList = observer((props: IProps) => {
   const { generalStore } = useStore();
 
   useEffect(() => {
     (async () => {
-      await generalStore.getDepartments(false);
+      await generalStore.getHrCompanies(false);
     })();
   }, []);
 
@@ -37,7 +37,7 @@ export const DepartmentsList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {generalStore.departmentsList?.map((item, i) => {
+      {generalStore.hrCompaniesList?.map((item, i) => {
         return (
           <ListItemButton
             onClick={() => props.onAddEditDeleteclick(item, CrudTypes.Update)}

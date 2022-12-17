@@ -11,43 +11,43 @@ import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
-import { DepartmentFormDialog } from "./DepartmentFormDialog";
-import { DepartmentsList } from "./DepartmentsList";
+import { HrCompanyFormDialog } from "./HrCompanyFormDialog";
+import { HrCompaniesList } from "./HrCompaniesList";
 
 interface IProps {
   isOpen: boolean;
   close: () => void;
 }
 
-export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
+export const HrCompaniesListDialog = ({ isOpen, close }: IProps) => {
   const { generalStore } = useStore();
   const [open, setOpen] = useState(false);
-  const [openDepartmentForm, setOpenDepartmentForm] = useState(false);
-  const [editDepartment, setEditDepartment] = useState<IIdName>();
+  const [openhrCompanyForm, setOpenhrCompanyForm] = useState(false);
+  const [edithrCompany, setEdithrCompany] = useState<IIdName>();
   const [crudType, setCrudType] = useState<CrudTypes>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEditDelete = (department: IIdName, type: CrudTypes) => {
-    setEditDepartment(department);
+  const handleAddEditDelete = (hrCompany: IIdName, type: CrudTypes) => {
+    setEdithrCompany(hrCompany);
     setCrudType(type);
-    setOpenDepartmentForm(true);
+    setOpenhrCompanyForm(true);
   };
 
   const handleFormClose = (isSaved: boolean) => {
-    setOpenDepartmentForm(false);
+    setOpenhrCompanyForm(false);
 
     if (isSaved) {
-      generalStore.getDepartments(true);
+      generalStore.getHrCompanies(true);
     }
   };
 
   return (
     <Dialog open={open} onClose={close} fullWidth maxWidth={"xs"}>
       <DialogTitle>
-        Company Teams{" "}
+        HR Companies{" "}
         <IconButton
           aria-label="close"
           onClick={close}
@@ -62,7 +62,7 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DepartmentsList onAddEditDeleteclick={handleAddEditDelete} />
+        <HrCompaniesList onAddEditDeleteclick={handleAddEditDelete} />
         <Button
           onClick={() =>
             handleAddEditDelete({ id: 0, name: "" }, CrudTypes.Insert)
@@ -70,13 +70,13 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
-          New Department
+          New HR Company
         </Button>
-        {openDepartmentForm && (
-          <DepartmentFormDialog
-            department={editDepartment}
+        {openhrCompanyForm && (
+          <HrCompanyFormDialog
+            hrCompany={edithrCompany}
             crudType={crudType}
-            isOpen={openDepartmentForm}
+            isOpen={openhrCompanyForm}
             onClose={(isSaved) => handleFormClose(isSaved)}
           />
         )}

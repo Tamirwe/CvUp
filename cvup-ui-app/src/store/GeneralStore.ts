@@ -6,6 +6,7 @@ import { RootStore } from "./RootStore";
 export class GeneralStore {
   private generalApi;
   departmentsList: IIdName[] | undefined;
+  hrCompaniesList: IIdName[] | undefined;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -22,24 +23,37 @@ export class GeneralStore {
     return aaa.data;
   }
 
-  async addUpdateHrCompany(hrCompany: IHrCompany) {
-    return await this.generalApi.addUpdateHrCompany(hrCompany);
-  }
-
   async addUpdateDepartment(department: IIdName) {
     return await this.generalApi.addUpdateDepartment(department);
+  }
+
+  async getDepartments(loadAgain: boolean) {
+    if (!this.departmentsList || loadAgain) {
+      const res = await this.generalApi.getDepartments();
+      runInAction(() => {
+        this.departmentsList = res.data;
+      });
+    }
   }
 
   async deleteDepartment(department: IIdName) {
     return await this.generalApi.deleteDepartment(department);
   }
 
-  async getCompanyDepartments(loadAgain: boolean) {
-    if (!this.departmentsList || loadAgain) {
-      const res = await this.generalApi.getCompanyDepartments();
+  async addUpdateHrCompany(hrCompany: IIdName) {
+    return await this.generalApi.addUpdateHrCompany(hrCompany);
+  }
+
+  async getHrCompanies(loadAgain: boolean) {
+    if (!this.hrCompaniesList || loadAgain) {
+      const res = await this.generalApi.getHrCompanies();
       runInAction(() => {
-        this.departmentsList = res.data;
+        this.hrCompaniesList = res.data;
       });
     }
+  }
+
+  async deleteHrCompany(hrCompany: IIdName) {
+    return await this.generalApi.deleteHrCompany(hrCompany);
   }
 }

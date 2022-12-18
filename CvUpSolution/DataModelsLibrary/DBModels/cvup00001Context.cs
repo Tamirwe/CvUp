@@ -29,11 +29,11 @@ namespace Database.models
         public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
         public virtual DbSet<enum_email_type> enum_email_types { get; set; } = null!;
         public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
-        public virtual DbSet<enum_position_status> enum_position_statuses { get; set; } = null!;
         public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
+        public virtual DbSet<interviewer> interviewers { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
         public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
@@ -278,15 +278,6 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<enum_position_status>(entity =>
-            {
-                entity.ToTable("enum_position_status");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(50);
-            });
-
             modelBuilder.Entity<enum_role>(entity =>
             {
                 entity.Property(e => e.id).ValueGeneratedNever();
@@ -339,19 +330,43 @@ namespace Database.models
                     .HasConstraintName("fk_hr_contacts_hr_company_id_hr_companies_id");
             });
 
+            modelBuilder.Entity<interviewer>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_interviewers_company_id_companies_id");
+
+                entity.HasIndex(e => e.position_id, "fk_interviewers_position_id_positions_id");
+
+                entity.HasIndex(e => e.user_id, "fk_interviewers_user_id_users_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.interviewers)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_interviewers_company_id_companies_id");
+
+                entity.HasOne(d => d.position)
+                    .WithMany(p => p.interviewers)
+                    .HasForeignKey(d => d.position_id)
+                    .HasConstraintName("fk_interviewers_position_id_positions_id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.interviewers)
+                    .HasForeignKey(d => d.user_id)
+                    .HasConstraintName("fk_interviewers_user_id_users_id");
+            });
+
             modelBuilder.Entity<position>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_positions_company_id_companies_id");
 
                 entity.HasIndex(e => e.department_id, "fk_positions_department_id_departments_id");
 
-                entity.HasIndex(e => e.status_id, "fk_positions_status_id_enum_position_status_id");
-
                 entity.Property(e => e.date_created).HasColumnType("datetime");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
                 entity.Property(e => e.descr).HasMaxLength(2000);
+
+                entity.Property(e => e.is_active).HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.name).HasMaxLength(500);
 
@@ -364,12 +379,6 @@ namespace Database.models
                     .WithMany(p => p.positions)
                     .HasForeignKey(d => d.department_id)
                     .HasConstraintName("fk_positions_department_id_departments_id");
-
-                entity.HasOne(d => d.status)
-                    .WithMany(p => p.positions)
-                    .HasForeignKey(d => d.status_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_positions_status_id_enum_position_status_id");
             });
 
             modelBuilder.Entity<position_cv>(entity =>

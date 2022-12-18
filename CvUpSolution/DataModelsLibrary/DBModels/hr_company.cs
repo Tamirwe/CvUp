@@ -12,7 +12,7 @@ namespace Database.models
         }
 
         public int id { get; set; }
-        public string? name { get; set; }
+        public string name { get; set; } = null!;
         public int company_id { get; set; }
 
         public virtual company company { get; set; } = null!;

@@ -8,6 +8,7 @@ namespace Database.models
         public user()
         {
             emails_sents = new HashSet<emails_sent>();
+            interviewers = new HashSet<interviewer>();
             position_users = new HashSet<position_user>();
         }
 
@@ -28,6 +29,7 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual enum_role roleNavigation { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }
+        public virtual ICollection<interviewer> interviewers { get; set; }
         public virtual ICollection<position_user> position_users { get; set; }
     }
 }

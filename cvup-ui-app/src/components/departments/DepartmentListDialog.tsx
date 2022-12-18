@@ -70,7 +70,7 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
-          New Department
+          Add
         </Button>
         {openDepartmentForm && (
           <DepartmentFormDialog

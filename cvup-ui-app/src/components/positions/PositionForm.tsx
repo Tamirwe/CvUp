@@ -5,7 +5,6 @@ import {
   FormHelperText,
   Grid,
   IconButton,
-  InputAdornment,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -214,16 +213,17 @@ export const PositionForm = observer(() => {
                   })}
                 </Select>
               </FormControl>
-
+            </Grid>
+            <Grid item xs={12} lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="hrCompanyLabel">HR Company</InputLabel>
+                <InputLabel id="hrCompanyLabel">HR Companies</InputLabel>
                 <Select
                   labelId="hrCompanyLabel"
                   id="demo-simple-select"
                   multiple
                   value={hrCompanyNames}
                   renderValue={(selected) => selected.join(", ")}
-                  input={<OutlinedInput label="HR Company" />}
+                  input={<OutlinedInput label="HR Companies" />}
                   onChange={handleHrCompaniesChanged}
                   sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
                   endAdornment={

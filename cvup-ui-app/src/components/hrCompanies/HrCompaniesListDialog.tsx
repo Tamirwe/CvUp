@@ -70,7 +70,7 @@ export const HrCompaniesListDialog = ({ isOpen, close }: IProps) => {
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
-          New HR Company
+          Add
         </Button>
         {openhrCompanyForm && (
           <HrCompanyFormDialog

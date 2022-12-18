@@ -26,7 +26,7 @@ namespace DataModelsLibrary.Enums
         not_registered = 2,
         more_then_one_company_per_email = 3,
     }
-    public enum UsersRole
+    public enum UserPermission
     {
         AppManager = 1,
         Admin = 10,

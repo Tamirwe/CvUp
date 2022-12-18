@@ -21,13 +21,13 @@ namespace Database.models
         public DateTime? date_created { get; set; }
         public int activate_status_id { get; set; }
         public string? log_info { get; set; }
-        public int role { get; set; }
         public string? refresh_token { get; set; }
         public DateTime? refresh_token_expiry { get; set; }
+        public int permission_type_id { get; set; }
 
         public virtual enum_user_activate_status activate_status { get; set; } = null!;
         public virtual company company { get; set; } = null!;
-        public virtual enum_role roleNavigation { get; set; } = null!;
+        public virtual enum_permission_type permission_type { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }
         public virtual ICollection<interviewer> interviewers { get; set; }
         public virtual ICollection<position_user> position_users { get; set; }

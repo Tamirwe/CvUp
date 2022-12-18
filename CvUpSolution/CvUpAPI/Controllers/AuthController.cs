@@ -131,5 +131,38 @@ namespace CvUpAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("AddUpdateInterviewer")]
+        public IActionResult AddUpdateInterviewer(InterviewerModel data)
+        {
+            user interviewer;
+
+            if (data.id == 0)
+            {
+                interviewer = _authServise.AddInterviewer(data, Globals.CompanyId);
+            }
+            else
+            {
+                interviewer = _authServise.UpdateInterviewer(data, Globals.CompanyId);
+            }
+
+            return Ok(interviewer);
+        }
+
+        [HttpGet]
+        [Route("GetInterviewers")]
+        public IActionResult GetInterviewers()
+        {
+            List<IdNameModel> users = _authServise.GetInterviewers(Globals.CompanyId);
+            return Ok(users);
+        }
+
+        [HttpDelete]
+        [Route("DeleteInterviewer")]
+        public IActionResult DeleteInterviewer(int id)
+        {
+            InterviewerModel? result = _authServise.DeleteInterviewer(Globals.CompanyId, id);
+            return Ok(result);
+        }
     }
 }

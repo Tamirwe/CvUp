@@ -14,7 +14,7 @@ namespace AuthLibrary
             {
                 company newCompany = AddNewCompany(data.companyName, data.companyDescr);
                 string hashPassword = SecretHasher.Hash(data.password);
-                user newUser = AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UsersRole.Admin, "Registered");
+                user newUser = AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
                 newCompany.key_email = "ui" + newUser.id + "ci" + newCompany.id;
                 newCompany.cvs_email = "cvup.files+" + newCompany.key_email + "@gmail.com";
                 _authQueries.updateCompany(newCompany);
@@ -31,9 +31,9 @@ namespace AuthLibrary
             _emailQueries.AddNewEmailSent(user.id, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
-        private user AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UsersRole role, string log)
+        private user AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)
         {
-            user user = _authQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActivateStatus.REGISTRATION_NOT_COMPLETED, role, log);
+            user user = _authQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActivateStatus.REGISTRATION_NOT_COMPLETED, permission, log);
             return user;
         }
 

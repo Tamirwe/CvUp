@@ -10,15 +10,15 @@ namespace CvsPositionsLibrary
 {
     public partial class CvsPositionsServise
     {
-        public department AddDepartment(IdNameModel data)
+        public department AddDepartment(IdNameModel data, int companyId)
         {
-            department newRec = _cvsPositionsQueries.AddDepartment(data);
+            department newRec = _cvsPositionsQueries.AddDepartment(data, companyId);
             return newRec;
         }
 
-        public department? UpdateDepartment(IdNameModel data)
+        public department? UpdateDepartment(IdNameModel data, int companyId)
         {
-            department? newRec = _cvsPositionsQueries.UpdateDepartment(data);
+            department? newRec = _cvsPositionsQueries.UpdateDepartment(data, companyId);
             return newRec;
         }
 
@@ -34,15 +34,15 @@ namespace CvsPositionsLibrary
             return result;
         }
 
-        public hr_company AddHrCompany(IdNameModel data)
+        public hr_company AddHrCompany(IdNameModel data, int companyId)
         {
-            hr_company newRec = _cvsPositionsQueries.AddHrCompany(data);
+            hr_company newRec = _cvsPositionsQueries.AddHrCompany(data, companyId);
             return newRec;
         }
 
-        public hr_company? UpdateHrCompany(IdNameModel data)
+        public hr_company? UpdateHrCompany(IdNameModel data, int companyId)
         {
-            hr_company? newRec = _cvsPositionsQueries.UpdateHrCompany(data);
+            hr_company? newRec = _cvsPositionsQueries.UpdateHrCompany(data, companyId);
             return newRec;
         }
 

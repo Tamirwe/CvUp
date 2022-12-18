@@ -119,12 +119,12 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
-        public department AddDepartment(IdNameModel data)
+        public department AddDepartment(IdNameModel data, int companyId)
         {
             var dep = new department
             {
                 name = data.name,
-                company_id = data.companyId ?? 0
+                company_id = companyId
             };
 
             var result = dbContext.departments.Add(dep);
@@ -132,17 +132,12 @@ namespace DataModelsLibrary.Queries
             return result.Entity;
         }
 
-        public department? UpdateDepartment(IdNameModel data)
+        public department? UpdateDepartment(IdNameModel data, int companyId)
         {
-            if (data.companyId != null)
-            {
-                department dep = new department { id = data.id, name = data.name, company_id = (int)data.companyId };
+                department dep = new department { id = data.id, name = data.name, company_id = companyId };
                 var result = dbContext.departments.Update(dep);
                 dbContext.SaveChanges();
                 return result.Entity;
-            }
-
-            return null;
         }
 
         public List<IdNameModel> GetDepartments(int companyId)
@@ -175,29 +170,25 @@ namespace DataModelsLibrary.Queries
             return null;
         }
 
-        public hr_company AddHrCompany(IdNameModel data)
+        public hr_company AddHrCompany(IdNameModel data, int companyId)
         {
             var hr = new hr_company
             {
                 name = data.name,
-                company_id = data.companyId ?? 0
+                company_id = companyId
             };
 
             var result = dbContext.hr_companies.Add(hr);
             dbContext.SaveChanges();
             return result.Entity;
         }
-        public hr_company? UpdateHrCompany(IdNameModel data)
+
+        public hr_company? UpdateHrCompany(IdNameModel data, int companyId)
         {
-            if (data.companyId != null)
-            {
-                hr_company hr = new hr_company { id = data.id, name = data.name, company_id = (int)data.companyId };
+                hr_company hr = new hr_company { id = data.id, name = data.name, company_id = companyId };
                 var result = dbContext.hr_companies.Update(hr);
                 dbContext.SaveChanges();
                 return result.Entity;
-            }
-
-            return null;
         }
         public List<IdNameModel> GetHrCompanies(int companyId)
         {

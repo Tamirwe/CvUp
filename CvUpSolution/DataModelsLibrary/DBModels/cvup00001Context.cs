@@ -29,7 +29,7 @@ namespace Database.models
         public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
         public virtual DbSet<enum_email_type> enum_email_types { get; set; } = null!;
         public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
-        public virtual DbSet<enum_role> enum_roles { get; set; } = null!;
+        public virtual DbSet<enum_permission_type> enum_permission_types { get; set; } = null!;
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
@@ -278,8 +278,10 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<enum_role>(entity =>
+            modelBuilder.Entity<enum_permission_type>(entity =>
             {
+                entity.ToTable("enum_permission_type");
+
                 entity.Property(e => e.id).ValueGeneratedNever();
 
                 entity.Property(e => e.name).HasMaxLength(20);
@@ -493,7 +495,7 @@ namespace Database.models
 
                 entity.HasIndex(e => e.company_id, "fk_users_company_id_companies_id");
 
-                entity.HasIndex(e => e.role, "fk_users_role_enum_roles_id");
+                entity.HasIndex(e => e.permission_type_id, "fk_users_permission_type_id_enum_permission_type_id");
 
                 entity.HasIndex(e => new { e.email, e.passwaord }, "uq_users_email_password")
                     .IsUnique();
@@ -527,11 +529,11 @@ namespace Database.models
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_users_company_id_companies_id");
 
-                entity.HasOne(d => d.roleNavigation)
+                entity.HasOne(d => d.permission_type)
                     .WithMany(p => p.users)
-                    .HasForeignKey(d => d.role)
+                    .HasForeignKey(d => d.permission_type_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_users_role_enum_roles_id");
+                    .HasConstraintName("fk_users_permission_type_id_enum_permission_type_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
         public user? getUser(int userId);
         public List<user> getUsers(string email, int? companyId);
         public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status);
-        user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UsersRole role, string log);
+        user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UserPermission permission, string log);
         company updateCompany(company newCompany);
         void addUserPasswordReset(string key, user user);
         public registeration_key? getRegistrationKey(string key);
@@ -20,8 +20,9 @@ namespace DataModelsLibrary.Queries
         void RevokeUserToken(int userId);
         public void removeRegistrationKey(registeration_key rkey);
         public void UpdateUser(user user);
-        
-
-
+        public user AddInterviewer(InterviewerModel data, int companyId);
+        public user UpdateInterviewer(InterviewerModel data, int companyId);
+        public List<IdNameModel> GetInterviewers(int companyId);
+        public InterviewerModel DeleteInterviewer(int companyId, int id);
     }
 }

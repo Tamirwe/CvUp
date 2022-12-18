@@ -4,6 +4,8 @@ using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,7 +80,7 @@ namespace DataModelsLibrary.Queries
             return company;
         }
 
-        public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UsersRole role, string log)
+        public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UserPermission permission, string log)
         {
             var user = new user
             {
@@ -88,7 +90,7 @@ namespace DataModelsLibrary.Queries
                 first_name = firstName,
                 last_name = lastName,
                 activate_status_id = (int)status,
-                role = (int)role,
+                permission_type_id = (int)permission,
                 log_info = log
             };
 
@@ -154,6 +156,37 @@ namespace DataModelsLibrary.Queries
             dbContext.SaveChanges();
         }
 
+        public user AddInterviewer(InterviewerModel data,int companyId)
+        {
+            var user = new user
+            {
+                company_id = companyId,
+                email = data.email,
+                first_name = data.firstName,
+                last_name = data.lastName,
+                activate_status_id = (int)UserActivateStatus.REGISTRATION_NOT_COMPLETED,
+                permission_type_id = (int)UserPermission.User,
+            };
+
+            dbContext.users.Add(user);
+            dbContext.SaveChanges();
+            return user;
+
+        }
+        public user UpdateInterviewer(InterviewerModel data, int companyId)
+        {
+            return null;
+        }
+        public List<IdNameModel> GetInterviewers(int companyId)
+        {
+            return null;
+
+        }
+        public InterviewerModel DeleteInterviewer(int companyId, int id)
+        {
+            return null;
+
+        }
 
     }
 }

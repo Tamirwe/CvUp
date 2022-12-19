@@ -21,8 +21,8 @@ namespace DataModelsLibrary.Queries
         public void removeRegistrationKey(registeration_key rkey);
         public void UpdateUser(user user);
         public user AddInterviewer(InterviewerModel data, int companyId);
-        public user UpdateInterviewer(InterviewerModel data, int companyId);
-        public List<IdNameModel> GetInterviewers(int companyId);
-        public InterviewerModel DeleteInterviewer(int companyId, int id);
+        public user? UpdateInterviewer(InterviewerModel data, int companyId);
+        public List<InterviewerModel> GetInterviewers(int companyId);
+        public void DeleteInterviewer(int companyId, int id);
     }
 }

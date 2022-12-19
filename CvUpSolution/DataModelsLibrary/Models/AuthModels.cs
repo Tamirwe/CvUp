@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataModelsLibrary.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,8 @@ namespace DataModelsLibrary.Models
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
         public string email { get; set; } = string.Empty;
+        public UserPermission permissionType { get; set; } = UserPermission.User;
+
     }
 
 }

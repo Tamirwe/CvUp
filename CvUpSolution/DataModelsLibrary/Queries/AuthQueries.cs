@@ -173,19 +173,52 @@ namespace DataModelsLibrary.Queries
             return user;
 
         }
-        public user UpdateInterviewer(InterviewerModel data, int companyId)
+        public user? UpdateInterviewer(InterviewerModel data, int companyId)
         {
-            return null;
+            user? user = dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefault();
+
+            if (user != null)
+            {
+                user.email = data.email;
+                user.first_name = data.firstName;
+                user.last_name = data.lastName;
+                user.permission_type_id = (int)data.permissionType;
+
+                dbContext.SaveChanges();
+            }
+
+            return user;
         }
-        public List<IdNameModel> GetInterviewers(int companyId)
+
+        public List<InterviewerModel> GetInterviewers(int companyId)
         {
-            return null;
+            var query = from u in dbContext.users
+                        where u.company_id == companyId
+                        orderby u.first_name, u.last_name
+                        select new InterviewerModel
+                        {
+                            id = u.id,
+                            firstName = u.first_name,
+                            lastName = u.last_name,
+                            email = u.email,
+                            permissionType = (UserPermission)u.permission_type_id
+                        };
+
+            return query.ToList();
 
         }
-        public InterviewerModel DeleteInterviewer(int companyId, int id)
-        {
-            return null;
 
+        public void DeleteInterviewer(int companyId, int id)
+        {
+            var usr = (from u in dbContext.users
+                       where u.id == id && u.company_id == companyId
+                       select u).FirstOrDefault();
+
+            if (usr != null)
+            {
+                var result = dbContext.users.Remove(usr);
+                dbContext.SaveChanges();
+            }
         }
 
     }

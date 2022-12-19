@@ -123,7 +123,7 @@ namespace AuthLibrary
             return principal;
         }
 
-        public void RevokeToken(int userId)
+        public void RevokeToken(int userId, int companyId)
         {
             _authQueries.RevokeUserToken(userId);
         }

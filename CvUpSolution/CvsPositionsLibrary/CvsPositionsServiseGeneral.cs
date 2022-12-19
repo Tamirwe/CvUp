@@ -28,10 +28,9 @@ namespace CvsPositionsLibrary
             return depList;
         }
 
-        public department? DeleteDepartment(int companyId, int id)
+        public void DeleteDepartment(int companyId, int id)
         {
-            var result = _cvsPositionsQueries.DeleteDepartment(companyId, id);
-            return result;
+            _cvsPositionsQueries.DeleteDepartment(companyId, id);
         }
 
         public hr_company AddHrCompany(IdNameModel data, int companyId)
@@ -52,10 +51,9 @@ namespace CvsPositionsLibrary
             return depList;
         }
 
-        public hr_company? DeleteHrCompany(int companyId, int id)
+        public void DeleteHrCompany(int companyId, int id)
         {
-            var result = _cvsPositionsQueries.DeleteHrCompany(companyId, id);
-            return result;
+            _cvsPositionsQueries.DeleteHrCompany(companyId, id);
         }
     }
 }

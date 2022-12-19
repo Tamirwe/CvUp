@@ -28,16 +28,15 @@ namespace AuthLibrary
             return updatedUser;
         }
 
-        public List<IdNameModel> GetInterviewers(int companyId)
+        public List<InterviewerModel> GetInterviewers(int companyId)
         {
-            List<IdNameModel> depList = _authQueries.GetInterviewers(companyId);
+            List<InterviewerModel> depList = _authQueries.GetInterviewers(companyId);
             return depList;
         }
 
-        public InterviewerModel? DeleteInterviewer(int companyId, int id)
+        public void DeleteInterviewer(int companyId, int id)
         {
-            InterviewerModel result = _authQueries.DeleteInterviewer(companyId, id);
-            return result;
+            _authQueries.DeleteInterviewer(companyId, id);
         }
 
     }

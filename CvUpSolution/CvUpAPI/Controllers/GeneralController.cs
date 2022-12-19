@@ -50,8 +50,8 @@ namespace CvUpAPI.Controllers
         [Route("DeleteDepartment")]
         public IActionResult DeleteDepartment(int id)
         {
-            department? result = _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
-            return Ok(result);
+            _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
+            return Ok();
         }
 
         [HttpPost]
@@ -84,8 +84,8 @@ namespace CvUpAPI.Controllers
         [Route("DeleteHrCompany")]
         public IActionResult DeleteHrCompany(int id)
         {
-            hr_company? result = _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
-            return Ok(result);
+            _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
+            return Ok();
         }
     }
 }

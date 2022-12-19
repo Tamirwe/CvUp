@@ -153,7 +153,7 @@ namespace CvUpAPI.Controllers
         [Route("GetInterviewers")]
         public IActionResult GetInterviewers()
         {
-            List<IdNameModel> users = _authServise.GetInterviewers(Globals.CompanyId);
+            List<InterviewerModel> users = _authServise.GetInterviewers(Globals.CompanyId);
             return Ok(users);
         }
 
@@ -161,8 +161,8 @@ namespace CvUpAPI.Controllers
         [Route("DeleteInterviewer")]
         public IActionResult DeleteInterviewer(int id)
         {
-            InterviewerModel? result = _authServise.DeleteInterviewer(Globals.CompanyId, id);
-            return Ok(result);
+            _authServise.DeleteInterviewer(Globals.CompanyId, id);
+            return Ok();
         }
     }
 }

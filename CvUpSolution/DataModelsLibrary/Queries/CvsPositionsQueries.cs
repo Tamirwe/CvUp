@@ -154,7 +154,7 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
-        public department? DeleteDepartment(int companyId, int id)
+        public void DeleteDepartment(int companyId, int id)
         {
             var dep = (from d in dbContext.departments
                        where d.id == id && d.company_id == companyId
@@ -164,10 +164,7 @@ namespace DataModelsLibrary.Queries
             {
                 var result = dbContext.departments.Remove(dep);
                 dbContext.SaveChanges();
-                return result.Entity;
             }
-
-            return null;
         }
 
         public hr_company AddHrCompany(IdNameModel data, int companyId)
@@ -204,7 +201,7 @@ namespace DataModelsLibrary.Queries
             return query.ToList();
         }
 
-        public hr_company? DeleteHrCompany(int companyId, int id)
+        public void DeleteHrCompany(int companyId, int id)
         {
             var hr = (from h in dbContext.hr_companies
                       where h.id == id && h.company_id == companyId
@@ -214,10 +211,7 @@ namespace DataModelsLibrary.Queries
             {
                 var result = dbContext.hr_companies.Remove(hr);
                 dbContext.SaveChanges();
-                return result.Entity;
             }
-
-            return null;
         }
     }
 }

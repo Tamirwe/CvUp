@@ -1,10 +1,10 @@
-export enum CrudTypes {
+export enum CrudTypesEnum {
   Insert,
   Update,
   Delete,
 }
 
-export enum PermissionType {
+export enum PermissionTypeEnum {
   Admin = 10,
   User = 20,
 }

@@ -14,11 +14,6 @@ export class AuthStore {
   private authApi;
   isLoggedIn = false;
   claims: ClaimsModel = {};
-  CompanyId = null;
-  UserId = null;
-  DisplayName = null;
-  email = null;
-  role = null;
   interviewersList: IInterviewer[] | undefined;
 
   constructor(private rootStore: RootStore) {

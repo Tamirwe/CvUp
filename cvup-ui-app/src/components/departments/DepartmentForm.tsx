@@ -2,12 +2,12 @@ import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
-import { CrudTypes } from "../../models/GeneralEnums";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
   department: IIdName;
-  crudType?: CrudTypes;
+  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
@@ -84,7 +84,7 @@ export const DepartmentForm = ({
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypes.Delete}
+            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="title"
@@ -117,7 +117,7 @@ export const DepartmentForm = ({
                 >
                   Cancel
                 </Button>
-                {crudType === CrudTypes.Delete ? (
+                {crudType === CrudTypesEnum.Delete ? (
                   <Button
                     fullWidth
                     variant="contained"

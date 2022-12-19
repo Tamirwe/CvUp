@@ -1,12 +1,12 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import { IIdName } from "../../models/AuthModels";
-import { CrudTypes } from "../../models/GeneralEnums";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { DepartmentForm } from "./DepartmentForm";
 
 interface IProps {
   department: IIdName;
-  crudType?: CrudTypes;
+  crudType?: CrudTypesEnum;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
 }
@@ -26,13 +26,13 @@ export const DepartmentFormDialog = ({
 
   useEffect(() => {
     switch (crudType) {
-      case CrudTypes.Insert:
+      case CrudTypesEnum.Insert:
         setFormTitle("Add Team");
         break;
-      case CrudTypes.Update:
+      case CrudTypesEnum.Update:
         setFormTitle("Edit Team");
         break;
-      case CrudTypes.Delete:
+      case CrudTypesEnum.Delete:
         setFormTitle("Delete Team");
         break;
       default:

@@ -4,10 +4,10 @@ import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDelete } from "react-icons/md";
 import { IInterviewer } from "../../models/AuthModels";
 import { observer } from "mobx-react";
-import { CrudTypes } from "../../models/GeneralEnums";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IInterviewer, type: CrudTypes) => void;
+  onAddEditDeleteclick: (department: IInterviewer, type: CrudTypesEnum) => void;
 }
 
 export const InterviewersList = observer((props: IProps) => {
@@ -32,21 +32,25 @@ export const InterviewersList = observer((props: IProps) => {
       {authStore.interviewersList?.map((item, i) => {
         return (
           <ListItemButton
-            onClick={() => props.onAddEditDeleteclick(item, CrudTypes.Update)}
+            onClick={() =>
+              props.onAddEditDeleteclick(item, CrudTypesEnum.Update)
+            }
             key={item.id}
             sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
             <ListItemText>{`${item.firstName} ${item.lastName}`}</ListItemText>
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                props.onAddEditDeleteclick(item, CrudTypes.Delete);
-              }}
-              sx={{ color: "#d7d2d2" }}
-            >
-              <MdOutlineDelete />
-            </IconButton>
+            {parseInt(authStore.claims.UserId || "0") !== item.id && (
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  props.onAddEditDeleteclick(item, CrudTypesEnum.Delete);
+                }}
+                sx={{ color: "#d7d2d2" }}
+              >
+                <MdOutlineDelete />
+              </IconButton>
+            )}
           </ListItemButton>
         );
       })}

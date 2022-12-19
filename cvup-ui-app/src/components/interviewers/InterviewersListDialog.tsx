@@ -10,7 +10,7 @@ import { GoPlus } from "react-icons/go";
 import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IInterviewer } from "../../models/AuthModels";
-import { CrudTypes } from "../../models/GeneralEnums";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { InterviewerFormDialog } from "./InterviewerFormDialog";
 import { InterviewersList } from "./InterviewersList";
 
@@ -24,13 +24,16 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
   const [open, setOpen] = useState(false);
   const [openInterviewerForm, setOpenInterviewerForm] = useState(false);
   const [editInterviewer, setEditInterviewer] = useState<IInterviewer>();
-  const [crudType, setCrudType] = useState<CrudTypes>();
+  const [crudType, setCrudType] = useState<CrudTypesEnum>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEditDelete = (interviewer: IInterviewer, type: CrudTypes) => {
+  const handleAddEditDelete = (
+    interviewer: IInterviewer,
+    type: CrudTypesEnum
+  ) => {
     setEditInterviewer(interviewer);
     setCrudType(type);
     setOpenInterviewerForm(true);
@@ -71,9 +74,9 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
                 firstName: "",
                 lastName: "",
                 email: "",
-                permissionType: 10,
+                permissionType: 20,
               },
-              CrudTypes.Insert
+              CrudTypesEnum.Insert
             )
           }
           sx={{ padding: "30px 0 10px 0" }}

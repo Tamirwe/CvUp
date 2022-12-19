@@ -4,10 +4,10 @@ import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDelete } from "react-icons/md";
 import { IIdName } from "../../models/AuthModels";
 import { observer } from "mobx-react";
-import { CrudTypes } from "../../models/GeneralEnums";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IIdName, type: CrudTypes) => void;
+  onAddEditDeleteclick: (department: IIdName, type: CrudTypesEnum) => void;
 }
 
 export const DepartmentsList = observer((props: IProps) => {
@@ -32,7 +32,9 @@ export const DepartmentsList = observer((props: IProps) => {
       {generalStore.departmentsList?.map((item, i) => {
         return (
           <ListItemButton
-            onClick={() => props.onAddEditDeleteclick(item, CrudTypes.Update)}
+            onClick={() =>
+              props.onAddEditDeleteclick(item, CrudTypesEnum.Update)
+            }
             key={item.id}
             sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
@@ -41,7 +43,7 @@ export const DepartmentsList = observer((props: IProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                props.onAddEditDeleteclick(item, CrudTypes.Delete);
+                props.onAddEditDeleteclick(item, CrudTypesEnum.Delete);
               }}
               sx={{ color: "#d7d2d2" }}
             >

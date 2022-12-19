@@ -1,4 +1,4 @@
-import { PermissionType } from "./GeneralEnums";
+import { PermissionTypeEnum } from "./GeneralEnums";
 
 export interface IUserRegistration {
   firstName: string;
@@ -62,5 +62,5 @@ export interface IInterviewer {
   firstName: string;
   lastName: string;
   email: string;
-  permissionType: PermissionType;
+  permissionType: PermissionTypeEnum;
 }

@@ -22,15 +22,19 @@ import { IPosition } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
+import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 
 export const PositionForm = observer(() => {
-  const { positionsStore, generalStore } = useStore();
+  const { positionsStore, generalStore, authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
   const [departmentId, setDepartmentId] = useState("");
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
-  const [hrCompanyIds, setHrCompanyIds] = useState<number[]>([]);
+  const [openInterviewersList, setOpenInterviewersList] = useState(false);
+  const [hrCompaniesIds, setHrCompaniesIds] = useState<number[]>([]);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
+  const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
+  const [interviewersIds, setInterviewersIds] = useState<number[]>([]);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -65,7 +69,7 @@ export const PositionForm = observer(() => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedCompanyIds = [...hrCompanyIds];
+    const selectedCompanyIds = [...hrCompaniesIds];
 
     if (isChecked) {
       const ind = selectedCompanyIds.indexOf(id);
@@ -74,25 +78,52 @@ export const PositionForm = observer(() => {
       selectedCompanyIds.push(id);
     }
 
-    setHrCompanyIds(selectedCompanyIds);
+    setHrCompaniesIds(selectedCompanyIds);
     setHrCompanyNames(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleInterviewersChanged = (
+    event: SelectChangeEvent<typeof interviewersNames>,
+    node: any
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    const id = parseInt(node.props.id);
+    const isChecked = node.props.children[0].props.checked;
+    const selectedInterviwersIds = [...interviewersIds];
+
+    if (isChecked) {
+      const ind = selectedInterviwersIds.indexOf(id);
+      selectedInterviwersIds.splice(ind, 1);
+    } else {
+      selectedInterviwersIds.push(id);
+    }
+
+    setInterviewersIds(selectedInterviwersIds);
+    setInterviewersNames(typeof value === "string" ? value.split(",") : value);
   };
 
   const handleDepartmentsListClose = () => {
     setOpenDepartmentsList(false);
   };
 
-  const handleHrCompaniesClose = () => {
+  const handleHrCompaniesListClose = () => {
     setOpenHrCompaniesList(false);
 
     const hrCompaniesNamesArr: string[] = [];
 
-    hrCompanyIds.forEach((id) => {
+    hrCompaniesIds.forEach((id) => {
       const hrCompany = generalStore.hrCompaniesList?.find((x) => x.id === id);
       hrCompaniesNamesArr.push(hrCompany?.name || "");
     });
 
     setHrCompanyNames(hrCompaniesNamesArr);
+  };
+
+  const handleInterviewersListClose = () => {
+    setOpenInterviewersList(false);
   };
 
   const updateFieldError = (field: string, errTxt: string) => {
@@ -180,14 +211,57 @@ export const PositionForm = observer(() => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item xs={12} lg={6}>
           <Grid container>
+            <Grid item xs={12} lg={6}>
+              <FormControl fullWidth>
+                <InputLabel id="interviewersLabel">Interviewers</InputLabel>
+                <Select
+                  labelId="interviewersLabel"
+                  id="interviewersSelect"
+                  multiple
+                  value={interviewersNames}
+                  renderValue={(selected) => selected.join(", ")}
+                  input={<OutlinedInput label="Interviewers" />}
+                  onChange={handleInterviewersChanged}
+                  sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
+                  endAdornment={
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setOpenInterviewersList(true)}
+                      edge="end"
+                    >
+                      <MdFormatIndentIncrease />
+                    </IconButton>
+                  }
+                >
+                  {authStore.interviewersList?.map((item, i) => {
+                    return (
+                      <MenuItem
+                        key={item.id}
+                        id={item.id.toString()}
+                        value={item.firstName}
+                      >
+                        <Checkbox
+                          checked={
+                            interviewersNames.indexOf(item.firstName) > -1
+                          }
+                        />
+                        <ListItemText primary={item.firstName} />
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12} lg={6}>
               <FormControl fullWidth>
                 <InputLabel id="departmentLabel">Department</InputLabel>
                 <Select
                   labelId="departmentLabel"
-                  id="demo-simple-select"
+                  id="departmentSelect"
                   value={departmentId}
                   label="Department"
                   onChange={(event: SelectChangeEvent) => {
@@ -219,7 +293,7 @@ export const PositionForm = observer(() => {
                 <InputLabel id="hrCompanyLabel">HR Companies</InputLabel>
                 <Select
                   labelId="hrCompanyLabel"
-                  id="demo-simple-select"
+                  id="hrCompanySelect"
                   multiple
                   value={hrCompanyNames}
                   renderValue={(selected) => selected.join(", ")}
@@ -315,7 +389,13 @@ export const PositionForm = observer(() => {
       {openHrCompaniesList && (
         <HrCompaniesListDialog
           isOpen={openHrCompaniesList}
-          close={handleHrCompaniesClose}
+          close={handleHrCompaniesListClose}
+        />
+      )}
+      {openInterviewersList && (
+        <InterviewersListDialog
+          isOpen={openInterviewersList}
+          close={handleInterviewersListClose}
         />
       )}
     </form>

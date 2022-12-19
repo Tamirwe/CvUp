@@ -1,29 +1,27 @@
 import {
   List,
-  ListItem,
   ListItemText,
   Stack,
   IconButton,
-  Divider,
   ListItemButton,
 } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
-import { IIdName } from "../../models/AuthModels";
+import { MdOutlineDelete } from "react-icons/md";
+import { IInterviewer } from "../../models/AuthModels";
 import { observer } from "mobx-react";
 import { CrudTypes } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IIdName, type: CrudTypes) => void;
+  onAddEditDeleteclick: (department: IInterviewer, type: CrudTypes) => void;
 }
 
 export const InterviewersList = observer((props: IProps) => {
-  const { generalStore } = useStore();
+  const { authStore } = useStore();
 
   useEffect(() => {
     (async () => {
-      await generalStore.getDepartments(false);
+      await authStore.getInterviewers(false);
     })();
   }, []);
 
@@ -37,14 +35,14 @@ export const InterviewersList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {generalStore.departmentsList?.map((item, i) => {
+      {authStore.interviewersList?.map((item, i) => {
         return (
           <ListItemButton
             onClick={() => props.onAddEditDeleteclick(item, CrudTypes.Update)}
             key={item.id}
             sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
-            <ListItemText>{item.name}</ListItemText>
+            <ListItemText>{`${item.firstName} ${item.lastName}`}</ListItemText>
             <Stack
               direction="row"
               justifyContent="space-between"

@@ -6,7 +6,7 @@ import { CrudTypes } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
-  hrCompany?: IIdName;
+  hrCompany: IIdName;
   crudType?: CrudTypes;
   onSaved: () => void;
   onCancel: () => void;
@@ -21,10 +21,7 @@ export const HrCompanyForm = ({
   const { generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [formModel, setFormModel] = useState<IIdName>({
-    id: 0,
-    name: "",
-  });
+  const [formModel, setFormModel] = useState<IIdName>(hrCompany);
   const [formValError, setFormValError] = useState({
     name: false,
   });

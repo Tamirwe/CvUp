@@ -72,7 +72,7 @@ export const DepartmentsListDialog = ({ isOpen, close }: IProps) => {
         >
           Add
         </Button>
-        {openDepartmentForm && (
+        {openDepartmentForm && editDepartment && (
           <DepartmentFormDialog
             department={editDepartment}
             crudType={crudType}

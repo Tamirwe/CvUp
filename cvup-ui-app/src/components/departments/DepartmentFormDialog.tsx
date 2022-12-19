@@ -5,7 +5,7 @@ import { CrudTypes } from "../../models/GeneralEnums";
 import { DepartmentForm } from "./DepartmentForm";
 
 interface IProps {
-  department?: IIdName;
+  department: IIdName;
   crudType?: CrudTypes;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;

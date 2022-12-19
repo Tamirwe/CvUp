@@ -1,18 +1,18 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IIdName } from "../../models/AuthModels";
+import { IInterviewer } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
 import { InterviewerForm } from "./InterviewerForm";
 
 interface IProps {
-  department?: IIdName;
+  interviewer: IInterviewer;
   crudType?: CrudTypes;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
 }
 
 export const InterviewerFormDialog = ({
-  department,
+  interviewer,
   crudType,
   isOpen,
   onClose,
@@ -50,7 +50,7 @@ export const InterviewerFormDialog = ({
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         <InterviewerForm
-          department={department}
+          interviewer={interviewer}
           crudType={crudType}
           onSaved={() => onClose(true)}
           onCancel={() => onClose(false)}

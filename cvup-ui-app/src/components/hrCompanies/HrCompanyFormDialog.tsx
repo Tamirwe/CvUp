@@ -5,7 +5,7 @@ import { CrudTypes } from "../../models/GeneralEnums";
 import { HrCompanyForm } from "./HrCompanyForm";
 
 interface IProps {
-  hrCompany?: IIdName;
+  hrCompany: IIdName;
   crudType?: CrudTypes;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;

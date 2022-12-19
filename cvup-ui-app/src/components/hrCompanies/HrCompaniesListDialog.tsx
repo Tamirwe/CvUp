@@ -72,7 +72,7 @@ export const HrCompaniesListDialog = ({ isOpen, close }: IProps) => {
         >
           Add
         </Button>
-        {openhrCompanyForm && (
+        {openhrCompanyForm && edithrCompany && (
           <HrCompanyFormDialog
             hrCompany={edithrCompany}
             crudType={crudType}

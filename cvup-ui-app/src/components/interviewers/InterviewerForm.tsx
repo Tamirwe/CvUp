@@ -1,40 +1,41 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { IIdName } from "../../models/AuthModels";
+import { IIdName, IInterviewer } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
-  department?: IIdName;
+  interviewer: IInterviewer;
   crudType?: CrudTypes;
   onSaved: () => void;
   onCancel: () => void;
 }
 
 export const InterviewerForm = ({
-  department,
+  interviewer,
   crudType,
   onSaved,
   onCancel,
 }: IProps) => {
-  const { generalStore } = useStore();
+  const { authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [formModel, setFormModel] = useState<IIdName>({
-    id: 0,
-    name: "",
-  });
+  const [formModel, setFormModel] = useState<IInterviewer>(interviewer);
   const [formValError, setFormValError] = useState({
-    name: false,
+    firstName: false,
+    lastName: false,
+    email: false,
   });
   const [formValErrorTxt, setFormValErrorTxt] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
+    email: "",
   });
 
   useEffect(() => {
-    department && setFormModel({ ...department });
-  }, [department]);
+    interviewer && setFormModel({ ...interviewer });
+  }, [interviewer]);
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;
@@ -55,13 +56,13 @@ export const InterviewerForm = ({
 
   const validateForm = () => {
     let isFormValid = true;
-    let errTxt = textFieldValidte(formModel.name, true, true, true);
-    isFormValid = updateFieldError("name", errTxt) && isFormValid;
+    let errTxt = textFieldValidte(formModel.firstName, true, true, true);
+    isFormValid = updateFieldError("firstName", errTxt) && isFormValid;
     return isFormValid;
   };
 
   const submitForm = async () => {
-    const response = await generalStore.addUpdateDepartment(formModel);
+    const response = await authStore.addUpdateInterviewer(formModel);
 
     if (response.isSuccess) {
       onSaved();
@@ -71,7 +72,7 @@ export const InterviewerForm = ({
   };
 
   const deleteRecord = async () => {
-    const response = await generalStore.deleteDepartment(formModel);
+    const response = await authStore.deleteInterviewer(formModel);
 
     if (response.isSuccess) {
       onSaved();
@@ -90,19 +91,19 @@ export const InterviewerForm = ({
             disabled={crudType === CrudTypes.Delete}
             margin="normal"
             type="text"
-            id="title"
-            label="Team Name"
+            id="fnameInp"
+            label="First Name"
             variant="outlined"
             onChange={(e) => {
               setFormModel((currentProps) => ({
                 ...currentProps,
-                name: e.target.value,
+                firstName: e.target.value,
               }));
-              updateFieldError("name", "");
+              updateFieldError("firstName", "");
             }}
-            error={formValError.name}
-            helperText={formValErrorTxt.name}
-            value={formModel.name}
+            error={formValError.firstName}
+            helperText={formValErrorTxt.firstName}
+            value={formModel.firstName}
           />
         </Grid>
         <Grid item xs={12}>

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
-import { IIdName } from "../../models/AuthModels";
+import { IInterviewer } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
 import { InterviewerFormDialog } from "./InterviewerFormDialog";
 import { InterviewersList } from "./InterviewersList";
@@ -20,34 +20,34 @@ interface IProps {
 }
 
 export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
-  const { generalStore } = useStore();
+  const { authStore } = useStore();
   const [open, setOpen] = useState(false);
-  const [openDepartmentForm, setOpenDepartmentForm] = useState(false);
-  const [editDepartment, setEditDepartment] = useState<IIdName>();
+  const [openInterviewerForm, setOpenInterviewerForm] = useState(false);
+  const [editInterviewer, setEditInterviewer] = useState<IInterviewer>();
   const [crudType, setCrudType] = useState<CrudTypes>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEditDelete = (department: IIdName, type: CrudTypes) => {
-    setEditDepartment(department);
+  const handleAddEditDelete = (interviewer: IInterviewer, type: CrudTypes) => {
+    setEditInterviewer(interviewer);
     setCrudType(type);
-    setOpenDepartmentForm(true);
+    setOpenInterviewerForm(true);
   };
 
   const handleFormClose = (isSaved: boolean) => {
-    setOpenDepartmentForm(false);
+    setOpenInterviewerForm(false);
 
     if (isSaved) {
-      generalStore.getDepartments(true);
+      authStore.getInterviewers(true);
     }
   };
 
   return (
     <Dialog open={open} onClose={close} fullWidth maxWidth={"xs"}>
       <DialogTitle>
-        Company Teams{" "}
+        Interviewers{" "}
         <IconButton
           aria-label="close"
           onClick={close}
@@ -65,18 +65,27 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
         <InterviewersList onAddEditDeleteclick={handleAddEditDelete} />
         <Button
           onClick={() =>
-            handleAddEditDelete({ id: 0, name: "" }, CrudTypes.Insert)
+            handleAddEditDelete(
+              {
+                id: 0,
+                firstName: "",
+                lastName: "",
+                email: "",
+                permissionType: 10,
+              },
+              CrudTypes.Insert
+            )
           }
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
           Add
         </Button>
-        {openDepartmentForm && (
+        {openInterviewerForm && editInterviewer && (
           <InterviewerFormDialog
-            department={editDepartment}
+            interviewer={editInterviewer}
             crudType={crudType}
-            isOpen={openDepartmentForm}
+            isOpen={openInterviewerForm}
             onClose={(isSaved) => handleFormClose(isSaved)}
           />
         )}

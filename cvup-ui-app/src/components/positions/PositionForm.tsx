@@ -20,7 +20,7 @@ import { MdFormatIndentIncrease } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
-import { DepartmentListDialog } from "../departments/DepartmentListDialog";
+import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 
 export const PositionForm = observer(() => {
@@ -307,7 +307,7 @@ export const PositionForm = observer(() => {
         </Grid>
       </Grid>
       {openDepartmentsList && (
-        <DepartmentListDialog
+        <DepartmentsListDialog
           isOpen={openDepartmentsList}
           close={handleDepartmentsListClose}
         />

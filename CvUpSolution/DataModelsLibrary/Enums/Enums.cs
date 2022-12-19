@@ -28,7 +28,6 @@ namespace DataModelsLibrary.Enums
     }
     public enum UserPermission
     {
-        AppManager = 1,
         Admin = 10,
         User = 20,
     }

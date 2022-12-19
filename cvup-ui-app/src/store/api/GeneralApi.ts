@@ -40,7 +40,7 @@ export default class GeneralApi extends BaseApi {
   async deleteDepartment(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.delete<IIdName>(
+        await this.http.delete(
           `General/DeleteDepartment?id=${department.id}`
         )
       ).data;
@@ -74,7 +74,7 @@ export default class GeneralApi extends BaseApi {
   async deleteHrCompany(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.delete<IIdName>(
+        await this.http.delete(
           `General/DeleteHrCompany?id=${department.id}`
         )
       ).data;

@@ -3,3 +3,8 @@ export enum CrudTypes {
   Update,
   Delete,
 }
+
+export enum PermissionType {
+  Admin = 10,
+  User = 20,
+}

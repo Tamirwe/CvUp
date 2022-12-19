@@ -3,6 +3,7 @@ import {
   TokensModel,
   IUserLogin,
   IUserRegistration,
+  IInterviewer,
 } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
@@ -60,5 +61,37 @@ export default class AuthApi extends BaseApi {
       ).data;
       return data;
     });
+  }
+
+  async addUpdateInterviewer(interviewer: IInterviewer) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post("Auth/AddUpdateInterviewer", interviewer)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async getInterviewers() {
+    const response = await this.apiWrapper(async () => {
+      const data = (await this.http.get<IInterviewer[]>("Auth/GetInterviewers"))
+        .data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async deleteInterviewer(interviewer: IInterviewer) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.delete(`Auth/DeleteInterviewer?id=${interviewer.id}`)
+      ).data;
+      return data;
+    });
+
+    return response;
   }
 }

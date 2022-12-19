@@ -1,7 +1,8 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { LOGIN_TYPE } from "../constants/AuthConsts";
 import {
   IForgotPassword,
+  IInterviewer,
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
@@ -18,6 +19,7 @@ export class AuthStore {
   DisplayName = null;
   email = null;
   role = null;
+  interviewersList: IInterviewer[] | undefined;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -70,5 +72,22 @@ export class AuthStore {
 
   async forgotPassword(info: IForgotPassword) {
     return await this.authApi.forgotPassword(info);
+  }
+
+  async addUpdateInterviewer(interviewer: IInterviewer) {
+    return await this.authApi.addUpdateInterviewer(interviewer);
+  }
+
+  async getInterviewers(loadAgain: boolean) {
+    if (!this.interviewersList || loadAgain) {
+      const res = await this.authApi.getInterviewers();
+      runInAction(() => {
+        this.interviewersList = res.data;
+      });
+    }
+  }
+
+  async deleteInterviewer(interviewer: IInterviewer) {
+    return await this.authApi.deleteInterviewer(interviewer);
   }
 }

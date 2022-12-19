@@ -1,3 +1,5 @@
+import { PermissionType } from "./GeneralEnums";
+
 export interface IUserRegistration {
   firstName: string;
   lastName: string;
@@ -53,4 +55,12 @@ export interface IHrCompany {
 export interface IIdName {
   id: number;
   name: string;
+}
+
+export interface IInterviewer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  permissionType: PermissionType;
 }

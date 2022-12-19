@@ -11,15 +11,15 @@ import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
-import { DepartmentFormDialog } from "./DepartmentFormDialog";
-import { DepartmentsList } from "./DepartmentsList";
+import { InterviewerFormDialog } from "./InterviewerFormDialog";
+import { InterviewersList } from "./InterviewersList";
 
 interface IProps {
   isOpen: boolean;
   close: () => void;
 }
 
-export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
+export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
   const { generalStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openDepartmentForm, setOpenDepartmentForm] = useState(false);
@@ -62,7 +62,7 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DepartmentsList onAddEditDeleteclick={handleAddEditDelete} />
+        <InterviewersList onAddEditDeleteclick={handleAddEditDelete} />
         <Button
           onClick={() =>
             handleAddEditDelete({ id: 0, name: "" }, CrudTypes.Insert)
@@ -73,7 +73,7 @@ export const DepartmentListDialog = ({ isOpen, close }: IProps) => {
           Add
         </Button>
         {openDepartmentForm && (
-          <DepartmentFormDialog
+          <InterviewerFormDialog
             department={editDepartment}
             crudType={crudType}
             isOpen={openDepartmentForm}

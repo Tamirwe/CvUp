@@ -43,7 +43,7 @@ export const LoginWrapper = ({ loginType }: IProps) => {
           >
             {title()}
           </Typography>
-          {loginType == "login" && (
+          {loginType === "login" && (
             <Typography component={Link} to="/register" variant="subtitle2">
               Don&apos;t have an account?
             </Typography>

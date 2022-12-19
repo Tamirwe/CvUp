@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IIdName, IHrCompany } from "../models/AuthModels";
+import { IIdName } from "../models/AuthModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 

@@ -1,7 +1,7 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { IIdName, IInterviewer } from "../../models/AuthModels";
+import { IInterviewer } from "../../models/AuthModels";
 import { CrudTypes } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 

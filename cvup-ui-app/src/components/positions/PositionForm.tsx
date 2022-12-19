@@ -55,9 +55,10 @@ export const PositionForm = observer(() => {
       await Promise.all([
         generalStore.getDepartments(false),
         generalStore.getHrCompanies(false),
+        authStore.getInterviewers(false),
       ]);
     })();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleHrCompaniesChanged = (
     event: SelectChangeEvent<typeof hrCompanyNames>,

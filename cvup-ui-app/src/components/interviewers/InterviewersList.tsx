@@ -1,10 +1,4 @@
-import {
-  List,
-  ListItemText,
-  Stack,
-  IconButton,
-  ListItemButton,
-} from "@mui/material";
+import { List, ListItemText, IconButton, ListItemButton } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDelete } from "react-icons/md";
@@ -23,7 +17,7 @@ export const InterviewersList = observer((props: IProps) => {
     (async () => {
       await authStore.getInterviewers(false);
     })();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <List
@@ -43,23 +37,16 @@ export const InterviewersList = observer((props: IProps) => {
             sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
             <ListItemText>{`${item.firstName} ${item.lastName}`}</ListItemText>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              spacing={1}
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                props.onAddEditDeleteclick(item, CrudTypes.Delete);
+              }}
+              sx={{ color: "#d7d2d2" }}
             >
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  props.onAddEditDeleteclick(item, CrudTypes.Delete);
-                }}
-                sx={{ color: "#d7d2d2" }}
-              >
-                <MdOutlineDelete />
-              </IconButton>
-            </Stack>
+              <MdOutlineDelete />
+            </IconButton>
           </ListItemButton>
         );
       })}

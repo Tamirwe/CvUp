@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { CvListItemModel } from "../models/GeneralModels";
+import { ICvListItemModel } from "../models/GeneralModels";
 import CvsApi from "./api/CvsApi";
 import { RootStore } from "./RootStore";
 
 export class CvsStore {
   private cvsApi;
-  cvsList: CvListItemModel[] = [];
+  cvsList: ICvListItemModel[] = [];
   cvId: string = "";
 
   constructor(private rootStore: RootStore) {

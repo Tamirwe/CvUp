@@ -11,7 +11,7 @@ export interface ClaimsModel {
   role?: string;
 }
 
-export interface CvListItemModel {
+export interface ICvListItemModel {
   cvId: string;
   encriptedId: string;
   phone?: string;
@@ -20,3 +20,18 @@ export interface CvListItemModel {
   candidateName?: string;
 }
 
+export interface IPosition {
+  id: number;
+  name: string;
+  descr: string;
+  isActive: boolean;
+  departmentId: number;
+  hrCompaniesIds: number[];
+  interviewersIds: number[];
+}
+
+export interface IPositionListItem {
+  id: number;
+  name: string;
+  isActive: boolean;
+}

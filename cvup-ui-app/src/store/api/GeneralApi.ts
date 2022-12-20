@@ -1,4 +1,4 @@
-import { IIdName, IHrCompany } from "../../models/AuthModels";
+import { IIdName } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
 export default class GeneralApi extends BaseApi {
@@ -38,11 +38,10 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async deleteDepartment(department: IIdName) {
+  async deleteDepartment(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.delete(`General/DeleteDepartment?id=${department.id}`)
-      ).data;
+      const data = (await this.http.delete(`General/DeleteDepartment?id=${id}`))
+        .data;
       return data;
     });
 
@@ -71,11 +70,10 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async deleteHrCompany(department: IIdName) {
+  async deleteHrCompany(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.delete(`General/DeleteHrCompany?id=${department.id}`)
-      ).data;
+      const data = (await this.http.delete(`General/DeleteHrCompany?id=${id}`))
+        .data;
       return data;
     });
 

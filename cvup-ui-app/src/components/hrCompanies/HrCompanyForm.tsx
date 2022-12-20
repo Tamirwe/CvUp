@@ -68,7 +68,7 @@ export const HrCompanyForm = ({
   };
 
   const deleteRecord = async () => {
-    const response = await generalStore.deleteHrCompany(formModel);
+    const response = await generalStore.deleteHrCompany(formModel.id);
 
     if (response.isSuccess) {
       onSaved();

@@ -18,11 +18,15 @@ import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { MdFormatIndentIncrease } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
-import { IPosition } from "../../models/AuthModels";
+import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
+
+// interface IProps {
+//   interviewer: IInterviewer;
+// }
 
 export const PositionForm = observer(() => {
   const { positionsStore, generalStore, authStore } = useStore();
@@ -40,6 +44,10 @@ export const PositionForm = observer(() => {
     id: 0,
     name: "",
     descr: "",
+    isActive: true,
+    departmentId: 0,
+    hrCompaniesIds: [],
+    interviewersIds: [],
   });
   const [formValError, setFormValError] = useState({
     name: false,

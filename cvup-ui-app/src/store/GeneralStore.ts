@@ -36,8 +36,8 @@ export class GeneralStore {
     }
   }
 
-  async deleteDepartment(department: IIdName) {
-    return await this.generalApi.deleteDepartment(department);
+  async deleteDepartment(departmentId: number) {
+    return await this.generalApi.deleteDepartment(departmentId);
   }
 
   async addUpdateHrCompany(hrCompany: IIdName) {
@@ -53,7 +53,7 @@ export class GeneralStore {
     }
   }
 
-  async deleteHrCompany(hrCompany: IIdName) {
-    return await this.generalApi.deleteHrCompany(hrCompany);
+  async deleteHrCompany(hrCompanyId: number) {
+    return await this.generalApi.deleteHrCompany(hrCompanyId);
   }
 }

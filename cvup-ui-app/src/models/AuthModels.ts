@@ -8,11 +8,6 @@ export interface IUserRegistration {
   password: string;
 }
 
-export interface IPosition {
-  id: number;
-  name: string;
-  descr: string;
-}
 export interface IUserLogin {
   email: string;
   password: string;

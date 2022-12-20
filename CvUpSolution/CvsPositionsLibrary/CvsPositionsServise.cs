@@ -78,21 +78,21 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
-        public position? AddPosition(position data, int companyId)
+        public position? AddPosition(PositionClientModel data, int companyId)
         {
             position newRec = _cvsPositionsQueries.AddPosition(data, companyId);
             return newRec;
         }
 
-        public position? UpdatePosition(position data, int companyId)
+        public position? UpdatePosition(PositionClientModel data, int companyId)
         {
             position? updRec = _cvsPositionsQueries.UpdatePosition(data, companyId);
             return updRec;
         }
 
-        public List<IdNameModel> GetPositionsList(int companyId)
+        public List<PositionListItemModel> GetPositionsList(int companyId)
         {
-            List<IdNameModel> qList = _cvsPositionsQueries.GetPositionsList(companyId);
+            List<PositionListItemModel> qList = _cvsPositionsQueries.GetPositionsList(companyId);
             return qList;
         }
 

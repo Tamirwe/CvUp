@@ -214,7 +214,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public position AddPosition(position data, int companyId)
+        public position AddPosition(PositionClientModel data, int companyId)
         {
             var ent = new position
             {
@@ -227,7 +227,7 @@ namespace DataModelsLibrary.Queries
             return result.Entity;
         }
 
-        public position? UpdatePosition(position data, int companyId)
+        public position? UpdatePosition(PositionClientModel data, int companyId)
         {
             position ent = new position { id = data.id, name = data.name, company_id = companyId };
             var result = dbContext.positions.Update(ent);
@@ -235,12 +235,12 @@ namespace DataModelsLibrary.Queries
             return result.Entity;
         }
 
-        public List<IdNameModel> GetPositionsList(int companyId)
+        public List<PositionListItemModel> GetPositionsList(int companyId)
         {
             var query = from p in dbContext.positions
                         where p.company_id == companyId
                         orderby p.name
-                        select new IdNameModel
+                        select new PositionListItemModel
                         {
                             id = p.id,
                             name = p.name,

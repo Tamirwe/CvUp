@@ -68,7 +68,7 @@ export const DepartmentForm = ({
   };
 
   const deleteRecord = async () => {
-    const response = await generalStore.deleteDepartment(formModel);
+    const response = await generalStore.deleteDepartment(formModel.id);
 
     if (response.isSuccess) {
       onSaved();

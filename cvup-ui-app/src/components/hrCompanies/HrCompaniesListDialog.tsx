@@ -40,7 +40,7 @@ export const HrCompaniesListDialog = ({ isOpen, close }: IProps) => {
     setOpenhrCompanyForm(false);
 
     if (isSaved) {
-      generalStore.getHrCompanies(true);
+      generalStore.getHrCompaniesList(true);
     }
   };
 

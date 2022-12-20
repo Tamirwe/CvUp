@@ -43,7 +43,7 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
     setOpenInterviewerForm(false);
 
     if (isSaved) {
-      authStore.getInterviewers(true);
+      authStore.getInterviewersList(true);
     }
   };
 

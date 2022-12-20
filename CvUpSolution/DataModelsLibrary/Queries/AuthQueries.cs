@@ -190,7 +190,7 @@ namespace DataModelsLibrary.Queries
             return user;
         }
 
-        public List<InterviewerModel> GetInterviewers(int companyId)
+        public List<InterviewerModel> GetInterviewersList(int companyId)
         {
             var query = from u in dbContext.users
                         where u.company_id == companyId

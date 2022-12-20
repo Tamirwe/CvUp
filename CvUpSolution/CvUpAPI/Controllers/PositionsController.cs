@@ -23,11 +23,34 @@ namespace CvUpAPI.Controllers
         [Route("AddUpdatePosition")]
         public IActionResult AddUpdatePosition(position data)
         {
-            position position = _cvsPosService.AddUpdatePosition(data);
+            position? position;
 
-           
+            if (data.id == 0)
+            {
+                position = _cvsPosService.AddPosition(data, Globals.CompanyId);
+            }
+            else
+            {
+                position = _cvsPosService.UpdatePosition(data, Globals.CompanyId);
+            }
 
             return Ok(position);
+        }
+
+        [HttpGet]
+        [Route("GetPositions")]
+        public IActionResult GetPositionsList()
+        {
+            List<IdNameModel> positions = _cvsPosService.GetPositionsList(Globals.CompanyId);
+            return Ok(positions);
+        }
+
+        [HttpDelete]
+        [Route("DeletePosition")]
+        public IActionResult DeletePosition(int id)
+        {
+            _cvsPosService.DeletePosition(Globals.CompanyId, id);
+            return Ok();
         }
     }
 }

@@ -15,7 +15,7 @@ export const HrCompaniesList = observer((props: IProps) => {
 
   useEffect(() => {
     (async () => {
-      await generalStore.getHrCompanies(false);
+      await generalStore.getHrCompaniesList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

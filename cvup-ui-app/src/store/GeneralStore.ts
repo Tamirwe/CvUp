@@ -27,9 +27,9 @@ export class GeneralStore {
     return await this.generalApi.addUpdateDepartment(department);
   }
 
-  async getDepartments(loadAgain: boolean) {
+  async getDepartmentsList(loadAgain: boolean) {
     if (!this.departmentsList || loadAgain) {
-      const res = await this.generalApi.getDepartments();
+      const res = await this.generalApi.getDepartmentsList();
       runInAction(() => {
         this.departmentsList = res.data;
       });
@@ -44,9 +44,9 @@ export class GeneralStore {
     return await this.generalApi.addUpdateHrCompany(hrCompany);
   }
 
-  async getHrCompanies(loadAgain: boolean) {
+  async getHrCompaniesList(loadAgain: boolean) {
     if (!this.hrCompaniesList || loadAgain) {
-      const res = await this.generalApi.getHrCompanies();
+      const res = await this.generalApi.getHrCompaniesList();
       runInAction(() => {
         this.hrCompaniesList = res.data;
       });

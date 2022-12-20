@@ -22,7 +22,7 @@ namespace DataModelsLibrary.Queries
         public void UpdateUser(user user);
         public user AddInterviewer(InterviewerModel data, int companyId);
         public user? UpdateInterviewer(InterviewerModel data, int companyId);
-        public List<InterviewerModel> GetInterviewers(int companyId);
+        public List<InterviewerModel> GetInterviewersList(int companyId);
         public void DeleteInterviewer(int companyId, int id);
     }
 }

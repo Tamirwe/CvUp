@@ -140,7 +140,7 @@ namespace DataModelsLibrary.Queries
                 return result.Entity;
         }
 
-        public List<IdNameModel> GetDepartments(int companyId)
+        public List<IdNameModel> GetDepartmentsList(int companyId)
         {
             var query = from dep in dbContext.departments
                         where dep.company_id == companyId
@@ -187,7 +187,7 @@ namespace DataModelsLibrary.Queries
                 dbContext.SaveChanges();
                 return result.Entity;
         }
-        public List<IdNameModel> GetHrCompanies(int companyId)
+        public List<IdNameModel> GetHrCompaniesList(int companyId)
         {
             var query = from hr in dbContext.hr_companies
                         where hr.company_id == companyId
@@ -210,6 +210,54 @@ namespace DataModelsLibrary.Queries
             if (hr != null)
             {
                 var result = dbContext.hr_companies.Remove(hr);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public position AddPosition(position data, int companyId)
+        {
+            var ent = new position
+            {
+                name = data.name,
+                company_id = companyId
+            };
+
+            var result = dbContext.positions.Add(ent);
+            dbContext.SaveChanges();
+            return result.Entity;
+        }
+
+        public position? UpdatePosition(position data, int companyId)
+        {
+            position ent = new position { id = data.id, name = data.name, company_id = companyId };
+            var result = dbContext.positions.Update(ent);
+            dbContext.SaveChanges();
+            return result.Entity;
+        }
+
+        public List<IdNameModel> GetPositionsList(int companyId)
+        {
+            var query = from p in dbContext.positions
+                        where p.company_id == companyId
+                        orderby p.name
+                        select new IdNameModel
+                        {
+                            id = p.id,
+                            name = p.name,
+                        };
+
+            return query.ToList();
+        }
+
+        public void DeletePosition(int companyId, int id)
+        {
+            var ent = (from p in dbContext.positions
+                      where p.id == id && p.company_id == companyId
+                      select p).FirstOrDefault();
+
+            if (ent != null)
+            {
+                var result = dbContext.positions.Remove(ent);
                 dbContext.SaveChanges();
             }
         }

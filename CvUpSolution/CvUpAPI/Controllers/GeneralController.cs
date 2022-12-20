@@ -39,10 +39,10 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetDepartments")]
-        public IActionResult GetDepartments()
+        [Route("GetDepartmentsList")]
+        public IActionResult GetDepartmentsList()
         {
-           List<IdNameModel> departments = _cvsPosService.GetDepartments(Globals.CompanyId);
+           List<IdNameModel> departments = _cvsPosService.GetDepartmentsList(Globals.CompanyId);
             return Ok(departments);
         }
 
@@ -73,10 +73,10 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetHrCompanies")]
-        public IActionResult GetHrCompanies()
+        [Route("GetHrCompaniesList")]
+        public IActionResult GetHrCompaniesList()
         {
-            List<IdNameModel> departments = _cvsPosService.GetHrCompanies(Globals.CompanyId);
+            List<IdNameModel> departments = _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
             return Ok(departments);
         }
 

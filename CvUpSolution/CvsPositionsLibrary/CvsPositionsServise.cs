@@ -4,6 +4,7 @@ using DataModelsLibrary.Queries;
 using GeneralLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.Design;
 
 namespace CvsPositionsLibrary
 {
@@ -77,10 +78,28 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
-        public position AddUpdatePosition(position data)
+        public position? AddPosition(position data, int companyId)
         {
+            position newRec = _cvsPositionsQueries.AddPosition(data, companyId);
+            return newRec;
+        }
 
-            return data;
+        public position? UpdatePosition(position data, int companyId)
+        {
+            position? updRec = _cvsPositionsQueries.UpdatePosition(data, companyId);
+            return updRec;
+        }
+
+        public List<IdNameModel> GetPositionsList(int companyId)
+        {
+            List<IdNameModel> qList = _cvsPositionsQueries.GetPositionsList(companyId);
+            return qList;
+        }
+
+        public void DeletePosition(int companyId, int id)
+        {
+            _cvsPositionsQueries.DeletePosition(companyId, id);
+
         }
 
     }

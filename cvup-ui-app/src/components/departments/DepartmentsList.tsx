@@ -15,7 +15,7 @@ export const DepartmentsList = observer((props: IProps) => {
 
   useEffect(() => {
     (async () => {
-      await generalStore.getDepartments(false);
+      await generalStore.getDepartmentsList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

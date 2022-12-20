@@ -18,13 +18,13 @@ namespace CvsPositionsLibrary
 
         public department? UpdateDepartment(IdNameModel data, int companyId)
         {
-            department? newRec = _cvsPositionsQueries.UpdateDepartment(data, companyId);
-            return newRec;
+            department? updRec = _cvsPositionsQueries.UpdateDepartment(data, companyId);
+            return updRec;
         }
 
-        public List<IdNameModel> GetDepartments(int companyId)
+        public List<IdNameModel> GetDepartmentsList(int companyId)
         {
-            List<IdNameModel> depList = _cvsPositionsQueries.GetDepartments(companyId);
+            List<IdNameModel> depList = _cvsPositionsQueries.GetDepartmentsList(companyId);
             return depList;
         }
 
@@ -41,13 +41,13 @@ namespace CvsPositionsLibrary
 
         public hr_company? UpdateHrCompany(IdNameModel data, int companyId)
         {
-            hr_company? newRec = _cvsPositionsQueries.UpdateHrCompany(data, companyId);
-            return newRec;
+            hr_company? updRec = _cvsPositionsQueries.UpdateHrCompany(data, companyId);
+            return updRec;
         }
 
-        public List<IdNameModel> GetHrCompanies(int companyId)
+        public List<IdNameModel> GetHrCompaniesList(int companyId)
         {
-            List<IdNameModel> depList = _cvsPositionsQueries.GetHrCompanies(companyId);
+            List<IdNameModel> depList = _cvsPositionsQueries.GetHrCompaniesList(companyId);
             return depList;
         }
 

@@ -14,7 +14,7 @@ import { useStore } from "../../Hooks/useStore";
 import { IIdName, IInterviewer } from "../../models/AuthModels";
 import { CrudTypesEnum, PermissionTypeEnum } from "../../models/GeneralEnums";
 import { enumToArrays } from "../../utils/GeneralUtils";
-import { textFieldValidte } from "../../utils/Validation";
+import { emailValidte, textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
   interviewer: IInterviewer;
@@ -74,6 +74,13 @@ export const InterviewerForm = ({
     let isFormValid = true;
     let errTxt = textFieldValidte(formModel.firstName, true, true, true);
     isFormValid = updateFieldError("firstName", errTxt) && isFormValid;
+
+    errTxt = textFieldValidte(formModel.lastName, true, true, true);
+    isFormValid = updateFieldError("lastName", errTxt) && isFormValid;
+
+    errTxt = emailValidte(formModel.email);
+    isFormValid = updateFieldError("email", errTxt) && isFormValid;
+
     return isFormValid;
   };
 
@@ -168,6 +175,7 @@ export const InterviewerForm = ({
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel id="permissionlabel">Permission Type</InputLabel>
             <Select
+              disabled={crudType === CrudTypesEnum.Delete}
               labelId="permissionlabel"
               id="permissionTypeSelect"
               label="Permission Type"

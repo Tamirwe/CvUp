@@ -13,11 +13,15 @@ namespace DataModelsLibrary.Queries
         public List<CvListItemModel> GetCvsList(int companyId);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
-        public List<IdNameModel> GetDepartments(int companyId);
+        public List<IdNameModel> GetDepartmentsList(int companyId);
         public void DeleteDepartment(int companyId, int id);
         public hr_company AddHrCompany(IdNameModel data, int companyId);
         public hr_company? UpdateHrCompany(IdNameModel data, int companyId);
-        public List<IdNameModel> GetHrCompanies(int companyId);
+        public List<IdNameModel> GetHrCompaniesList(int companyId);
         public void DeleteHrCompany(int companyId, int id);
+        public position AddPosition(position data, int companyId);
+        public position? UpdatePosition(position data, int companyId);
+        public List<IdNameModel> GetPositionsList(int companyId);
+        public void DeletePosition(int companyId, int id);
     }
 }

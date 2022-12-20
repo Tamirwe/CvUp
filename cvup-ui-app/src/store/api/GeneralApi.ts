@@ -27,10 +27,11 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async getDepartments() {
+  async getDepartmentsList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IIdName[]>("General/GetDepartments"))
-        .data;
+      const data = (
+        await this.http.get<IIdName[]>("General/GetDepartmentsList")
+      ).data;
       return data;
     });
 
@@ -40,9 +41,7 @@ export default class GeneralApi extends BaseApi {
   async deleteDepartment(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.delete(
-          `General/DeleteDepartment?id=${department.id}`
-        )
+        await this.http.delete(`General/DeleteDepartment?id=${department.id}`)
       ).data;
       return data;
     });
@@ -61,10 +60,11 @@ export default class GeneralApi extends BaseApi {
     return response;
   }
 
-  async getHrCompanies() {
+  async getHrCompaniesList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IIdName[]>("General/GetHrCompanies"))
-        .data;
+      const data = (
+        await this.http.get<IIdName[]>("General/GetHrCompaniesList")
+      ).data;
       return data;
     });
 
@@ -74,9 +74,7 @@ export default class GeneralApi extends BaseApi {
   async deleteHrCompany(department: IIdName) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.delete(
-          `General/DeleteHrCompany?id=${department.id}`
-        )
+        await this.http.delete(`General/DeleteHrCompany?id=${department.id}`)
       ).data;
       return data;
     });

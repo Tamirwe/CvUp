@@ -74,10 +74,11 @@ export default class AuthApi extends BaseApi {
     return response;
   }
 
-  async getInterviewers() {
+  async getInterviewersList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IInterviewer[]>("Auth/GetInterviewers"))
-        .data;
+      const data = (
+        await this.http.get<IInterviewer[]>("Auth/GetInterviewersList")
+      ).data;
       return data;
     });
 

@@ -73,9 +73,9 @@ export class AuthStore {
     return await this.authApi.addUpdateInterviewer(interviewer);
   }
 
-  async getInterviewers(loadAgain: boolean) {
+  async getInterviewersList(loadAgain: boolean) {
     if (!this.interviewersList || loadAgain) {
-      const res = await this.authApi.getInterviewers();
+      const res = await this.authApi.getInterviewersList();
       runInAction(() => {
         this.interviewersList = res.data;
       });

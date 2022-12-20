@@ -53,9 +53,9 @@ export const PositionForm = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
-        generalStore.getDepartments(false),
-        generalStore.getHrCompanies(false),
-        authStore.getInterviewers(false),
+        generalStore.getDepartmentsList(false),
+        generalStore.getHrCompaniesList(false),
+        authStore.getInterviewersList(false),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -125,6 +125,17 @@ export const PositionForm = observer(() => {
 
   const handleInterviewersListClose = () => {
     setOpenInterviewersList(false);
+
+    const interviewrsNamesArr: string[] = [];
+
+    interviewersIds.forEach((id) => {
+      const interviewer = authStore.interviewersList?.find((x) => x.id === id);
+      interviewrsNamesArr.push(
+        `${interviewer?.firstName} ${interviewer?.lastName}` || ""
+      );
+    });
+
+    setInterviewersNames(interviewrsNamesArr);
   };
 
   const updateFieldError = (field: string, errTxt: string) => {
@@ -164,7 +175,7 @@ export const PositionForm = observer(() => {
 
   return (
     <form noValidate spellCheck="false">
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12} lg={6}>
           <Grid container>
             <Grid item xs={12}>
@@ -213,8 +224,8 @@ export const PositionForm = observer(() => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} lg={6}>
-          <Grid container>
+        <Grid item xs={12} lg={6} sx={{ mt: 2 }}>
+          <Grid container spacing={3}>
             <Grid item xs={12} lg={6}>
               <FormControl fullWidth>
                 <InputLabel id="interviewersLabel">Interviewers</InputLabel>
@@ -242,14 +253,18 @@ export const PositionForm = observer(() => {
                       <MenuItem
                         key={item.id}
                         id={item.id.toString()}
-                        value={item.firstName}
+                        value={`${item.firstName} ${item.lastName}`}
                       >
                         <Checkbox
                           checked={
-                            interviewersNames.indexOf(item.firstName) > -1
+                            interviewersNames.indexOf(
+                              `${item.firstName} ${item.lastName}`
+                            ) > -1
                           }
                         />
-                        <ListItemText primary={item.firstName} />
+                        <ListItemText
+                          primary={`${item.firstName} ${item.lastName}`}
+                        />
                       </MenuItem>
                     );
                   })}

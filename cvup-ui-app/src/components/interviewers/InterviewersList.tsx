@@ -15,7 +15,7 @@ export const InterviewersList = observer((props: IProps) => {
 
   useEffect(() => {
     (async () => {
-      await authStore.getInterviewers(false);
+      await authStore.getInterviewersList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

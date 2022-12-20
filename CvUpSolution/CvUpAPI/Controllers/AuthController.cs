@@ -135,7 +135,7 @@ namespace CvUpAPI.Controllers
         [Route("AddUpdateInterviewer")]
         public IActionResult AddUpdateInterviewer(InterviewerModel data)
         {
-            user interviewer;
+            user? interviewer;
 
             if (data.id == 0)
             {
@@ -150,10 +150,10 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetInterviewers")]
-        public IActionResult GetInterviewers()
+        [Route("GetInterviewersList")]
+        public IActionResult GetInterviewersList()
         {
-            List<InterviewerModel> users = _authServise.GetInterviewers(Globals.CompanyId);
+            List<InterviewerModel> users = _authServise.GetInterviewersList(Globals.CompanyId);
             return Ok(users);
         }
 

@@ -40,7 +40,7 @@ export const DepartmentsListDialog = ({ isOpen, close }: IProps) => {
     setOpenDepartmentForm(false);
 
     if (isSaved) {
-      generalStore.getDepartments(true);
+      generalStore.getDepartmentsList(true);
     }
   };
 

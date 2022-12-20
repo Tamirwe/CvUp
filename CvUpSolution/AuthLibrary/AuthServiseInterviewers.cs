@@ -22,15 +22,15 @@ namespace AuthLibrary
             return newUser;
         }
 
-        public user UpdateInterviewer(InterviewerModel data, int companyId)
+        public user? UpdateInterviewer(InterviewerModel data, int companyId)
         {
-            user updatedUser = _authQueries.UpdateInterviewer(data, companyId);
+            user? updatedUser = _authQueries.UpdateInterviewer(data, companyId);
             return updatedUser;
         }
 
-        public List<InterviewerModel> GetInterviewers(int companyId)
+        public List<InterviewerModel> GetInterviewersList(int companyId)
         {
-            List<InterviewerModel> depList = _authQueries.GetInterviewers(companyId);
+            List<InterviewerModel> depList = _authQueries.GetInterviewersList(companyId);
             return depList;
         }
 

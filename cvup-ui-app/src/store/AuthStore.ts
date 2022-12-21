@@ -10,6 +10,9 @@ import { ClaimsModel } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
+export const TOKEN = "jwt";
+export const REFRESH_TOKEN = "refreshToken";
+
 export class AuthStore {
   private authApi;
   isLoggedIn = false;
@@ -19,7 +22,7 @@ export class AuthStore {
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
     this.authApi = new AuthApi();
-    const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem(TOKEN);
 
     if (jwt) {
       this.isLoggedIn = true;
@@ -49,8 +52,8 @@ export class AuthStore {
     if (response) {
       if (response.isSuccess) {
         this.isLoggedIn = true;
-        localStorage.setItem("jwt", response.data.token);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem(TOKEN, response.data.token);
+        localStorage.setItem(REFRESH_TOKEN, response.data.refreshToken);
       }
 
       return response.isSuccess;
@@ -61,8 +64,6 @@ export class AuthStore {
   async logout() {
     this.claims = {};
     await this.authApi.revoke();
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("refreshToken");
   }
 
   async forgotPassword(info: IForgotPassword) {
@@ -84,5 +85,10 @@ export class AuthStore {
 
   async deleteInterviewer(interviewer: IInterviewer) {
     return await this.authApi.deleteInterviewer(interviewer);
+  }
+
+  removeStorageKeys() {
+    localStorage.removeItem(TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
   }
 }

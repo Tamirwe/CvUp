@@ -1,9 +1,9 @@
 import { Box, Button, Paper } from "@mui/material";
-import { PositionList } from "./PositionList";
+import { PositionsList } from "./PositionsList";
 import { GoPlus } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 
-export const PositionListWrapper = () => {
+export const PositionsListWrapper = () => {
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ export const PositionListWrapper = () => {
         Add Position
       </Button>
       <Paper elevation={3}>
-        <PositionList />
+        <PositionsList />
       </Paper>
     </Box>
   );

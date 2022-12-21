@@ -5,7 +5,7 @@ import { Header } from "../components/header/Header";
 // import { DrawerLeft } from "../components/drawer/DrawerLeft";
 import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { PositionListWrapper } from "../components/positions/PositionListWrapper";
+import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 
 const drawerWidth = 340;
 
@@ -79,7 +79,7 @@ const DrawerDesktop = ({ isOpen }: IPropsDrawerDesktop) => {
       }}
     >
       <Toolbar />
-      <PositionListWrapper />
+      <PositionsListWrapper />
     </Drawer>
   );
 };
@@ -107,7 +107,7 @@ const DrawerMobile = ({ isOpen, onClose }: IPropsDrawerMobile) => {
       }}
     >
       <Toolbar />
-      <PositionListWrapper />
+      <PositionsListWrapper />
     </Drawer>
   );
 };

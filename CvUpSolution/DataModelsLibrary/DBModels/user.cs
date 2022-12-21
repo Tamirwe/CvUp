@@ -8,8 +8,9 @@ namespace Database.models
         public user()
         {
             emails_sents = new HashSet<emails_sent>();
-            interviewers = new HashSet<interviewer>();
-            position_users = new HashSet<position_user>();
+            position_interviewers = new HashSet<position_interviewer>();
+            positionopeners = new HashSet<position>();
+            positionupdaters = new HashSet<position>();
         }
 
         public int id { get; set; }
@@ -29,7 +30,8 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual enum_permission_type permission_type { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }
-        public virtual ICollection<interviewer> interviewers { get; set; }
-        public virtual ICollection<position_user> position_users { get; set; }
+        public virtual ICollection<position_interviewer> position_interviewers { get; set; }
+        public virtual ICollection<position> positionopeners { get; set; }
+        public virtual ICollection<position> positionupdaters { get; set; }
     }
 }

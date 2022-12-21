@@ -1,6 +1,6 @@
 import { List } from "@mui/material";
 
-export const PositionList = () => {
+export const PositionsList = () => {
   return (
     <List dense={true} sx={{ maxWidth: "20rem" }}>
       {/* {cvsStore.cvsList.map((cv, i) => {

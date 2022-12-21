@@ -11,7 +11,7 @@ export default class PositionsApi extends BaseApi {
 
   async addUpdatePosition(position: IPosition) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Auth/AddUpdatePosition", position))
+      const data = (await this.http.post("Positions/AddUpdatePosition", position))
         .data;
       return data;
     });
@@ -22,7 +22,7 @@ export default class PositionsApi extends BaseApi {
   async getPositionsList() {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<IPositionListItem[]>("General/GetPositionsList")
+        await this.http.get<IPositionListItem[]>("Positions/GetPositionsList")
       ).data;
       return data;
     });
@@ -32,7 +32,7 @@ export default class PositionsApi extends BaseApi {
 
   async deletePosition(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.delete(`General/DeletePosition?id=${id}`))
+      const data = (await this.http.delete(`Positions/DeletePosition?id=${id}`))
         .data;
       return data;
     });

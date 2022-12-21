@@ -27,14 +27,14 @@ namespace CvUpAPI.Controllers
 
             if (data.id == 0)
             {
-                position = _cvsPosService.AddPosition(data, Globals.CompanyId);
+                position = _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
             }
             else
             {
-                position = _cvsPosService.UpdatePosition(data, Globals.CompanyId);
+                position = _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
             }
 
-            return Ok(position);
+            return Ok(data);
         }
 
         [HttpGet]

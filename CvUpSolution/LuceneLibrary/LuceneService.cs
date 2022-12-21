@@ -104,18 +104,20 @@ namespace LuceneLibrary
             //var query = mQueryParser.Parse("?הסכם");
             //var query = new WildcardQuery(new Term("name", "הסכם?"));
 
-
-            ScoreDoc[] hitIdxs = mIndexSearcher.Search(query, null, 40).ScoreDocs;
-
-            for (int i = 0; i < hitIdxs.Length; i++)
+            if (mIndexSearcher != null)
             {
-                var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
+                ScoreDoc[] hitIdxs = mIndexSearcher.Search(query, null, 40).ScoreDocs;
 
-                result.Add(new SearchEntry
+                for (int i = 0; i < hitIdxs.Length; i++)
                 {
-                    Id = (int)doc.GetField("Id").NumericType,
-                    Name = doc.Get("Name")
-                });
+                    var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
+
+                    result.Add(new SearchEntry
+                    {
+                        Id = (int)doc.GetField("Id").NumericType,
+                        Name = doc.Get("Name")
+                    });
+                }
             }
 
             return result;

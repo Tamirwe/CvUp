@@ -214,24 +214,55 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public position AddPosition(PositionClientModel data, int companyId)
+        public position AddPosition(PositionClientModel data, int companyId, int userId)
         {
             var ent = new position
             {
+                company_id = companyId,
                 name = data.name,
-                company_id = companyId
+                descr = data.descr,
+                is_active = Convert.ToSByte(data.isActive),
+                opener_id = userId,
+                updater_id = userId,
+                date_created = DateTime.Now,
+                date_updated = DateTime.Now,
             };
+
+            if (data.departmentId > 0 )
+            {
+                ent.department_id = data.departmentId;
+            }
 
             var result = dbContext.positions.Add(ent);
             dbContext.SaveChanges();
+
+            AddHrCompanies(companyId, result.Entity.id,data.hrCompaniesIds);
+            AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
+
             return result.Entity;
         }
 
-        public position? UpdatePosition(PositionClientModel data, int companyId)
+        public position? UpdatePosition(PositionClientModel data, int companyId, int userId)
         {
-            position ent = new position { id = data.id, name = data.name, company_id = companyId };
+            position ent = new position
+            {
+                id = data.id,
+                company_id = companyId,
+                name = data.name,
+                descr = data.descr,
+                department_id = data.departmentId,
+                is_active = Convert.ToSByte(data.isActive),
+                updater_id = userId,
+                date_created = DateTime.Now,
+                date_updated = DateTime.Now,
+            };
+
             var result = dbContext.positions.Update(ent);
             dbContext.SaveChanges();
+
+            UpdateHrCompanies(companyId, data.id, data.hrCompaniesIds);
+            UpdateInterviewers(companyId, data.id, data.interviewersIds);
+
             return result.Entity;
         }
 
@@ -260,6 +291,100 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.positions.Remove(ent);
                 dbContext.SaveChanges();
             }
+        }
+
+        private void UpdateHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
+        {
+            var dbHrs = (from h in dbContext.position_hr_companies
+                         where h.company_id == companyId && h.position_id == positionId
+                         select h).ToList();
+
+            foreach (var id in hrCompaniesIds)
+            {
+                if (dbHrs.Find(x => x.id == id) == null)
+                {
+                    dbContext.position_hr_companies.Add(new position_hr_company
+                    {
+                        company_id = companyId,
+                        position_id = positionId,
+                        hr_company_id = id
+                    });
+                }
+            }
+
+            foreach (var item in dbHrs)
+            {
+                if (Array.IndexOf(hrCompaniesIds, item.hr_company_id) == -1)
+                {
+                    dbContext.position_hr_companies.Remove(item);
+                }
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        private void UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
+        {
+            var dbInterviewer = (from i in dbContext.position_interviewers
+                                 where i.company_id == companyId && i.position_id == positionId
+                                 select i).ToList();
+
+            foreach (var id in interviewersIds)
+            {
+                if (dbInterviewer.Find(x => x.id == id) == null)
+                {
+                    dbContext.position_interviewers.Add(new position_interviewer
+                    {
+                        company_id = companyId,
+                        position_id = positionId,
+                        user_id = id,
+                    });
+                }
+            }
+
+            foreach (var item in dbInterviewer)
+            {
+                if (Array.IndexOf(interviewersIds, item.user_id) == -1)
+                {
+                    dbContext.position_interviewers.Remove(item);
+                }
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        private void AddHrCompanies(int companyId, int positionId,  int[] hrCompaniesIds)
+        {
+            foreach (var item in hrCompaniesIds)
+            {
+                var hr = new position_hr_company
+                {
+                    company_id = companyId,
+                    hr_company_id = item,
+                    position_id = positionId
+                };
+
+                dbContext.position_hr_companies.Add(hr);
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        private void AddInterviewers(int companyId, int positionId, int[] interviewersIds)
+        {
+            foreach (var item in interviewersIds)
+            {
+                var interviewer = new position_interviewer
+                {
+                    company_id = companyId,
+                    user_id = item,
+                    position_id = positionId
+                };
+
+                dbContext.position_interviewers.Add(interviewer);
+            }
+
+            dbContext.SaveChanges();
         }
     }
 }

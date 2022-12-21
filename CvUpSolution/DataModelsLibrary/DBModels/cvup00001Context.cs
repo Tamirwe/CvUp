@@ -33,11 +33,10 @@ namespace Database.models
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
-        public virtual DbSet<interviewer> interviewers { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
         public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
-        public virtual DbSet<position_user> position_users { get; set; } = null!;
+        public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<positions_incremental> positions_incrementals { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -332,35 +331,15 @@ namespace Database.models
                     .HasConstraintName("fk_hr_contacts_hr_company_id_hr_companies_id");
             });
 
-            modelBuilder.Entity<interviewer>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_interviewers_company_id_companies_id");
-
-                entity.HasIndex(e => e.position_id, "fk_interviewers_position_id_positions_id");
-
-                entity.HasIndex(e => e.user_id, "fk_interviewers_user_id_users_id");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.interviewers)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_interviewers_company_id_companies_id");
-
-                entity.HasOne(d => d.position)
-                    .WithMany(p => p.interviewers)
-                    .HasForeignKey(d => d.position_id)
-                    .HasConstraintName("fk_interviewers_position_id_positions_id");
-
-                entity.HasOne(d => d.user)
-                    .WithMany(p => p.interviewers)
-                    .HasForeignKey(d => d.user_id)
-                    .HasConstraintName("fk_interviewers_user_id_users_id");
-            });
-
             modelBuilder.Entity<position>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_positions_company_id_companies_id");
 
                 entity.HasIndex(e => e.department_id, "fk_positions_department_id_departments_id");
+
+                entity.HasIndex(e => e.opener_id, "fk_positions_opener_id_users_id");
+
+                entity.HasIndex(e => e.updater_id, "fk_positions_updater_id_users_id");
 
                 entity.Property(e => e.date_created).HasColumnType("datetime");
 
@@ -380,7 +359,18 @@ namespace Database.models
                 entity.HasOne(d => d.department)
                     .WithMany(p => p.positions)
                     .HasForeignKey(d => d.department_id)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_positions_department_id_departments_id");
+
+                entity.HasOne(d => d.opener)
+                    .WithMany(p => p.positionopeners)
+                    .HasForeignKey(d => d.opener_id)
+                    .HasConstraintName("fk_positions_opener_id_users_id");
+
+                entity.HasOne(d => d.updater)
+                    .WithMany(p => p.positionupdaters)
+                    .HasForeignKey(d => d.updater_id)
+                    .HasConstraintName("fk_positions_updater_id_users_id");
             });
 
             modelBuilder.Entity<position_cv>(entity =>
@@ -442,31 +432,31 @@ namespace Database.models
                     .HasConstraintName("fk_position_hr_companies_position_id_positions_id");
             });
 
-            modelBuilder.Entity<position_user>(entity =>
+            modelBuilder.Entity<position_interviewer>(entity =>
             {
-                entity.HasIndex(e => e.company_id, "fk_position_users_company_id_companies_id");
+                entity.HasIndex(e => e.company_id, "fk_position_interviewers_company_id_companies_id");
 
-                entity.HasIndex(e => e.position_id, "fk_position_users_position_id_positions_id");
+                entity.HasIndex(e => e.position_id, "fk_position_interviewers_position_id_positions_id");
 
-                entity.HasIndex(e => e.user_id, "fk_position_users_user_id_users_id");
+                entity.HasIndex(e => e.user_id, "fk_position_interviewers_user_id_users_id");
 
                 entity.HasOne(d => d.company)
-                    .WithMany(p => p.position_users)
+                    .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.company_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("fk_position_users_company_id_companies_id");
+                    .HasConstraintName("fk_position_interviewers_company_id_companies_id");
 
                 entity.HasOne(d => d.position)
-                    .WithMany(p => p.position_users)
+                    .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.position_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("fk_position_users_position_id_positions_id");
+                    .HasConstraintName("fk_position_interviewers_position_id_positions_id");
 
                 entity.HasOne(d => d.user)
-                    .WithMany(p => p.position_users)
+                    .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.user_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("fk_position_users_user_id_users_id");
+                    .HasConstraintName("fk_position_interviewers_user_id_users_id");
             });
 
             modelBuilder.Entity<positions_incremental>(entity =>

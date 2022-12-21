@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -45,6 +45,10 @@ export const LoginForm = ({ loginType }: IProps) => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    authStore.removeStorageKeys();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;

@@ -19,8 +19,8 @@ namespace DataModelsLibrary.Queries
         public hr_company? UpdateHrCompany(IdNameModel data, int companyId);
         public List<IdNameModel> GetHrCompaniesList(int companyId);
         public void DeleteHrCompany(int companyId, int id);
-        public position AddPosition(PositionClientModel data, int companyId);
-        public position? UpdatePosition(PositionClientModel data, int companyId);
+        public position AddPosition(PositionClientModel data, int companyId, int userId);
+        public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
         public List<PositionListItemModel> GetPositionsList(int companyId);
         public void DeletePosition(int companyId, int id);
     }

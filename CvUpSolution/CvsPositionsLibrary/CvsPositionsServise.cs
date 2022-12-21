@@ -78,15 +78,15 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
-        public position? AddPosition(PositionClientModel data, int companyId)
+        public position? AddPosition(PositionClientModel data, int companyId, int userId)
         {
-            position newRec = _cvsPositionsQueries.AddPosition(data, companyId);
+            position newRec = _cvsPositionsQueries.AddPosition(data, companyId, userId);
             return newRec;
         }
 
-        public position? UpdatePosition(PositionClientModel data, int companyId)
+        public position? UpdatePosition(PositionClientModel data, int companyId, int userId)
         {
-            position? updRec = _cvsPositionsQueries.UpdatePosition(data, companyId);
+            position? updRec = _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
             return updRec;
         }
 

@@ -2,6 +2,7 @@ import {
   Button,
   Checkbox,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
@@ -12,6 +13,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
   TextField,
 } from "@mui/material";
 import { observer } from "mobx-react";
@@ -32,13 +34,13 @@ export const PositionForm = observer(() => {
   const { positionsStore, generalStore, authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
-  const [departmentId, setDepartmentId] = useState("");
+  // const [departmentId, setDepartmentId] = useState("");
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
-  const [hrCompaniesIds, setHrCompaniesIds] = useState<number[]>([]);
+  // const [hrCompaniesIds, setHrCompaniesIds] = useState<number[]>([]);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
-  const [interviewersIds, setInterviewersIds] = useState<number[]>([]);
+  // const [interviewersIds, setInterviewersIds] = useState<number[]>([]);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -78,7 +80,7 @@ export const PositionForm = observer(() => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedCompanyIds = [...hrCompaniesIds];
+    const selectedCompanyIds = [...formModel.hrCompaniesIds];
 
     if (isChecked) {
       const ind = selectedCompanyIds.indexOf(id);
@@ -87,7 +89,11 @@ export const PositionForm = observer(() => {
       selectedCompanyIds.push(id);
     }
 
-    setHrCompaniesIds(selectedCompanyIds);
+    setFormModel((currentProps) => ({
+      ...currentProps,
+      hrCompaniesIds: selectedCompanyIds,
+    }));
+
     setHrCompanyNames(typeof value === "string" ? value.split(",") : value);
   };
 
@@ -101,7 +107,7 @@ export const PositionForm = observer(() => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedInterviwersIds = [...interviewersIds];
+    const selectedInterviwersIds = [...formModel.interviewersIds];
 
     if (isChecked) {
       const ind = selectedInterviwersIds.indexOf(id);
@@ -110,7 +116,11 @@ export const PositionForm = observer(() => {
       selectedInterviwersIds.push(id);
     }
 
-    setInterviewersIds(selectedInterviwersIds);
+    setFormModel((currentProps) => ({
+      ...currentProps,
+      interviewersIds: selectedInterviwersIds,
+    }));
+
     setInterviewersNames(typeof value === "string" ? value.split(",") : value);
   };
 
@@ -123,7 +133,7 @@ export const PositionForm = observer(() => {
 
     const hrCompaniesNamesArr: string[] = [];
 
-    hrCompaniesIds.forEach((id) => {
+    formModel.hrCompaniesIds.forEach((id) => {
       const hrCompany = generalStore.hrCompaniesList?.find((x) => x.id === id);
       hrCompaniesNamesArr.push(hrCompany?.name || "");
     });
@@ -136,7 +146,7 @@ export const PositionForm = observer(() => {
 
     const interviewrsNamesArr: string[] = [];
 
-    interviewersIds.forEach((id) => {
+    formModel.interviewersIds.forEach((id) => {
       const interviewer = authStore.interviewersList?.find((x) => x.id === id);
       interviewrsNamesArr.push(
         `${interviewer?.firstName} ${interviewer?.lastName}` || ""
@@ -279,6 +289,23 @@ export const PositionForm = observer(() => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12} lg={6} mt={1}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formModel.isActive}
+                    onChange={(e) =>
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        isActive: e.target.checked,
+                      }))
+                    }
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={formModel.isActive ? "Active" : "Not Active"}
+              />
+            </Grid>
 
             <Grid item xs={12} lg={6}>
               <FormControl fullWidth>
@@ -286,10 +313,17 @@ export const PositionForm = observer(() => {
                 <Select
                   labelId="departmentLabel"
                   id="departmentSelect"
-                  value={departmentId}
+                  value={
+                    formModel.departmentId === 0
+                      ? ""
+                      : formModel.departmentId.toString()
+                  }
                   label="Department"
                   onChange={(event: SelectChangeEvent) => {
-                    setDepartmentId(event.target.value);
+                    setFormModel((currentProps) => ({
+                      ...currentProps,
+                      departmentId: parseInt(event.target.value),
+                    }));
                   }}
                   sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
                   endAdornment={

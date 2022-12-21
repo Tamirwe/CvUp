@@ -19,6 +19,14 @@ namespace CvUpAPI.Controllers
             _cvsPosService = cvsPosService;
         }
 
+        [HttpGet]
+        [Route("GetPosition")]
+        public IActionResult GetPosition(int id)
+        {
+            PositionClientModel position = _cvsPosService.GetPosition(Globals.CompanyId,id);
+            return Ok(position);
+        }
+
         [HttpPost]
         [Route("AddUpdatePosition")]
         public IActionResult AddUpdatePosition(PositionClientModel data)
@@ -38,7 +46,7 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetPositions")]
+        [Route("GetPositionsList")]
         public IActionResult GetPositionsList()
         {
             List<PositionListItemModel> positions = _cvsPosService.GetPositionsList(Globals.CompanyId);

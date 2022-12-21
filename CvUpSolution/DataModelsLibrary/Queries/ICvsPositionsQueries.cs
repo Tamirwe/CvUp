@@ -23,5 +23,6 @@ namespace DataModelsLibrary.Queries
         public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
         public List<PositionListItemModel> GetPositionsList(int companyId);
         public void DeletePosition(int companyId, int id);
+        public PositionClientModel GetPosition(int companyId, int positionId);
     }
 }

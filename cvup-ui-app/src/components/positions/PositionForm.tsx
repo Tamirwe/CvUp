@@ -19,6 +19,7 @@ import {
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { MdFormatIndentIncrease } from "react-icons/md";
+import { useParams } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
@@ -31,16 +32,14 @@ import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 // }
 
 export const PositionForm = observer(() => {
+  let { pid } = useParams();
   const { positionsStore, generalStore, authStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
-  // const [departmentId, setDepartmentId] = useState("");
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
-  // const [hrCompaniesIds, setHrCompaniesIds] = useState<number[]>([]);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
-  // const [interviewersIds, setInterviewersIds] = useState<number[]>([]);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -63,12 +62,19 @@ export const PositionForm = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
+        pid && positionsStore.GetPosition(parseInt(pid)),
         generalStore.getDepartmentsList(false),
         generalStore.getHrCompaniesList(false),
         authStore.getInterviewersList(false),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (positionsStore.position) {
+      setFormModel(positionsStore.position);
+    }
+  }, [positionsStore.position]);
 
   const handleHrCompaniesChanged = (
     event: SelectChangeEvent<typeof hrCompanyNames>,
@@ -183,9 +189,7 @@ export const PositionForm = observer(() => {
     const response = await positionsStore.addUpdatePosition(formModel);
 
     if (response.isSuccess) {
-      if (response.data === "duplicateUserPass") {
-        return setSubmitError("Duplcate User Name and Password.");
-      }
+      positionsStore.getPositionsList(true);
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }

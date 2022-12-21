@@ -78,6 +78,12 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
+        public PositionClientModel GetPosition(int companyId, int positionId)
+        {
+            PositionClientModel pos = _cvsPositionsQueries.GetPosition( companyId, positionId);
+            return pos;
+        }
+
         public position? AddPosition(PositionClientModel data, int companyId, int userId)
         {
             position newRec = _cvsPositionsQueries.AddPosition(data, companyId, userId);
@@ -99,7 +105,6 @@ namespace CvsPositionsLibrary
         public void DeletePosition(int companyId, int id)
         {
             _cvsPositionsQueries.DeletePosition(companyId, id);
-
         }
 
     }

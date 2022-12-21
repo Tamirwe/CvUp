@@ -20,6 +20,7 @@ namespace DataModelsLibrary.Queries
         public AuthQueries()
         {
             dbContext = new cvup00001Context();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public List<user> getUsersByEmail(string email)

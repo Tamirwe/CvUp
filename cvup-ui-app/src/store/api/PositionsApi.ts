@@ -9,10 +9,22 @@ export default class PositionsApi extends BaseApi {
     });
   }
 
+  async GetPosition(positionId: number) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<IPosition>(`Positions/GetPosition?id=${positionId}`)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
   async addUpdatePosition(position: IPosition) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Positions/AddUpdatePosition", position))
-        .data;
+      const data = (
+        await this.http.post("Positions/AddUpdatePosition", position)
+      ).data;
       return data;
     });
 

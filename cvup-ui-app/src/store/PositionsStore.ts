@@ -6,10 +6,18 @@ import { RootStore } from "./RootStore";
 export class PositionsStore {
   private positionApi;
   positionsList: IPositionListItem[] | undefined;
+  position: IPosition | undefined;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
     this.positionApi = new PositionsApi();
+  }
+
+  async GetPosition(positionId: number) {
+    const res = await this.positionApi.GetPosition(positionId);
+    runInAction(() => {
+      this.position = res.data;
+    });
   }
 
   async addUpdatePosition(position: IPosition) {

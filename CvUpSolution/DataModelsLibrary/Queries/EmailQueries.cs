@@ -1,5 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace DataModelsLibrary.Queries
         public EmailQueries()
         {
             dbContext = new cvup00001Context();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public emails_sent AddNewEmailSent(int userId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)

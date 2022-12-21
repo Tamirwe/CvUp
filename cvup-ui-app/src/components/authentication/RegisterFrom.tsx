@@ -30,7 +30,6 @@ interface IProps {
 
 export const RegisterForm = (props: IProps) => {
   const { authStore } = useStore();
-
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
   const [isDirty, setIsDirty] = useState(false);

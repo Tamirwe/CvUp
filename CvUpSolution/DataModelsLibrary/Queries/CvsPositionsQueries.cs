@@ -1,5 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
+using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace DataModelsLibrary.Queries
         public CvsPositionsQueries()
         {
             dbContext = new cvup00001Context();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public void AddNewCvToDb(ImportCvModel importCv)
@@ -187,6 +189,7 @@ namespace DataModelsLibrary.Queries
                 dbContext.SaveChanges();
                 return result.Entity;
         }
+
         public List<IdNameModel> GetHrCompaniesList(int companyId)
         {
             var query = from hr in dbContext.hr_companies
@@ -212,6 +215,38 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.hr_companies.Remove(hr);
                 dbContext.SaveChanges();
             }
+        }
+
+        public PositionClientModel GetPosition(int companyId, int positionId)
+        {
+            var hrs = dbContext.position_hr_companies
+                      .Where(p => p.company_id == companyId && p.position_id == positionId)
+                      .Select(p => p.id)
+                      .ToArray();
+
+            var inter = dbContext.position_interviewers
+                      .Where(p => p.company_id == companyId && p.position_id == positionId)
+                      .Select(p => p.id)
+                      .ToArray();
+
+            var query = from p in dbContext.positions
+                        where p.id == positionId && p.company_id == companyId
+                        orderby p.name
+                        select new PositionClientModel
+                        {
+                            id = p.id,
+                            name = p.name,
+                            descr = p.descr ?? "",
+                            companyId = companyId,
+                            departmentId = p.department_id ?? 0,
+                            isActive = Convert.ToBoolean(p.is_active),
+                            hrCompaniesIds = hrs.ToArray(),
+                            interviewersIds = inter.ToArray()
+                        };
+
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            return query.First();
         }
 
         public position AddPosition(PositionClientModel data, int companyId, int userId)

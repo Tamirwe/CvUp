@@ -18,8 +18,8 @@ namespace AuthLibrary
         public user? CompleteRegistration(UserLoginModel data);
         public user? PasswordReset(UserLoginModel data);
         public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data);
-        public user AddInterviewer(InterviewerModel data, int companyId);
-        public user? UpdateInterviewer(InterviewerModel data, int companyId);
+        public void AddInterviewer(InterviewerModel data, int companyId);
+        public void UpdateInterviewer(InterviewerModel data, int companyId);
         public List<InterviewerModel> GetInterviewersList(int companyId);
         public void DeleteInterviewer(int companyId, int id);
     }

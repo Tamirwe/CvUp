@@ -36,6 +36,8 @@ export class AuthStore {
 
   async login(loginInfo: IUserLogin, loginType: string) {
     let response;
+    localStorage.removeItem(TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
 
     switch (loginType) {
       case LOGIN_TYPE.REGULAR_LOGIN:
@@ -64,6 +66,8 @@ export class AuthStore {
   async logout() {
     this.claims = {};
     await this.authApi.revoke();
+    localStorage.removeItem(TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
   }
 
   async forgotPassword(info: IForgotPassword) {
@@ -87,8 +91,4 @@ export class AuthStore {
     return await this.authApi.deleteInterviewer(interviewer);
   }
 
-  removeStorageKeys() {
-    localStorage.removeItem(TOKEN);
-    localStorage.removeItem(REFRESH_TOKEN);
-  }
 }

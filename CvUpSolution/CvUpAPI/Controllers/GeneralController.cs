@@ -24,18 +24,16 @@ namespace CvUpAPI.Controllers
         [Route("AddUpdateDepartment")]
         public IActionResult AddUpdateDepartment(IdNameModel data)
         {
-            department? department;
-
             if (data.id == 0)
             {
-                department = _cvsPosService.AddDepartment(data, Globals.CompanyId);
+                _cvsPosService.AddDepartment(data, Globals.CompanyId);
             }
             else
             {
-                department = _cvsPosService.UpdateDepartment(data, Globals.CompanyId);
+                _cvsPosService.UpdateDepartment(data, Globals.CompanyId);
             }
 
-            return Ok(department);
+            return Ok();
         }
 
         [HttpGet]
@@ -58,18 +56,16 @@ namespace CvUpAPI.Controllers
         [Route("AddUpdateHrCompany")]
         public IActionResult AddUpdateHrCompany(IdNameModel data)
         {
-            hr_company? hrCompany;
-
             if (data.id == 0)
             {
-                hrCompany = _cvsPosService.AddHrCompany(data, Globals.CompanyId);
+                _cvsPosService.AddHrCompany(data, Globals.CompanyId);
             }
             else
             {
-                hrCompany = _cvsPosService.UpdateHrCompany(data, Globals.CompanyId);
+                _cvsPosService.UpdateHrCompany(data, Globals.CompanyId);
             }
 
-            return Ok(hrCompany);
+            return Ok();
         }
 
         [HttpGet]

@@ -414,7 +414,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.hr_company_id, "fk_position_hr_companies_hr_company_id_hr_companies_id");
 
-                entity.HasIndex(e => e.position_id, "fk_position_hr_companies_position_id_positions_id");
+                entity.HasIndex(e => new { e.position_id, e.hr_company_id, e.company_id }, "uq_position_hr_companies_position_id_hr_company_id_company_id")
+                    .IsUnique();
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.position_hr_companies)
@@ -436,26 +437,24 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_position_interviewers_company_id_companies_id");
 
-                entity.HasIndex(e => e.position_id, "fk_position_interviewers_position_id_positions_id");
-
                 entity.HasIndex(e => e.user_id, "fk_position_interviewers_user_id_users_id");
+
+                entity.HasIndex(e => new { e.position_id, e.user_id, e.company_id }, "position_interviewers_position_id_user_id_company_id")
+                    .IsUnique();
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.company_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_position_interviewers_company_id_companies_id");
 
                 entity.HasOne(d => d.position)
                     .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.position_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_position_interviewers_position_id_positions_id");
 
                 entity.HasOne(d => d.user)
                     .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.user_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_position_interviewers_user_id_users_id");
             });
 

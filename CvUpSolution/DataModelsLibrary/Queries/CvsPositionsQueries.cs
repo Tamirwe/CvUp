@@ -221,12 +221,12 @@ namespace DataModelsLibrary.Queries
         {
             var hrs = dbContext.position_hr_companies
                       .Where(p => p.company_id == companyId && p.position_id == positionId)
-                      .Select(p => p.id)
+                      .Select(p => p.hr_company_id)
                       .ToArray();
 
             var inter = dbContext.position_interviewers
                       .Where(p => p.company_id == companyId && p.position_id == positionId)
-                      .Select(p => p.id)
+                      .Select(p => p.user_id)
                       .ToArray();
 
             var query = from p in dbContext.positions
@@ -336,7 +336,7 @@ namespace DataModelsLibrary.Queries
 
             foreach (var id in hrCompaniesIds)
             {
-                if (dbHrs.Find(x => x.id == id) == null)
+                if (dbHrs.Find(x => x.hr_company_id == id) == null)
                 {
                     dbContext.position_hr_companies.Add(new position_hr_company
                     {
@@ -366,7 +366,7 @@ namespace DataModelsLibrary.Queries
 
             foreach (var id in interviewersIds)
             {
-                if (dbInterviewer.Find(x => x.id == id) == null)
+                if (dbInterviewer.Find(x => x.user_id == id) == null)
                 {
                     dbContext.position_interviewers.Add(new position_interviewer
                     {

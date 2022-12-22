@@ -157,7 +157,7 @@ namespace DataModelsLibrary.Queries
             dbContext.SaveChanges();
         }
 
-        public user AddInterviewer(InterviewerModel data,int companyId)
+        public void AddInterviewer(InterviewerModel data,int companyId)
         {
             var user = new user
             {
@@ -171,10 +171,9 @@ namespace DataModelsLibrary.Queries
 
             dbContext.users.Add(user);
             dbContext.SaveChanges();
-            return user;
-
         }
-        public user? UpdateInterviewer(InterviewerModel data, int companyId)
+
+        public void UpdateInterviewer(InterviewerModel data, int companyId)
         {
             user? user = dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefault();
 
@@ -185,10 +184,9 @@ namespace DataModelsLibrary.Queries
                 user.last_name = data.lastName;
                 user.permission_type_id = (int)data.permissionType;
 
+                var result = dbContext.users.Update(user);
                 dbContext.SaveChanges();
             }
-
-            return user;
         }
 
         public List<InterviewerModel> GetInterviewersList(int companyId)

@@ -16,16 +16,14 @@ namespace AuthLibrary
     public partial class AuthServise
     {
 
-        public user AddInterviewer(InterviewerModel data, int companyId)
+        public void AddInterviewer(InterviewerModel data, int companyId)
         {
-            user newUser = _authQueries.AddInterviewer(data, companyId);
-            return newUser;
+            _authQueries.AddInterviewer(data, companyId);
         }
 
-        public user? UpdateInterviewer(InterviewerModel data, int companyId)
+        public void UpdateInterviewer(InterviewerModel data, int companyId)
         {
-            user? updatedUser = _authQueries.UpdateInterviewer(data, companyId);
-            return updatedUser;
+            _authQueries.UpdateInterviewer(data, companyId);
         }
 
         public List<InterviewerModel> GetInterviewersList(int companyId)

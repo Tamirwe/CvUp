@@ -20,8 +20,8 @@ namespace DataModelsLibrary.Queries
         void RevokeUserToken(int userId);
         public void removeRegistrationKey(registeration_key rkey);
         public void UpdateUser(user user);
-        public user AddInterviewer(InterviewerModel data, int companyId);
-        public user? UpdateInterviewer(InterviewerModel data, int companyId);
+        public void AddInterviewer(InterviewerModel data, int companyId);
+        public void UpdateInterviewer(InterviewerModel data, int companyId);
         public List<InterviewerModel> GetInterviewersList(int companyId);
         public void DeleteInterviewer(int companyId, int id);
     }

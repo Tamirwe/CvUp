@@ -17,10 +17,12 @@ import {
   TextField,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { MdFormatIndentIncrease } from "react-icons/md";
 import { useParams } from "react-router-dom";
+import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
+import { IIdName } from "../../models/AuthModels";
 import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
@@ -34,35 +36,36 @@ import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 export const PositionForm = observer(() => {
   let { pid } = useParams();
   const { positionsStore, generalStore, authStore } = useStore();
-  const [isDirty, setIsDirty] = useState(false);
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
-  const [submitError, setSubmitError] = useState("");
-  const [formModel, setFormModel] = useState<IPosition>({
-    id: 0,
-    name: "",
-    descr: "",
-    isActive: true,
-    departmentId: 0,
-    hrCompaniesIds: [],
-    interviewersIds: [],
-  });
-  const [formValError, setFormValError] = useState({
-    name: false,
-    descr: false,
-  });
-  const [formValErrorTxt, setFormValErrorTxt] = useState({
-    name: "",
-    descr: "",
-  });
+  const [
+    frmState,
+    setFrmState,
+    frmErrs,
+    frmErrsMsgs,
+    frmMsg,
+    setFrmMsg,
+    setFieldErr,
+    setIsDirty,
+    isDirty,
+  ] = useStateForm<IPosition, any, any>(
+    positionsStore.currentPosition,
+    {
+      name: false,
+      descr: false,
+    },
+    {
+      name: "",
+      descr: "",
+    }
+  );
 
   useEffect(() => {
     (async () => {
       await Promise.all([
-        pid && positionsStore.GetPosition(parseInt(pid)),
         generalStore.getDepartmentsList(false),
         generalStore.getHrCompaniesList(false),
         authStore.getInterviewersList(false),
@@ -71,10 +74,20 @@ export const PositionForm = observer(() => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (positionsStore.position) {
-      setFormModel(positionsStore.position);
-    }
-  }, [positionsStore.position]);
+    (async () => {
+      pid && (await positionsStore.GetPosition(parseInt(pid)));
+
+      setFrmState((currentProps) => ({
+        ...currentProps,
+        ...positionsStore.currentPosition,
+      }));
+    })();
+  }, [pid]);
+
+  useEffect(() => {
+    setNameInterviewrsMultySelect();
+    setNameHrCompaniesMultySelect();
+  }, [positionsStore.currentPosition]);
 
   const handleHrCompaniesChanged = (
     event: SelectChangeEvent<typeof hrCompanyNames>,
@@ -86,7 +99,7 @@ export const PositionForm = observer(() => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedCompanyIds = [...formModel.hrCompaniesIds];
+    const selectedCompanyIds = [...frmState.hrCompaniesIds];
 
     if (isChecked) {
       const ind = selectedCompanyIds.indexOf(id);
@@ -95,7 +108,9 @@ export const PositionForm = observer(() => {
       selectedCompanyIds.push(id);
     }
 
-    setFormModel((currentProps) => ({
+    setIsDirty(true);
+
+    setFrmState((currentProps) => ({
       ...currentProps,
       hrCompaniesIds: selectedCompanyIds,
     }));
@@ -113,7 +128,7 @@ export const PositionForm = observer(() => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedInterviwersIds = [...formModel.interviewersIds];
+    const selectedInterviwersIds = [...frmState.interviewersIds];
 
     if (isChecked) {
       const ind = selectedInterviwersIds.indexOf(id);
@@ -122,7 +137,9 @@ export const PositionForm = observer(() => {
       selectedInterviwersIds.push(id);
     }
 
-    setFormModel((currentProps) => ({
+    setIsDirty(true);
+
+    setFrmState((currentProps) => ({
       ...currentProps,
       interviewersIds: selectedInterviwersIds,
     }));
@@ -136,10 +153,13 @@ export const PositionForm = observer(() => {
 
   const handleHrCompaniesListClose = () => {
     setOpenHrCompaniesList(false);
+    setNameHrCompaniesMultySelect();
+  };
 
+  const setNameHrCompaniesMultySelect = () => {
     const hrCompaniesNamesArr: string[] = [];
 
-    formModel.hrCompaniesIds.forEach((id) => {
+    frmState.hrCompaniesIds.forEach((id) => {
       const hrCompany = generalStore.hrCompaniesList?.find((x) => x.id === id);
       hrCompaniesNamesArr.push(hrCompany?.name || "");
     });
@@ -149,10 +169,13 @@ export const PositionForm = observer(() => {
 
   const handleInterviewersListClose = () => {
     setOpenInterviewersList(false);
+    setNameInterviewrsMultySelect();
+  };
 
+  const setNameInterviewrsMultySelect = () => {
     const interviewrsNamesArr: string[] = [];
 
-    formModel.interviewersIds.forEach((id) => {
+    frmState.interviewersIds.forEach((id) => {
       const interviewer = authStore.interviewersList?.find((x) => x.id === id);
       interviewrsNamesArr.push(
         `${interviewer?.firstName} ${interviewer?.lastName}` || ""
@@ -162,36 +185,20 @@ export const PositionForm = observer(() => {
     setInterviewersNames(interviewrsNamesArr);
   };
 
-  const updateFieldError = (field: string, errTxt: string) => {
-    const isValid = errTxt === "" ? true : false;
-    setIsDirty(true);
-    setSubmitError("");
-    setFormValErrorTxt((currentProps) => ({
-      ...currentProps,
-      [field]: errTxt,
-    }));
-    setFormValError((currentProps) => ({
-      ...currentProps,
-      [field]: isValid === false,
-    }));
-
-    return isValid;
-  };
-
   const validateForm = () => {
     let isFormValid = true;
-    let errTxt = textFieldValidte(formModel.name, true, true, true);
-    isFormValid = updateFieldError("name", errTxt) && isFormValid;
+    let errTxt = textFieldValidte(frmState.name, true, true, true);
+    isFormValid = setFieldErr("name", errTxt) && isFormValid;
     return isFormValid;
   };
 
   const submitForm = async () => {
-    const response = await positionsStore.addUpdatePosition(formModel);
+    const response = await positionsStore.addUpdatePosition(frmState);
 
     if (response.isSuccess) {
       positionsStore.getPositionsList(true);
     } else {
-      return setSubmitError("An Error Occurred Please Try Again Later.");
+      return setFrmMsg("An Error Occurred Please Try Again Later.");
     }
   };
 
@@ -210,15 +217,17 @@ export const PositionForm = observer(() => {
                 label="Position title"
                 variant="outlined"
                 onChange={(e) => {
-                  setFormModel((currentProps) => ({
+                  setIsDirty(true);
+
+                  setFrmState((currentProps) => ({
                     ...currentProps,
                     name: e.target.value,
                   }));
-                  updateFieldError("name", "");
+                  setFieldErr("name", "");
                 }}
-                error={formValError.name}
-                helperText={formValErrorTxt.name}
-                value={formModel.name}
+                error={frmErrs.name}
+                helperText={frmErrsMsgs.name}
+                value={frmState.name}
               />
             </Grid>
             <Grid item xs={12}>
@@ -232,15 +241,17 @@ export const PositionForm = observer(() => {
                 label="Description"
                 variant="outlined"
                 onChange={(e) => {
-                  setFormModel((currentProps) => ({
+                  setIsDirty(true);
+
+                  setFrmState((currentProps) => ({
                     ...currentProps,
                     descr: e.target.value,
                   }));
-                  updateFieldError("descr", "");
+                  setFieldErr("descr", "");
                 }}
-                error={formValError.descr}
-                helperText={formValErrorTxt.descr}
-                value={formModel.descr}
+                error={frmErrs.descr}
+                helperText={frmErrsMsgs.descr}
+                value={frmState.descr}
               />
             </Grid>
           </Grid>
@@ -279,9 +290,7 @@ export const PositionForm = observer(() => {
                       >
                         <Checkbox
                           checked={
-                            interviewersNames.indexOf(
-                              `${item.firstName} ${item.lastName}`
-                            ) > -1
+                            frmState.interviewersIds.indexOf(item.id) > -1
                           }
                         />
                         <ListItemText
@@ -297,17 +306,19 @@ export const PositionForm = observer(() => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={formModel.isActive}
-                    onChange={(e) =>
-                      setFormModel((currentProps) => ({
+                    checked={frmState.isActive}
+                    onChange={(e) => {
+                      setIsDirty(true);
+
+                      setFrmState((currentProps) => ({
                         ...currentProps,
                         isActive: e.target.checked,
-                      }))
-                    }
+                      }));
+                    }}
                     inputProps={{ "aria-label": "controlled" }}
                   />
                 }
-                label={formModel.isActive ? "Active" : "Not Active"}
+                label={frmState.isActive ? "Active" : "Not Active"}
               />
             </Grid>
 
@@ -318,13 +329,15 @@ export const PositionForm = observer(() => {
                   labelId="departmentLabel"
                   id="departmentSelect"
                   value={
-                    formModel.departmentId === 0
+                    frmState.departmentId === 0
                       ? ""
-                      : formModel.departmentId.toString()
+                      : frmState.departmentId.toString()
                   }
                   label="Department"
                   onChange={(event: SelectChangeEvent) => {
-                    setFormModel((currentProps) => ({
+                    setIsDirty(true);
+
+                    setFrmState((currentProps) => ({
                       ...currentProps,
                       departmentId: parseInt(event.target.value),
                     }));
@@ -380,7 +393,9 @@ export const PositionForm = observer(() => {
                         value={item.name}
                       >
                         <Checkbox
-                          checked={hrCompanyNames.indexOf(item.name) > -1}
+                          checked={
+                            frmState.hrCompaniesIds.indexOf(item.id) > -1
+                          }
                         />
                         <ListItemText primary={item.name} />
                       </MenuItem>
@@ -391,9 +406,9 @@ export const PositionForm = observer(() => {
             </Grid>
           </Grid>
         </Grid>
-        {submitError && (
+        {frmMsg && (
           <Grid item xs={12}>
-            <FormHelperText error>{submitError}</FormHelperText>
+            <FormHelperText error>{frmMsg}</FormHelperText>
           </Grid>
         )}
         <Grid item xs={12} sx={{ mt: 2 }}>

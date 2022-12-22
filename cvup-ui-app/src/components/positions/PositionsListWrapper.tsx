@@ -16,7 +16,7 @@ export const PositionsListWrapper = () => {
         },
       }}
     >
-      <Button onClick={() => navigate("/position")} startIcon={<GoPlus />}>
+      <Button onClick={() => navigate("/position/0")} startIcon={<GoPlus />}>
         Add Position
       </Button>
       <Paper elevation={3}>

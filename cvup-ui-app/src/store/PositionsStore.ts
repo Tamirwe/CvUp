@@ -4,9 +4,19 @@ import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 
 export class PositionsStore {
+  private newPosition: IPosition = {
+    id: 0,
+    name: "",
+    descr: "",
+    isActive: true,
+    departmentId: 0,
+    hrCompaniesIds: [],
+    interviewersIds: [],
+  };
+
   private positionApi;
   positionsList: IPositionListItem[] | undefined;
-  position: IPosition | undefined;
+  currentPosition: IPosition = this.newPosition;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -14,10 +24,16 @@ export class PositionsStore {
   }
 
   async GetPosition(positionId: number) {
-    const res = await this.positionApi.GetPosition(positionId);
-    runInAction(() => {
-      this.position = res.data;
-    });
+    if (positionId === 0) {
+      runInAction(() => {
+        this.currentPosition = this.newPosition;
+      });
+    } else {
+      const res = await this.positionApi.GetPosition(positionId);
+      runInAction(() => {
+        this.currentPosition = res.data;
+      });
+    }
   }
 
   async addUpdatePosition(position: IPosition) {

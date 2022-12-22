@@ -46,10 +46,6 @@ export const LoginForm = ({ loginType }: IProps) => {
     password: "",
   });
 
-  useEffect(() => {
-    authStore.removeStorageKeys();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;
     setIsDirty(true);

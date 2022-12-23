@@ -16,3 +16,8 @@ export const enumToArrays = (en: EnumType) => {
 
   return enumArr;
 };
+
+export const delay= (time: number)=> {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+// await this.delay(1000);

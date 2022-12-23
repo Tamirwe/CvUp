@@ -37,7 +37,6 @@ namespace Database.models
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
         public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
-        public virtual DbSet<positions_incremental> positions_incrementals { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
@@ -193,6 +192,10 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_departments_company_id_companies_id");
 
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.Property(e => e.name).HasMaxLength(100);
 
                 entity.HasOne(d => d.company)
@@ -299,6 +302,10 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_hr_companies_company_id_companies_id");
 
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.Property(e => e.name).HasMaxLength(100);
 
                 entity.HasOne(d => d.company)
@@ -385,6 +392,10 @@ namespace Database.models
 
                 entity.Property(e => e.cv_id).HasMaxLength(30);
 
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.HasOne(d => d.candidate_stage)
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.candidate_stage_id)
@@ -417,6 +428,10 @@ namespace Database.models
                 entity.HasIndex(e => new { e.position_id, e.hr_company_id, e.company_id }, "uq_position_hr_companies_position_id_hr_company_id_company_id")
                     .IsUnique();
 
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.position_hr_companies)
                     .HasForeignKey(d => d.company_id)
@@ -442,6 +457,10 @@ namespace Database.models
                 entity.HasIndex(e => new { e.position_id, e.user_id, e.company_id }, "position_interviewers_position_id_user_id_company_id")
                     .IsUnique();
 
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.company_id)
@@ -456,13 +475,6 @@ namespace Database.models
                     .WithMany(p => p.position_interviewers)
                     .HasForeignKey(d => d.user_id)
                     .HasConstraintName("fk_position_interviewers_user_id_users_id");
-            });
-
-            modelBuilder.Entity<positions_incremental>(entity =>
-            {
-                entity.ToTable("positions_incremental");
-
-                entity.Property(e => e.name).HasMaxLength(2);
             });
 
             modelBuilder.Entity<registeration_key>(entity =>

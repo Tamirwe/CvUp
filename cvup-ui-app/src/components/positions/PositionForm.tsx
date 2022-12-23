@@ -17,21 +17,16 @@ import {
   TextField,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdFormatIndentIncrease } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
-import { IIdName } from "../../models/AuthModels";
 import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
-
-// interface IProps {
-//   interviewer: IInterviewer;
-// }
 
 export const PositionForm = observer(() => {
   let { pid } = useParams();
@@ -65,6 +60,19 @@ export const PositionForm = observer(() => {
 
   useEffect(() => {
     (async () => {
+      pid && (await positionsStore.GetPosition(parseInt(pid)));
+
+      setFrmState((currentProps) => ({
+        ...currentProps,
+        ...positionsStore.currentPosition,
+      }));
+      setFrmMsg("");
+      setIsDirty(false);
+    })();
+  }, [pid]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    (async () => {
       await Promise.all([
         generalStore.getDepartmentsList(false),
         generalStore.getHrCompaniesList(false),
@@ -74,20 +82,9 @@ export const PositionForm = observer(() => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    (async () => {
-      pid && (await positionsStore.GetPosition(parseInt(pid)));
-
-      setFrmState((currentProps) => ({
-        ...currentProps,
-        ...positionsStore.currentPosition,
-      }));
-    })();
-  }, [pid]);
-
-  useEffect(() => {
     setNameInterviewrsMultySelect();
     setNameHrCompaniesMultySelect();
-  }, [positionsStore.currentPosition]);
+  }, [positionsStore.currentPosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleHrCompaniesChanged = (
     event: SelectChangeEvent<typeof hrCompanyNames>,

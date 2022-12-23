@@ -7,6 +7,15 @@ export class GeneralStore {
   private generalApi;
   departmentsList: IIdName[] | undefined;
   hrCompaniesList: IIdName[] | undefined;
+  isShowBackdrop: boolean = false;
+
+  set backdrop(val) {
+    this.isShowBackdrop = val;
+  }
+
+  get backdrop() {
+    return this.isShowBackdrop;
+  }
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);

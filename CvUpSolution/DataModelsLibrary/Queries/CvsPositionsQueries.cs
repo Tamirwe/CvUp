@@ -285,7 +285,7 @@ namespace DataModelsLibrary.Queries
                 company_id = companyId,
                 name = data.name,
                 descr = data.descr,
-                department_id = data.departmentId,
+                department_id = data.departmentId==0?null: data.departmentId,
                 is_active = Convert.ToSByte(data.isActive),
                 updater_id = userId,
                 date_created = DateTime.Now,

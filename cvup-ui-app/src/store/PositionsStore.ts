@@ -24,6 +24,7 @@ export class PositionsStore {
   }
 
   async GetPosition(positionId: number) {
+    this.rootStore.generalStore.backdrop = true;
     if (positionId === 0) {
       runInAction(() => {
         this.currentPosition = this.newPosition;
@@ -34,6 +35,7 @@ export class PositionsStore {
         this.currentPosition = res.data;
       });
     }
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async addUpdatePosition(position: IPosition) {

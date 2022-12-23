@@ -14,6 +14,7 @@ namespace Database.models
         public int id { get; set; }
         public string name { get; set; } = null!;
         public int company_id { get; set; }
+        public DateTime? date_created { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<hr_contact> hr_contacts { get; set; }

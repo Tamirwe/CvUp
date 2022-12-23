@@ -1,4 +1,11 @@
-import { Box, CssBaseline, Drawer, Toolbar } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  CssBaseline,
+  Drawer,
+  Toolbar,
+} from "@mui/material";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
@@ -6,6 +13,8 @@ import { Header } from "../components/header/Header";
 import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
+import { observer } from "mobx-react";
+import { useStore } from "../Hooks/useStore";
 
 const drawerWidth = 340;
 
@@ -31,7 +40,8 @@ const Main = styled("main", {
   }),
 }));
 
-export const LayoutAuth = () => {
+export const LayoutAuth = observer(() => {
+  const { generalStore } = useStore();
   const matches = useMediaQuery("(min-width:600px)");
   const [isOpen, setIsOpen] = useState(matches ? true : false);
 
@@ -53,9 +63,18 @@ export const LayoutAuth = () => {
         <Toolbar />
         <Outlet />
       </Main>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={generalStore.backdrop}
+        onClick={() => {
+          generalStore.backdrop = false;
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
-};
+});
 
 interface IPropsDrawerDesktop {
   isOpen: boolean;

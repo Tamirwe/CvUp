@@ -15,12 +15,17 @@ export class PositionsStore {
   };
 
   private positionApi;
-  positionsList: IPositionListItem[] | undefined;
+  positionsList: IPositionListItem[] = [];
   currentPosition: IPosition = this.newPosition;
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
     this.positionApi = new PositionsApi();
+  }
+
+  reset() {
+    this.positionsList = [];
+    this.currentPosition = this.newPosition;
   }
 
   async GetPosition(positionId: number) {
@@ -39,19 +44,27 @@ export class PositionsStore {
   }
 
   async addUpdatePosition(position: IPosition) {
-    return await this.positionApi.addUpdatePosition(position);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.positionApi.addUpdatePosition(position);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 
   async getPositionsList(loadAgain: boolean) {
-    if (!this.positionsList || loadAgain) {
+    this.rootStore.generalStore.backdrop = true;
+    if (this.positionsList.length === 0 || loadAgain) {
       const res = await this.positionApi.getPositionsList();
       runInAction(() => {
         this.positionsList = res.data;
       });
     }
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async deleteHrCompany(positionId: number) {
-    return await this.positionApi.deletePosition(positionId);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.positionApi.deletePosition(positionId);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 }

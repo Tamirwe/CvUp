@@ -5,8 +5,8 @@ import { RootStore } from "./RootStore";
 
 export class GeneralStore {
   private generalApi;
-  departmentsList: IIdName[] | undefined;
-  hrCompaniesList: IIdName[] | undefined;
+  departmentsList: IIdName[] = [];
+  hrCompaniesList: IIdName[] = [];
   isShowBackdrop: boolean = false;
 
   set backdrop(val) {
@@ -22,6 +22,12 @@ export class GeneralStore {
     this.generalApi = new GeneralApi();
   }
 
+  reset() {
+    this.departmentsList = [];
+    this.hrCompaniesList = [];
+    this.isShowBackdrop = false;
+  }
+
   async search() {
     const aaa = await this.generalApi.search();
     console.log(aaa);
@@ -33,36 +39,52 @@ export class GeneralStore {
   }
 
   async addUpdateDepartment(department: IIdName) {
-    return await this.generalApi.addUpdateDepartment(department);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.generalApi.addUpdateDepartment(department);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 
   async getDepartmentsList(loadAgain: boolean) {
-    if (!this.departmentsList || loadAgain) {
+    this.rootStore.generalStore.backdrop = true;
+    if (this.departmentsList.length == 0 || loadAgain) {
       const res = await this.generalApi.getDepartmentsList();
       runInAction(() => {
         this.departmentsList = res.data;
       });
     }
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async deleteDepartment(departmentId: number) {
-    return await this.generalApi.deleteDepartment(departmentId);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.generalApi.deleteDepartment(departmentId);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 
   async addUpdateHrCompany(hrCompany: IIdName) {
-    return await this.generalApi.addUpdateHrCompany(hrCompany);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.generalApi.addUpdateHrCompany(hrCompany);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 
   async getHrCompaniesList(loadAgain: boolean) {
-    if (!this.hrCompaniesList || loadAgain) {
+    this.rootStore.generalStore.backdrop = true;
+    if (this.hrCompaniesList.length == 0 || loadAgain) {
       const res = await this.generalApi.getHrCompaniesList();
       runInAction(() => {
         this.hrCompaniesList = res.data;
       });
     }
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async deleteHrCompany(hrCompanyId: number) {
-    return await this.generalApi.deleteHrCompany(hrCompanyId);
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.generalApi.deleteHrCompany(hrCompanyId);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 }

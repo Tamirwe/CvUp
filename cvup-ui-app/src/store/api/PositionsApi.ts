@@ -23,7 +23,7 @@ export default class PositionsApi extends BaseApi {
   async addUpdatePosition(position: IPosition) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.post("Positions/AddUpdatePosition", position)
+        await this.http.post<number>("Positions/AddUpdatePosition", position)
       ).data;
       return data;
     });

@@ -15,11 +15,16 @@ export const PositionsList = observer(() => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <List dense={true} sx={{ maxWidth: "20rem" }}>
+    <List
+      sx={{
+        width: "98%",
+      }}
+    >
       {positionsStore.positionsList?.map((pos, i) => {
         return (
-          <ListItem key={pos.id}>
+          <ListItem key={pos.id} disablePadding>
             <ListItemButton
+              selected={pos.id === positionsStore.currentPosition.id}
               onClick={() => {
                 navigate(`/position/${pos.id}`);
 

@@ -94,6 +94,7 @@ const DrawerDesktop = ({ isOpen }: IPropsDrawerDesktop) => {
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           boxSizing: "border-box",
+          overflow: "hidden",
         },
       }}
     >

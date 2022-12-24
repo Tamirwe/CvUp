@@ -31,18 +31,18 @@ namespace CvUpAPI.Controllers
         [Route("AddUpdatePosition")]
         public IActionResult AddUpdatePosition(PositionClientModel data)
         {
-            position? position;
+            position? pos;
 
             if (data.id == 0)
             {
-                position = _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
+                pos = _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
             }
             else
             {
-                position = _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
+                pos = _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
             }
 
-            return Ok(data);
+            return Ok(pos != null ? pos.id : 0);
         }
 
         [HttpGet]

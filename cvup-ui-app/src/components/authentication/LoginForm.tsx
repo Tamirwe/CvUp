@@ -25,7 +25,7 @@ interface IProps {
 
 export const LoginForm = ({ loginType }: IProps) => {
   const navigate = useNavigate();
-  const { authStore } = useStore();
+  const { authStore, cvsStore, generalStore, positionsStore } = useStore();
   const params = new URLSearchParams(window.location.search);
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -45,6 +45,13 @@ export const LoginForm = ({ loginType }: IProps) => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    authStore.reset();
+    cvsStore.reset();
+    generalStore.reset();
+    positionsStore.reset();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;

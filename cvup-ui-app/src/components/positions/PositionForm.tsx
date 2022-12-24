@@ -19,7 +19,7 @@ import {
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { MdFormatIndentIncrease } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/GeneralModels";
@@ -30,6 +30,7 @@ import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 
 export const PositionForm = observer(() => {
   let { pid } = useParams();
+  const navigate = useNavigate();
   const { positionsStore, generalStore, authStore } = useStore();
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
@@ -194,6 +195,7 @@ export const PositionForm = observer(() => {
 
     if (response.isSuccess) {
       positionsStore.getPositionsList(true);
+      navigate(`/position/${response.data}`);
     } else {
       return setFrmMsg("An Error Occurred Please Try Again Later.");
     }

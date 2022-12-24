@@ -17,7 +17,7 @@ export class AuthStore {
   private authApi;
   isLoggedIn = false;
   claims: ClaimsModel = {};
-  interviewersList: IInterviewer[] | undefined;
+  interviewersList: IInterviewer[] = [];
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -30,14 +30,20 @@ export class AuthStore {
     }
   }
 
+  reset() {
+    localStorage.removeItem(TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+    this.isLoggedIn = false;
+    this.claims = {};
+    this.interviewersList = [];
+  }
+
   async registerUser(registrationInfo: IUserRegistration) {
     return await this.authApi.registerUser(registrationInfo);
   }
 
   async login(loginInfo: IUserLogin, loginType: string) {
     let response;
-    localStorage.removeItem(TOKEN);
-    localStorage.removeItem(REFRESH_TOKEN);
 
     switch (loginType) {
       case LOGIN_TYPE.REGULAR_LOGIN:
@@ -79,7 +85,7 @@ export class AuthStore {
   }
 
   async getInterviewersList(loadAgain: boolean) {
-    if (!this.interviewersList || loadAgain) {
+    if (this.interviewersList.length === 0 || loadAgain) {
       const res = await this.authApi.getInterviewersList();
       runInAction(() => {
         this.interviewersList = res.data;
@@ -90,5 +96,4 @@ export class AuthStore {
   async deleteInterviewer(interviewer: IInterviewer) {
     return await this.authApi.deleteInterviewer(interviewer);
   }
-
 }

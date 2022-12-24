@@ -13,11 +13,18 @@ export class CvsStore {
     this.cvsApi = new CvsApi();
   }
 
+  reset() {
+    this.cvsList = [];
+    this.cvId = "";
+  }
+
   async getCvsList() {
+    this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getCvsList();
     runInAction(() => {
       this.cvsList = res.data;
     });
+    this.rootStore.generalStore.backdrop = false;
   }
 
   setDoc(cvId: string) {

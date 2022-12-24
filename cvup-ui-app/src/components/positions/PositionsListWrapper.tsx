@@ -7,21 +7,41 @@ export const PositionsListWrapper = () => {
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        "& > :not(style)": {
-          m: 1,
-        },
-      }}
-    >
-      <Button onClick={() => navigate("/position/0")} startIcon={<GoPlus />}>
-        Add Position
-      </Button>
-      <Paper elevation={3}>
+    <Box>
+      <Box>
+        <Button
+          sx={{ width: "fit-content" }}
+          onClick={() => navigate("/position/0")}
+          startIcon={<GoPlus />}
+        >
+          Add Position
+        </Button>
+      </Box>
+      <Box
+        sx={{
+          height: "83vh",
+          overflowY: "scroll",
+          // display: "flex",
+          // flexDirection: "column",
+          // flexWrap: "wrap",
+          // "& > :not(style)": {
+          //   m: 1,
+          // },
+        }}
+      >
+        {/* <Paper elevation={3}> */}
         <PositionsList />
-      </Paper>
+        {/* </Paper> */}
+      </Box>
+      <Box>
+        <Button
+          sx={{ width: "fit-content" }}
+          onClick={() => navigate("/position/0")}
+          startIcon={<GoPlus />}
+        >
+          Add Position
+        </Button>
+      </Box>
     </Box>
   );
 };

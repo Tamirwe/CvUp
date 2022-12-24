@@ -9,6 +9,7 @@ namespace Database.models
         {
             candidate_position_stages = new HashSet<candidate_position_stage>();
             candidates = new HashSet<candidate>();
+            company_parsers = new HashSet<company_parser>();
             contacts = new HashSet<contact>();
             departments = new HashSet<department>();
             hr_companies = new HashSet<hr_company>();
@@ -32,6 +33,7 @@ namespace Database.models
         public virtual enum_company_activate_status activate_status { get; set; } = null!;
         public virtual ICollection<candidate_position_stage> candidate_position_stages { get; set; }
         public virtual ICollection<candidate> candidates { get; set; }
+        public virtual ICollection<company_parser> company_parsers { get; set; }
         public virtual ICollection<contact> contacts { get; set; }
         public virtual ICollection<department> departments { get; set; }
         public virtual ICollection<hr_company> hr_companies { get; set; }

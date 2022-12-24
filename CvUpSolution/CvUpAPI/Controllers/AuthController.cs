@@ -76,7 +76,7 @@ namespace CvUpAPI.Controllers
                 return Ok("duplicateUserPass");
             }
 
-            string origin = Request.Headers["Origin"].First();
+            string? origin = Request.Headers["Origin"].First();
             _authServise.Register(origin, data);
             return Ok();
         }
@@ -85,7 +85,7 @@ namespace CvUpAPI.Controllers
         [Route("ForgotPassword")]
         public IActionResult ForgotPassword(ForgotPasswordModel data)
         {
-            string origin = Request.Headers["Origin"].First();
+            string? origin = Request.Headers["Origin"].First();
 
             user? authenticateUser = _authServise.ForgotPassword(origin, data.email, data.companyId, out UserAuthStatus status);
 

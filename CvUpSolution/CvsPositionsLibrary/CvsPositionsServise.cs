@@ -42,17 +42,30 @@ namespace CvsPositionsLibrary
             _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);
         }
 
-
-        public int GetAddCandidateId(int companyId, string email, string phone)
+        public candidate? GetCandidateId(string email)
         {
             candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(email);
+            return cand;
+        }
 
-            if (cand == null)
+        public int AddUpdateCandidate(ImportCvModel cv, candidate? cand)
+        {
+            int candId;
+
+            if (cand != null)
             {
-                cand = _cvsPositionsQueries.AddNewCandidate(companyId, email, phone);
+                cand.email = cv.email;
+                cand.name = cv.candidateName;
+                _cvsPositionsQueries.UpdateCandidate( cand);
+                candId = cand.id;
+            }
+            else
+            {
+                candidate newCand = _cvsPositionsQueries.AddCandidate(cv);
+                candId = newCand.id;
             }
 
-            return cand.id;
+            return candId;
         }
 
         public int GetUniqueCvId()
@@ -107,5 +120,9 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries.DeletePosition(companyId, id);
         }
 
+        public List<ParserRulesModel> GetParsersRules(int companyId)
+        {
+            return _cvsPositionsQueries.GetParsersRules(companyId);
+        }
     }
 }

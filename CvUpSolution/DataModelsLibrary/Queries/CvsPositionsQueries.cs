@@ -1,6 +1,7 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
 {
@@ -62,13 +64,13 @@ namespace DataModelsLibrary.Queries
             return ci.id;
         }
 
-        public candidate AddNewCandidate(int companyId, string email, string phone)
+        public candidate AddCandidate(ImportCvModel cv)
         {
             var cand = new candidate
             {
-                company_id = companyId,
-                email = email,
-                phone = phone
+                company_id = cv.companyId,
+                email = cv.email,
+                phone = cv.phone
             };
 
             dbContext.candidates.Add(cand);
@@ -76,10 +78,22 @@ namespace DataModelsLibrary.Queries
             return cand;
         }
 
+        public void UpdateCandidate( candidate cand)
+        {
+            using (var db = new cvup00001Context())
+                {
+                var result = db.candidates.Update(cand);
+                db.SaveChanges();
+            }
+        }
+
         public candidate? GetCandidateByEmail(string email)
         {
-            candidate? cand = dbContext.candidates.Where(x => x.email == email).FirstOrDefault();
-            return cand;
+            using (var db = new cvup00001Context())
+            {
+                candidate? cand = db.candidates.Where(x => x.email == email).FirstOrDefault();
+                return cand;
+            }
         }
 
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId)
@@ -420,6 +434,23 @@ namespace DataModelsLibrary.Queries
             }
 
             dbContext.SaveChanges();
+        }
+
+        public List<ParserRulesModel> GetParsersRules(int companyId)
+        {
+            var query = from p in dbContext.company_parsers
+                        join r in dbContext.parser_rules on p.parser_id equals r.parser_id
+                        where p.company_id == companyId
+                        select new ParserRulesModel
+                        {
+                            parser_id = r.parser_id,
+                            delimiter = r.delimiter,
+                            value_type = r.value_type,
+                            must_metch = r.must_metch,
+                            order = r.order,
+                        };
+
+            return query.ToList();
         }
     }
 }

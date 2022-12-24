@@ -8,7 +8,7 @@ namespace DataModelsLibrary.Models
 {
     public class ImportCvModel
     {
-        public string companyId { get; set; } = "";
+        public int companyId { get; set; }
         public string fileNamePath { get; set; } = "";
         public string fileExtension { get; set; } = "";
         public string cvTxt { get; set; } = "";
@@ -20,6 +20,7 @@ namespace DataModelsLibrary.Models
         public string emailId { get; set; } = "";
         public string subject { get; set; } = "";
         public string from { get; set; } = "";
+        public string positionRelated { get; set; } = "";
         public int cvAsciiSum { get; set; }
     }
 
@@ -44,4 +45,14 @@ namespace DataModelsLibrary.Models
         public string? emailSubject { get; set; } = "";
         public string? candidateName { get; set; } = "";
     }
+
+    public class ParserRulesModel
+    {
+        public int parser_id { get; set; }
+        public string delimiter { get; set; } = "";
+        public string value_type { get; set; } = "";
+        public int order { get; set; }
+        public bool must_metch { get; set; }
+    }
+
 }

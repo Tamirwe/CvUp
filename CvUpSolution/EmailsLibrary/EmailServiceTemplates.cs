@@ -13,7 +13,7 @@ namespace EmailsLibrary
     public partial class EmailService : IEmailService
     {
 
-        public string RegistrationEmailBody(string origin, string key)
+        public string RegistrationEmailBody(string? origin, string key)
         {
             string body = string.Empty;
             string htmlFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"EmailTemplates\RegistrationCompleteTemplate.html");

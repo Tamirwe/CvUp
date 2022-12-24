@@ -12,6 +12,9 @@ using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
 using System.Drawing.Imaging;
+using J2N.Text;
+using DataModelsLibrary.Enums;
+using Database.models;
 
 namespace ImportCvsLibrary
 {
@@ -53,8 +56,8 @@ namespace ImportCvsLibrary
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
                     List<ImportCvModel> cvsList = new List<ImportCvModel>();
                     SaveEmailAttachmentToFile(message, uid, cvsList);
-                    ExtractAttachmentsProps(cvsList);
-                    AddAttachmentsToDb(cvsList);
+                    ExtractCvsProps(cvsList);
+                    AddCvsToDb(cvsList);
                     AddCvsToIndex(cvsList);
 
                     //}
@@ -68,12 +71,12 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void SaveEmailAttachmentToFile(MimeMessage message,UniqueId uid, List<ImportCvModel> cvsList)
+        private void SaveEmailAttachmentToFile(MimeMessage message, UniqueId uid, List<ImportCvModel> cvsList)
         {
-            string companyId = GetCompanyIdFromAddress(message.To);
+            int companyId = GetCompanyIdFromAddress(message.To);
             int uqId = _cvsPositionsServise.GetUniqueCvId();
 
-            if (companyId == "")
+            if (companyId == 0)
             {
                 return;
             }
@@ -83,7 +86,7 @@ namespace ImportCvsLibrary
                 int counter = 0;
                 string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
                 string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
-                string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, uqId,++counter, fileExtension, out string cvId);
+                string fileNamePath = GetSaveAttachmentLocation(attachment, companyId, uqId, ++counter, fileExtension, out string cvId);
 
                 if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                 {
@@ -100,12 +103,16 @@ namespace ImportCvsLibrary
                             part.Content.DecodeTo(stream);
                         }
 
-                        cvsList.Add(new ImportCvModel { companyId = companyId, 
-                            cvId = cvId, 
-                            fileExtension = fileExtension, 
-                            fileNamePath = fileNamePath, 
-                            emailId= uid.ToString(),
-                            subject = message.Subject,
+                        string subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase);
+
+                        cvsList.Add(new ImportCvModel
+                        {
+                            companyId = companyId,
+                            cvId = cvId,
+                            fileExtension = fileExtension,
+                            fileNamePath = fileNamePath,
+                            emailId = uid.ToString(),
+                            subject = subject.Trim(),
                             from = message.From.ToString(),
                         });
                     }
@@ -113,7 +120,7 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void ExtractAttachmentsProps(List<ImportCvModel> cvsList)
+        private void ExtractCvsProps(List<ImportCvModel> cvsList)
         {
             foreach (var item in cvsList)
             {
@@ -123,23 +130,87 @@ namespace ImportCvsLibrary
                 }
                 else
                 {
-                    item.cvTxt =  GetCvTxtWord(item.fileNamePath);
+                    item.cvTxt = GetCvTxtWord(item.fileNamePath);
                 }
 
                 item.cvAsciiSum = GetCvAsciiSum(item.cvTxt);
                 GetCandidateEmail(item);
                 GetCandidatePhone(item);
+                ParseEmailSubject(item);
             }
         }
 
-        private void AddAttachmentsToDb(List<ImportCvModel> cvsList)
+        private void ParseEmailSubject(ImportCvModel cv)
         {
-            foreach (var item in cvsList)
+            List<ParserRulesModel> parsersRules = _cvsPositionsServise.GetParsersRules(cv.companyId);
+
+            if (parsersRules.Count > 0)
             {
-                if (item.email.Length > 0)
+                List<int> parsersIds = parsersRules.DistinctBy(x => x.parser_id).Select(x=>x.parser_id).ToList();
+                string seperator = "~~";
+
+                foreach (int id in parsersIds)
                 {
-                    item.candidateId = _cvsPositionsServise.GetAddCandidateId( Convert.ToInt32(item.companyId), item.email,item.phone);
-                    _cvsPositionsServise.AddNewCvToDb(item);
+                    List<ParserRulesModel> parserRules = parsersRules.Where(x => x.parser_id == id).OrderBy(x => x.order).ToList();
+                    string subject = cv.subject;
+                    bool isCorrectParser = false;
+
+                    foreach (var rule in parserRules)
+                    {
+                        if (subject.IndexOf(rule.delimiter) > -1)
+                        {
+                            subject = subject.Replace(rule.delimiter, seperator);
+                            isCorrectParser = true;
+                        }
+                        else
+                        {
+                            if (rule.must_metch)
+                            {
+                                isCorrectParser = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isCorrectParser)
+                    {
+                        string[] subjectArr = subject.Split(seperator);
+                        subjectArr = subjectArr.Skip(1).ToArray();//remove first entry, we take the value after the seperator.
+
+                        for (int i = 0; i < subjectArr.Length; i++)
+                        {
+                            switch (parserRules[i].value_type)
+                            {
+                                case nameof(ParserValueType.Name):
+                                    cv.candidateName = subjectArr[i];
+                                    break;
+                                case nameof(ParserValueType.Position):
+                                    cv.positionRelated = subjectArr[i];
+                                    break;
+                                case nameof(ParserValueType.CompanyType):
+
+                                    break;
+                                case nameof(ParserValueType.Address):
+
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void AddCvsToDb(List<ImportCvModel> cvsList)
+        {
+            foreach (var cv in cvsList)
+            {
+                if (cv.email.Length > 0)
+                {
+                    candidate? cand = _cvsPositionsServise.GetCandidateId(cv.email);
+                    cv.candidateId = _cvsPositionsServise.AddUpdateCandidate(cv, cand);
+                    _cvsPositionsServise.AddNewCvToDb(cv);
                 }
             }
         }
@@ -157,7 +228,7 @@ namespace ImportCvsLibrary
 
         private void GetCandidatePhone(ImportCvModel item)
         {
-            const string MatchPhonePattern =       @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}";
+            const string MatchPhonePattern = @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}";
             Regex rx = new Regex(MatchPhonePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             MatchCollection matches = rx.Matches(item.cvTxt);
 
@@ -173,7 +244,7 @@ namespace ImportCvsLibrary
             RegexOptions.IgnoreCase);
             MatchCollection emailMatches = emailRegex.Matches(item.cvTxt);
 
-            if (emailMatches.Count>0)
+            if (emailMatches.Count > 0)
             {
                 item.email = emailMatches[0].Value;
             }
@@ -211,7 +282,7 @@ namespace ImportCvsLibrary
             //document.SaveToFile(dstStream, Spire.Doc.FileFormat.PDF);
 
             string cvTxt = document.GetText();
-           System.Drawing.Image[] cvImages =  document.SaveToImages(Spire.Doc.Documents.ImageType.Bitmap);
+            System.Drawing.Image[] cvImages = document.SaveToImages(Spire.Doc.Documents.ImageType.Bitmap);
 
             //foreach (var item in cvImages)
             //{
@@ -223,7 +294,7 @@ namespace ImportCvsLibrary
 
         private string RemoveCvExtraSpaces(string cvTxt)
         {
-            string txt  = Regex.Replace(cvTxt, @"\s+", " ");
+            string txt = Regex.Replace(cvTxt, @"\s+", " ");
             txt = txt.Length > 7999 ? txt.Substring(0, 7999) : txt;
             return txt;
         }
@@ -244,7 +315,7 @@ namespace ImportCvsLibrary
             return docAsciiSum;
         }
 
-        private string GetSaveAttachmentLocation(MimeEntity attachment, string companyId, int uqId, int counter, string fileExtension, out string cvId)
+        private string GetSaveAttachmentLocation(MimeEntity attachment, int companyId, int uqId, int counter, string fileExtension, out string cvId)
         {
             string companyFolder = companyId + "_";
 
@@ -264,31 +335,33 @@ namespace ImportCvsLibrary
             return fileNamePath;
         }
 
-        private string GetCompanyIdFromAddress(InternetAddressList addressList)
+        private int GetCompanyIdFromAddress(InternetAddressList addressList)
         {
-            string companyId = "";
+            string companyIdStr = "";
 
             try
             {
                 addressList.ToList().ForEach(x =>
                 {
-                    if (companyId == "")
+                    if (companyIdStr == "")
                     {
                         var toAddress = x.ToString().Split('@')[0];
 
                         if (toAddress.IndexOf(_mailUserName) > -1)
                         {
-                            companyId = toAddress.Substring(toAddress.IndexOf("ci") + 2);
+                            companyIdStr = toAddress.Substring(toAddress.IndexOf("ci") + 2);
                         }
                     }
+
                 });
+
+                return Convert.ToInt32(companyIdStr);
             }
             catch (Exception)
             {
-                return "";
+                return 0;
             }
 
-            return companyId;
         }
     }
 }

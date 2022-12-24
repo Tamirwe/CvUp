@@ -6,7 +6,8 @@ namespace DataModelsLibrary.Queries
     public interface ICvsPositionsQueries
     {
         public void AddNewCvToDb(ImportCvModel importCv);
-        public candidate AddNewCandidate(int companyId, string email, string phone);
+        public candidate AddCandidate(ImportCvModel cv);
+        public void UpdateCandidate( candidate cand);
         public candidate? GetCandidateByEmail(string email);
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
         public int GetUniqueCvId();
@@ -24,5 +25,7 @@ namespace DataModelsLibrary.Queries
         public List<PositionListItemModel> GetPositionsList(int companyId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
+        public List<ParserRulesModel> GetParsersRules(int companyId);
+       
     }
 }

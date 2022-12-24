@@ -19,6 +19,7 @@ namespace Database.models
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
+        public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
@@ -33,6 +34,8 @@ namespace Database.models
         public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
+        public virtual DbSet<parser> parsers { get; set; } = null!;
+        public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
         public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
@@ -118,6 +121,23 @@ namespace Database.models
                     .HasForeignKey(d => d.activate_status_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_companies_activate_status_id_enum_company_activate_status_id");
+            });
+
+            modelBuilder.Entity<company_parser>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_company_parsers_company_id_companies_id");
+
+                entity.HasIndex(e => e.parser_id, "fk_company_parsers_parser_id_parsers_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.company_parsers)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_company_parsers_company_id_companies_id");
+
+                entity.HasOne(d => d.parser)
+                    .WithMany(p => p.company_parsers)
+                    .HasForeignKey(d => d.parser_id)
+                    .HasConstraintName("fk_company_parsers_parser_id_parsers_id");
             });
 
             modelBuilder.Entity<contact>(entity =>
@@ -336,6 +356,25 @@ namespace Database.models
                     .WithMany(p => p.hr_contacts)
                     .HasForeignKey(d => d.hr_company_id)
                     .HasConstraintName("fk_hr_contacts_hr_company_id_hr_companies_id");
+            });
+
+            modelBuilder.Entity<parser>(entity =>
+            {
+                entity.Property(e => e.name).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<parser_rule>(entity =>
+            {
+                entity.HasIndex(e => e.parser_id, "fk_parser_rules_parser_id_parsers_id");
+
+                entity.Property(e => e.delimiter).HasMaxLength(50);
+
+                entity.Property(e => e.value_type).HasColumnType("enum('Name','Position','Address','CompanyType')");
+
+                entity.HasOne(d => d.parser)
+                    .WithMany(p => p.parser_rules)
+                    .HasForeignKey(d => d.parser_id)
+                    .HasConstraintName("fk_parser_rules_parser_id_parsers_id");
             });
 
             modelBuilder.Entity<position>(entity =>

@@ -12,14 +12,12 @@ namespace DataModelsLibrary.Enums
         WAITE_FOR_FIRST_USER_TO_COMPLETE_REGISTRATION = 20,
         NOT_ACTIVE = 30,
     }
-
     public enum UserActivateStatus
     {
         ACTIVE = 10,
         REGISTRATION_NOT_COMPLETED = 20,
         NOT_ACTIVE = 30,
     }
-
     public enum UserAuthStatus
     {
         Authenticated = 1,
@@ -37,9 +35,16 @@ namespace DataModelsLibrary.Enums
         REGISTRATION_CONFIRMATION = 2,
         CV_ASSAINGED_TO_POSITION = 3
     }
-    public enum lung
+    public enum Lung
     {
         HE = 1,
         EN_US = 2,
+    }
+    public enum ParserValueType
+    {
+        Name,
+        Position,
+        Address,
+        CompanyType
     }
 }

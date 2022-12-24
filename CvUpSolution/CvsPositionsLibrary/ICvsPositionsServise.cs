@@ -7,7 +7,8 @@ namespace CvsPositionsLibrary
     {
         public void AddNewCvToDb(ImportCvModel importCv);
         public void AddNewCvToIndex(ImportCvModel item);
-        public int GetAddCandidateId(int companyId, string email, string phone);
+        public candidate? GetCandidateId(string email);
+        public int AddUpdateCandidate(ImportCvModel cv, candidate? cand);
         public int GetUniqueCvId();
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
@@ -24,5 +25,6 @@ namespace CvsPositionsLibrary
         public List<PositionListItemModel> GetPositionsList(int companyId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
+        public List<ParserRulesModel> GetParsersRules(int companyId);
     }
 }

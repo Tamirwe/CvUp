@@ -8,7 +8,7 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-        public void Register(string origin, CompanyAndUserRegisetModel data)
+        public void Register(string? origin, CompanyAndUserRegisetModel data)
         {
             using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
@@ -37,7 +37,7 @@ namespace AuthLibrary
             return user;
         }
 
-        private EmailModel SendRegistrationConfitmationEmail(string origin, string key, user user)
+        private EmailModel SendRegistrationConfitmationEmail(string? origin, string key, user user)
         {
             var email = new EmailModel
             {

@@ -518,5 +518,21 @@ namespace DataModelsLibrary.Queries
                 return query.ToList();
             }
         }
+
+        public List<int> GetCompaniesIds()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return dbContext.companies.Select(c => c.id).ToList();
+            }
+        }
+
+        public List<string> GetCompanyCvsIds(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return dbContext.cvs.Where(x=>x.company_id== companyId).Select(c => c.id).ToList();
+            }
+        }
     }
 }

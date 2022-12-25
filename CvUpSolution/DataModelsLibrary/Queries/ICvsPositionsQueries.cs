@@ -26,6 +26,7 @@ namespace DataModelsLibrary.Queries
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);
-       
+        public List<int> GetCompaniesIds();
+        public List<string> GetCompanyCvsIds(int companyId);
     }
 }

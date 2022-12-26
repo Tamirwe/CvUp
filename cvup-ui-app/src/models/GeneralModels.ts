@@ -33,5 +33,6 @@ export interface IPosition {
 export interface IPositionListItem {
   id: number;
   name: string;
+  updated: Date;
   isActive: boolean;
 }

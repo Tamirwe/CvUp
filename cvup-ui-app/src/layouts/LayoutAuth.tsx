@@ -52,15 +52,15 @@ export const LayoutAuth = observer(() => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <Header onToggleDrawer={handleDrawerToggle} />
-      {matches ? (
+      {/* <Header onToggleDrawer={handleDrawerToggle} /> */}
+      {/* {matches ? (
         <DrawerDesktop isOpen={isOpen} />
       ) : (
         <DrawerMobile isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      )}
+      )} */}
 
-      <Main isOpen={isOpen} matches={matches}>
-        <Toolbar />
+      <Main isOpen={isOpen} matches={matches} sx={{ p: 0 }}>
+        {/* <Toolbar /> */}
         <Outlet />
       </Main>
       <Backdrop
@@ -98,7 +98,7 @@ const DrawerDesktop = ({ isOpen }: IPropsDrawerDesktop) => {
         },
       }}
     >
-      <Toolbar />
+      {/* <Toolbar /> */}
       <PositionsListWrapper />
     </Drawer>
   );

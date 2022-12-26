@@ -371,6 +371,8 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
+                                isActive= Convert.ToBoolean(p.is_active),
+                                updated = p.date_updated
                             };
 
                 return query.ToList();

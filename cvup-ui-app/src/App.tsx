@@ -2,6 +2,8 @@ import { Worker } from "@react-pdf-viewer/core";
 import Router from "./Router";
 import { StoreProvider } from "./services/StoreProvider";
 import { RootStore } from "./store/RootStore";
+import "./App.css";
+import "./App.scss";
 
 // import { ThemeCustomization } from "./themes/ThemeCustomization";
 

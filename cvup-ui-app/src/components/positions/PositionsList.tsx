@@ -22,7 +22,7 @@ export const PositionsList = observer(() => {
     >
       {positionsStore.positionsList?.map((pos, i) => {
         return (
-          <ListItem key={pos.id} disablePadding>
+          <ListItem key={pos.id} dense disablePadding>
             <ListItemButton
               selected={pos.id === positionsStore.currentPosition.id}
               onClick={() => {
@@ -31,7 +31,15 @@ export const PositionsList = observer(() => {
                 // positionsStore.GetPosition(pos.id);
               }}
             >
-              <ListItemText primary={pos.name} />
+              <ListItemText primary={pos.name} sx={{ pr: 5 }} />
+              <ListItemText
+                primary={pos.updated.toString()}
+                sx={{
+                  textAlign: "right",
+                  color: "#bcc9d5",
+                  fontSize: "0.775rem",
+                }}
+              />
             </ListItemButton>
           </ListItem>
         );

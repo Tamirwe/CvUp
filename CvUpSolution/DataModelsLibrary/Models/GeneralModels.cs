@@ -16,6 +16,9 @@ namespace DataModelsLibrary.Models
     {
         public int id { get; set; } = 0;
         public string name { get; set; } = string.Empty;
+        public bool isActive { get; set; }
+        public DateTime updated { get; set; }
+
     }
 
     public class PositionClientModel

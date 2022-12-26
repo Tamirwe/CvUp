@@ -11,7 +11,12 @@ export const CvsList = observer(() => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <List dense={true} sx={{ maxWidth: "20rem" }}>
+    <List
+      dense={true}
+      sx={{
+        backgroundColor: "#fff",
+      }}
+    >
       {cvsStore.cvsList.map((cv, i) => {
         return (
           <ListItem key={cv.cvId}>

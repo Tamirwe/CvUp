@@ -11,15 +11,7 @@ export const CvsListWrapper = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        "& > :not(style)": {
-          m: 1,
-        },
-      }}
-    >
+    <Box>
       <Paper elevation={3}>
         <CvsList />
       </Paper>

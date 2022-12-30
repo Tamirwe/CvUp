@@ -20,3 +20,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+.ql-editor{
+  max-height: 250px;
+  overflow: auto;
+}

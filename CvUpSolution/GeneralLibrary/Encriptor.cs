@@ -28,12 +28,12 @@ namespace GeneralLibrary
                     clearText = Convert.ToBase64String(ms.ToArray());
                 }
             }
-            return clearText;
+            return clearText.Replace("+","-").Replace('/', '_');
         }
 
         public static string Decrypt(string cipherText, string EncryptionKey)
         {
-            cipherText = cipherText.Replace(" ", "+");
+            cipherText = cipherText.Replace(" ", "+").Replace("-","+").Replace('_', '/');
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {

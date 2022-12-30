@@ -81,12 +81,12 @@ namespace CvsPositionsLibrary
 
         public List<CvListItemModel> GetCvsList(int companyId)
         {
-            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCvsList(companyId);
+            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"]);
 
-            foreach (var item in cvsList)
-            {
-                item.encriptedId= Encriptor.Encrypt($"{item.cvId}~{DateTime.Now.ToString("yyyy-MM-dd")}", _configuration["GlobalSettings:cvsEncryptorKey"]);
-            }
+            //foreach (var item in cvsList)
+            //{
+            //    item.encriptedId= Encriptor.Encrypt($"{item.cvId}~{DateTime.Now.ToString("yyyy-MM-dd")}", _configuration["GlobalSettings:cvsEncryptorKey"]);
+            //}
 
             return cvsList;
         }

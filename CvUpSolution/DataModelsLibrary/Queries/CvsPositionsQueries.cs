@@ -1,5 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
+using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MySqlX.XDevAPI.Common;
@@ -126,7 +127,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId)
+        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -136,7 +137,9 @@ namespace DataModelsLibrary.Queries
                             where cand.company_id == companyId
                             select new CvListItemModel
                             {
-                                cvId = cvs.id,
+                                cvId = Encriptor.Encrypt($"{cvs.id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                fileType= cvs.id.Substring(cvs.id.LastIndexOf('_')),
+                candidateId = cand.id,   
                                 email = cand.email,
                                 emailSubject = cvs.subject,
                                 candidateName = cand.name,

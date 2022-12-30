@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
         public candidate? GetCandidateByEmail(string email);
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
         public int GetUniqueCvId();
-        public List<CvListItemModel> GetCvsList(int companyId);
+        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
         public List<IdNameModel> GetDepartmentsList(int companyId);

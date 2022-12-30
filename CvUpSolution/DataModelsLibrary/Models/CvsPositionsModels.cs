@@ -39,6 +39,8 @@ namespace DataModelsLibrary.Models
     public class CvListItemModel
     {
         public string cvId { get; set; } = "";
+        public int candidateId { get; set; }
+        public string fileType { get; set; } = "";
         public string encriptedId { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";

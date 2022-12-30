@@ -1,8 +1,15 @@
-import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import {
+  Checkbox,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
+import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 
 export const PositionsList = observer(() => {
   const { positionsStore } = useStore();
@@ -10,7 +17,7 @@ export const PositionsList = observer(() => {
 
   useEffect(() => {
     (async () => {
-      positionsStore.getPositionsList(false);
+      await positionsStore.getPositionsList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -22,7 +29,17 @@ export const PositionsList = observer(() => {
     >
       {positionsStore.positionsList?.map((pos, i) => {
         return (
-          <ListItem key={pos.id} dense disablePadding>
+          <ListItem
+            key={pos.id}
+            dense
+            disablePadding
+            secondaryAction={
+              <Checkbox
+                icon={<MdBookmarkBorder />}
+                checkedIcon={<MdBookmark />}
+              />
+            }
+          >
             <ListItemButton
               selected={pos.id === positionsStore.currentPosition.id}
               onClick={() => {

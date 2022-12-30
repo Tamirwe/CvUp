@@ -18,6 +18,10 @@ export class CvsStore {
     this.cvId = "";
   }
 
+  async getCv(cvId: string) {
+    this.cvId = cvId;
+  }
+
   async getCvsList() {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getCvsList();

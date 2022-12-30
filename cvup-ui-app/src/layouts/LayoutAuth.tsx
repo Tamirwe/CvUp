@@ -4,6 +4,9 @@ import {
   CircularProgress,
   CssBaseline,
   Drawer,
+  Grid,
+  Tab,
+  Tabs,
   Toolbar,
 } from "@mui/material";
 import { useState } from "react";
@@ -15,6 +18,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
+import { CvsListWrapper } from "../components/cvs/CvsListWrapper";
 
 const drawerWidth = 340;
 
@@ -49,30 +53,79 @@ export const LayoutAuth = observer(() => {
     setIsOpen(!isOpen);
   };
 
-  return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      {/* <Header onToggleDrawer={handleDrawerToggle} /> */}
-      {/* {matches ? (
-        <DrawerDesktop isOpen={isOpen} />
-      ) : (
-        <DrawerMobile isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      )} */}
+  const [value, setValue] = useState(0);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
-      <Main isOpen={isOpen} matches={matches} sx={{ p: 0 }}>
-        {/* <Toolbar /> */}
-        <Outlet />
-      </Main>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={generalStore.backdrop}
-        onClick={() => {
-          generalStore.backdrop = false;
-        }}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={0} columns={16}>
+        <Grid item xs={4}>
+          <Drawer
+            open={isOpen}
+            variant="persistent"
+            anchor="left"
+            sx={{
+              [`& .MuiDrawer-paper`]: {
+                display: "contents",
+              },
+            }}
+          >
+            <Grid container spacing={0}>
+              <Grid item xs={10}>
+                <PositionsListWrapper />
+              </Grid>
+              <Grid item xs={2}>
+                <Tabs
+                  orientation="vertical"
+                  variant="scrollable"
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="Vertical tabs example"
+                  sx={{ borderRight: 1, borderColor: "divider" }}
+                >
+                  <Tab label="Item One" />
+                  <Tab label="Item Two" />
+                  <Tab label="Item Three" />
+                  <Tab label="Item Four" />
+                </Tabs>
+              </Grid>
+            </Grid>
+          </Drawer>
+        </Grid>
+        <Grid item xs={8}>
+          <Outlet />
+        </Grid>
+        <Grid item xs={4}>
+          <CvsListWrapper />
+        </Grid>
+      </Grid>
     </Box>
+
+    // <Box sx={{ display: "flex" }}>
+    //   <CssBaseline />
+    //   {/* <Header onToggleDrawer={handleDrawerToggle} /> */}
+    //   {/* {matches ? (
+    //     <DrawerDesktop isOpen={isOpen} />
+    //   ) : (
+    //     <DrawerMobile isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    //   )} */}
+
+    //   <Main isOpen={isOpen} matches={matches} sx={{ p: 0 }}>
+    //     {/* <Toolbar /> */}
+    //     <Outlet />
+    //   </Main>
+    //   <Backdrop
+    //     sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    //     open={generalStore.backdrop}
+    //     onClick={() => {
+    //       generalStore.backdrop = false;
+    //     }}
+    //   >
+    //     <CircularProgress color="inherit" />
+    //   </Backdrop>
+    // </Box>
   );
 });
 

@@ -34,7 +34,7 @@ export const PdfViewer = observer(() => {
   // });
 
   return (
-    <div style={{ height: "100vh", width: "45vw" }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       {/* {cvsStore.cvId && ( */}
 
       <Viewer

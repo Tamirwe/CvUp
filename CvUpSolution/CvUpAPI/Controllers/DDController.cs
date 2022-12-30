@@ -20,8 +20,14 @@ namespace CvUpAPI.Controllers
         [HttpGet]
         public IActionResult? Get(string id)
         {
-                string[] pathArr = id.Split("_");
-                string path = $"{_configuration["GlobalSettings:CvsFilesRootFolder"]}\\{pathArr[0]}_\\{pathArr[1]}_\\{pathArr[2]}_\\{id}.{pathArr[6]}";
+            string decripted = GeneralLibrary.Encriptor.Decrypt(id, _configuration["GlobalSettings:cvsEncryptorKey"] ?? "");
+            string[] secArr = decripted.Split("~");
+
+            if (Convert.ToDateTime(secArr[1]).Date == DateTime.Now.Date)
+            {
+
+                string[] pathArr = secArr[0].Split("_");
+                string path = $"{_configuration["GlobalSettings:CvsFilesRootFolder"]}\\{pathArr[0]}_\\{pathArr[1]}_\\{pathArr[2]}_\\{secArr[0]}.{pathArr[6]}";
 
                 if (pathArr[6] == "pdf")
                 {
@@ -35,6 +41,9 @@ namespace CvUpAPI.Controllers
                 stream.Seek(0, SeekOrigin.Begin);
                 var pdfFile = File(stream, "application/pdf", $"{id}.pdf");
                 return pdfFile;
+            }
+
+            return null;
         }
 
         //[HttpGet]

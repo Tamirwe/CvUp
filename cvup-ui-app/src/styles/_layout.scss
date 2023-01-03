@@ -1,20 +1,8 @@
-.cv-layout {
-	width: 99vw;
-	// width: 95%;
-	margin: 0 auto;
-    .columns{
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        margin:  0;
-    .column {
-        flex: 1;
-        // border: 1px solid gray;
-        margin: 0;
-        // padding: 10px;
-        &:first-child { margin-left: 0; }
-        &:last-child { margin-right: 0; }
-        
-    }
-}
+.quill-rte {
+    position: fixed;
+    width: 40rem;
+    /* height: 26rem; */
+    z-index: 1300;
+    // left: 24%;
+    // top: 28%;
 }

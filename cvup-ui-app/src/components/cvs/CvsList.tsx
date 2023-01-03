@@ -17,6 +17,8 @@ export const CvsList = observer(() => {
       dense={true}
       sx={{
         backgroundColor: "#fff",
+        height: "calc(100vh - 81px)",
+        overflowY: "scroll",
       }}
     >
       {cvsStore.cvsList.map((cv, i) => {

@@ -1,54 +1,60 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
-import { MdMenu, MdLogout } from "react-icons/md";
+import { IconButton, Grid, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { CiLogout, CiEdit } from "react-icons/ci";
 
-interface IProps {
-  onToggleDrawer: () => void;
-}
-
-export const Header = (props: IProps) => {
-  const { authStore } = useStore();
-
-  useEffect(() => {}, []);
+export const Header = () => {
+  const { authStore, generalStore } = useStore();
   const navigate = useNavigate();
 
   return (
-    <AppBar
-      position="fixed"
-      component="nav"
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    >
-      <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={(e) => {
-            props.onToggleDrawer();
+    <div style={{ position: "relative" }}>
+      <div
+        style={{
+          position: "absolute",
+          height: "3rem",
+          width: "100%",
+          zIndex: 1290,
+          backgroundColor: "#fff",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#f3f4f5",
+            margin: "5px 10px",
+            borderRadius: "6px",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <MdMenu />
-        </IconButton>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1 }}
-        ></Typography>
-        <IconButton
-          color="inherit"
-          aria-label="add an alarm"
-          onClick={(e) => {
-            authStore.logout();
-            navigate("/login");
-          }}
-        >
-          <MdLogout />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+          <Grid container spacing={0}>
+            <Grid item xs={7}>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <IconButton
+                  size="medium"
+                  onClick={(e) => {
+                    authStore.logout();
+                    navigate("/login");
+                  }}
+                >
+                  <CiLogout />
+                </IconButton>
+                <IconButton
+                  size="medium"
+                  onClick={() => {
+                    generalStore.openQuillRte = true;
+                  }}
+                >
+                  <CiEdit />
+                </IconButton>
+              </Stack>
+            </Grid>
+            <Grid item xs={5}></Grid>
+          </Grid>
+        </div>
+      </div>
+    </div>
   );
 };

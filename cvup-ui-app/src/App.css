@@ -1,3 +1,17 @@
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+.rpv-core__tooltip-body{
+  display: none;
+}
+.rpv-default-layout__container{
+  border: 0 !important;
+}
+
+.ql-editor{
+  min-height:150px;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

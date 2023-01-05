@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IForgotPassword } from "../../models/AuthModels";
-import { SelectModel } from "../../models/GeneralModels";
+import { ISelectBox } from "../../models/GeneralModels";
 import { emailValidte } from "../../utils/Validation";
 
 interface props {
@@ -37,7 +37,7 @@ export const ForgotPasswordForm = (props: props) => {
     companyId: "",
   });
 
-  const [userCompanies, setUserCompanies] = useState<SelectModel[]>([]);
+  const [userCompanies, setUserCompanies] = useState<ISelectBox[]>([]);
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;

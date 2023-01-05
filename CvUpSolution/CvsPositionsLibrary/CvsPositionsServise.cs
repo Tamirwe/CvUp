@@ -21,10 +21,14 @@ namespace CvsPositionsLibrary
             _luceneService = luceneService;
 
         }
-
-        public void AddNewCvToDb(ImportCvModel importCv)
+        public int AddCv(ImportCvModel importCv)
         {
-            _cvsPositionsQueries.AddNewCvToDb(importCv);
+            return _cvsPositionsQueries.AddCv(importCv);
+        }
+
+        public void UpdateCvKeyId(ImportCvModel importCv)
+        {
+            _cvsPositionsQueries.UpdateCvKeyId(importCv);
         }
 
         public void AddNewCvToIndex(ImportCvModel importCv)
@@ -42,35 +46,45 @@ namespace CvsPositionsLibrary
             _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);
         }
 
-        public candidate? GetCandidateId(string email)
+        public candidate? GetCandidate(string email)
         {
-            candidate? cand = _cvsPositionsQueries.GetCandidateByEmail(email);
-            return cand;
+            return _cvsPositionsQueries.GetCandidateByEmail(email);
         }
 
-        public int AddUpdateCandidate(ImportCvModel cv, candidate? cand)
+        public int AddUpdateCandidateFromCvImport(ImportCvModel importCv)
         {
-            int candId;
+            int candId = 0;
 
-            if (cand != null)
+            if (importCv.email.Length > 0)
             {
-                cand.email = cv.email;
-                cand.name = cv.candidateName;
-                _cvsPositionsQueries.UpdateCandidate( cand);
-                candId = cand.id;
+                candidate? cand = GetCandidate(importCv.email);
+
+                if (cand != null)
+                {
+                    cand.email = importCv.email;
+                    cand.name = importCv.candidateName;
+                    cand.isDuplicatesCvs = 1;
+                    _cvsPositionsQueries.UpdateCandidate(cand);
+                    candId = cand.id;
+                }
             }
-            else
+
+            if (candId == 0)
             {
-                candidate newCand = _cvsPositionsQueries.AddCandidate(cv);
-                candId = newCand.id;
+                string email = importCv.email.Length > 0 ? importCv.email : "Not Found";
+
+                var newCand = new candidate
+                {
+                    company_id = importCv.companyId,
+                    email = email,
+                    phone = importCv.phone,
+                    name = importCv.candidateName
+                };
+
+                candId = _cvsPositionsQueries.AddCandidate(newCand);
             }
 
             return candId;
-        }
-
-        public int GetUniqueCvId()
-        {
-            return _cvsPositionsQueries.GetUniqueCvId();
         }
 
         public void IndexCompanyCvs(int companyId)
@@ -81,14 +95,7 @@ namespace CvsPositionsLibrary
 
         public List<CvListItemModel> GetCvsList(int companyId)
         {
-            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"]);
-
-            //foreach (var item in cvsList)
-            //{
-            //    item.encriptedId= Encriptor.Encrypt($"{item.cvId}~{DateTime.Now.ToString("yyyy-MM-dd")}", _configuration["GlobalSettings:cvsEncryptorKey"]);
-            //}
-
-            return cvsList;
+            return _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"]);
         }
 
         public PositionClientModel GetPosition(int companyId, int positionId)
@@ -124,5 +131,12 @@ namespace CvsPositionsLibrary
         {
             return _cvsPositionsQueries.GetParsersRules(companyId);
         }
+
+        public CvModel? GetCv(int cvId, int companyId)
+        {
+            return _cvsPositionsQueries.GetCv( cvId,  companyId);
+
+        }
+
     }
 }

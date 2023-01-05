@@ -52,13 +52,13 @@ export const PdfViewer = observer(() => {
         display: "flex",
         position: "relative",
         height: "calc(100vh - 67px)",
-    marginTop: "4rem"
+        marginTop: "4rem",
       }}
     >
       <div
         style={{
           alignItems: "center",
-          backgroundColor: "#eeeeee",
+          backgroundColor: "#e1e1e1",
           border: "1px solid rgba(0, 0, 0, 0.2)",
           borderRadius: "2px",
           bottom: "5px",

@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { ICvListItemModel } from "../models/GeneralModels";
+import { ICvListItem } from "../models/GeneralModels";
 import CvsApi from "./api/CvsApi";
 import { RootStore } from "./RootStore";
 
 export class CvsStore {
   private cvsApi;
-  cvsList: ICvListItemModel[] = [];
+  cvsList: ICvListItem[] = [];
   cvId: string = "";
 
   constructor(private rootStore: RootStore) {
@@ -20,6 +20,10 @@ export class CvsStore {
 
   async getCv(cvId: string) {
     this.cvId = cvId;
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.getCv();
+
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async getCvsList() {

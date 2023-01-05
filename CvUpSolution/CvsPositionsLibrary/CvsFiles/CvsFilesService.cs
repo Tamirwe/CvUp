@@ -31,12 +31,12 @@ namespace CvsPositionsLibrary.CvsFiles
 
             foreach (var companyId in companiesIds)
             {
-                List<string> cvsIds = _cvsPositionsQueries.GetCompanyCvsIds(companyId);
+                List<string?> cvsIds = _cvsPositionsQueries.GetCompanyCvsIds(companyId);
                 DeleteNotRelatedCvs(companyId, cvsIds);
             }
         }
 
-        public void DeleteNotRelatedCvs(int companyId, List<string> cvsIds)
+        public void DeleteNotRelatedCvs(int companyId, List<string?> cvsIds)
         {
             string companyDirPathName = $"{CvsRootFolder}\\{companyId}_";
 
@@ -50,7 +50,7 @@ namespace CvsPositionsLibrary.CvsFiles
                 {
                     string fileName = Path.GetFileNameWithoutExtension(file.Name);
 
-                    if (cvsIds.IndexOf(fileName) == -1)
+                    if (cvsIds != null && cvsIds.IndexOf(fileName) == -1)
                     {
                         file.Delete();
                     }

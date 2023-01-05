@@ -22,7 +22,6 @@ namespace Database.models
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
-        public virtual DbSet<cvs_incremental> cvs_incrementals { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
         public virtual DbSet<department> departments { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
@@ -68,6 +67,8 @@ namespace Database.models
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
                 entity.Property(e => e.email).HasMaxLength(150);
+
+                entity.Property(e => e.isDuplicatesCvs).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
@@ -164,8 +165,6 @@ namespace Database.models
 
                 entity.HasIndex(e => e.company_id, "ix_cvs_company_id");
 
-                entity.Property(e => e.id).HasMaxLength(30);
-
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -173,6 +172,8 @@ namespace Database.models
                 entity.Property(e => e.email_id).HasMaxLength(300);
 
                 entity.Property(e => e.from).HasMaxLength(200);
+
+                entity.Property(e => e.key_id).HasMaxLength(30);
 
                 entity.Property(e => e.subject).HasMaxLength(500);
 
@@ -182,29 +183,19 @@ namespace Database.models
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
             });
 
-            modelBuilder.Entity<cvs_incremental>(entity =>
-            {
-                entity.ToTable("cvs_incremental");
-
-                entity.Property(e => e.name).HasMaxLength(2);
-            });
-
             modelBuilder.Entity<cvs_txt>(entity =>
             {
-                entity.HasKey(e => e.cv_id)
-                    .HasName("PRIMARY");
-
                 entity.ToTable("cvs_txt");
 
-                entity.HasIndex(e => e.company_id, "ix_cvs_txt_company_id");
+                entity.HasIndex(e => e.cv_id, "fk_cvs_txt_cv_id_cvs_id");
 
-                entity.Property(e => e.cv_id).HasMaxLength(30);
+                entity.HasIndex(e => e.company_id, "ix_cvs_txt_company_id");
 
                 entity.Property(e => e.cv_txt).HasMaxLength(8000);
 
                 entity.HasOne(d => d.cv)
-                    .WithOne(p => p.cvs_txt)
-                    .HasForeignKey<cvs_txt>(d => d.cv_id)
+                    .WithMany(p => p.cvs_txts)
+                    .HasForeignKey(d => d.cv_id)
                     .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
             });
 
@@ -429,8 +420,6 @@ namespace Database.models
 
                 entity.HasIndex(e => e.position_id, "fk_position_cvs_position_id_positions_id");
 
-                entity.Property(e => e.cv_id).HasMaxLength(30);
-
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -449,7 +438,6 @@ namespace Database.models
                 entity.HasOne(d => d.cv)
                     .WithMany(p => p.position_cvs)
                     .HasForeignKey(d => d.cv_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_position_cvs_cv_id_cvs_id");
 
                 entity.HasOne(d => d.position)

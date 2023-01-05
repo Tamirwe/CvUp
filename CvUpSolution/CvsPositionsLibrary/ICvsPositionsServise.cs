@@ -5,14 +5,12 @@ namespace CvsPositionsLibrary
 {
     public interface ICvsPositionsServise
     {
-        public void AddNewCvToDb(ImportCvModel importCv);
+        public int AddCv(ImportCvModel importCv);
         public void AddNewCvToIndex(ImportCvModel item);
-        public candidate? GetCandidateId(string email);
-        public int AddUpdateCandidate(ImportCvModel cv, candidate? cand);
-        public int GetUniqueCvId();
+        public int AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
-        public department AddDepartment(IdNameModel data,int companyId);
+        public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
         public List<IdNameModel> GetDepartmentsList(int companyId);
         public void DeleteDepartment(int companyId, int id);
@@ -26,5 +24,7 @@ namespace CvsPositionsLibrary
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);
+        public CvModel? GetCv(int cvId, int companyId);
+        public void UpdateCvKeyId(ImportCvModel importCv);
     }
 }

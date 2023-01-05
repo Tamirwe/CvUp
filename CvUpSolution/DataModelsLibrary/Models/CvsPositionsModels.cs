@@ -9,14 +9,15 @@ namespace DataModelsLibrary.Models
     public class ImportCvModel
     {
         public int companyId { get; set; }
-        public string fileNamePath { get; set; } = "";
+        public int cvId { get; set; }
+        public string cvKey { get; set; } = "";
+        public string tempFilePath { get; set; } = "";
         public string fileExtension { get; set; } = "";
         public string cvTxt { get; set; } = "";
         public string phone { get; set; } = "";
         public string email { get; set; } = "";
         public int candidateId { get; set; }
         public string candidateName { get; set; } = "";
-        public string cvId { get; set; } = "";
         public string emailId { get; set; } = "";
         public string subject { get; set; } = "";
         public string from { get; set; } = "";
@@ -27,7 +28,8 @@ namespace DataModelsLibrary.Models
     public class CvPropsToIndexModel
     {
         public int companyId { get; set; }
-        public string cvId { get; set; } = "";
+        public int cvId { get; set; }
+        public string cvKey { get; set; } = "";
         public string? cvTxt { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
@@ -41,11 +43,17 @@ namespace DataModelsLibrary.Models
         public string cvId { get; set; } = "";
         public int candidateId { get; set; }
         public string fileType { get; set; } = "";
-        public string encriptedId { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
         public string? emailSubject { get; set; } = "";
         public string? candidateName { get; set; } = "";
+    }
+
+    public class CvModel
+    {
+        public int id { get; set; }
+        public int companyId { get; set; }
+        public string? opinion { get; set; } = "";
     }
 
     public class ParserRulesModel

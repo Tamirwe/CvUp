@@ -4,9 +4,10 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
@@ -14,6 +15,12 @@ import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 export const PositionsList = observer(() => {
   const { positionsStore } = useStore();
   const navigate = useNavigate();
+
+  const [checked, setChecked] = useState(true);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
 
   useEffect(() => {
     (async () => {
@@ -34,10 +41,15 @@ export const PositionsList = observer(() => {
             dense
             disablePadding
             secondaryAction={
-              <Checkbox
-                icon={<MdBookmarkBorder />}
-                checkedIcon={<MdBookmark />}
-              />
+              <Tooltip title="Attach to position">
+                <Checkbox
+                  checked={checked}
+                  onChange={handleChange}
+                  sx={{ "& svg": { fontSize: 22 } }}
+                  icon={<MdBookmarkBorder />}
+                  checkedIcon={<MdBookmark />}
+                />
+              </Tooltip>
             }
           >
             <ListItemButton

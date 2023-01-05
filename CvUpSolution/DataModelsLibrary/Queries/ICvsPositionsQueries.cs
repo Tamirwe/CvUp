@@ -5,12 +5,11 @@ namespace DataModelsLibrary.Queries
 {
     public interface ICvsPositionsQueries
     {
-        public void AddNewCvToDb(ImportCvModel importCv);
-        public candidate AddCandidate(ImportCvModel cv);
+        public int AddCv(ImportCvModel importCv);
+        public int AddCandidate(candidate importCv);
         public void UpdateCandidate( candidate cand);
         public candidate? GetCandidateByEmail(string email);
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
-        public int GetUniqueCvId();
         public List<CvListItemModel> GetCvsList(int companyId, string encriptKey);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
@@ -27,6 +26,8 @@ namespace DataModelsLibrary.Queries
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);
         public List<int> GetCompaniesIds();
-        public List<string> GetCompanyCvsIds(int companyId);
+        public List<string?> GetCompanyCvsIds(int companyId);
+        public CvModel? GetCv(int cvId, int companyId);
+        public void UpdateCvKeyId(ImportCvModel importCv);
     }
 }

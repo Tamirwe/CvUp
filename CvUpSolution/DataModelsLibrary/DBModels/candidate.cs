@@ -18,6 +18,7 @@ namespace Database.models
         public string? phone { get; set; }
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
+        public sbyte? isDuplicatesCvs { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<cv> cvs { get; set; }

@@ -6,7 +6,7 @@ import {
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
-import { ClaimsModel } from "../models/GeneralModels";
+import { IUserClaims } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
@@ -16,7 +16,7 @@ export const REFRESH_TOKEN = "refreshToken";
 export class AuthStore {
   private authApi;
   isLoggedIn = false;
-  claims: ClaimsModel = {};
+  claims: IUserClaims = {};
   interviewersList: IInterviewer[] = [];
 
   constructor(private rootStore: RootStore) {

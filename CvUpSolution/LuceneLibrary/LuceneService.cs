@@ -50,7 +50,7 @@ namespace LuceneLibrary
                     {
                         string txtToIndex = $"{item.email}~~~{item.phone}~~~{item.emailSubject}~~~{item.cvTxt}";
                         var doc = new Document();
-                        doc.Add(new TextField("Id", item.cvId, Field.Store.YES));
+                        doc.Add(new TextField("Id", item.cvId.ToString(), Field.Store.YES));
                         doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
                         indexWriter.AddDocument(doc);
                     }
@@ -71,7 +71,7 @@ namespace LuceneLibrary
 
                     string txtToIndex = $"{cvPropsToIndex.email}~~~{cvPropsToIndex.phone}~~~{cvPropsToIndex.emailSubject}~~~{cvPropsToIndex.cvTxt}";
                     var doc = new Document();
-                    doc.Add(new TextField("Id", cvPropsToIndex.cvId, Field.Store.YES));
+                    doc.Add(new TextField("Id", cvPropsToIndex.cvId.ToString(), Field.Store.YES));
                     doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
                     indexWriter.AddDocument(doc);
                 }

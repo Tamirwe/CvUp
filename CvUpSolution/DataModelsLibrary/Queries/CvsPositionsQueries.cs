@@ -23,13 +23,12 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public void AddNewCvToDb(ImportCvModel importCv)
+        public int AddCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var cv = new cv
+                var newCv = new cv
                 {
-                    id = importCv.cvId,
                     company_id = Convert.ToInt32(importCv.companyId),
                     candidate_id = importCv.candidateId,
                     cv_ascii_sum = importCv.cvAsciiSum,
@@ -38,50 +37,42 @@ namespace DataModelsLibrary.Queries
                     from = importCv.from,
                 };
 
-                dbContext.cvs.Add(cv);
+                dbContext.cvs.Add(newCv);
+                dbContext.SaveChanges();
 
                 var cvTxt = new cvs_txt
                 {
-                    cv_id = importCv.cvId,
-                    company_id = Convert.ToInt32(importCv.companyId),
+                    cv_id = newCv.id,
+                    company_id = importCv.companyId,
                     cv_txt = importCv.cvTxt.Length > 7999 ? importCv.cvTxt.Substring(0, 7999) : importCv.cvTxt
                 };
 
                 dbContext.cvs_txts.Add(cvTxt);
 
                 dbContext.SaveChanges();
+
+                return newCv.id;
             }
         }
 
-        public int GetUniqueCvId()
+        public void UpdateCvKeyId(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var ci = new cvs_incremental
-                {
-                    name = "cc"
-                };
-
-                dbContext.cvs_incrementals.Add(ci);
+                cv? cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
+                cv.key_id = importCv.cvKey;
+                var result = dbContext.cvs.Update(cv);
                 dbContext.SaveChanges();
-                return ci.id;
             }
         }
 
-        public candidate AddCandidate(ImportCvModel cv)
+        public int AddCandidate(candidate newCand)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var cand = new candidate
-                {
-                    company_id = cv.companyId,
-                    email = cv.email,
-                    phone = cv.phone
-                };
-
-                dbContext.candidates.Add(cand);
+                dbContext.candidates.Add(newCand);
                 dbContext.SaveChanges();
-                return cand;
+                return newCand.id;
             }
         }
 
@@ -133,13 +124,12 @@ namespace DataModelsLibrary.Queries
             {
                 var query = from cand in dbContext.candidates
                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                            join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
                             where cand.company_id == companyId
                             select new CvListItemModel
                             {
-                                cvId = Encriptor.Encrypt($"{cvs.id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                fileType= cvs.id.Substring(cvs.id.LastIndexOf('_')),
-                candidateId = cand.id,   
+                                cvId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                candidateId = cand.id,
                                 email = cand.email,
                                 emailSubject = cvs.subject,
                                 candidateName = cand.name,
@@ -374,7 +364,7 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                isActive= Convert.ToBoolean(p.is_active),
+                                isActive = Convert.ToBoolean(p.is_active),
                                 updated = p.date_updated
                             };
 
@@ -532,12 +522,30 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<string> GetCompanyCvsIds(int companyId)
+        public List<string?> GetCompanyCvsIds(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.cvs.Where(x=>x.company_id== companyId).Select(c => c.id).ToList();
+                return dbContext.cvs.Where(x => x.company_id == companyId).Select(c => c.key_id).ToList();
             }
         }
+
+        public CvModel? GetCv(int cvId, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from cand in dbContext.candidates
+                            join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
+                            where cvs.id == cvId && cand.company_id == companyId
+                            select new CvModel
+                            {
+                                id = cvs.id,
+                                opinion = cand.opinion,
+                            };
+
+                return query.FirstOrDefault();
+            }
+        }
+
     }
 }

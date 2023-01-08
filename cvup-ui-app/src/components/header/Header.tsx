@@ -9,7 +9,7 @@ export const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", backgroundColor: "#f3f4f5" }}>
       <div
         style={{
           position: "absolute",
@@ -21,9 +21,9 @@ export const Header = () => {
       >
         <div
           style={{
-            backgroundColor: "#f3f4f5",
-            margin: "5px 10px",
-            borderRadius: "6px",
+            backgroundColor: "#fff",
+            padding: "0 10px",
+            // borderRadius: "6px",
             height: "100%",
             display: "flex",
             alignItems: "center",

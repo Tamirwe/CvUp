@@ -134,6 +134,7 @@ namespace DataModelsLibrary.Queries
                                 emailSubject = cvs.subject,
                                 candidateName = cand.name,
                                 phone = cand.phone,
+                                hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs)
                             };
 
                 return query.ToList();

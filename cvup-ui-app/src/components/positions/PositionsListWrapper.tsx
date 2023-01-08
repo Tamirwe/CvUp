@@ -20,7 +20,6 @@ export const PositionsListWrapper = () => {
       <Box
         sx={{
           height: "83vh",
-          overflowY: "scroll",
           // display: "flex",
           // flexDirection: "column",
           // flexWrap: "wrap",

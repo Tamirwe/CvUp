@@ -11,7 +11,7 @@ export const CvsListWrapper = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Box sx={{ marginTop: "4rem" }}>
+    <Box sx={{ marginTop: "0" }}>
       <CvsList />
     </Box>
   );

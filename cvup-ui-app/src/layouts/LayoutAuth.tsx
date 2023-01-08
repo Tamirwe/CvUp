@@ -33,9 +33,17 @@ export const LayoutAuth = observer(() => {
             <PositionsListWrapper />
           </Drawer>
         </Grid>
-        <Grid item xs={14}>
+        <Grid
+          item
+          xs={14}
+          sx={{ backgroundColor: "#fff", paddingLeft: "10px" }}
+        >
           <Header />
-          <Grid container spacing={0}>
+          <Grid
+            container
+            spacing={0}
+            sx={{ marginTop: "58px", borderRadius: "6px" }}
+          >
             <Grid item xs={7}>
               <Outlet />
             </Grid>

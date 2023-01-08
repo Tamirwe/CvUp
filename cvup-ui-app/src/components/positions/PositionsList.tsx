@@ -31,6 +31,7 @@ export const PositionsList = observer(() => {
   return (
     <List
       sx={{
+        overflowY: "auto",
         width: "98%",
       }}
     >

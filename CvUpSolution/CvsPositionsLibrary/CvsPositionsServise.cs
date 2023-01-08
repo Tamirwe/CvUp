@@ -58,12 +58,25 @@ namespace CvsPositionsLibrary
             if (importCv.email.Length > 0)
             {
                 candidate? cand = GetCandidate(importCv.email);
+                string newCandName = importCv.candidateName.Trim();
 
+               
                 if (cand != null)
                 {
-                    cand.email = importCv.email;
-                    cand.name = importCv.candidateName;
-                    cand.isDuplicatesCvs = 1;
+                    if (cand.name != null)
+                    {
+                        if (newCandName == "")
+                        {
+                            newCandName = cand.name;
+                        }
+                        else if (newCandName != cand.name)
+                        {
+                            newCandName = cand.name;
+                        }
+                    }
+
+                    cand.name = newCandName;
+                    cand.has_duplicates_cvs = 1;
                     _cvsPositionsQueries.UpdateCandidate(cand);
                     candId = cand.id;
                 }

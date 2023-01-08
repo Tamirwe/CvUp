@@ -68,7 +68,7 @@ namespace Database.models
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
-                entity.Property(e => e.isDuplicatesCvs).HasDefaultValueSql("'0'");
+                entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
@@ -164,6 +164,9 @@ namespace Database.models
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
 
                 entity.HasIndex(e => e.company_id, "ix_cvs_company_id");
+
+                entity.HasIndex(e => e.key_id, "ix_cvs_key_id")
+                    .IsUnique();
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")

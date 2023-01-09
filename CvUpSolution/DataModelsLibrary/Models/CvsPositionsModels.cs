@@ -40,7 +40,8 @@ namespace DataModelsLibrary.Models
 
     public class CvListItemModel
     {
-        public string cvId { get; set; } = "";
+        public int cvId { get; set; }
+        public string keyId { get; set; }
         public int candidateId { get; set; }
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";
@@ -48,6 +49,14 @@ namespace DataModelsLibrary.Models
         public string? emailSubject { get; set; } = "";
         public string? candidateName { get; set; } = "";
         public bool hasDuplicates { get; set; }
+    }
+
+    public class CvReviewModel
+    {
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public string reviewHtml { get; set; } = "";
+        public string reviewText { get; set; } = "";
     }
 
     public class CvModel

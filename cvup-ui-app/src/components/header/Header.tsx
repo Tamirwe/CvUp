@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CiLogout, CiEdit } from "react-icons/ci";
 
 export const Header = () => {
-  const { authStore, generalStore } = useStore();
+  const { authStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
   return (
@@ -44,7 +44,7 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    generalStore.openQuillRte = true;
+                    cvsStore.openCvReviewDialogOpen = true;
                   }}
                 >
                   <CiEdit />

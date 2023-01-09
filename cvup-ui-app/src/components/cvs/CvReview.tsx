@@ -14,9 +14,8 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDragIndicator } from "react-icons/md";
 
-export const QuillRte = observer(() => {
-  let { id } = useParams();
-  const { generalStore } = useStore();
+export const CvReview = observer(() => {
+  const { cvsStore } = useStore();
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);
 
@@ -34,10 +33,12 @@ export const QuillRte = observer(() => {
 
   let quillRef: any = null;
   let reactQuillRef: any = null;
-  const [text, setText] = useState("");
+  const [quillHtml, setQuillHtml] = useState(
+    '<p class="ql-direction-rtl ql-align-right"><u>sdf sdf sfdf sdfsdf sdfsdf</u></p><p class="ql-align-right ql-direction-rtl">sdf</p><p class="ql-align-right ql-direction-rtl">sdf</p><p class="ql-align-right ql-direction-rtl"><br></p><p class="ql-align-right ql-direction-rtl">sdfsdfsdf <em>dsfsfd </em><strong>sdfhjgjkjhk </strong><u>jhlkjklljklj</u></p>'
+  );
 
   const handleChange = (html: string) => {
-    setText(html);
+    setQuillHtml(html);
   };
 
   useEffect(() => {
@@ -51,6 +52,17 @@ export const QuillRte = observer(() => {
     quillRef = reactQuillRef.getEditor();
     quillRef.format("direction", "rtl");
     quillRef.format("align", "right");
+  };
+
+  const handleCancel = () => {
+    cvsStore.openCvReviewDialogOpen = false;
+  };
+
+  const handleSave = async () => {
+    const reviewText = reactQuillRef.getEditor().getText();
+    const reviewHtml = reactQuillRef.getEditor().root.innerHTML;
+    await cvsStore.saveCvReview(reviewText, reviewHtml);
+    cvsStore.openCvReviewDialogOpen = false;
   };
 
   const modulesRef = {
@@ -93,18 +105,10 @@ export const QuillRte = observer(() => {
     "formula",
   ];
 
-  const handleCancel = () => {
-    generalStore.openQuillRte = false;
-  };
-
-  const handleSave = () => {
-    generalStore.openQuillRte = false;
-  };
-
   return (
     <div
       className="quill-rte"
-      style={{ display: generalStore.openQuillRte ? "block" : "none" }}
+      style={{ display: cvsStore.openCvReviewDialogOpen ? "block" : "none" }}
     >
       <Draggable handle="strong" onStop={handleStop} position={{ x: x, y: y }}>
         <Card sx={{ backgroundColor: "#f1f1f1" }}>
@@ -143,7 +147,7 @@ export const QuillRte = observer(() => {
               modules={modulesRef}
               theme={"snow"}
               formats={formats}
-              value={text}
+              value={quillHtml}
               onChange={handleChange}
             />
           </CardContent>

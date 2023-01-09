@@ -6,13 +6,13 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 import { observer } from "mobx-react";
 import { CvsListWrapper } from "../components/cvs/CvsListWrapper";
-import { QuillRte } from "../components/rte/QuillRte";
+import { CvReview } from "../components/cvs/CvReview";
 import { useStore } from "../Hooks/useStore";
 
 const drawerWidth = 340;
 
 export const LayoutAuth = observer(() => {
-  const { generalStore } = useStore();
+  const { cvsStore } = useStore();
   const matches = useMediaQuery("(min-width:600px)");
   const [isOpen, setIsOpen] = useState(matches ? true : false);
 
@@ -59,7 +59,7 @@ export const LayoutAuth = observer(() => {
                 }}
               >
                 <CvsListWrapper />
-                <QuillRte />
+                {cvsStore.openCvReviewDialogOpen && <CvReview />}
               </Drawer>
             </Grid>
           </Grid>

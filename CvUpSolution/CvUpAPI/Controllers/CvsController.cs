@@ -34,7 +34,13 @@ namespace CvUpAPI.Controllers
         public CvModel? getCv(int cvId)
         {
             return _cvsPosService.GetCv(cvId, Globals.CompanyId);
+        }
 
+        [HttpPost]
+        [Route("SaveCvReview")]
+        public void SaveCvReview(CvReviewModel cvReview)
+        {
+            _cvsPosService.SaveCvReview(cvReview);
         }
     }
 }

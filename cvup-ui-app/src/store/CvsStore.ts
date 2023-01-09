@@ -5,6 +5,7 @@ import { RootStore } from "./RootStore";
 
 export class CvsStore {
   private cvsApi;
+  private isCvReviewDialogOpen: boolean = false;
   cvsList: ICvListItem[] = [];
   cvId: string = "";
 
@@ -18,6 +19,14 @@ export class CvsStore {
     this.cvId = "";
   }
 
+  set openCvReviewDialogOpen(val) {
+    this.isCvReviewDialogOpen = val;
+  }
+
+  get openCvReviewDialogOpen() {
+    return this.isCvReviewDialogOpen;
+  }
+
   async getCv(cvId: string) {
     this.cvId = cvId;
     this.rootStore.generalStore.backdrop = true;
@@ -25,6 +34,8 @@ export class CvsStore {
 
     this.rootStore.generalStore.backdrop = false;
   }
+
+  async saveCvReview(reviewText: any, reviewHtml: any) {}
 
   async getCvsList() {
     this.rootStore.generalStore.backdrop = true;

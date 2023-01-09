@@ -148,8 +148,11 @@ namespace CvsPositionsLibrary
         public CvModel? GetCv(int cvId, int companyId)
         {
             return _cvsPositionsQueries.GetCv( cvId,  companyId);
-
         }
 
+        public void SaveCvReview(CvReviewModel cvReview)
+        {
+            _cvsPositionsQueries.SaveCvReview(cvReview);
+        }
     }
 }

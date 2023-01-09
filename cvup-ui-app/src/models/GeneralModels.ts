@@ -12,7 +12,8 @@ export interface IUserClaims {
 }
 
 export interface ICvListItem {
-  cvId: string;
+  cvId: number;
+  keyId: string;
   encriptedId: string;
   phone?: string;
   email?: string;
@@ -21,7 +22,7 @@ export interface ICvListItem {
 }
 
 export interface ICv {
-  cvId: string;
+  cvId: number;
   encriptedId: string;
   phone?: string;
   email?: string;
@@ -44,4 +45,11 @@ export interface IPositionListItem {
   name: string;
   updated: Date;
   isActive: boolean;
+}
+
+export interface ICvReview {
+  candidateId: number;
+  cvId: number;
+  reviewHtml: string;
+  reviewText: string;
 }

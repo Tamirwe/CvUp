@@ -26,5 +26,6 @@ namespace CvsPositionsLibrary
         public List<ParserRulesModel> GetParsersRules(int companyId);
         public CvModel? GetCv(int cvId, int companyId);
         public void UpdateCvKeyId(ImportCvModel importCv);
+        public void SaveCvReview(CvReviewModel cvReview);
     }
 }

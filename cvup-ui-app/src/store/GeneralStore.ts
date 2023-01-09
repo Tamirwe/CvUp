@@ -8,7 +8,6 @@ export class GeneralStore {
   departmentsList: IIdName[] = [];
   hrCompaniesList: IIdName[] = [];
   isShowBackdrop: boolean = false;
-  isQuillRteOpen: boolean = false;
 
   set backdrop(val) {
     this.isShowBackdrop = val;
@@ -16,14 +15,6 @@ export class GeneralStore {
 
   get backdrop() {
     return this.isShowBackdrop;
-  }
-
-  set openQuillRte(val) {
-    this.isQuillRteOpen = val;
-  }
-
-  get openQuillRte() {
-    return this.isQuillRteOpen;
   }
 
   constructor(private rootStore: RootStore) {

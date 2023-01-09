@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Lucene.Net.Util.Packed.PackedInt32s;
 
 namespace LuceneLibrary
 {
@@ -77,9 +78,27 @@ namespace LuceneLibrary
                 }
             }
         }
-        
-        public void DocumentDelete()
+
+        public void DocumentUpdate(int companyId, CvPropsToIndexModel cvPropsToIndex)
         {
+            DocumentDelete(companyId, cvPropsToIndex.cvId);
+            DocumentAdd(companyId, cvPropsToIndex);
+        }
+
+        private void DocumentDelete(int companyId, int cvId)
+        {
+            string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
+
+            using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
+            {
+                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
+
+                using (var indexWriter = new IndexWriter(indexDir, config))
+                {
+                    var DocIdToDelete = new TermQuery(new Term("Id", cvId.ToString()));
+                    indexWriter.DeleteDocuments(DocIdToDelete);
+                }
+            }
         }
 
 
@@ -176,6 +195,7 @@ namespace LuceneLibrary
             if (mIndexReader != null) mIndexReader.Dispose();
             if (mIndexDirectory != null) mIndexDirectory.Dispose();
         }
+      
     }
 
     public class SearchEntry

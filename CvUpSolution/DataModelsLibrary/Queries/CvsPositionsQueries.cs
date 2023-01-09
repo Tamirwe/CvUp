@@ -127,7 +127,8 @@ namespace DataModelsLibrary.Queries
                             where cand.company_id == companyId
                             select new CvListItemModel
                             {
-                                cvId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                cvId = cvs.id,
+                                keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                 candidateId = cand.id,
                                 email = cand.email,
@@ -548,5 +549,15 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public void SaveCvReview(CvReviewModel cvReview)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.id == cvReview.candidateId).First();
+                cand.opinion = cvReview.reviewHtml;
+                var result = dbContext.candidates.Update(cand);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }

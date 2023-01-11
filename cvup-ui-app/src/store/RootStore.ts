@@ -1,3 +1,4 @@
+import { IAppSettings } from "../models/GeneralModels";
 import { AuthStore } from "./AuthStore";
 import { CvsStore } from "./CvsStore";
 import { GeneralStore } from "./GeneralStore";
@@ -9,10 +10,10 @@ export class RootStore {
   positionsStore: PositionsStore;
   cvsStore: CvsStore;
 
-  constructor() {
-    this.authStore = new AuthStore(this);
-    this.generalStore = new GeneralStore(this);
-    this.positionsStore = new PositionsStore(this);
-    this.cvsStore = new CvsStore(this);
+  constructor(appSettings: IAppSettings) {
+    this.authStore = new AuthStore(this, appSettings);
+    this.generalStore = new GeneralStore(this, appSettings);
+    this.positionsStore = new PositionsStore(this, appSettings);
+    this.cvsStore = new CvsStore(this, appSettings);
   }
 }

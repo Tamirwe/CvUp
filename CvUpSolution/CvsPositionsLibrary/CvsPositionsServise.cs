@@ -35,12 +35,12 @@ namespace CvsPositionsLibrary
         {
             CvPropsToIndexModel cvPropsToIndex = new CvPropsToIndexModel
             {
-                candidateName = importCv.candidateName,
+                candName = importCv.candidateName,
                 cvId = importCv.cvId,
                 cvTxt = importCv.cvTxt,
                 email = importCv.email,
                 phone = importCv.phone,
-                emailSubject = importCv.subject
+                emailSubject = importCv.subject,
             };
 
             _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);

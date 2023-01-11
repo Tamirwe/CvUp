@@ -6,7 +6,7 @@ import {
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
-import { IUserClaims } from "../models/GeneralModels";
+import { IAppSettings, IUserClaims } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
@@ -19,9 +19,9 @@ export class AuthStore {
   claims: IUserClaims = {};
   interviewersList: IInterviewer[] = [];
 
-  constructor(private rootStore: RootStore) {
+  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.authApi = new AuthApi();
+    this.authApi = new AuthApi(appSettings);
     const jwt = localStorage.getItem(TOKEN);
 
     if (jwt) {

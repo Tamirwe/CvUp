@@ -76,7 +76,7 @@ export const Home = observer(() => {
         </button> */}
         {/* <div style={{ height: "100vh", width: "60vw", position: "relative" }}> */}
         {/* <img src="http://localhost:8010/api/Download/GetJpg" width={1500} /> */}
-        <iframe
+        {/* <iframe
           title="iViewDoc"
           seamless
           // src="https://drive.google.com/viewer?embedded=true&hl=en-US&url=http://89.237.94.86:8025/cv_57064.doc"
@@ -90,7 +90,7 @@ export const Home = observer(() => {
             padding: "0",
           }}
           width="80%"
-        />
+        /> */}
         {/* </div> */}
       </Grid>
       <Grid>

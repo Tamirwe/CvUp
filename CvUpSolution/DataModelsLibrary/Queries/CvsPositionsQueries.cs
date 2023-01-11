@@ -109,8 +109,8 @@ namespace DataModelsLibrary.Queries
                                 cvTxt = cvTxt.cv_txt,
                                 email = cand.email,
                                 emailSubject = cvs.subject,
-                                candidateName = cand.name,
-                                candidateOpinion = cand.opinion,
+                                candName = cand.name,
+                                reviewText = cand.review_text,
                                 phone = cand.phone,
                             };
 
@@ -541,8 +541,9 @@ namespace DataModelsLibrary.Queries
                             where cvs.id == cvId && cand.company_id == companyId
                             select new CvModel
                             {
-                                id = cvs.id,
-                                opinion = cand.opinion,
+                                candId= cand.id,
+                                cvId = cvs.id,
+                                reviewHtml = cand.review_html,
                             };
 
                 return query.FirstOrDefault();
@@ -554,7 +555,8 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.id == cvReview.candidateId).First();
-                cand.opinion = cvReview.reviewHtml;
+                cand.review_html = cvReview.reviewHtml;
+                cand.review_text = cvReview.reviewText;
                 var result = dbContext.candidates.Update(cand);
                 dbContext.SaveChanges();
             }

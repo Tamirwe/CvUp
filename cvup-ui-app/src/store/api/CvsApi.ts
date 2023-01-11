@@ -1,4 +1,4 @@
-import { ICv, ICvListItem, ICvReview } from "../../models/GeneralModels";
+import { ICv, ICvReview } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class CvsApi extends BaseApi {
@@ -11,7 +11,7 @@ export default class CvsApi extends BaseApi {
 
   async getCvsList() {
     return await this.apiWrapper(async () => {
-      const data = (await this.http.get<ICvListItem[]>("Cvs/getCvsList")).data;
+      const data = (await this.http.get<ICv[]>("Cvs/getCvsList")).data;
       return data;
     });
   }

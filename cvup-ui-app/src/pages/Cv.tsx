@@ -6,14 +6,14 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../Hooks/useStore";
 
 export const Cv = observer(() => {
-  let { id } = useParams();
-  const { cvsStore } = useStore();
+  // let { id } = useParams();
+  // const { cvsStore } = useStore();
 
-  useEffect(() => {
-    (async () => {
-      await cvsStore.getCv(id || "");
-    })();
-  }, [id]);
+  // useEffect(() => {
+  //   (async () => {
+  //     await cvsStore.getCv(id || "");
+  //   })();
+  // }, [id]);
 
   return <PdfViewer />;
 });

@@ -1,5 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IPosition, IPositionListItem } from "../models/GeneralModels";
+import {
+  IAppSettings,
+  IPosition,
+  IPositionListItem,
+} from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 
@@ -18,9 +22,9 @@ export class PositionsStore {
   positionsList: IPositionListItem[] = [];
   currentPosition: IPosition = this.newPosition;
 
-  constructor(private rootStore: RootStore) {
+  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.positionApi = new PositionsApi();
+    this.positionApi = new PositionsApi(appSettings);
   }
 
   reset() {

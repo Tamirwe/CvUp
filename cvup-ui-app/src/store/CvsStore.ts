@@ -1,22 +1,24 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { ICvListItem } from "../models/GeneralModels";
+import { IAppSettings, ICv, ICvReview } from "../models/GeneralModels";
 import CvsApi from "./api/CvsApi";
 import { RootStore } from "./RootStore";
 
 export class CvsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
-  cvsList: ICvListItem[] = [];
-  cvId: string = "";
+  cvsList: ICv[] = [];
+  keyId: string = "";
+  cvSelected?: ICv;
 
-  constructor(private rootStore: RootStore) {
+  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.cvsApi = new CvsApi();
+    this.cvsApi = new CvsApi(appSettings);
   }
 
   reset() {
     this.cvsList = [];
-    this.cvId = "";
+    // this.cvId = "";
+    this.cvSelected = undefined;
   }
 
   set openCvReviewDialogOpen(val) {
@@ -27,15 +29,22 @@ export class CvsStore {
     return this.isCvReviewDialogOpen;
   }
 
-  async getCv(cvId: string) {
-    this.cvId = cvId;
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getCv();
+  async getCv(cv: ICv) {
+    this.cvSelected = { ...cv };
+    runInAction(() => {
+      this.keyId = cv.keyId;
+    });
 
-    this.rootStore.generalStore.backdrop = false;
+    // this.rootStore.generalStore.backdrop = true;
+    // const res = await this.cvsApi.getCv();
+
+    // this.rootStore.generalStore.backdrop = false;
   }
 
-  async saveCvReview(reviewText: any, reviewHtml: any) {}
+  async saveCvReview(reviewText: any, reviewHtml: any) {
+    // const cvReview:ICvReview = {  candidateId:};
+    // const res = await this.cvsApi.saveCvReview(cvReview);
+  }
 
   async getCvsList() {
     this.rootStore.generalStore.backdrop = true;
@@ -46,11 +55,11 @@ export class CvsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  setDoc(cvId: string) {
-    runInAction(() => {
-      this.cvId = cvId;
-    });
-  }
+  // setDoc(cvId: string) {
+  //   runInAction(() => {
+  //     this.cvId = cvId;
+  //   });
+  // }
   //   async search() {
   //     const aaa = await this.cvsApi.search();
   //     console.log(aaa);

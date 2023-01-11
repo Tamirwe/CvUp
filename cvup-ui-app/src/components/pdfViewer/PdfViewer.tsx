@@ -124,7 +124,7 @@ export const PdfViewer = observer(() => {
         }}
       >
         <Viewer
-          fileUrl={`https://localhost:7217/api/DD?id=${cvsStore.cvId}`}
+          fileUrl={`https://localhost:7217/api/DD?id=${cvsStore.keyId}`}
           plugins={[toolbarPluginInstance]}
         />
       </div>

@@ -72,9 +72,11 @@ namespace Database.models
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
-                entity.Property(e => e.opinion).HasMaxLength(5000);
-
                 entity.Property(e => e.phone).HasMaxLength(20);
+
+                entity.Property(e => e.review_html).HasMaxLength(8000);
+
+                entity.Property(e => e.review_text).HasMaxLength(5000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)

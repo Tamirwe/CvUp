@@ -34,8 +34,8 @@ namespace DataModelsLibrary.Models
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
         public string? emailSubject { get; set; } = "";
-        public string? candidateName { get; set; } = "";
-        public string? candidateOpinion { get; set; } = "";
+        public string? candName { get; set; } = "";
+        public string? reviewText { get; set; } = "";
     }
 
     public class CvListItemModel
@@ -61,9 +61,10 @@ namespace DataModelsLibrary.Models
 
     public class CvModel
     {
-        public int id { get; set; }
-        public int companyId { get; set; }
-        public string? opinion { get; set; } = "";
+        public int candId { get; set; }
+        public int cvId { get; set; }
+        public string? reviewHtml { get; set; } = "";
+        public string? reviewText { get; set; } = "";
     }
 
     public class ParserRulesModel

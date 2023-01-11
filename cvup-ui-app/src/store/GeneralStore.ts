@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
+import { IAppSettings } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 
@@ -17,9 +18,9 @@ export class GeneralStore {
     return this.isShowBackdrop;
   }
 
-  constructor(private rootStore: RootStore) {
+  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.generalApi = new GeneralApi();
+    this.generalApi = new GeneralApi(appSettings);
   }
 
   reset() {

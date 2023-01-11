@@ -1,3 +1,6 @@
+export interface IAppSettings {
+  appServerUrl: string;
+}
 export interface ISelectBox {
   id: number;
   name: string;
@@ -11,23 +14,17 @@ export interface IUserClaims {
   role?: string;
 }
 
-export interface ICvListItem {
+export interface ICv {
   cvId: number;
+  candId: number;
   keyId: string;
   encriptedId: string;
   phone?: string;
   email?: string;
   emailSubject: string;
   candidateName?: string;
-}
-
-export interface ICv {
-  cvId: number;
-  encriptedId: string;
-  phone?: string;
-  email?: string;
-  emailSubject: string;
-  candidateName?: string;
+  reviewHtml: string;
+  reviewTct: string;
 }
 
 export interface IPosition {

@@ -6,39 +6,46 @@ using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Enums
 {
-    public enum CompanyActivateStatus
+  
+    public enum CompanyActiveStatus
     {
-        ACTIVE = 10,
-        WAITE_FOR_FIRST_USER_TO_COMPLETE_REGISTRATION = 20,
-        NOT_ACTIVE = 30,
+        Active,
+        Waite_Complete_Registration,
+        Not_Active ,
     }
-    public enum UserActivateStatus
+
+    public enum UserActiveStatus
     {
-        ACTIVE = 10,
-        REGISTRATION_NOT_COMPLETED = 20,
-        NOT_ACTIVE = 30,
+        Active,
+        Waite_Complete_Registration,
+        Not_Active,
     }
+
     public enum UserAuthStatus
     {
         Authenticated = 1,
         not_registered = 2,
         more_then_one_company_per_email = 3,
     }
-    public enum UserPermission
+    public enum UserPermission2
     {
         Admin = 10,
         User = 20,
     }
+    public enum UserPermission
+    {
+        Admin,
+        User,
+    }
     public enum EmailType
     {
-        APPROVE_REGISTRATION = 1,
-        REGISTRATION_CONFIRMATION = 2,
-        CV_ASSAINGED_TO_POSITION = 3
+        Registration_Approved,
+        Confirm_Registration
     }
     public enum Lung
     {
-        HE = 1,
-        EN_US = 2,
+        HE,
+        EN,
     }
     public enum ParserValueType
     {

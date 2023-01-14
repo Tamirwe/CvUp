@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ namespace DataModelsLibrary.Queries
                 string sql = @"SELECT c.id id, c.name
                         FROM users u INNER JOIN companies c ON u.company_id=c.id
                         WHERE u.email='" + email + "'" +
-                        @"AND  u.activate_status_id = " + (int)UserActivateStatus.ACTIVE;
+                        @"AND  u.active_status = " + UserActiveStatus.Active.ToString();
 
                 var userCompaniesList = dbContext.idNameModelDB.FromSqlRaw(sql).ToList();
                 return userCompaniesList;
@@ -74,14 +75,14 @@ namespace DataModelsLibrary.Queries
             {
                 if (companyId != 0)
                 {
-                    return dbContext.users.Where(x => x.email == email && x.company_id == companyId && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+                    return dbContext.users.Where(x => x.email == email && x.company_id == companyId && x.active_status == UserActiveStatus.Active.ToString()).ToList();
                 }
 
-                return dbContext.users.Where(x => x.email == email && x.activate_status_id == (int)UserActivateStatus.ACTIVE).ToList();
+                return dbContext.users.Where(x => x.email == email && x.active_status == UserActiveStatus.Active.ToString()).ToList();
             }
         }
 
-        public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status)
+        public company AddNewCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -89,7 +90,7 @@ namespace DataModelsLibrary.Queries
                 {
                     name = companyName,
                     descr = companyDescr,
-                    activate_status_id = (int)status,
+                    active_status = status.ToString(),
                 };
 
                 dbContext.companies.Add(company);
@@ -98,7 +99,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UserPermission permission, string log)
+        public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -109,8 +110,8 @@ namespace DataModelsLibrary.Queries
                     passwaord = password,
                     first_name = firstName,
                     last_name = lastName,
-                    activate_status_id = (int)status,
-                    permission_type_id = (int)permission,
+                    active_status = status.ToString(),
+                    permission_type = permission.ToString(),
                     log_info = log
                 };
 
@@ -153,7 +154,7 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                user.activate_status_id = (int)UserActivateStatus.ACTIVE;
+                user.active_status = UserActiveStatus.Active.ToString();
                 var result = dbContext.users.Update(user);
                 dbContext.SaveChanges();
             }
@@ -205,8 +206,8 @@ namespace DataModelsLibrary.Queries
                     email = data.email,
                     first_name = data.firstName,
                     last_name = data.lastName,
-                    activate_status_id = (int)UserActivateStatus.REGISTRATION_NOT_COMPLETED,
-                    permission_type_id = (int)UserPermission.User,
+                    active_status = UserActiveStatus.Waite_Complete_Registration.ToString(),
+                    permission_type = UserPermission.User.ToString(),
                 };
 
                 dbContext.users.Add(user);
@@ -225,7 +226,7 @@ namespace DataModelsLibrary.Queries
                     user.email = data.email;
                     user.first_name = data.firstName;
                     user.last_name = data.lastName;
-                    user.permission_type_id = (int)data.permissionType;
+                    user.permission_type = data.permissionType.ToString();
 
                     var result = dbContext.users.Update(user);
                     dbContext.SaveChanges();
@@ -246,7 +247,7 @@ namespace DataModelsLibrary.Queries
                                 firstName = u.first_name,
                                 lastName = u.last_name,
                                 email = u.email,
-                                permissionType = (UserPermission)u.permission_type_id
+                                permissionType = Enum.Parse<UserPermission>(u.permission_type)
                             };
 
                 return query.ToList();

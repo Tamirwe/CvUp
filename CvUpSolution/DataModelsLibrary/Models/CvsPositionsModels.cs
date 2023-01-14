@@ -41,7 +41,7 @@ namespace DataModelsLibrary.Models
     public class CvListItemModel
     {
         public int cvId { get; set; }
-        public string keyId { get; set; }
+        public string keyId { get; set; } = "";
         public int candidateId { get; set; }
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";

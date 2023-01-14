@@ -14,10 +14,6 @@ export default abstract class BaseApi {
   // http = axiosService("https://localhost:446/api/");
   // http = axiosService("https://89.237.94.86:446/api/");
 
-  // get http() {
-  //   return axiosService(appSettings.appServerUrl);
-  // }
-
   constructor(appSettings: IAppSettings) {
     this.http = axiosService(appSettings.appServerUrl);
   }

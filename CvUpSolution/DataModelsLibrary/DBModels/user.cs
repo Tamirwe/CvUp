@@ -20,15 +20,13 @@ namespace Database.models
         public string first_name { get; set; } = null!;
         public string last_name { get; set; } = null!;
         public DateTime? date_created { get; set; }
-        public int activate_status_id { get; set; }
         public string? log_info { get; set; }
         public string? refresh_token { get; set; }
         public DateTime? refresh_token_expiry { get; set; }
-        public int permission_type_id { get; set; }
+        public string permission_type { get; set; } = null!;
+        public string? active_status { get; set; }
 
-        public virtual enum_user_activate_status activate_status { get; set; } = null!;
         public virtual company company { get; set; } = null!;
-        public virtual enum_permission_type permission_type { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<position> positionopeners { get; set; }

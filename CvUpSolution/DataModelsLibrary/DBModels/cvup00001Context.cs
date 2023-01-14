@@ -26,11 +26,6 @@ namespace Database.models
         public virtual DbSet<department> departments { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
-        public virtual DbSet<enum_company_activate_status> enum_company_activate_statuses { get; set; } = null!;
-        public virtual DbSet<enum_email_type> enum_email_types { get; set; } = null!;
-        public virtual DbSet<enum_lung> enum_lungs { get; set; } = null!;
-        public virtual DbSet<enum_permission_type> enum_permission_types { get; set; } = null!;
-        public virtual DbSet<enum_user_activate_status> enum_user_activate_statuses { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
         public virtual DbSet<parser> parsers { get; set; } = null!;
@@ -100,10 +95,10 @@ namespace Database.models
 
             modelBuilder.Entity<company>(entity =>
             {
-                entity.HasIndex(e => e.activate_status_id, "fk_companies_activate_status_id_enum_company_activate_status_id");
-
                 entity.HasIndex(e => e.key_email, "uq_companies_key_email")
                     .IsUnique();
+
+                entity.Property(e => e.active_status).HasColumnType("enum('Active','Waite_Complete_Registration','Not_Active')");
 
                 entity.Property(e => e.cvs_email).HasMaxLength(200);
 
@@ -118,12 +113,6 @@ namespace Database.models
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 
                 entity.Property(e => e.name).HasMaxLength(150);
-
-                entity.HasOne(d => d.activate_status)
-                    .WithMany(p => p.companies)
-                    .HasForeignKey(d => d.activate_status_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_companies_activate_status_id_enum_company_activate_status_id");
             });
 
             modelBuilder.Entity<company_parser>(entity =>
@@ -224,11 +213,11 @@ namespace Database.models
             {
                 entity.ToTable("emails_sent");
 
-                entity.HasIndex(e => e.email_type, "fk_emails_sent_email_type_enum_email_type_id");
-
                 entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
 
                 entity.Property(e => e.body).HasMaxLength(1500);
+
+                entity.Property(e => e.email_type).HasColumnType("enum('Registration_Approved','Confirm_Registration')");
 
                 entity.Property(e => e.from_address).HasMaxLength(250);
 
@@ -237,12 +226,6 @@ namespace Database.models
                 entity.Property(e => e.subject).HasMaxLength(500);
 
                 entity.Property(e => e.to_address).HasMaxLength(500);
-
-                entity.HasOne(d => d.email_typeNavigation)
-                    .WithMany(p => p.emails_sents)
-                    .HasForeignKey(d => d.email_type)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_emails_sent_email_type_enum_email_type_id");
 
                 entity.HasOne(d => d.user)
                     .WithMany(p => p.emails_sents)
@@ -258,60 +241,11 @@ namespace Database.models
 
                 entity.Property(e => e.body).HasMaxLength(2000);
 
+                entity.Property(e => e.lang).HasColumnType("enum('HE','EN')");
+
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.subject).HasMaxLength(300);
-
-                entity.HasOne(d => d.langNavigation)
-                    .WithMany(p => p.emails_templates)
-                    .HasForeignKey(d => d.lang)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_emails_templates_lang_enum_lung_id");
-            });
-
-            modelBuilder.Entity<enum_company_activate_status>(entity =>
-            {
-                entity.ToTable("enum_company_activate_status");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<enum_email_type>(entity =>
-            {
-                entity.ToTable("enum_email_type");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<enum_lung>(entity =>
-            {
-                entity.ToTable("enum_lung");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<enum_permission_type>(entity =>
-            {
-                entity.ToTable("enum_permission_type");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(20);
-            });
-
-            modelBuilder.Entity<enum_user_activate_status>(entity =>
-            {
-                entity.ToTable("enum_user_activate_status");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
-                entity.Property(e => e.name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<hr_company>(entity =>
@@ -524,14 +458,12 @@ namespace Database.models
 
             modelBuilder.Entity<user>(entity =>
             {
-                entity.HasIndex(e => e.activate_status_id, "fk_users_activate_status_id_enum_user_activate_status_id");
-
                 entity.HasIndex(e => e.company_id, "fk_users_company_id_companies_id");
-
-                entity.HasIndex(e => e.permission_type_id, "fk_users_permission_type_id_enum_permission_type_id");
 
                 entity.HasIndex(e => new { e.email, e.passwaord }, "uq_users_email_password")
                     .IsUnique();
+
+                entity.Property(e => e.active_status).HasColumnType("enum('Active','Not_Active','Waite_Complete_Registration')");
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
@@ -547,26 +479,16 @@ namespace Database.models
 
                 entity.Property(e => e.passwaord).HasMaxLength(120);
 
+                entity.Property(e => e.permission_type).HasColumnType("enum('Admin','User')");
+
                 entity.Property(e => e.refresh_token).HasMaxLength(100);
 
                 entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");
-
-                entity.HasOne(d => d.activate_status)
-                    .WithMany(p => p.users)
-                    .HasForeignKey(d => d.activate_status_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_users_activate_status_id_enum_user_activate_status_id");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_users_company_id_companies_id");
-
-                entity.HasOne(d => d.permission_type)
-                    .WithMany(p => p.users)
-                    .HasForeignKey(d => d.permission_type_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_users_permission_type_id_enum_permission_type_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

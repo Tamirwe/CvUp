@@ -17,7 +17,7 @@ namespace AuthLibrary
 
                 if (isVerify )
                 {
-                    if( usr.activate_status_id == (int)UserActivateStatus.ACTIVE)
+                    if( usr.active_status == UserActiveStatus.Active.ToString())
                     {
                         return usr;
                     }
@@ -43,7 +43,7 @@ namespace AuthLibrary
 
                     if (isVerify)
                     {
-                        if (user.activate_status_id != (int)UserActivateStatus.ACTIVE)
+                        if (user.active_status != UserActiveStatus.Active.ToString())
                         {
                             _authQueries.activateUser(user);
                         }

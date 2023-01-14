@@ -21,7 +21,7 @@ namespace AuthLibrary
                 string key = generateSecretKey();
                 _authQueries.addUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
-                AddEmailSent(EmailType.REGISTRATION_CONFIRMATION, newUser, sentEmail);
+                AddEmailSent(EmailType.Confirm_Registration, newUser, sentEmail);
                 scope.Complete();
             }
         }
@@ -33,7 +33,7 @@ namespace AuthLibrary
 
         private user AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)
         {
-            user user = _authQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActivateStatus.REGISTRATION_NOT_COMPLETED, permission, log);
+            user user = _authQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActiveStatus.Waite_Complete_Registration, permission, log);
             return user;
         }
 
@@ -52,7 +52,7 @@ namespace AuthLibrary
 
         private company AddNewCompany(string companyName, string? companyDescr)
         {
-            var company = _authQueries.AddNewCompany(companyName, companyDescr, CompanyActivateStatus.WAITE_FOR_FIRST_USER_TO_COMPLETE_REGISTRATION);
+            var company = _authQueries.AddNewCompany(companyName, companyDescr, CompanyActiveStatus.Waite_Complete_Registration);
             return company;
         }
 

@@ -63,7 +63,7 @@ namespace AuthLibrary
             return null;
         }
 
-        public user? ForgotPassword(string? origin, string email, int? companyId, out UserAuthStatus status)
+        public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status)
         {
             List<user> users = _authQueries.getUsers(email, companyId);
 

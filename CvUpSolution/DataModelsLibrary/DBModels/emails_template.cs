@@ -9,8 +9,6 @@ namespace Database.models
         public string name { get; set; } = null!;
         public string subject { get; set; } = null!;
         public string body { get; set; } = null!;
-        public int lang { get; set; }
-
-        public virtual enum_lung langNavigation { get; set; } = null!;
+        public string lang { get; set; } = null!;
     }
 }

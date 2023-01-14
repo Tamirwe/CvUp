@@ -85,7 +85,12 @@ namespace CvUpAPI.Controllers
         [Route("ForgotPassword")]
         public IActionResult ForgotPassword(ForgotPasswordModel data)
         {
-            string? origin = Request.Headers["Origin"].First();
+            string? origin = Request.Headers["Origin"].FirstOrDefault();
+
+            if (origin == null)
+            {
+                return BadRequest();
+            }
 
             user? authenticateUser = _authServise.ForgotPassword(origin, data.email, data.companyId, out UserAuthStatus status);
 

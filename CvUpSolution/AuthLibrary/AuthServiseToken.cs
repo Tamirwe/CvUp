@@ -71,7 +71,7 @@ namespace AuthLibrary
                                 new Claim("CompanyId", authenticateUser.company_id.ToString()),
                                 new Claim("DisplayName", string.Format("{0} {1}",authenticateUser.first_name,authenticateUser.last_name)),
                                 new Claim("email", authenticateUser.email),
-                                new Claim("role",Enum.GetName(typeof(UserPermission), authenticateUser.permission_type_id)?? ""),
+                                new Claim("role",Enum.Parse<UserPermission>(authenticateUser.permission_type).ToString()),
                             };
 
             return GeneratedToken(claims, authenticateUser, isRemember);

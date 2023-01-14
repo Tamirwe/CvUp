@@ -10,8 +10,8 @@ namespace DataModelsLibrary.Queries
         public List<IdNameModel> getUserCompanies(string email);
         public user? getUser(int userId);
         public List<user> getUsers(string email, int? companyId);
-        public company AddNewCompany(string companyName, string? companyDescr, CompanyActivateStatus status);
-        user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActivateStatus status, UserPermission permission, string log);
+        public company AddNewCompany(string companyName, string? companyDescr, CompanyActiveStatus status);
+        user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log);
         company updateCompany(company newCompany);
         void addUserPasswordReset(string key, user user);
         public registeration_key? getRegistrationKey(string key);

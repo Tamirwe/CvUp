@@ -23,7 +23,7 @@ namespace DataModelsLibrary.Queries
                 {
                     user_id = userId,
                     sent_date = DateTime.Now,
-                    email_type = (int)emailType,
+                    email_type = emailType.ToString(),
                     to_address = toAddress,
                     from_address = fromAddress,
                     subject = subject,

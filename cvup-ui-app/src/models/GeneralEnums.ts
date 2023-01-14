@@ -5,6 +5,6 @@ export enum CrudTypesEnum {
 }
 
 export enum PermissionTypeEnum {
-  Admin = 10,
-  User = 20,
+  Admin,
+  User,
 }

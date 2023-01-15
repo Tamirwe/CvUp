@@ -8,7 +8,7 @@ namespace AuthLibrary
     {
         public user? Login(UserLoginModel data)
         {
-            var users = _authQueries.getUsersByEmail(data.email);
+            var users = _authQueries.GetUsersByEmail(data.email);
             bool isVerify = false;
 
             foreach (var usr in users)
@@ -31,11 +31,11 @@ namespace AuthLibrary
 
         public user? CompleteRegistration(UserLoginModel data)
         {
-            registeration_key?  rKey = _authQueries.getRegistrationKey(data.key);
+            registeration_key?  rKey = _authQueries.GetRegistrationKey(data.key);
 
             if (rKey is not null)
             {
-                var user = _authQueries.getUser(rKey.user_id);
+                var user = _authQueries.GetUser(rKey.user_id);
 
                 if (user is not null)
                 {
@@ -45,7 +45,14 @@ namespace AuthLibrary
                     {
                         if (user.active_status != UserActiveStatus.Active.ToString())
                         {
-                            _authQueries.activateUser(user);
+                            _authQueries.ActivateUser(user);
+                            var company = _authQueries.GetCompany(user.company_id);
+
+                            if (company is not null && company.active_status == CompanyActiveStatus.Waite_Complete_Registration.ToString())
+                            {
+                                company.active_status = CompanyActiveStatus.Active.ToString();
+                                _authQueries.UpdateCompany(company);
+                            }
                         }
 
                         return user;

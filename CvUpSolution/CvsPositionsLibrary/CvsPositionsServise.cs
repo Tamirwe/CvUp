@@ -154,5 +154,18 @@ namespace CvsPositionsLibrary
         {
             _cvsPositionsQueries.SaveCvReview(cvReview);
         }
+
+        public cv? CheckIsCvDuplicate(int companyId, int candidateId, string subject, int cvAsciiSum)
+        {
+            cv? cv = _cvsPositionsQueries.CheckIsCvDuplicate( companyId,  candidateId,   cvAsciiSum);
+            return cv;
+        }
+
+        public void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        {
+            _cvsPositionsQueries.UpdateDuplicateAndLastCv(importCv);
+        }
+
+
     }
 }

@@ -26,7 +26,7 @@ namespace AuthLibrary
 
         public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data)
         {
-            List<user> usersList = _authQueries.getUsersByEmail(data.email);
+            List<user> usersList = _authQueries.GetUsersByEmail(data.email);
 
             if (usersList.Count > 0)
             {
@@ -46,11 +46,11 @@ namespace AuthLibrary
 
         public user? PasswordReset(UserLoginModel data)
         {
-            registeration_key? rKey = _authQueries.getRegistrationKey(data.key);
+            registeration_key? rKey = _authQueries.GetRegistrationKey(data.key);
 
             if (rKey is not null)
             {
-                var user = _authQueries.getUser(rKey.user_id);
+                var user = _authQueries.GetUser(rKey.user_id);
 
                 if (user is not null)
                 {
@@ -65,7 +65,7 @@ namespace AuthLibrary
 
         public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status)
         {
-            List<user> users = _authQueries.getUsers(email, companyId);
+            List<user> users = _authQueries.GetUsers(email, companyId);
 
             if (users.Count == 0)
             {
@@ -76,7 +76,7 @@ namespace AuthLibrary
             {
                 status = UserAuthStatus.Authenticated;
                 string key = generateSecretKey();
-                _authQueries.addUserPasswordReset(key, users[0]);
+                _authQueries.AddUserPasswordReset(key, users[0]);
                 SendResetPasswordEmail(origin, key, users[0]);
                 return users[0];
             }
@@ -108,7 +108,7 @@ namespace AuthLibrary
 
         public List<IdNameModel> UserCompanies(string email)
         {
-            return _authQueries.getUserCompanies(email);
+            return _authQueries.GetUserCompanies(email);
         }
        
     }

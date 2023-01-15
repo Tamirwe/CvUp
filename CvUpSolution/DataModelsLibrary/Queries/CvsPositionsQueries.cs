@@ -561,5 +561,29 @@ namespace DataModelsLibrary.Queries
                 dbContext.SaveChanges();
             }
         }
+
+        public cv? CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                cv? cv = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).FirstOrDefault();
+                return cv;
+            }
+        }
+
+        public void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate cand = dbContext.candidates.Where(x => x.id == importCv.candidateId).First();
+                cand.has_duplicates_cvs = (sbyte?)(importCv.isDuplicate? 1 :0);
+                cand.last_cv_id = importCv.cvId;
+                cand.last_cv_sent = DateTime.Now;
+                cand.date_updated = DateTime.Now;
+                var result = dbContext.candidates.Update(cand);
+                dbContext.SaveChanges();
+            }
+        }
+
     }
 }

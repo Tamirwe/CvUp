@@ -7,6 +7,7 @@ namespace Database.models
     {
         public cv()
         {
+            candidates = new HashSet<candidate>();
             cvs_txts = new HashSet<cvs_txt>();
             position_cvs = new HashSet<position_cv>();
         }
@@ -22,6 +23,7 @@ namespace Database.models
         public long? cv_ascii_sum { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
+        public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }
         public virtual ICollection<position_cv> position_cvs { get; set; }
     }

@@ -24,7 +24,7 @@ namespace ImportCvsLibrary
 
         ICvsPositionsServise _cvsPositionsServise;
         string _cvsRootFolder;
-        string _mailUserName;
+        string _gmailUserName;
         string _mailPassword;
         string _cvFolderPath = "";
         string _cvTempFolderPath = "";
@@ -38,7 +38,7 @@ namespace ImportCvsLibrary
 
             _cvsRootFolder = config["GlobalSettings:CvsFilesRootFolder"];
             Directory.CreateDirectory(_cvsRootFolder);
-            _mailUserName = config["GlobalSettings:gmailUserName"];
+            _gmailUserName = config["GlobalSettings:gmailUserName"];
             _mailPassword = config["GlobalSettings:gmailPassword"];
         }
 
@@ -48,7 +48,7 @@ namespace ImportCvsLibrary
             using (var client = new ImapClient())
             {
                 client.Connect("imap.gmail.com", 993, true);
-                client.Authenticate(_mailUserName, _mailPassword);
+                client.Authenticate(_gmailUserName, _mailPassword);
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadWrite);
                 var uids = client.Inbox.Search(SearchQuery.NotSeen);
@@ -105,10 +105,17 @@ namespace ImportCvsLibrary
         {
             ExtractCvProps(importCv);
             CandidateFindOrCreate(importCv);
+            CheckIsCvDuplicate(importCv);
             AddCvToDb(importCv);
             RenameAndMoveAttachmentToFolder(importCv);
             UpdateCvKeyId(importCv);
+            UpdateDuplicateAndLastCv(importCv);
             AddCvToIndex(importCv);
+        }
+
+        private void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        {
+            _cvsPositionsServise.UpdateDuplicateAndLastCv(importCv);
         }
 
         private void UpdateCvKeyId(ImportCvModel importCv)
@@ -165,9 +172,19 @@ namespace ImportCvsLibrary
                 importCv.cvTxt = GetCvTxtWord(importCv.tempFilePath);
             }
 
-            importCv.cvAsciiSum = GetCvAsciiSum(importCv.cvTxt);
             GetCandidateEmail(importCv);
             GetCandidatePhone(importCv);
+        }
+
+        private void CheckIsCvDuplicate(ImportCvModel importCv)
+        {
+            importCv.cvAsciiSum = GetCvAsciiSum(importCv.cvTxt);
+            cv? cv = _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.subject, importCv.cvAsciiSum);
+
+            if (cv != null)
+            {
+                importCv.isDuplicate = true;
+            }
         }
 
         private void ParseEmailSubject(ImportCvModel cv)
@@ -350,9 +367,9 @@ namespace ImportCvsLibrary
                     {
                         var toAddress = x.ToString().Split('@')[0];
 
-                        if (toAddress.IndexOf(_mailUserName) > -1)
+                        if (toAddress.IndexOf(_gmailUserName) > -1)
                         {
-                            companyIdStr = toAddress.Substring(toAddress.IndexOf("ci") + 2);
+                            companyIdStr = toAddress.Split('+')[1].Substring(7);
                         }
                     }
 

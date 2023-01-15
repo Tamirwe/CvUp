@@ -7,10 +7,11 @@ export class CvsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
   cvsList: ICv[] = [];
-  keyId: string = "";
+  pdfUrl: string = "";
+
   cvSelected?: ICv;
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.cvsApi = new CvsApi(appSettings);
   }
@@ -32,7 +33,7 @@ export class CvsStore {
   async getCv(cv: ICv) {
     this.cvSelected = { ...cv };
     runInAction(() => {
-      this.keyId = cv.keyId;
+      this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${cv.keyId}`;
     });
 
     // this.rootStore.generalStore.backdrop = true;

@@ -23,6 +23,7 @@ namespace DataModelsLibrary.Models
         public string from { get; set; } = "";
         public string positionRelated { get; set; } = "";
         public int cvAsciiSum { get; set; }
+        public bool isDuplicate { get; set; } = false;
     }
 
     public class CvPropsToIndexModel

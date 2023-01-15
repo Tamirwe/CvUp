@@ -20,7 +20,7 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public List<user> getUsersByEmail(string email)
+        public List<user> GetUsersByEmail(string email)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -29,7 +29,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public registeration_key? getRegistrationKey(string key)
+        public registeration_key? GetRegistrationKey(string key)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -37,7 +37,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public void removeRegistrationKey(registeration_key rkey)
+        public void RemoveRegistrationKey(registeration_key rkey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -45,7 +45,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<IdNameModel> getUserCompanies(string email)
+        public List<IdNameModel> GetUserCompanies(string email)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -54,14 +54,14 @@ namespace DataModelsLibrary.Queries
                 string sql = @"SELECT c.id id, c.name
                         FROM users u INNER JOIN companies c ON u.company_id=c.id
                         WHERE u.email='" + email + "'" +
-                        @"AND  u.active_status = " + UserActiveStatus.Active.ToString();
+                        @"AND  u.active_status = '" + UserActiveStatus.Active.ToString() + "'";
 
                 var userCompaniesList = dbContext.idNameModelDB.FromSqlRaw(sql).ToList();
                 return userCompaniesList;
             }
         }
 
-        public user? getUser(int userId)
+        public user? GetUser(int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -69,7 +69,15 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<user> getUsers(string email, int? companyId)
+        public company? GetCompany(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return dbContext.companies.Where(x => x.id == companyId).FirstOrDefault();
+            }
+        }
+
+        public List<user> GetUsers(string email, int? companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -121,7 +129,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public company updateCompany(company _company)
+        public company UpdateCompany(company _company)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -131,7 +139,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public void addUserPasswordReset(string key, user user)
+        public void AddUserPasswordReset(string key, user user)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -150,7 +158,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public void activateUser(user user)
+        public void ActivateUser(user user)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -268,6 +276,15 @@ namespace DataModelsLibrary.Queries
                     var result = dbContext.users.Remove(usr);
                     dbContext.SaveChanges();
                 }
+            }
+        }
+
+        public company? GetCompanyByKeyEmail(string uniqueRandomKey)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return dbContext.companies.Where(x=>x.key_email== uniqueRandomKey).FirstOrDefault();
+
             }
         }
 

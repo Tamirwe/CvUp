@@ -23,7 +23,7 @@ namespace AuthLibrary
 
             if (isUserId)
             {
-                var user = _authQueries.getUser(userId);
+                var user = _authQueries.GetUser(userId);
 
                 if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry < DateTime.Now)
                 {

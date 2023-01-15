@@ -25,7 +25,7 @@ namespace CvsPositionsLibrary.CvsFiles
         {
 
             //security this operation is un reversable
-            return;
+            //return;
             List<int> companiesIds = _cvsPositionsQueries.GetCompaniesIds();
             DeleteNotRelatedCompaniesFolders(companiesIds);
 

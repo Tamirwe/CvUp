@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { Viewer } from "@react-pdf-viewer/core";
+import { LoadError, Viewer } from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 import { RenderGoToPageProps } from "@react-pdf-viewer/page-navigation";
@@ -42,6 +42,47 @@ export const PdfViewer = observer(() => {
   // });
   const toolbarPluginInstance = toolbarPlugin();
   const { Toolbar } = toolbarPluginInstance;
+
+  const renderError = (error: LoadError) => {
+    let message = "";
+    switch (error.name) {
+      case "InvalidPDFException":
+        message = "The document is invalid or corrupted";
+        break;
+      case "MissingPDFException":
+        message = "The document is missing";
+        break;
+      case "UnexpectedResponseException":
+        message = "Unexpected server response";
+        break;
+      default:
+        message = "Cannot load the document";
+        break;
+    }
+
+    return (
+      <div
+        style={{
+          alignItems: "center",
+          border: "1px solid rgba(0, 0, 0, 0.3)",
+          display: "flex",
+          height: "100%",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#e53e3e",
+            borderRadius: "0.25rem",
+            color: "#fff",
+            padding: "0.5rem",
+          }}
+        >
+          {message}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div
@@ -123,10 +164,13 @@ export const PdfViewer = observer(() => {
           overflow: "hidden",
         }}
       >
-        <Viewer
-          fileUrl={`https://localhost:7217/api/DD?id=${cvsStore.keyId}`}
-          plugins={[toolbarPluginInstance]}
-        />
+        {cvsStore.pdfUrl && (
+          <Viewer
+            fileUrl={cvsStore.pdfUrl}
+            plugins={[toolbarPluginInstance]}
+            renderError={renderError}
+          />
+        )}
       </div>
     </div>
   );

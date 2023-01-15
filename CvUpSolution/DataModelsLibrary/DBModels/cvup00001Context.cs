@@ -55,15 +55,23 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_candidates_company_id_companies_id");
 
+                entity.HasIndex(e => e.last_cv_id, "fk_candidates_last_cv_id_cvs_id");
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.date_updated).HasColumnType("datetime");
+                entity.Property(e => e.date_updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
                 entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.last_cv_sent)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
@@ -77,6 +85,12 @@ namespace Database.models
                     .WithMany(p => p.candidates)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_candidates_company_id_companies_id");
+
+                entity.HasOne(d => d.last_cv)
+                    .WithMany(p => p.candidates)
+                    .HasForeignKey(d => d.last_cv_id)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_candidates_last_cv_id_cvs_id");
             });
 
             modelBuilder.Entity<candidate_position_stage>(entity =>

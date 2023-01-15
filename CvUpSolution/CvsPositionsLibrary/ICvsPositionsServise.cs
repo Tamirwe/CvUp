@@ -27,5 +27,7 @@ namespace CvsPositionsLibrary
         public CvModel? GetCv(int cvId, int companyId);
         public void UpdateCvKeyId(ImportCvModel importCv);
         public void SaveCvReview(CvReviewModel cvReview);
+        public cv? CheckIsCvDuplicate(int companyId, int candidateId, string subject, int cvAsciiSum);
+        public void UpdateDuplicateAndLastCv(ImportCvModel importCv);
     }
 }

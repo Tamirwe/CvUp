@@ -77,7 +77,7 @@ namespace ImportCvsLibrary
                                 ImportCvModel importCv = new ImportCvModel
                                 {
                                     companyId = companyId,
-                                    emailId = uid.ToString(),
+                                    emailId = message.MessageId,
                                     subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
                                     from = message.From.ToString(),
                                     fileExtension = fileExtension,
@@ -106,11 +106,15 @@ namespace ImportCvsLibrary
             ExtractCvProps(importCv);
             CandidateFindOrCreate(importCv);
             CheckIsCvDuplicate(importCv);
-            AddCvToDb(importCv);
-            RenameAndMoveAttachmentToFolder(importCv);
-            UpdateCvKeyId(importCv);
-            UpdateDuplicateAndLastCv(importCv);
-            AddCvToIndex(importCv);
+
+            if (!importCv.isDuplicatePositionSender)
+            {
+                AddCvToDb(importCv);
+                RenameAndMoveAttachmentToFolder(importCv);
+                UpdateCvKeyId(importCv);
+                UpdateDuplicateAndLastCv(importCv);
+                AddCvToIndex(importCv);
+            }
         }
 
         private void UpdateDuplicateAndLastCv(ImportCvModel importCv)
@@ -178,12 +182,25 @@ namespace ImportCvsLibrary
 
         private void CheckIsCvDuplicate(ImportCvModel importCv)
         {
-            importCv.cvAsciiSum = GetCvAsciiSum(importCv.cvTxt);
-            cv? cv = _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.subject, importCv.cvAsciiSum);
-
-            if (cv != null)
+            if (!importCv.isNewCandidate)
             {
-                importCv.isDuplicate = true;
+                importCv.cvAsciiSum = GetCvAsciiSum(importCv.cvTxt);
+                List<cv> cvs = _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.cvAsciiSum);
+
+                if (cvs.Count > 0)
+                {
+                    foreach (var cv in cvs)
+                    {
+                        if (cv.subject == importCv.subject && cv.date_created.AddDays(1) > DateTime.Now && cv.from == importCv.from)
+                        {
+                            importCv.isDuplicatePositionSender = true;
+                            break;
+                        }
+                    }
+
+                    importCv.isDuplicate = true;
+                    importCv.duplicateCvId = cvs.First().id;
+                }
             }
         }
 
@@ -251,7 +268,7 @@ namespace ImportCvsLibrary
 
         private void CandidateFindOrCreate(ImportCvModel importCv)
         {
-            importCv.candidateId = _cvsPositionsServise.AddUpdateCandidateFromCvImport(importCv);
+            _cvsPositionsServise.AddUpdateCandidateFromCvImport(importCv);
         }
 
         private void AddCvToDb(ImportCvModel importCv)
@@ -261,7 +278,7 @@ namespace ImportCvsLibrary
 
         private void AddCvToIndex(ImportCvModel importCv)
         {
-            if (importCv.email.Length > 0)
+            if (!importCv.isDuplicate && importCv.emailAddress.Length > 0)
             {
                 _cvsPositionsServise.AddNewCvToIndex(importCv);
             }
@@ -287,7 +304,7 @@ namespace ImportCvsLibrary
 
             if (emailMatches.Count > 0)
             {
-                item.email = emailMatches[0].Value;
+                item.emailAddress = emailMatches[0].Value;
             }
         }
 

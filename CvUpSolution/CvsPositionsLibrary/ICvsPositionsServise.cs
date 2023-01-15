@@ -7,7 +7,7 @@ namespace CvsPositionsLibrary
     {
         public int AddCv(ImportCvModel importCv);
         public void AddNewCvToIndex(ImportCvModel item);
-        public int AddUpdateCandidateFromCvImport(ImportCvModel importCv);
+        public void AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public void IndexCompanyCvs(int companyId);
         public List<CvListItemModel> GetCvsList(int companyId);
         public department AddDepartment(IdNameModel data, int companyId);
@@ -27,7 +27,7 @@ namespace CvsPositionsLibrary
         public CvModel? GetCv(int cvId, int companyId);
         public void UpdateCvKeyId(ImportCvModel importCv);
         public void SaveCvReview(CvReviewModel cvReview);
-        public cv? CheckIsCvDuplicate(int companyId, int candidateId, string subject, int cvAsciiSum);
+        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum);
         public void UpdateDuplicateAndLastCv(ImportCvModel importCv);
     }
 }

@@ -15,8 +15,9 @@ namespace DataModelsLibrary.Models
         public string fileExtension { get; set; } = "";
         public string cvTxt { get; set; } = "";
         public string phone { get; set; } = "";
-        public string email { get; set; } = "";
+        public string emailAddress { get; set; } = "";
         public int candidateId { get; set; }
+        public bool isNewCandidate { get; set; } = false;
         public string candidateName { get; set; } = "";
         public string emailId { get; set; } = "";
         public string subject { get; set; } = "";
@@ -24,6 +25,8 @@ namespace DataModelsLibrary.Models
         public string positionRelated { get; set; } = "";
         public int cvAsciiSum { get; set; }
         public bool isDuplicate { get; set; } = false;
+        public bool isDuplicatePositionSender { get; set; } = false;
+        public int duplicateCvId { get; set; }
     }
 
     public class CvPropsToIndexModel

@@ -38,7 +38,7 @@ namespace CvsPositionsLibrary
                 candName = importCv.candidateName,
                 cvId = importCv.cvId,
                 cvTxt = importCv.cvTxt,
-                email = importCv.email,
+                email = importCv.emailAddress,
                 phone = importCv.phone,
                 emailSubject = importCv.subject,
             };
@@ -51,13 +51,13 @@ namespace CvsPositionsLibrary
             return _cvsPositionsQueries.GetCandidateByEmail(email);
         }
 
-        public int AddUpdateCandidateFromCvImport(ImportCvModel importCv)
+        public void AddUpdateCandidateFromCvImport(ImportCvModel importCv)
         {
             int candId = 0;
 
-            if (importCv.email.Length > 0)
+            if (importCv.emailAddress.Length > 0)
             {
-                candidate? cand = GetCandidate(importCv.email);
+                candidate? cand = GetCandidate(importCv.emailAddress);
                 string newCandName = importCv.candidateName.Trim();
 
                
@@ -78,13 +78,13 @@ namespace CvsPositionsLibrary
                     cand.name = newCandName;
                     cand.has_duplicates_cvs = 1;
                     _cvsPositionsQueries.UpdateCandidate(cand);
-                    candId = cand.id;
+                    importCv.candidateId = cand.id;
                 }
             }
 
             if (candId == 0)
             {
-                string email = importCv.email.Length > 0 ? importCv.email : "Not Found";
+                string email = importCv.emailAddress.Length > 0 ? importCv.emailAddress : "Not Found";
 
                 var newCand = new candidate
                 {
@@ -94,10 +94,9 @@ namespace CvsPositionsLibrary
                     name = importCv.candidateName
                 };
 
-                candId = _cvsPositionsQueries.AddCandidate(newCand);
+                importCv.isNewCandidate = true;
+                importCv.candidateId = _cvsPositionsQueries.AddCandidate(newCand);
             }
-
-            return candId;
         }
 
         public void IndexCompanyCvs(int companyId)
@@ -155,10 +154,10 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries.SaveCvReview(cvReview);
         }
 
-        public cv? CheckIsCvDuplicate(int companyId, int candidateId, string subject, int cvAsciiSum)
+        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum)
         {
-            cv? cv = _cvsPositionsQueries.CheckIsCvDuplicate( companyId,  candidateId,   cvAsciiSum);
-            return cv;
+            List<cv> cvs = _cvsPositionsQueries.CheckIsCvDuplicate( companyId,  candidateId,   cvAsciiSum);
+            return cvs;
         }
 
         public void UpdateDuplicateAndLastCv(ImportCvModel importCv)

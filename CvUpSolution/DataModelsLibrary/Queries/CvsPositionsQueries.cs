@@ -35,6 +35,8 @@ namespace DataModelsLibrary.Queries
                     email_id = importCv.emailId,
                     subject = importCv.subject,
                     from = importCv.from,
+                    duplicate_cv_id = importCv.duplicateCvId,
+                    position = Utils.Truncate(importCv.positionRelated, 250)
                 };
 
                 dbContext.cvs.Add(newCv);
@@ -562,12 +564,12 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public cv? CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
+        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
         {
             using (var dbContext = new cvup00001Context())
             {
-                cv? cv = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).FirstOrDefault();
-                return cv;
+                List<cv> cvs = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).ToList();
+                return cvs;
             }
         }
 

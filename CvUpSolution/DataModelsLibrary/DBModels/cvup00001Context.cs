@@ -183,6 +183,8 @@ namespace Database.models
 
                 entity.Property(e => e.key_id).HasMaxLength(30);
 
+                entity.Property(e => e.position).HasMaxLength(300);
+
                 entity.Property(e => e.subject).HasMaxLength(500);
 
                 entity.HasOne(d => d.candidate)

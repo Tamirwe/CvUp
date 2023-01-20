@@ -16,7 +16,7 @@ export interface IUserClaims {
 
 export interface ICv {
   cvId: number;
-  candId: number;
+  candidateId: number;
   keyId: string;
   encriptedId: string;
   phone?: string;
@@ -25,6 +25,7 @@ export interface ICv {
   candidateName?: string;
   reviewHtml: string;
   reviewTct: string;
+  fileType: string;
 }
 
 export interface IPosition {

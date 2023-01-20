@@ -24,9 +24,16 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCvsList")]
-        public List<CvListItemModel> GetCvsList()
+        public List<CvListItemModel> GetCvsList(int page = 1, int take = 20, int positionId = 0, string? searchKeyWords = "")
         {
-            return _cvsPosService.GetCvsList(Globals.CompanyId);
+            return _cvsPosService.GetCvsList(Globals.CompanyId, page ,  take , positionId ,  searchKeyWords);
+        }
+
+        [HttpGet]
+        [Route("GetDuplicatesCvsList")]
+        public List<CvListItemModel> GetDuplicatesCvsList(int cvId, int candidateId)
+        {
+            return _cvsPosService.GetDuplicatesCvsList(Globals.CompanyId, cvId, candidateId);
         }
 
         [HttpGet]

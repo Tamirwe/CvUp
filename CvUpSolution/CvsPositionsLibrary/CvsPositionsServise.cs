@@ -46,21 +46,34 @@ namespace CvsPositionsLibrary
             _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);
         }
 
-        public candidate? GetCandidate(string email)
+        public candidate? GetCandidateByEmail(string email)
         {
             return _cvsPositionsQueries.GetCandidateByEmail(email);
         }
 
+        public candidate? GetCandidateByPhone(string phone)
+        {
+            return _cvsPositionsQueries.GetCandidateByPhone(phone);
+        }
+
         public void AddUpdateCandidateFromCvImport(ImportCvModel importCv)
         {
-            int candId = 0;
+            candidate? cand = null;
 
-            if (importCv.emailAddress.Length > 0)
+            if (!string.IsNullOrEmpty(importCv.emailAddress))
             {
-                candidate? cand = GetCandidate(importCv.emailAddress);
+                cand = GetCandidateByEmail(importCv.emailAddress);
+            }
+            else if (!string.IsNullOrEmpty(importCv.phone))
+            {
+                cand = GetCandidateByPhone(importCv.phone);
+            }
+
+            if (cand != null)
+            {
                 string newCandName = importCv.candidateName.Trim();
 
-               
+
                 if (cand != null)
                 {
                     if (cand.name != null)
@@ -76,13 +89,12 @@ namespace CvsPositionsLibrary
                     }
 
                     cand.name = newCandName;
-                    cand.has_duplicates_cvs = 1;
                     _cvsPositionsQueries.UpdateCandidate(cand);
                     importCv.candidateId = cand.id;
                 }
             }
 
-            if (candId == 0)
+            if (importCv.candidateId == 0)
             {
                 string email = importCv.emailAddress.Length > 0 ? importCv.emailAddress : "Not Found";
 
@@ -105,9 +117,16 @@ namespace CvsPositionsLibrary
             _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId)
+        public List<CvListItemModel> GetCvsList(int companyId, int page, int take , int positionId , string? searchKeyWords )
         {
-            return _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            return _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, positionId, searchKeyWords);
+        }
+
+        public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int cvId, int candidateId)
+        {
+            List<CvListItemModel> cvsList =  _cvsPositionsQueries.GetDuplicatesCvsList(companyId,  candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            cvsList.RemoveAll(x=>x.cvId== cvId);
+            return cvsList;
         }
 
         public PositionClientModel GetPosition(int companyId, int positionId)
@@ -160,9 +179,14 @@ namespace CvsPositionsLibrary
             return cvs;
         }
 
-        public void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        public void UpdateCandidateLastCv(ImportCvModel importCv)
         {
-            _cvsPositionsQueries.UpdateDuplicateAndLastCv(importCv);
+            _cvsPositionsQueries.UpdateCandidateLastCv(importCv);
+        }
+
+        public void UpdateSameCv(ImportCvModel importCv)
+        {
+            _cvsPositionsQueries.UpdateSameCv(importCv);
         }
 
 

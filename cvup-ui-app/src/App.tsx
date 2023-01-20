@@ -6,6 +6,10 @@ import "./App.css";
 import "./App.scss";
 import { useEffect, useState } from "react";
 import { IAppSettings } from "./models/GeneralModels";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import rtlPlugin from "stylis-plugin-rtl";
 
 // import { ThemeCustomization } from "./themes/ThemeCustomization";
 
@@ -32,14 +36,28 @@ function App() {
     return new RootStore(appSettings);
   };
 
+  const themeRtl = createTheme({
+    direction: "rtl", // Both here and <body dir="rtl">
+  });
+
+  // Create rtl cache
+  const cacheRtl = createCache({
+    key: "muirtl",
+    stylisPlugins: [rtlPlugin],
+  });
+
   return (
     // <ThemeCustomization>
     <>
       {isServersLoaded ? (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
-          <StoreProvider store={getRootStore()}>
-            <Router />
-          </StoreProvider>
+          <CacheProvider value={cacheRtl}>
+            <ThemeProvider theme={themeRtl}>
+              <StoreProvider store={getRootStore()}>
+                <Router />
+              </StoreProvider>
+            </ThemeProvider>
+          </CacheProvider>
         </Worker>
       ) : (
         <div></div>

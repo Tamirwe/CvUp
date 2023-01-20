@@ -7,6 +7,14 @@ body {
 .rpv-default-layout__container{
   border: 0 !important;
 }
+.rpv-core__inner-pages.rpv-core__inner-pages--vertical{
+  overflow: hidden  !important;
+}
+
+.rpv-core__inner-pages.rpv-core__inner-pages--vertical:hover{
+  overflow: overlay  !important;
+  z-index: 9;
+}
 
 .ql-editor{
   min-height:150px;
@@ -14,19 +22,19 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #ffffff; 
   /* box-shadow: inset 0 0 5px rgb(240, 237, 237);  */
   border-radius: 10px;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: rgb(196, 196, 196); 
   border-radius: 10px;
 }
 

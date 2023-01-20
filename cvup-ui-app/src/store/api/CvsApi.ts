@@ -16,6 +16,17 @@ export default class CvsApi extends BaseApi {
     });
   }
 
+  async GetDuplicatesCvsList(cvId: number, candidateId: number) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<ICv[]>(
+          `Cvs/GetDuplicatesCvsList?cvId=${cvId}&candidateId=${candidateId}`
+        )
+      ).data;
+      return data;
+    });
+  }
+
   async getCv() {
     return await this.apiWrapper(async () => {
       const data = (await this.http.get<ICv>("Cvs/getCv")).data;

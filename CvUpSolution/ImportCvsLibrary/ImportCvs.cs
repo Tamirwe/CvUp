@@ -105,26 +105,26 @@ namespace ImportCvsLibrary
         {
             ExtractCvProps(importCv);
             CandidateFindOrCreate(importCv);
+            GetCvAsciiSum(importCv);
             CheckIsCvDuplicate(importCv);
-
-            if (!importCv.isDuplicatePositionSender)
-            {
-                AddCvToDb(importCv);
-                RenameAndMoveAttachmentToFolder(importCv);
-                UpdateCvKeyId(importCv);
-                UpdateDuplicateAndLastCv(importCv);
-                AddCvToIndex(importCv);
-            }
+            AddCvToDb(importCv);
+            RenameAndMoveAttachmentToFolder(importCv);
+            UpdateCvKeyId(importCv);
+            UpdateCandidateLastCv(importCv);
+            AddCvToIndex(importCv);
         }
 
-        private void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        private void UpdateCandidateLastCv(ImportCvModel importCv)
         {
-            _cvsPositionsServise.UpdateDuplicateAndLastCv(importCv);
+            _cvsPositionsServise.UpdateCandidateLastCv(importCv);
         }
 
         private void UpdateCvKeyId(ImportCvModel importCv)
         {
-            _cvsPositionsServise.UpdateCvKeyId(importCv);
+            if (!importCv.isSameCv)
+            {
+                _cvsPositionsServise.UpdateCvKeyId(importCv);
+            }
         }
 
         private void CreateCvFolder(int companyId)
@@ -160,9 +160,12 @@ namespace ImportCvsLibrary
 
         private void RenameAndMoveAttachmentToFolder(ImportCvModel importCv)
         {
-            string fileNamePath = GetAttachmentFileNamePath(importCv.cvId, importCv.fileExtension, out string cvKey);
-            importCv.cvKey = cvKey;
-            File.Move(importCv.tempFilePath, fileNamePath);
+            if (!importCv.isSameCv)
+            {
+                string fileNamePath = GetAttachmentFileNamePath(importCv.cvId, importCv.fileExtension, out string cvKey);
+                importCv.cvKey = cvKey;
+                File.Move(importCv.tempFilePath, fileNamePath);
+            }
         }
 
         private void ExtractCvProps(ImportCvModel importCv)
@@ -184,22 +187,24 @@ namespace ImportCvsLibrary
         {
             if (!importCv.isNewCandidate)
             {
-                importCv.cvAsciiSum = GetCvAsciiSum(importCv.cvTxt);
                 List<cv> cvs = _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.cvAsciiSum);
 
                 if (cvs.Count > 0)
                 {
+                    importCv.isDuplicate = true;
+                    importCv.duplicateCvId = cvs.First().id;
+
                     foreach (var cv in cvs)
                     {
-                        if (cv.subject == importCv.subject && cv.date_created.AddDays(1) > DateTime.Now && cv.from == importCv.from)
+                        if (cv.subject == importCv.subject && cv.date_created.AddDays(30) > DateTime.Now && cv.from == importCv.from)
                         {
-                            importCv.isDuplicatePositionSender = true;
+                            importCv.isSameCv = true;
+                            importCv.cvId = cv.id;
+                            importCv.duplicateCvId = 0;
+                            importCv.isDuplicate = false;
                             break;
                         }
                     }
-
-                    importCv.isDuplicate = true;
-                    importCv.duplicateCvId = cvs.First().id;
                 }
             }
         }
@@ -273,12 +278,19 @@ namespace ImportCvsLibrary
 
         private void AddCvToDb(ImportCvModel importCv)
         {
-            importCv.cvId = _cvsPositionsServise.AddCv(importCv);
+            if (importCv.isSameCv)
+            {
+                _cvsPositionsServise.UpdateSameCv(importCv);
+            }
+            else
+            {
+                importCv.cvId = _cvsPositionsServise.AddCv(importCv);
+            }
         }
 
         private void AddCvToIndex(ImportCvModel importCv)
         {
-            if (!importCv.isDuplicate && importCv.emailAddress.Length > 0)
+            if (!importCv.isDuplicate && !importCv.isSameCv )
             {
                 _cvsPositionsServise.AddNewCvToIndex(importCv);
             }
@@ -346,11 +358,11 @@ namespace ImportCvsLibrary
             return txt;
         }
 
-        private int GetCvAsciiSum(string cvTxt)
+        private void GetCvAsciiSum(ImportCvModel importCv)
         {
             int docAsciiSum = 0;
 
-            foreach (char c in cvTxt)
+            foreach (char c in importCv.cvTxt)
             {
                 try
                 {
@@ -359,7 +371,7 @@ namespace ImportCvsLibrary
                 catch (Exception) { }
             }
 
-            return docAsciiSum;
+            importCv.cvAsciiSum = docAsciiSum;
         }
 
         private string GetAttachmentFileNamePath(int cvId, string fileExtension, out string cvKey)

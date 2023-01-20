@@ -9,7 +9,7 @@ namespace CvsPositionsLibrary
         public void AddNewCvToIndex(ImportCvModel item);
         public void AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public void IndexCompanyCvs(int companyId);
-        public List<CvListItemModel> GetCvsList(int companyId);
+        public List<CvListItemModel> GetCvsList(int companyId, int page, int take, int positionId, string? searchKeyWords);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
         public List<IdNameModel> GetDepartmentsList(int companyId);
@@ -21,6 +21,7 @@ namespace CvsPositionsLibrary
         public position? AddPosition(PositionClientModel data, int companyId, int userId);
         public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
         public List<PositionListItemModel> GetPositionsList(int companyId);
+        public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int cvId, int candidateId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);
@@ -28,6 +29,7 @@ namespace CvsPositionsLibrary
         public void UpdateCvKeyId(ImportCvModel importCv);
         public void SaveCvReview(CvReviewModel cvReview);
         public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum);
-        public void UpdateDuplicateAndLastCv(ImportCvModel importCv);
+        public void UpdateCandidateLastCv(ImportCvModel importCv);
+        public void UpdateSameCv(ImportCvModel importCv);
     }
 }

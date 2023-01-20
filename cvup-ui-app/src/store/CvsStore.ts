@@ -7,9 +7,10 @@ export class CvsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
   cvsList: ICv[] = [];
+  duplicatesCvsList: ICv[] = [];
   pdfUrl: string = "";
-
   cvSelected?: ICv;
+  cvDuplicateSelected?: ICv;
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -31,15 +32,18 @@ export class CvsStore {
   }
 
   async getCv(cv: ICv) {
-    this.cvSelected = { ...cv };
     runInAction(() => {
+      this.cvSelected = { ...cv };
+      this.cvDuplicateSelected = undefined;
       this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${cv.keyId}`;
     });
+  }
 
-    // this.rootStore.generalStore.backdrop = true;
-    // const res = await this.cvsApi.getCv();
-
-    // this.rootStore.generalStore.backdrop = false;
+  async getCvDuplicate(cv: ICv) {
+    runInAction(() => {
+      this.cvDuplicateSelected = { ...cv };
+      this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${cv.keyId}`;
+    });
   }
 
   async saveCvReview(reviewText: any, reviewHtml: any) {
@@ -52,6 +56,15 @@ export class CvsStore {
     const res = await this.cvsApi.getCvsList();
     runInAction(() => {
       this.cvsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async GetDuplicatesCvsList(cv: ICv) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.GetDuplicatesCvsList(cv.cvId, cv.candidateId);
+    runInAction(() => {
+      this.duplicatesCvsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }

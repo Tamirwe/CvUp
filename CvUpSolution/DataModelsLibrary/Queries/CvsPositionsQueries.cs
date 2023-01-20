@@ -96,6 +96,15 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public candidate? GetCandidateByPhone(string phone)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.phone == phone).FirstOrDefault();
+                return cand;
+            }
+        }
+
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId)
         {
             using (var dbContext = new cvup00001Context())
@@ -120,25 +129,55 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey)
+        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords)
+        {
+            int skip = (page - 1) * take;
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from cand in dbContext.candidates
+                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                             where cand.company_id == companyId
+                             orderby cand.last_cv_sent descending
+                             select new CvListItemModel
+                             {
+                                 cvId = cvs.id,
+                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 candidateName = cand.name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent = Convert.ToDateTime(cand.last_cv_sent)
+                             }).Skip(skip).Take(take);
+
+                return query.ToList();
+            }
+        }
+
+        public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int candidateId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = from cand in dbContext.candidates
-                            join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                            where cand.company_id == companyId
-                            select new CvListItemModel
-                            {
-                                cvId = cvs.id,
-                                keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
-                                candidateId = cand.id,
-                                email = cand.email,
-                                emailSubject = cvs.subject,
-                                candidateName = cand.name,
-                                phone = cand.phone,
-                                hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs)
-                            };
+                var query = (from cand in dbContext.candidates
+                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
+                             where cand.company_id == companyId
+                             && cand.id == candidateId
+                             orderby cand.last_cv_sent descending
+                             select new CvListItemModel
+                             {
+                                 cvId = cvs.id,
+                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 candidateName = cand.name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent=cvs.date_created
+                             });
 
                 return query.ToList();
             }
@@ -573,7 +612,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public void UpdateDuplicateAndLastCv(ImportCvModel importCv)
+        public void UpdateCandidateLastCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -586,6 +625,18 @@ namespace DataModelsLibrary.Queries
                 dbContext.SaveChanges();
             }
         }
+
+        public void UpdateSameCv(ImportCvModel importCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
+                cv.date_created= DateTime.Now;
+                var result = dbContext.cvs.Update(cv);
+                dbContext.SaveChanges();
+            }
+        }
+
 
     }
 }

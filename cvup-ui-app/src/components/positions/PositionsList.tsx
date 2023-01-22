@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
+import { format } from "date-fns";
 
 export const PositionsList = observer(() => {
   const { positionsStore } = useStore();
@@ -41,12 +42,13 @@ export const PositionsList = observer(() => {
             key={pos.id}
             dense
             disablePadding
+            sx={{ "& .MuiListItemSecondaryAction-root": { right: 0 } }}
             secondaryAction={
               <Tooltip title="Attach to position">
                 <Checkbox
                   checked={checked}
                   onChange={handleChange}
-                  sx={{ "& svg": { fontSize: 22 } }}
+                  sx={{ right: 0, "& svg": { fontSize: 22 } }}
                   icon={<MdBookmarkBorder />}
                   checkedIcon={<MdBookmark />}
                 />
@@ -63,11 +65,12 @@ export const PositionsList = observer(() => {
             >
               <ListItemText primary={pos.name} sx={{ pr: 5 }} />
               <ListItemText
-                primary={pos.updated.toString()}
+                primary={format(new Date(pos.updated), "MMM d, yyyy")}
                 sx={{
                   textAlign: "right",
                   color: "#bcc9d5",
                   fontSize: "0.775rem",
+                  alignSelf: "start",
                 }}
               />
             </ListItemButton>

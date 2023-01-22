@@ -19,7 +19,7 @@ export const LayoutAuth = observer(() => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={0} columns={18}>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           <Drawer
             open={isOpen}
             variant="persistent"
@@ -35,7 +35,8 @@ export const LayoutAuth = observer(() => {
         </Grid>
         <Grid
           item
-          xs={14}
+          xs={13}
+          columns={12}
           sx={{ backgroundColor: "#fff", paddingLeft: "10px" }}
         >
           <Header />

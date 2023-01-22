@@ -53,6 +53,8 @@ namespace DataModelsLibrary.Models
         public string? emailSubject { get; set; } = "";
         public string? candidateName { get; set; } = "";
         public bool hasDuplicates { get; set; }
+        public DateTime cvSent { get; set; }
+
     }
 
     public class CvReviewModel

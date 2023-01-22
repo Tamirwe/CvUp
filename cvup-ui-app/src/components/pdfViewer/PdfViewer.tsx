@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { LoadError, Viewer } from "@react-pdf-viewer/core";
+import { LoadError, SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 import { RenderGoToPageProps } from "@react-pdf-viewer/page-navigation";
@@ -108,7 +108,7 @@ export const PdfViewer = observer(() => {
           padding: "4px",
           position: "absolute",
           transform: "translate(-50%, 0)",
-          zIndex: 1,
+          zIndex: 2,
         }}
       >
         <Toolbar>
@@ -166,6 +166,7 @@ export const PdfViewer = observer(() => {
       >
         {cvsStore.pdfUrl && (
           <Viewer
+            defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={cvsStore.pdfUrl}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}

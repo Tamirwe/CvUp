@@ -26,6 +26,7 @@ export interface ICv {
   reviewHtml: string;
   reviewTct: string;
   fileType: string;
+  cvSent: Date;
 }
 
 export interface IPosition {

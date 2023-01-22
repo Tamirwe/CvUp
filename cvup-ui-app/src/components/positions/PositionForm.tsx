@@ -15,10 +15,15 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { MdFormatIndentIncrease } from "react-icons/md";
+import {
+  MdFormatIndentIncrease,
+  MdFormatAlignRight,
+  MdFormatAlignLeft,
+} from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
@@ -35,6 +40,7 @@ export const PositionForm = observer(() => {
   const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
+  const [isRtlDirection, setIsRtlDirection] = useState(false);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
   const [
@@ -204,33 +210,57 @@ export const PositionForm = observer(() => {
   return (
     <form noValidate spellCheck="false">
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={12}>
           <Grid container>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                required
-                margin="normal"
-                type="text"
-                id="title"
-                label="Position title"
-                variant="outlined"
-                onChange={(e) => {
-                  setIsDirty(true);
+              <Stack direction="row" justifyContent="space-between" spacing={1}>
+                <TextField
+                  sx={{
+                    "& input": { direction: isRtlDirection ? "rtl" : "ltr" },
+                  }}
+                  fullWidth
+                  required
+                  margin="normal"
+                  type="text"
+                  id="title"
+                  label="Position title"
+                  variant="outlined"
+                  onChange={(e) => {
+                    setIsDirty(true);
 
-                  setFrmState((currentProps) => ({
-                    ...currentProps,
-                    name: e.target.value,
-                  }));
-                  setFieldErr("name", "");
-                }}
-                error={frmErrs.name}
-                helperText={frmErrsMsgs.name}
-                value={frmState.name}
-              />
+                    setFrmState((currentProps) => ({
+                      ...currentProps,
+                      name: e.target.value,
+                    }));
+                    setFieldErr("name", "");
+                  }}
+                  error={frmErrs.name}
+                  helperText={frmErrsMsgs.name}
+                  value={frmState.name}
+                />
+                <Tooltip title="Direction">
+                  <IconButton
+                    sx={{
+                      height: "fit-content",
+                      alignSelf: "center",
+                    }}
+                    size="medium"
+                    onClick={() => setIsRtlDirection(!isRtlDirection)}
+                  >
+                    {isRtlDirection ? (
+                      <MdFormatAlignLeft />
+                    ) : (
+                      <MdFormatAlignRight />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              </Stack>
             </Grid>
             <Grid item xs={12}>
               <TextField
+                sx={{
+                  "& textarea": { direction: isRtlDirection ? "rtl" : "ltr" },
+                }}
                 fullWidth
                 multiline
                 rows={8}
@@ -256,7 +286,7 @@ export const PositionForm = observer(() => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} lg={6} sx={{ mt: 2 }}>
+        <Grid item xs={12} lg={12} sx={{ mt: 2 }}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={6}>
               <FormControl fullWidth>

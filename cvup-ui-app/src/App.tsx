@@ -6,10 +6,7 @@ import "./App.css";
 import "./App.scss";
 import { useEffect, useState } from "react";
 import { IAppSettings } from "./models/GeneralModels";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import rtlPlugin from "stylis-plugin-rtl";
+
 
 // import { ThemeCustomization } from "./themes/ThemeCustomization";
 
@@ -20,14 +17,18 @@ function App() {
   });
 
   useEffect(() => {
-    fetch("./servers.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // appSettings.appServerUrl = data.appHttp;
-        setIsServersLoaded(true);
-        setAppSettings(data);
-        Object.freeze(appSettings);
-      });
+    try {
+      fetch(`${process.env.PUBLIC_URL}/servers.json`)
+        .then((res) => res.json())
+        .then((data) => {
+          // appSettings.appServerUrl = data.appHttp;
+          setIsServersLoaded(true);
+          setAppSettings(data);
+          Object.freeze(appSettings);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // const rootStore = new RootStore();
@@ -36,28 +37,14 @@ function App() {
     return new RootStore(appSettings);
   };
 
-  const themeRtl = createTheme({
-    direction: "rtl", // Both here and <body dir="rtl">
-  });
-
-  // Create rtl cache
-  const cacheRtl = createCache({
-    key: "muirtl",
-    stylisPlugins: [rtlPlugin],
-  });
-
   return (
     // <ThemeCustomization>
     <>
       {isServersLoaded ? (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
-          <CacheProvider value={cacheRtl}>
-            <ThemeProvider theme={themeRtl}>
-              <StoreProvider store={getRootStore()}>
-                <Router />
-              </StoreProvider>
-            </ThemeProvider>
-          </CacheProvider>
+          <StoreProvider store={getRootStore()}>
+            <Router />
+          </StoreProvider>
         </Worker>
       ) : (
         <div></div>

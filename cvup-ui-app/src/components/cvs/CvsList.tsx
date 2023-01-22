@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
@@ -41,12 +42,13 @@ export const CvsList = observer(() => {
         return (
           <ListItem
             key={cv.cvId}
+            dense
+            disablePadding
             component="nav"
             sx={{
               flexDirection: "column",
               alignItems: "normal",
-              pt: "1px",
-              pb: "1px",
+              pl: "18px",
             }}
           >
             <ListItemButton
@@ -72,7 +74,7 @@ export const CvsList = observer(() => {
               </ListItemIcon>
 
               <ListItemText
-                primary={"Jan 7, 2014"}
+                primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
                 sx={{
                   textAlign: "right",
                   color: "#bcc9d5",
@@ -95,9 +97,9 @@ export const CvsList = observer(() => {
                 disablePadding
                 dense={true}
                 sx={{
-                  backgroundColor: "#fbf9f9",
+                  backgroundColor: "#fbfbfb",
                   border: "1px solid #ffdcdc",
-                  maxHeight: "200px",
+                  maxHeight: "300px",
                   overflowY: "hidden",
                   "&:hover ": {
                     overflow: "overlay",
@@ -118,7 +120,7 @@ export const CvsList = observer(() => {
                       }}
                     >
                       <ListItemText
-                        primary={"Jan 7, 2014"}
+                        primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
                         sx={{
                           textAlign: "right",
                           color: "#bcc9d5",

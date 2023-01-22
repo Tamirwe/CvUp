@@ -13,7 +13,7 @@ body {
 
 .rpv-core__inner-pages.rpv-core__inner-pages--vertical:hover{
   overflow: overlay  !important;
-  z-index: 9;
+  z-index: 1;
 }
 
 .ql-editor{

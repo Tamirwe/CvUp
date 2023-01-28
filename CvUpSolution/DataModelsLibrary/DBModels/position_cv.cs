@@ -8,10 +8,12 @@ namespace Database.models
         public int id { get; set; }
         public int company_id { get; set; }
         public int position_id { get; set; }
+        public int candidate_id { get; set; }
         public int cv_id { get; set; }
         public int candidate_stage_id { get; set; }
         public DateTime? date_created { get; set; }
 
+        public virtual candidate candidate { get; set; } = null!;
         public virtual candidate_position_stage candidate_stage { get; set; } = null!;
         public virtual company company { get; set; } = null!;
         public virtual cv cv { get; set; } = null!;

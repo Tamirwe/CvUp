@@ -14,13 +14,16 @@ import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 import { format } from "date-fns";
 
 export const PositionsList = observer(() => {
-  const { positionsStore } = useStore();
+  const { positionsStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
   const [checked, setChecked] = useState(true);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    posId: number
+  ) => {
+    cvsStore.attachCvToPos(posId, event.target.checked);
   };
 
   useEffect(() => {
@@ -46,8 +49,14 @@ export const PositionsList = observer(() => {
             secondaryAction={
               <Tooltip title="Attach to position">
                 <Checkbox
-                  checked={checked}
-                  onChange={handleChange}
+                  checked={
+                    cvsStore.cvDisplayed && cvsStore.cvDisplayed.candPosIds
+                      ? cvsStore.cvDisplayed.candPosIds.indexOf(pos.id) > -1
+                      : false
+                  }
+                  onChange={(e) => {
+                    handleChange(e, pos.id);
+                  }}
                   sx={{ right: 0, "& svg": { fontSize: 22 } }}
                   icon={<MdBookmarkBorder />}
                   checkedIcon={<MdBookmark />}
@@ -63,15 +72,16 @@ export const PositionsList = observer(() => {
                 // positionsStore.GetPosition(pos.id);
               }}
             >
-              <ListItemText primary={pos.name} sx={{ pr: 5 }} />
               <ListItemText
                 primary={format(new Date(pos.updated), "MMM d, yyyy")}
                 sx={{
-                  textAlign: "right",
                   color: "#bcc9d5",
                   fontSize: "0.775rem",
-                  alignSelf: "start",
                 }}
+              />
+              <ListItemText
+                primary={pos.name}
+                sx={{ textAlign: "right", alignSelf: "start" }}
               />
             </ListItemButton>
           </ListItem>

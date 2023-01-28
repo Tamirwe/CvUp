@@ -54,6 +54,8 @@ namespace DataModelsLibrary.Models
         public string? candidateName { get; set; } = "";
         public bool hasDuplicates { get; set; }
         public DateTime cvSent { get; set; }
+        public List<int>? candPosIds { get; set; } 
+        public List<int>? cvPosIds { get; set; }
 
     }
 
@@ -64,6 +66,18 @@ namespace DataModelsLibrary.Models
         public string reviewHtml { get; set; } = "";
         public string reviewText { get; set; } = "";
     }
+
+    public class AttachePosCvModel
+    {
+        public int companyId { get; set; }
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public int posId { get; set; }
+        public List<int> candPosIds { get; set; } = new List<int>();
+        public List<int> cvPosIds { get; set; } = new List<int>();
+        public bool isAttach { get; set; }
+    }
+
 
     public class CvModel
     {

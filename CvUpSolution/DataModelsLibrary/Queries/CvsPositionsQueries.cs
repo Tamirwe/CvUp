@@ -1,9 +1,11 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MySqlX.XDevAPI.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -11,6 +13,7 @@ using System.Data;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -149,7 +152,9 @@ namespace DataModelsLibrary.Queries
                                  candidateName = cand.name,
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
-                                 cvSent = Convert.ToDateTime(cand.last_cv_sent)
+                                 cvSent = Convert.ToDateTime(cand.last_cv_sent),
+                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids)
                              }).Skip(skip).Take(take);
 
                 return query.ToList();
@@ -176,8 +181,10 @@ namespace DataModelsLibrary.Queries
                                  candidateName = cand.name,
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
-                                 cvSent=cvs.date_created
-                             });
+                                 cvSent = cvs.date_created,
+                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids)
+            });
 
                 return query.ToList();
             }
@@ -637,6 +644,54 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public void AttachePosCv(AttachePosCvModel posCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                cv? cv = dbContext.cvs.Where(x => x.company_id == posCv.companyId && x.id == posCv.cvId).FirstOrDefault();
+
+                if (cv != null)
+                {
+                    cv.pos_ids = $"[{string.Join(",",  posCv.cvPosIds)}]";
+                    var result = dbContext.cvs.Update(cv);
+                }
+              
+
+                candidate? cand = dbContext.candidates.Where(x => x.company_id == posCv.companyId && x.id == posCv.candidateId).FirstOrDefault();
+              
+                if (cand != null)
+                {
+                    cand.pos_ids = $"[{string.Join(",", posCv.candPosIds)}]";
+                    var result = dbContext.candidates.Update(cand);
+                }
+
+                if (posCv.isAttach)
+                {
+                    var newPosCv = new position_cv
+                    {
+                        company_id = posCv.companyId,
+                        position_id = posCv.posId,
+                        candidate_id = posCv.candidateId,
+                        cv_id = posCv.cvId,
+                        candidate_stage_id = 1,
+                    };
+
+                    dbContext.position_cvs.Add(newPosCv);
+                }
+                else
+                {
+                    position_cv? posCvs = dbContext.position_cvs.Where(x => x.company_id == posCv.companyId && x.position_id == posCv.posId && x.cv_id==posCv.cvId).FirstOrDefault();
+
+                    if (posCvs != null)
+                    {
+                        dbContext.position_cvs.Remove(posCvs);
+                    }
+                }
+
+                dbContext.SaveChanges();
+
+            }
+        }
 
     }
 }

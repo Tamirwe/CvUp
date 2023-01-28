@@ -18,11 +18,12 @@ namespace Database.models
         public int candidate_id { get; set; }
         public string? subject { get; set; }
         public string? from { get; set; }
-        public DateTime date_created { get; set; }
         public string? email_id { get; set; }
         public long? cv_ascii_sum { get; set; }
         public string? position { get; set; }
         public int? duplicate_cv_id { get; set; }
+        public DateTime date_created { get; set; }
+        public string? pos_ids { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual ICollection<candidate> candidates { get; set; }

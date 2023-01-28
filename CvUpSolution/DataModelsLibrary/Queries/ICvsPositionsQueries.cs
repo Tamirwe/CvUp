@@ -35,6 +35,6 @@ namespace DataModelsLibrary.Queries
         public void UpdateSameCv(ImportCvModel importCv);
         public candidate? GetCandidateByPhone(string phone);
         public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int candidateId, string encriptKey);
-
+        public void AttachePosCv(AttachePosCvModel posCv);
     }
 }

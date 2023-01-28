@@ -24,7 +24,7 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCvsList")]
-        public List<CvListItemModel> GetCvsList(int page = 1, int take = 20, int positionId = 0, string? searchKeyWords = "")
+        public List<CvListItemModel> GetCvsList(int page = 1, int take = 50, int positionId = 0, string? searchKeyWords = "")
         {
             return _cvsPosService.GetCvsList(Globals.CompanyId, page ,  take , positionId ,  searchKeyWords);
         }
@@ -48,6 +48,14 @@ namespace CvUpAPI.Controllers
         public void SaveCvReview(CvReviewModel cvReview)
         {
             _cvsPosService.SaveCvReview(cvReview);
+        }
+
+        [HttpPost]
+        [Route("AttachePosCv")]
+        public void AttachePosCv(AttachePosCvModel posCv)
+        {
+            posCv.companyId= Globals.CompanyId;
+            _cvsPosService.AttachePosCv(posCv);
         }
     }
 }

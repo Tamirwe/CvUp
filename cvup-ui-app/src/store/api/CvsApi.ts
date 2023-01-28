@@ -27,6 +27,29 @@ export default class CvsApi extends BaseApi {
     });
   }
 
+  async AttachePosCv(
+    candidateId: number,
+    cvId: number,
+    posId: number,
+    candPosIds: number[],
+    cvPosIds: number[],
+    isAttach: boolean
+  ) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post(`Cvs/AttachePosCv`, {
+          candidateId,
+          cvId,
+          posId,
+          candPosIds,
+          cvPosIds,
+          isAttach,
+        })
+      ).data;
+      return data;
+    });
+  }
+
   async getCv() {
     return await this.apiWrapper(async () => {
       const data = (await this.http.get<ICv>("Cvs/getCv")).data;

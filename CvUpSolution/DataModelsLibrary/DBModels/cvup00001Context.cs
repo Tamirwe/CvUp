@@ -57,6 +57,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.last_cv_id, "fk_candidates_last_cv_id_cvs_id");
 
+                entity.HasIndex(e => e.last_cv_sent, "ix_candidates_last_cv_sent");
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -76,6 +78,8 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(100);
 
                 entity.Property(e => e.phone).HasMaxLength(20);
+
+                entity.Property(e => e.pos_ids).HasColumnType("json");
 
                 entity.Property(e => e.review_html).HasMaxLength(8000);
 
@@ -182,6 +186,8 @@ namespace Database.models
                 entity.Property(e => e.from).HasMaxLength(200);
 
                 entity.Property(e => e.key_id).HasMaxLength(30);
+
+                entity.Property(e => e.pos_ids).HasColumnType("json");
 
                 entity.Property(e => e.position).HasMaxLength(300);
 
@@ -367,6 +373,8 @@ namespace Database.models
 
             modelBuilder.Entity<position_cv>(entity =>
             {
+                entity.HasIndex(e => e.candidate_id, "fk_position_cvs_candidate_id_candidates_id");
+
                 entity.HasIndex(e => e.candidate_stage_id, "fk_position_cvs_candidate_stage_id_candidate_position_stage_id");
 
                 entity.HasIndex(e => e.company_id, "fk_position_cvs_company_id_companies_id");
@@ -378,6 +386,12 @@ namespace Database.models
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(d => d.candidate)
+                    .WithMany(p => p.position_cvs)
+                    .HasForeignKey(d => d.candidate_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_position_cvs_candidate_id_candidates_id");
 
                 entity.HasOne(d => d.candidate_stage)
                     .WithMany(p => p.position_cvs)

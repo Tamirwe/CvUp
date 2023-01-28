@@ -189,6 +189,11 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries.UpdateSameCv(importCv);
         }
 
+        public void AttachePosCv(AttachePosCvModel posCv)
+        {
+            _cvsPositionsQueries.AttachePosCv(posCv);
+        }
+
 
     }
 }

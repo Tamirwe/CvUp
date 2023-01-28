@@ -31,5 +31,6 @@ namespace CvsPositionsLibrary
         public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum);
         public void UpdateCandidateLastCv(ImportCvModel importCv);
         public void UpdateSameCv(ImportCvModel importCv);
+        public void AttachePosCv(AttachePosCvModel posCv);
     }
 }

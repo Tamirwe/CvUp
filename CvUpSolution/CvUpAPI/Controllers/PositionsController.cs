@@ -49,7 +49,7 @@ namespace CvUpAPI.Controllers
         [Route("GetPositionsList")]
         public IActionResult GetPositionsList()
         {
-            List<PositionListItemModel> positions = _cvsPosService.GetPositionsList(Globals.CompanyId);
+            List<PositionModel> positions = _cvsPosService.GetPositionsList(Globals.CompanyId);
             return Ok(positions);
         }
 

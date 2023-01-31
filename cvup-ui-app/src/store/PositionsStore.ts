@@ -1,26 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import {
-  IAppSettings,
-  IPosition,
-  IPositionListItem,
-} from "../models/GeneralModels";
+import { IAppSettings, IPosition } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 
 export class PositionsStore {
-  private newPosition: IPosition = {
-    id: 0,
-    name: "",
-    descr: "",
-    isActive: true,
-    departmentId: 0,
-    hrCompaniesIds: [],
-    interviewersIds: [],
-  };
-
   private positionApi;
-  positionsList: IPositionListItem[] = [];
-  currentPosition: IPosition = this.newPosition;
+  positionsList: IPosition[] = [];
+  posSelected?: IPosition;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -29,21 +15,36 @@ export class PositionsStore {
 
   reset() {
     this.positionsList = [];
-    this.currentPosition = this.newPosition;
+    this.posSelected = undefined;
   }
 
-  async GetPosition(positionId: number) {
+  async newPosition() {
+    runInAction(() => {
+      this.posSelected = {
+        id: 0,
+        name: "",
+        descr: "",
+        updated: new Date(),
+        isActive: true,
+        departmentId: 0,
+        hrCompaniesIds: [],
+        interviewersIds: [],
+      } as IPosition;
+    });
+  }
+
+  setPosSelected(posId: number) {
+    this.posSelected = this.positionsList.find((x) => x.id === posId);
+  }
+
+  async getPosition(posId: number) {
     this.rootStore.generalStore.backdrop = true;
-    if (positionId === 0) {
-      runInAction(() => {
-        this.currentPosition = this.newPosition;
-      });
-    } else {
-      const res = await this.positionApi.GetPosition(positionId);
-      runInAction(() => {
-        this.currentPosition = res.data;
-      });
-    }
+
+    const res = await this.positionApi.getPosition(posId);
+    runInAction(() => {
+      this.posSelected = res.data;
+    });
+
     this.rootStore.generalStore.backdrop = false;
   }
 

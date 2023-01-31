@@ -29,23 +29,19 @@ export interface ICv {
   cvSent: Date;
   candPosIds: number[];
   cvPosIds: number[];
+  stageId: number;
+  dateAttached: Date;
 }
 
 export interface IPosition {
   id: number;
   name: string;
   descr: string;
+  updated: Date;
   isActive: boolean;
   departmentId: number;
   hrCompaniesIds: number[];
   interviewersIds: number[];
-}
-
-export interface IPositionListItem {
-  id: number;
-  name: string;
-  updated: Date;
-  isActive: boolean;
 }
 
 export interface ICvReview {

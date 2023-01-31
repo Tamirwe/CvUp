@@ -52,17 +52,17 @@ export const CvsList = observer(() => {
             }}
           >
             <ListItemButton
-              selected={cv.cvId === cvsStore.cvSelected?.cvId}
+              selected={cv.candidateId === cvsStore.cvDisplayed?.candidateId}
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                cvsStore.getCv(cv);
-                cvsStore.GetDuplicatesCvsList(cv);
+                cvsStore.displayCvMain(cv);
+                cvsStore.getDuplicatesCvsList(cv);
               }}
             >
               <ListItemIcon>
-                <Tooltip title="Attach to position">
+                <Tooltip title="Duplicates">
                   <IconButton
                     color="primary"
                     aria-label="upload picture"
@@ -111,12 +111,12 @@ export const CvsList = observer(() => {
                     <ListItemButton
                       key={`${cv.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 4 }}
-                      selected={cv.cvId === cvsStore.cvDuplicateSelected?.cvId}
+                      selected={cv.cvId === cvsStore.cvDisplayed?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
-                        cvsStore.getCvDuplicate(cv);
+                        cvsStore.displayCvDuplicate(cv);
                       }}
                     >
                       <ListItemText

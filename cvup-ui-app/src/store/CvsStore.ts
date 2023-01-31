@@ -9,9 +9,11 @@ export class CvsStore {
   private isCvReviewDialogOpen: boolean = false;
   cvsList: ICv[] = [];
   duplicatesCvsList: ICv[] = [];
+  posCvsList: ICv[] = [];
   pdfUrl: string = "";
   cvSelected?: ICv;
   cvDuplicateSelected?: ICv;
+  cvPositionSelected?: ICv;
   cvDisplayed?: ICv;
   cvDisplayedList: DisplayedCvsListEnum = DisplayedCvsListEnum.None;
 
@@ -34,7 +36,7 @@ export class CvsStore {
     return this.isCvReviewDialogOpen;
   }
 
-  async getCv(cv: ICv) {
+  async displayCvMain(cv: ICv) {
     runInAction(() => {
       this.cvSelected = cv;
       this.cvDisplayed = this.cvSelected;
@@ -43,11 +45,20 @@ export class CvsStore {
     });
   }
 
-  async getCvDuplicate(cv: ICv) {
+  async displayCvDuplicate(cv: ICv) {
     runInAction(() => {
       this.cvDuplicateSelected = cv;
       this.cvDisplayed = this.cvDuplicateSelected;
       this.cvDisplayedList = DisplayedCvsListEnum.DuplicateCvsList;
+      this.getPdf();
+    });
+  }
+
+  async displayCvPosition(cv: ICv) {
+    runInAction(() => {
+      this.cvPositionSelected = cv;
+      this.cvDisplayed = this.cvPositionSelected;
+      this.cvDisplayedList = DisplayedCvsListEnum.PositionCvsList;
       this.getPdf();
     });
   }
@@ -70,11 +81,20 @@ export class CvsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async GetDuplicatesCvsList(cv: ICv) {
+  async getDuplicatesCvsList(cv: ICv) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.GetDuplicatesCvsList(cv.cvId, cv.candidateId);
+    const res = await this.cvsApi.getDuplicatesCvsList(cv.cvId, cv.candidateId);
     runInAction(() => {
       this.duplicatesCvsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async getPositionCvs(posId: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.getPosCvsList(posId);
+    runInAction(() => {
+      this.posCvsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }

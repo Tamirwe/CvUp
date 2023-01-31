@@ -129,6 +129,11 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
+        public List<CvListItemModel> GetPosCvsList(int companyId, int posId)
+        {
+            return _cvsPositionsQueries.GetPosCvsList(companyId, posId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+        }
+
         public PositionClientModel GetPosition(int companyId, int positionId)
         {
             PositionClientModel pos = _cvsPositionsQueries.GetPosition( companyId, positionId);
@@ -147,9 +152,9 @@ namespace CvsPositionsLibrary
             return updRec;
         }
 
-        public List<PositionListItemModel> GetPositionsList(int companyId)
+        public List<PositionModel> GetPositionsList(int companyId)
         {
-            List<PositionListItemModel> qList = _cvsPositionsQueries.GetPositionsList(companyId);
+            List<PositionModel> qList = _cvsPositionsQueries.GetPositionsList(companyId);
             return qList;
         }
 

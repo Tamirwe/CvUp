@@ -1,5 +1,6 @@
 import {
   Checkbox,
+  Collapse,
   List,
   ListItem,
   ListItemButton,
@@ -8,12 +9,14 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 import { format } from "date-fns";
+import styles from "./PositionsList.module.scss";
 
 export const PositionsList = observer(() => {
+  let location = useLocation();
   const { positionsStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
@@ -37,6 +40,7 @@ export const PositionsList = observer(() => {
       sx={{
         overflowY: "auto",
         width: "98%",
+        "&:hover": {},
       }}
     >
       {positionsStore.positionsList?.map((pos, i) => {
@@ -45,45 +49,107 @@ export const PositionsList = observer(() => {
             key={pos.id}
             dense
             disablePadding
-            sx={{ "& .MuiListItemSecondaryAction-root": { right: 0 } }}
-            secondaryAction={
+            sx={{
+              "& .MuiListItemSecondaryAction-root": { right: 0 },
+              flexDirection: "column",
+              alignItems: "normal",
+              pl: "18px",
+            }}
+          >
+            <ListItemButton
+              sx={{ pl: "4px" }}
+              selected={pos.id === positionsStore.posSelected?.id}
+              onClick={() => {
+                // navigate(`/position/${pos.id}`);
+                positionsStore.setPosSelected(pos.id);
+
+                cvsStore.getPositionCvs(pos.id);
+              }}
+            >
+              <ListItemText
+                primary={format(new Date(pos.updated), "MMM d, yyyy")}
+                sx={{
+                  textAlign: "right",
+                  alignSelf: "start",
+                  color: "#bcc9d5",
+                  fontSize: "0.775rem",
+                }}
+              />
+              <ListItemText primary={pos.name} />
               <Tooltip title="Attach to position">
                 <Checkbox
+                  className={styles.addCv}
                   checked={
                     cvsStore.cvDisplayed && cvsStore.cvDisplayed.candPosIds
                       ? cvsStore.cvDisplayed.candPosIds.indexOf(pos.id) > -1
                       : false
                   }
-                  onChange={(e) => {
-                    handleChange(e, pos.id);
+                  onChange={(event) => {
+                    event.stopPropagation();
+                    handleChange(event, pos.id);
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
                   }}
                   sx={{ right: 0, "& svg": { fontSize: 22 } }}
                   icon={<MdBookmarkBorder />}
                   checkedIcon={<MdBookmark />}
                 />
               </Tooltip>
-            }
-          >
-            <ListItemButton
-              selected={pos.id === positionsStore.currentPosition.id}
-              onClick={() => {
-                navigate(`/position/${pos.id}`);
-
-                // positionsStore.GetPosition(pos.id);
-              }}
-            >
-              <ListItemText
-                primary={format(new Date(pos.updated), "MMM d, yyyy")}
-                sx={{
-                  color: "#bcc9d5",
-                  fontSize: "0.775rem",
-                }}
-              />
-              <ListItemText
-                primary={pos.name}
-                sx={{ textAlign: "right", alignSelf: "start" }}
-              />
             </ListItemButton>
+
+            <Collapse
+              in={pos.id === positionsStore.posSelected?.id}
+              timeout="auto"
+              unmountOnExit
+            >
+              <List
+                component="div"
+                disablePadding
+                dense={true}
+                sx={{
+                  backgroundColor: "#fbfbfb",
+                  border: "1px solid #ffdcdc",
+                  maxHeight: "300px",
+                  overflowY: "hidden",
+                  "&:hover ": {
+                    overflow: "overlay",
+                  },
+                }}
+              >
+                {cvsStore.posCvsList.map((cv, i) => {
+                  return (
+                    <ListItemButton
+                      key={`${cv.cvId}dup`}
+                      sx={{ fontSize: "0.75rem", pl: 4 }}
+                      selected={cv.cvId === cvsStore.cvDisplayed?.cvId}
+                      onClick={() => {
+                        if (location.pathname !== "/cv") {
+                          navigate(`/cv`);
+                        }
+                        cvsStore.displayCvPosition(cv);
+                      }}
+                    >
+                      <ListItemText
+                        primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
+                        sx={{
+                          textAlign: "right",
+                          color: "#bcc9d5",
+                          fontSize: "0.775rem",
+                          alignSelf: "start",
+                          "& span": { fontSize: "0.75rem" },
+                        }}
+                      />
+                      <ListItemText
+                        sx={{ "& span, p": { fontSize: "0.75rem" } }}
+                        primary={cv.candidateName}
+                        secondary={cv.emailSubject}
+                      />
+                    </ListItemButton>
+                  );
+                })}
+              </List>
+            </Collapse>
           </ListItem>
         );
       })}

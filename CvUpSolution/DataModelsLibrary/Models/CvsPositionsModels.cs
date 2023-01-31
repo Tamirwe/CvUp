@@ -56,6 +56,8 @@ namespace DataModelsLibrary.Models
         public DateTime cvSent { get; set; }
         public List<int>? candPosIds { get; set; } 
         public List<int>? cvPosIds { get; set; }
+        public int stageId { get; set; }
+        public DateTime dateAttached { get; set; }
 
     }
 

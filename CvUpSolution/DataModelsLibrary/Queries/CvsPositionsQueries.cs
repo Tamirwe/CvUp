@@ -190,6 +190,38 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public List<CvListItemModel> GetPosCvsList(int companyId, int posId, string encriptKey)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from cand in dbContext.candidates
+                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
+                             join pcv in dbContext.position_cvs on cvs.id equals pcv.cv_id
+                             where pcv.company_id == companyId
+                             && pcv.position_id == posId
+                             orderby cand.last_cv_sent descending
+                             select new CvListItemModel
+                             {
+                                 cvId = cvs.id,
+                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 candidateName = cand.name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent = cvs.date_created,
+                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids),
+                                 stageId = pcv.candidate_stage_id,
+                                 dateAttached = pcv.date_created
+                             });
+
+                return query.ToList();
+            }
+        }
+
         public department AddDepartment(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
@@ -403,14 +435,14 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<PositionListItemModel> GetPositionsList(int companyId)
+        public List<PositionModel> GetPositionsList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.positions
                             where p.company_id == companyId
                             orderby p.name
-                            select new PositionListItemModel
+                            select new PositionModel
                             {
                                 id = p.id,
                                 name = p.name,

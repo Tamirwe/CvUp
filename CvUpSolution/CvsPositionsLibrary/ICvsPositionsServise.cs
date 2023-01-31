@@ -20,8 +20,9 @@ namespace CvsPositionsLibrary
         public void DeleteHrCompany(int companyId, int id);
         public position? AddPosition(PositionClientModel data, int companyId, int userId);
         public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
-        public List<PositionListItemModel> GetPositionsList(int companyId);
+        public List<PositionModel> GetPositionsList(int companyId);
         public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int cvId, int candidateId);
+        public List<CvListItemModel> GetPosCvsList(int companyId, int posId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);

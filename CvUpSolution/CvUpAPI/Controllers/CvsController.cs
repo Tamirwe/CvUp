@@ -37,6 +37,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetPosCvsList")]
+        public List<CvListItemModel> GetPosCvsList(int posId)
+        {
+            return _cvsPosService.GetPosCvsList(Globals.CompanyId, posId);
+        }
+
+        [HttpGet]
         [Route("getCv")]
         public CvModel? getCv(int cvId)
         {

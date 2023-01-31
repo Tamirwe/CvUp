@@ -16,12 +16,21 @@ export default class CvsApi extends BaseApi {
     });
   }
 
-  async GetDuplicatesCvsList(cvId: number, candidateId: number) {
+  async getDuplicatesCvsList(cvId: number, candidateId: number) {
     return await this.apiWrapper(async () => {
       const data = (
         await this.http.get<ICv[]>(
           `Cvs/GetDuplicatesCvsList?cvId=${cvId}&candidateId=${candidateId}`
         )
+      ).data;
+      return data;
+    });
+  }
+
+  async getPosCvsList(posId: number) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<ICv[]>(`Cvs/GetPosCvsList?posId=${posId}`)
       ).data;
       return data;
     });

@@ -1,4 +1,4 @@
-import { IPosition, IPositionListItem } from "../../models/GeneralModels";
+import { IPosition } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {
@@ -9,7 +9,7 @@ export default class PositionsApi extends BaseApi {
     });
   }
 
-  async GetPosition(positionId: number) {
+  async getPosition(positionId: number) {
     const response = await this.apiWrapper(async () => {
       const data = (
         await this.http.get<IPosition>(`Positions/GetPosition?id=${positionId}`)
@@ -34,7 +34,7 @@ export default class PositionsApi extends BaseApi {
   async getPositionsList() {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<IPositionListItem[]>("Positions/GetPositionsList")
+        await this.http.get<IPosition[]>("Positions/GetPositionsList")
       ).data;
       return data;
     });

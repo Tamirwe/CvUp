@@ -129,9 +129,9 @@ namespace CvsPositionsLibrary
             return cvsList;
         }
 
-        public List<CvListItemModel> GetPosCvsList(int companyId, int posId)
+        public List<CvListItemModel> GetPosCvsList(int companyId, int positionId)
         {
-            return _cvsPositionsQueries.GetPosCvsList(companyId, posId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            return _cvsPositionsQueries.GetPosCvsList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
         }
 
         public PositionClientModel GetPosition(int companyId, int positionId)
@@ -194,9 +194,14 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries.UpdateSameCv(importCv);
         }
 
-        public void AttachePosCv(AttachePosCvModel posCv)
+        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv)
         {
-            _cvsPositionsQueries.AttachePosCv(posCv);
+            return _cvsPositionsQueries.AttachPosCandCv(posCv);
+        }
+
+        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv)
+        {
+            return _cvsPositionsQueries.DetachPosCv(posCv);
         }
 
 

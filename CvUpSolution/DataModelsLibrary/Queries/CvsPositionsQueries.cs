@@ -3,6 +3,7 @@ using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
@@ -144,7 +145,8 @@ namespace DataModelsLibrary.Queries
                              select new CvListItemModel
                              {
                                  cvId = cvs.id,
-                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 keyId= cvs.key_id,
                                  fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -173,7 +175,8 @@ namespace DataModelsLibrary.Queries
                              select new CvListItemModel
                              {
                                  cvId = cvs.id,
-                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 keyId= cvs.key_id,
                                  fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -184,26 +187,27 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids)
-            });
+                             });
 
                 return query.ToList();
             }
         }
 
-        public List<CvListItemModel> GetPosCvsList(int companyId, int posId, string encriptKey)
+        public List<CvListItemModel> GetPosCvsList(int companyId, int positionId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                             join pcv in dbContext.position_cvs on cvs.id equals pcv.cv_id
+                             join pcv in dbContext.position_candidates on cvs.id equals pcv.cv_id
                              where pcv.company_id == companyId
-                             && pcv.position_id == posId
+                             && pcv.position_id == positionId
                              orderby cand.last_cv_sent descending
                              select new CvListItemModel
                              {
                                  cvId = cvs.id,
-                                 keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
+                                 keyId= cvs.key_id,
                                  fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -214,7 +218,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids),
-                                 stageId = pcv.candidate_stage_id,
+                                 stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created
                              });
 
@@ -621,7 +625,7 @@ namespace DataModelsLibrary.Queries
                             where cvs.id == cvId && cand.company_id == companyId
                             select new CvModel
                             {
-                                candId= cand.id,
+                                candId = cand.id,
                                 cvId = cvs.id,
                                 reviewHtml = cand.review_html,
                             };
@@ -656,7 +660,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 candidate cand = dbContext.candidates.Where(x => x.id == importCv.candidateId).First();
-                cand.has_duplicates_cvs = (sbyte?)(importCv.isDuplicate? 1 :0);
+                cand.has_duplicates_cvs = (sbyte?)(importCv.isDuplicate ? 1 : 0);
                 cand.last_cv_id = importCv.cvId;
                 cand.last_cv_sent = DateTime.Now;
                 cand.date_updated = DateTime.Now;
@@ -670,60 +674,111 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
-                cv.date_created= DateTime.Now;
+                cv.date_created = DateTime.Now;
                 var result = dbContext.cvs.Update(cv);
                 dbContext.SaveChanges();
             }
         }
 
-        public void AttachePosCv(AttachePosCvModel posCv)
+        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
-                cv? cv = dbContext.cvs.Where(x => x.company_id == posCv.companyId && x.id == posCv.cvId).FirstOrDefault();
+                position_candidate? posCand = dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
+                  && x.position_id == posCandCv.positionId
+                  && x.candidate_id == posCandCv.candidateId).FirstOrDefault();
 
-                if (cv != null)
+                string? posCvsStr = null;
+                List<PosCvsModel>? posCvs = null;
+
+                if (posCand != null && posCand.cvs != null)
                 {
-                    cv.pos_ids = $"[{string.Join(",",  posCv.cvPosIds)}]";
-                    var result = dbContext.cvs.Update(cv);
+                    posCvs = JsonConvert.DeserializeObject<List<PosCvsModel>>(posCand.cvs);
                 }
-              
 
-                candidate? cand = dbContext.candidates.Where(x => x.company_id == posCv.companyId && x.id == posCv.candidateId).FirstOrDefault();
-              
+                if (posCvs == null)
+                    posCvs = new List<PosCvsModel>();
+
+                posCvs.Add(new PosCvsModel { cvId = posCandCv.cvId, isSentByEmail = false, keyId = posCandCv.keyId });
+                posCvsStr = JsonConvert.SerializeObject(posCvs);
+
+                var newPosCv = new position_candidate
+                {
+                    company_id = posCandCv.companyId,
+                    position_id = posCandCv.positionId,
+                    candidate_id = posCandCv.candidateId,
+                    cv_id = posCandCv.cvId,
+                    stage_id = 1,
+                    cvs = posCvsStr
+                };
+
+                dbContext.position_candidates.Add(newPosCv);
+                dbContext.SaveChanges();
+            }
+
+            return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
+        }
+
+        public CandPosModel DetachPosCv(AttachePosCandCvModel posCandCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position_candidate? posCvs = dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
+                    && x.position_id == posCandCv.positionId
+                    && x.candidate_id == posCandCv.candidateId
+                    && x.cv_id == posCandCv.cvId).FirstOrDefault();
+
+                if (posCvs != null)
+                {
+                    dbContext.position_candidates.Remove(posCvs);
+                    dbContext.SaveChanges();
+                }
+            }
+
+            return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
+        }
+
+        private CandPosModel UpdateCandPosCv(int companyId, int candidateId, int cvId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<position_candidate>? candPosList = dbContext.position_candidates.Where(x => x.company_id == companyId
+                   && x.candidate_id == candidateId).ToList();
+
+                List<int> candPos = new List<int>();
+                List<int> cvPos = new List<int>();
+
+                foreach (var pcv in candPosList)
+                {
+                    candPos.Add(pcv.position_id);
+
+                    if (pcv.cv_id == cvId)
+                    {
+                        cvPos.Add(pcv.position_id);
+                    }
+                }
+
+                candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
+
                 if (cand != null)
                 {
-                    cand.pos_ids = $"[{string.Join(",", posCv.candPosIds)}]";
+                    cand.pos_ids = $"[{string.Join(",", candPos)}]";
                     var result = dbContext.candidates.Update(cand);
                 }
 
-                if (posCv.isAttach)
-                {
-                    var newPosCv = new position_cv
-                    {
-                        company_id = posCv.companyId,
-                        position_id = posCv.posId,
-                        candidate_id = posCv.candidateId,
-                        cv_id = posCv.cvId,
-                        candidate_stage_id = 1,
-                    };
+                cv? cv = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.id == cvId).FirstOrDefault();
 
-                    dbContext.position_cvs.Add(newPosCv);
-                }
-                else
+                if (cv != null)
                 {
-                    position_cv? posCvs = dbContext.position_cvs.Where(x => x.company_id == posCv.companyId && x.position_id == posCv.posId && x.cv_id==posCv.cvId).FirstOrDefault();
-
-                    if (posCvs != null)
-                    {
-                        dbContext.position_cvs.Remove(posCvs);
-                    }
+                    cv.pos_ids = $"[{string.Join(",", cvPos)}]";
+                    var result = dbContext.cvs.Update(cv);
                 }
 
                 dbContext.SaveChanges();
 
+                return new CandPosModel { candPosIds = candPos, cvPosIds = cvPos };
             }
-        }
 
+        }
     }
 }

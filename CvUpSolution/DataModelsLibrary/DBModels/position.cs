@@ -7,7 +7,7 @@ namespace Database.models
     {
         public position()
         {
-            position_cvs = new HashSet<position_cv>();
+            position_candidates = new HashSet<position_candidate>();
             position_hr_companies = new HashSet<position_hr_company>();
             position_interviewers = new HashSet<position_interviewer>();
         }
@@ -27,7 +27,7 @@ namespace Database.models
         public virtual department? department { get; set; }
         public virtual user? opener { get; set; }
         public virtual user? updater { get; set; }
-        public virtual ICollection<position_cv> position_cvs { get; set; }
+        public virtual ICollection<position_candidate> position_candidates { get; set; }
         public virtual ICollection<position_hr_company> position_hr_companies { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
     }

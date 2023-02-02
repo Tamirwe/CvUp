@@ -9,7 +9,7 @@ namespace Database.models
         {
             candidates = new HashSet<candidate>();
             cvs_txts = new HashSet<cvs_txt>();
-            position_cvs = new HashSet<position_cv>();
+            position_candidates = new HashSet<position_candidate>();
         }
 
         public int id { get; set; }
@@ -28,6 +28,6 @@ namespace Database.models
         public virtual candidate candidate { get; set; } = null!;
         public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }
-        public virtual ICollection<position_cv> position_cvs { get; set; }
+        public virtual ICollection<position_candidate> position_candidates { get; set; }
     }
 }

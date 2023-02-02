@@ -27,32 +27,41 @@ export default class CvsApi extends BaseApi {
     });
   }
 
-  async getPosCvsList(posId: number) {
+  async getPosCvsList(positionId: number) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<ICv[]>(`Cvs/GetPosCvsList?posId=${posId}`)
+        await this.http.get<ICv[]>(`Cvs/GetPosCvsList?positionId=${positionId}`)
       ).data;
       return data;
     });
   }
 
-  async AttachePosCv(
+  async AttachPosCandCv(
     candidateId: number,
     cvId: number,
-    posId: number,
-    candPosIds: number[],
-    cvPosIds: number[],
-    isAttach: boolean
+    positionId: number,
+    keyId: string
   ) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.post(`Cvs/AttachePosCv`, {
+        await this.http.post(`Cvs/AttachPosCandCv`, {
           candidateId,
           cvId,
-          posId,
-          candPosIds,
-          cvPosIds,
-          isAttach,
+          positionId,
+          keyId,
+        })
+      ).data;
+      return data;
+    });
+  }
+
+  async detachPosCv(candidateId: number, cvId: number, positionId: number) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post(`Cvs/DetachPosCv`, {
+          candidateId,
+          cvId,
+          positionId,
         })
       ).data;
       return data;

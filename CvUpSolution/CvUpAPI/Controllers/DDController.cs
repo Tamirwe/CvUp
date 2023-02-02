@@ -20,8 +20,10 @@ namespace CvUpAPI.Controllers
         [HttpGet]
         public IActionResult? Get(string id)
         {
-            string decripted = GeneralLibrary.Encriptor.Decrypt(id, _configuration["GlobalSettings:cvsEncryptorKey"] ?? "");
-            string[] secArr = decripted.Split("~");
+            //string decripted = GeneralLibrary.Encriptor.Decrypt(id, _configuration["GlobalSettings:cvsEncryptorKey"] ?? "");
+            //string[] secArr = decripted.Split("~");
+
+            string[] secArr = id.Split("~");
 
             if (Convert.ToDateTime(secArr[1]).Date == DateTime.Now.Date)
             {

@@ -17,7 +17,6 @@ namespace Database.models
         }
 
         public virtual DbSet<candidate> candidates { get; set; } = null!;
-        public virtual DbSet<candidate_position_stage> candidate_position_stages { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
@@ -31,7 +30,8 @@ namespace Database.models
         public virtual DbSet<parser> parsers { get; set; } = null!;
         public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
-        public virtual DbSet<position_cv> position_cvs { get; set; } = null!;
+        public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
+        public virtual DbSet<position_candidate_stage> position_candidate_stages { get; set; } = null!;
         public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
@@ -95,20 +95,6 @@ namespace Database.models
                     .HasForeignKey(d => d.last_cv_id)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_candidates_last_cv_id_cvs_id");
-            });
-
-            modelBuilder.Entity<candidate_position_stage>(entity =>
-            {
-                entity.ToTable("candidate_position_stage");
-
-                entity.HasIndex(e => e.company_id, "fk_position_stage_company_id_companies_id");
-
-                entity.Property(e => e.name).HasMaxLength(50);
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.candidate_position_stages)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_position_stage_company_id_companies_id");
             });
 
             modelBuilder.Entity<company>(entity =>
@@ -371,48 +357,64 @@ namespace Database.models
                     .HasConstraintName("fk_positions_updater_id_users_id");
             });
 
-            modelBuilder.Entity<position_cv>(entity =>
+            modelBuilder.Entity<position_candidate>(entity =>
             {
-                entity.HasIndex(e => e.candidate_id, "fk_position_cvs_candidate_id_candidates_id");
+                entity.HasIndex(e => e.candidate_id, "fk_position_candidates_candidate_id_candidates_id");
 
-                entity.HasIndex(e => e.candidate_stage_id, "fk_position_cvs_candidate_stage_id_candidate_position_stage_id");
+                entity.HasIndex(e => e.company_id, "fk_position_candidates_company_id_companies_id");
 
-                entity.HasIndex(e => e.company_id, "fk_position_cvs_company_id_companies_id");
+                entity.HasIndex(e => e.cv_id, "fk_position_candidates_cv_id_cvs_id");
 
-                entity.HasIndex(e => e.cv_id, "fk_position_cvs_cv_id_cvs_id");
+                entity.HasIndex(e => e.position_id, "fk_position_candidates_position_id_positions_id");
 
-                entity.HasIndex(e => e.position_id, "fk_position_cvs_position_id_positions_id");
+                entity.HasIndex(e => e.stage_id, "fk_position_candidates_stage_id_position_candidate_stages_id");
+
+                entity.Property(e => e.cvs).HasColumnType("json");
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.HasOne(d => d.candidate)
-                    .WithMany(p => p.position_cvs)
+                    .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.candidate_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_position_cvs_candidate_id_candidates_id");
-
-                entity.HasOne(d => d.candidate_stage)
-                    .WithMany(p => p.position_cvs)
-                    .HasForeignKey(d => d.candidate_stage_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_position_cvs_candidate_stage_id_candidate_position_stage_id");
+                    .HasConstraintName("fk_position_candidates_candidate_id_candidates_id");
 
                 entity.HasOne(d => d.company)
-                    .WithMany(p => p.position_cvs)
+                    .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_position_cvs_company_id_companies_id");
+                    .HasConstraintName("fk_position_candidates_company_id_companies_id");
 
                 entity.HasOne(d => d.cv)
-                    .WithMany(p => p.position_cvs)
+                    .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.cv_id)
-                    .HasConstraintName("fk_position_cvs_cv_id_cvs_id");
+                    .HasConstraintName("fk_position_candidates_cv_id_cvs_id");
 
                 entity.HasOne(d => d.position)
-                    .WithMany(p => p.position_cvs)
+                    .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.position_id)
-                    .HasConstraintName("fk_position_cvs_position_id_positions_id");
+                    .HasConstraintName("fk_position_candidates_position_id_positions_id");
+
+                entity.HasOne(d => d.stage)
+                    .WithMany(p => p.position_candidates)
+                    .HasForeignKey(d => d.stage_id)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_position_candidates_stage_id_position_candidate_stages_id");
+            });
+
+            modelBuilder.Entity<position_candidate_stage>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
+
+                entity.Property(e => e.id).ValueGeneratedNever();
+
+                entity.Property(e => e.name).HasMaxLength(50);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_candidate_stages)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_position_candidate_stages_company_id_companies_id");
             });
 
             modelBuilder.Entity<position_hr_company>(entity =>

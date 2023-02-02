@@ -45,7 +45,7 @@ namespace DataModelsLibrary.Models
     public class CvListItemModel
     {
         public int cvId { get; set; }
-        public string keyId { get; set; } = "";
+        public string? keyId { get; set; } = "";
         public int candidateId { get; set; }
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";
@@ -56,7 +56,7 @@ namespace DataModelsLibrary.Models
         public DateTime cvSent { get; set; }
         public List<int>? candPosIds { get; set; } 
         public List<int>? cvPosIds { get; set; }
-        public int stageId { get; set; }
+        public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
 
     }
@@ -69,17 +69,27 @@ namespace DataModelsLibrary.Models
         public string reviewText { get; set; } = "";
     }
 
-    public class AttachePosCvModel
+    public class AttachePosCandCvModel
     {
         public int companyId { get; set; }
+        public int positionId { get; set; }
         public int candidateId { get; set; }
         public int cvId { get; set; }
-        public int posId { get; set; }
-        public List<int> candPosIds { get; set; } = new List<int>();
-        public List<int> cvPosIds { get; set; } = new List<int>();
-        public bool isAttach { get; set; }
+        public string keyId { get; set; } = "";
     }
 
+    public class PosCvsModel
+    {
+        public int cvId { get; set; }
+        public string keyId { get; set; } = "";
+        public bool isSentByEmail { get; set; } = false;
+    }
+
+    public class CandPosModel
+    {
+        public List<int> candPosIds { get; set; }=new List<int> { };
+        public List<int> cvPosIds { get; set; } = new List<int> { };
+    }
 
     public class CvModel
     {

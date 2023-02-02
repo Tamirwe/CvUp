@@ -20,12 +20,18 @@ namespace AuthLibrary
                 newCompany.key_email = emailKeys[0];
                 newCompany.cvs_email = emailKeys[1];
                 _authQueries.UpdateCompany(newCompany);
+                AddCompanySatrterData(newCompany.id);
                 string key = generateSecretKey();
                 _authQueries.AddUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
                 AddEmailSent(EmailType.Confirm_Registration, newUser, sentEmail);
                 scope.Complete();
             }
+        }
+
+        private void AddCompanySatrterData(int companyId)
+        {
+            _authQueries.AddCompanySatrterData(companyId);
         }
 
         private string[] GenerateCompanyEmail(int companyId)

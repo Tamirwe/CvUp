@@ -14,5 +14,20 @@ namespace GeneralLibrary
                 return value.Substring(0, length);
             return value;
         }
+
+        public static int FileTypeKey(string fileExtension)
+        {
+            switch (fileExtension)
+            {
+                case ".pdf":
+                    return 1;
+                case ".docx":
+                    return 2;
+                case ".doc":
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
     }
 }

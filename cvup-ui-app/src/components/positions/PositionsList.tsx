@@ -1,9 +1,11 @@
 import {
   Checkbox,
   Collapse,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Tooltip,
 } from "@mui/material";
@@ -11,7 +13,7 @@ import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
+import { MdRemove, MdPostAdd } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
 
@@ -20,13 +22,21 @@ export const PositionsList = observer(() => {
   const { positionsStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
-  const [checked, setChecked] = useState(true);
-
-  const handleChange = (
+  const handleAttachPocCv = (
     event: React.ChangeEvent<HTMLInputElement>,
     posId: number
   ) => {
-    cvsStore.attachCvToPos(posId, event.target.checked);
+    if (event.target.checked) {
+      cvsStore.AttachPosCandCv(posId);
+    }
+  };
+
+  const handleDetachPosCv = (
+    posId: number,
+    cvId: number,
+    candidateId: number
+  ) => {
+    cvsStore.detachPosCv(posId, cvId, candidateId);
   };
 
   useEffect(() => {
@@ -49,6 +59,7 @@ export const PositionsList = observer(() => {
             key={pos.id}
             dense
             disablePadding
+            className={styles.showAddCv}
             sx={{
               "& .MuiListItemSecondaryAction-root": { right: 0 },
               flexDirection: "column",
@@ -62,7 +73,6 @@ export const PositionsList = observer(() => {
               onClick={() => {
                 // navigate(`/position/${pos.id}`);
                 positionsStore.setPosSelected(pos.id);
-
                 cvsStore.getPositionCvs(pos.id);
               }}
             >
@@ -78,7 +88,6 @@ export const PositionsList = observer(() => {
               <ListItemText primary={pos.name} />
               <Tooltip title="Attach to position">
                 <Checkbox
-                  className={styles.addCv}
                   checked={
                     cvsStore.cvDisplayed && cvsStore.cvDisplayed.candPosIds
                       ? cvsStore.cvDisplayed.candPosIds.indexOf(pos.id) > -1
@@ -86,14 +95,22 @@ export const PositionsList = observer(() => {
                   }
                   onChange={(event) => {
                     event.stopPropagation();
-                    handleChange(event, pos.id);
+                    handleAttachPocCv(event, pos.id);
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
                   }}
-                  sx={{ right: 0, "& svg": { fontSize: 22 } }}
-                  icon={<MdBookmarkBorder />}
-                  checkedIcon={<MdBookmark />}
+                  sx={{
+                    right: 0,
+                    marginRight: "2px",
+                    color: "#d7d2d2",
+                    "& svg": { fontSize: 22 },
+                    "&.Mui-checked": {
+                      color: "#ff8d00",
+                    },
+                  }}
+                  icon={<MdPostAdd />}
+                  checkedIcon={<MdPostAdd />}
                 />
               </Tooltip>
             </ListItemButton>
@@ -121,7 +138,7 @@ export const PositionsList = observer(() => {
                   return (
                     <ListItemButton
                       key={`${cv.cvId}dup`}
-                      sx={{ fontSize: "0.75rem", pl: 4 }}
+                      sx={{ fontSize: "0.75rem", pl: 1 }}
                       selected={cv.cvId === cvsStore.cvDisplayed?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
@@ -145,6 +162,60 @@ export const PositionsList = observer(() => {
                         primary={cv.candidateName}
                         secondary={cv.emailSubject}
                       />
+                      <ListItemIcon
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDetachPosCv(pos.id, cv.cvId, cv.candidateId);
+                        }}
+                      >
+                        <Tooltip title="Detach Cv">
+                          <IconButton
+                            sx={{
+                              right: 0,
+                              marginRight: 1,
+                              color: "#d7d2d2",
+                              "&:hover ": {
+                                color: "#ffab55",
+                              },
+                            }}
+                            color="primary"
+                            aria-label="upload picture"
+                            component="label"
+                          >
+                            <MdRemove />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemIcon>
+                      {/* <Tooltip title="Attach to position">
+                        <Checkbox
+                          checked={
+                            cvsStore.cvDisplayed &&
+                            cvsStore.cvDisplayed.candPosIds
+                              ? cvsStore.cvDisplayed.candPosIds.indexOf(
+                                  pos.id
+                                ) > -1
+                              : false
+                          }
+                          onChange={(event) => {
+                            event.stopPropagation();
+                            handleDetachPosCv(event, pos.id);
+                          }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                          }}
+                          sx={{
+                            right: 0,
+                            marginRight: 1,
+                            color: "#d7d2d2",
+                            "& svg": { fontSize: 22 },
+                            "&.Mui-checked": {
+                              color: "#aba6a0",
+                            },
+                          }}
+                          icon={<MdRemove />}
+                          checkedIcon={<MdRemove />}
+                        />
+                      </Tooltip> */}
                     </ListItemButton>
                   );
                 })}

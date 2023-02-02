@@ -90,62 +90,66 @@ export class CvsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getPositionCvs(posId: number) {
+  async getPositionCvs(positionId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getPosCvsList(posId);
+    const res = await this.cvsApi.getPosCvsList(positionId);
     runInAction(() => {
       this.posCvsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async attachCvToPos(posId: number, checked: boolean) {
-    const cv = toJS(this.cvDisplayed);
-    let candPosIds: number[] = [];
-    let cvPosIds: number[] = [];
-
-    if (cv && cv.candPosIds) {
-      if (checked) {
-        cv.candPosIds.push(posId);
-        cv.cvPosIds.push(posId);
-      } else {
-        let posIndex = cv.candPosIds.indexOf(posId);
-        cv.candPosIds.splice(posIndex, 1);
-        posIndex = cv.cvPosIds.indexOf(posId);
-        cv.cvPosIds.splice(posIndex, 1);
-      }
-
-      candPosIds = [...cv.candPosIds];
-      cvPosIds = [...cv.cvPosIds];
-
-      this.updateListCvsPosIds(
-        this.cvsList,
-        cv.candidateId,
-        cv.cvId,
-        candPosIds,
-        cvPosIds
-      );
-      this.updateListCvsPosIds(
-        this.duplicatesCvsList,
-        cv.candidateId,
-        cv.cvId,
-        candPosIds,
-        cvPosIds
-      );
-
-      runInAction(() => {
-        this.cvDisplayed = cv;
-      });
-
-      const res = await this.cvsApi.AttachePosCv(
-        cv.candidateId,
-        cv.cvId,
-        posId,
-        candPosIds,
-        cvPosIds,
-        checked
+  async AttachPosCandCv(positionId: number) {
+    if (this.cvDisplayed) {
+      const res = await this.cvsApi.AttachPosCandCv(
+        this.cvDisplayed.candidateId,
+        this.cvDisplayed.cvId,
+        positionId,
+        this.cvDisplayed.keyId
       );
     }
+  }
+  // const cv = toJS(this.cvDisplayed);
+  // let candPosIds: number[] = [];
+  // let cvPosIds: number[] = [];
+
+  // if (cv && cv.candPosIds) {
+  //   if (checked) {
+  //     cv.candPosIds.push(positionId);
+  //     cv.cvPosIds.push(positionId);
+  //   } else {
+  //     let posIndex = cv.candPosIds.indexOf(positionId);
+  //     cv.candPosIds.splice(posIndex, 1);
+  //     posIndex = cv.cvPosIds.indexOf(positionId);
+  //     cv.cvPosIds.splice(posIndex, 1);
+  //   }
+
+  //   candPosIds = [...cv.candPosIds];
+  //   cvPosIds = [...cv.cvPosIds];
+
+  //   this.updateListCvsPosIds(
+  //     this.cvsList,
+  //     cv.candidateId,
+  //     cv.cvId,
+  //     candPosIds,
+  //     cvPosIds
+  //   );
+  //   this.updateListCvsPosIds(
+  //     this.duplicatesCvsList,
+  //     cv.candidateId,
+  //     cv.cvId,
+  //     candPosIds,
+  //     cvPosIds
+  //   );
+
+  //   runInAction(() => {
+  //     this.cvDisplayed = cv;
+  //   });
+  // }
+  // }
+
+  async detachPosCv(positionId: number, cvId: number, candidateId: number) {
+    const res = await this.cvsApi.detachPosCv(candidateId, cvId, positionId);
   }
 
   async updateListCvsPosIds(

@@ -16,6 +16,7 @@ using J2N.Text;
 using DataModelsLibrary.Enums;
 using Database.models;
 using System.ComponentModel.Design;
+using GeneralLibrary;
 
 namespace ImportCvsLibrary
 {
@@ -28,8 +29,8 @@ namespace ImportCvsLibrary
         string _mailPassword;
         string _cvFolderPath = "";
         string _cvTempFolderPath = "";
-        string _yearFolder = DateTime.Now.Year.ToString("0000") + "_";
-        string _monthFolder = DateTime.Now.Month.ToString("00") + "_";
+        string _yearFolder = DateTime.Now.Year.ToString("0000");
+        string _monthFolder = DateTime.Now.Month.ToString("00");
         string _companyFolder = "";
 
         public ImportCvs(IConfiguration config, ICvsPositionsServise cvsPositionsServise)
@@ -376,9 +377,9 @@ namespace ImportCvsLibrary
 
         private string GetAttachmentFileNamePath(int cvId, string fileExtension, out string cvKey)
         {
-            string cvDay = DateTime.Now.Day.ToString("00") + "_";
-            string cvTime = DateTime.Now.ToString("HHmm") + "_";
-            cvKey = $"{_companyFolder}{_yearFolder}{_monthFolder}{cvDay}{cvTime}{cvId}_{fileExtension.Remove(0, 1)}";
+            //string cvDay = DateTime.Now.Day.ToString("00");
+            //string cvTime = DateTime.Now.ToString("HHmm") + "_";
+            cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{Utils.FileTypeKey(fileExtension)}-{cvId}";
             string fileName = cvKey + fileExtension;
             var fileNamePath = $"{_cvsRootFolder}\\{_companyFolder}\\{_yearFolder}\\{_monthFolder}\\{fileName}";
             return fileNamePath;

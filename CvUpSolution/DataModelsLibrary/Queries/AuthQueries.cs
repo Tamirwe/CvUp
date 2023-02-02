@@ -288,5 +288,32 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public void AddCompanySatrterData(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+
+                var parser = new company_parser
+                {
+                    company_id = companyId,
+                    parser_id=1
+                };
+
+                dbContext.company_parsers.Add(parser);
+
+                var stages = new position_candidate_stage
+                {
+                    id=1,
+                    company_id = companyId,
+                    name = "Attached"
+                };
+
+                dbContext.position_candidate_stages.Add(stages);
+
+                dbContext.SaveChanges();
+
+            }
+        }
+
     }
 }

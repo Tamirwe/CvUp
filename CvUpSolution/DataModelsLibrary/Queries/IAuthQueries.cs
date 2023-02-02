@@ -26,5 +26,6 @@ namespace DataModelsLibrary.Queries
         public List<InterviewerModel> GetInterviewersList(int companyId);
         public void DeleteInterviewer(int companyId, int id);
         public company? GetCompanyByKeyEmail(string uniqueRandomKey);
+        public void AddCompanySatrterData(int companyId);
     }
 }

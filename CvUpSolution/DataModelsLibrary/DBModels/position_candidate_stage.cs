@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Database.models
 {
-    public partial class candidate_position_stage
+    public partial class position_candidate_stage
     {
-        public candidate_position_stage()
+        public position_candidate_stage()
         {
             position_candidates = new HashSet<position_candidate>();
         }

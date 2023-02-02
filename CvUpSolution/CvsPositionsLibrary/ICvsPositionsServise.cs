@@ -22,7 +22,7 @@ namespace CvsPositionsLibrary
         public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
         public List<PositionModel> GetPositionsList(int companyId);
         public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int cvId, int candidateId);
-        public List<CvListItemModel> GetPosCvsList(int companyId, int posId);
+        public List<CvListItemModel> GetPosCvsList(int companyId, int positionId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);
@@ -32,6 +32,7 @@ namespace CvsPositionsLibrary
         public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum);
         public void UpdateCandidateLastCv(ImportCvModel importCv);
         public void UpdateSameCv(ImportCvModel importCv);
-        public void AttachePosCv(AttachePosCvModel posCv);
+        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv);
+        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv);
     }
 }

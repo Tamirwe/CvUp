@@ -38,9 +38,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetPosCvsList")]
-        public List<CvListItemModel> GetPosCvsList(int posId)
+        public List<CvListItemModel> GetPosCvsList(int positionId)
         {
-            return _cvsPosService.GetPosCvsList(Globals.CompanyId, posId);
+            return _cvsPosService.GetPosCvsList(Globals.CompanyId, positionId);
         }
 
         [HttpGet]
@@ -58,11 +58,19 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("AttachePosCv")]
-        public void AttachePosCv(AttachePosCvModel posCv)
+        [Route("AttachPosCandCv")]
+        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv)
         {
             posCv.companyId= Globals.CompanyId;
-            _cvsPosService.AttachePosCv(posCv);
+            return _cvsPosService.AttachPosCandCv(posCv);
+        }
+
+        [HttpPost]
+        [Route("DetachPosCv")]
+        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv)
+        {
+            posCv.companyId = Globals.CompanyId;
+            return _cvsPosService.DetachPosCv(posCv);
         }
     }
 }

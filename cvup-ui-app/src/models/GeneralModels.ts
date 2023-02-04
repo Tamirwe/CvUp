@@ -42,6 +42,7 @@ export interface IPosition {
   departmentId: number;
   hrCompaniesIds: number[];
   interviewersIds: number[];
+  candidates: number[];
 }
 
 export interface ICvReview {

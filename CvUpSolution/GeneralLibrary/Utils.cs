@@ -29,5 +29,20 @@ namespace GeneralLibrary
                     return 0;
             }
         }
+
+        public static string FileTypeName(char key)
+        {
+            switch (key)
+            {
+                case '1':
+                    return ".pdf";
+                case '2':
+                    return ".docx";
+                case '3':
+                    return ".doc";
+                default:
+                    return "";
+            }
+        }
     }
 }

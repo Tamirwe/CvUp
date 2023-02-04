@@ -37,6 +37,8 @@ namespace DataModelsLibrary.Queries
         public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int candidateId, string encriptKey);
         public List<CvListItemModel> GetPosCvsList(int companyId, int positionId, string encriptKey);
         public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv);
-        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv);
+        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCv);
+        public List<company_cvs_email> GetCompaniesEmails();
+
     }
 }

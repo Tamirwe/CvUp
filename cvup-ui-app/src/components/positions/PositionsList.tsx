@@ -36,7 +36,7 @@ export const PositionsList = observer(() => {
     cvId: number,
     candidateId: number
   ) => {
-    cvsStore.detachPosCv(posId, cvId, candidateId);
+    cvsStore.detachPosCandidate(posId, cvId, candidateId);
   };
 
   useEffect(() => {

@@ -279,12 +279,11 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public company? GetCompanyByKeyEmail(string uniqueRandomKey)
+        public company_cvs_email? GetCompanyEmail(string newEmail)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.companies.Where(x=>x.key_email== uniqueRandomKey).FirstOrDefault();
-
+                return dbContext.company_cvs_emails.Where(x => x.email == newEmail).FirstOrDefault();
             }
         }
 
@@ -296,14 +295,14 @@ namespace DataModelsLibrary.Queries
                 var parser = new company_parser
                 {
                     company_id = companyId,
-                    parser_id=1
+                    parser_id = 1
                 };
 
                 dbContext.company_parsers.Add(parser);
 
                 var stages = new position_candidate_stage
                 {
-                    id=1,
+                    id = 1,
                     company_id = companyId,
                     name = "Attached"
                 };
@@ -315,5 +314,19 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public void AddCompanyCvsEmail(int companyId, string generatedCompanyEmail)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var newRec = new company_cvs_email
+                {
+                    company_id = companyId,
+                    email = generatedCompanyEmail,
+                };
+
+                dbContext.company_cvs_emails.Add(newRec);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }

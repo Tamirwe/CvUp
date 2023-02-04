@@ -54,8 +54,8 @@ namespace DataModelsLibrary.Models
         public string? candidateName { get; set; } = "";
         public bool hasDuplicates { get; set; }
         public DateTime cvSent { get; set; }
-        public List<int>? candPosIds { get; set; } 
-        public List<int>? cvPosIds { get; set; }
+        public int[]? candPosIds { get; set; } 
+        public int[]? cvPosIds { get; set; }
         public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
 

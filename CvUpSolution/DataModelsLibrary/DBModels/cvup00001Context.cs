@@ -18,6 +18,7 @@ namespace Database.models
 
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
+        public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
@@ -99,12 +100,7 @@ namespace Database.models
 
             modelBuilder.Entity<company>(entity =>
             {
-                entity.HasIndex(e => e.key_email, "uq_companies_key_email")
-                    .IsUnique();
-
                 entity.Property(e => e.active_status).HasColumnType("enum('Active','Waite_Complete_Registration','Not_Active')");
-
-                entity.Property(e => e.cvs_email).HasMaxLength(200);
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
@@ -112,11 +108,23 @@ namespace Database.models
 
                 entity.Property(e => e.descr).HasMaxLength(500);
 
-                entity.Property(e => e.key_email).HasMaxLength(15);
-
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 
                 entity.Property(e => e.name).HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<company_cvs_email>(entity =>
+            {
+                entity.ToTable("company_cvs_email");
+
+                entity.HasIndex(e => e.company_id, "fk_company_cvs_email_company_id_companies_id");
+
+                entity.Property(e => e.email).HasMaxLength(150);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.company_cvs_emails)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_company_cvs_email_company_id_companies_id");
             });
 
             modelBuilder.Entity<company_parser>(entity =>
@@ -221,6 +229,8 @@ namespace Database.models
             {
                 entity.ToTable("emails_sent");
 
+                entity.HasIndex(e => e.company_id, "fk_emails_sent_company_id_companies_id");
+
                 entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
 
                 entity.Property(e => e.body).HasMaxLength(1500);
@@ -234,6 +244,11 @@ namespace Database.models
                 entity.Property(e => e.subject).HasMaxLength(500);
 
                 entity.Property(e => e.to_address).HasMaxLength(500);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.emails_sents)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_emails_sent_company_id_companies_id");
 
                 entity.HasOne(d => d.user)
                     .WithMany(p => p.emails_sents)
@@ -349,6 +364,7 @@ namespace Database.models
                 entity.HasOne(d => d.opener)
                     .WithMany(p => p.positionopeners)
                     .HasForeignKey(d => d.opener_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_positions_opener_id_users_id");
 
                 entity.HasOne(d => d.updater)

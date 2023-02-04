@@ -21,11 +21,11 @@ namespace Database.models
         public int? department_id { get; set; }
         public sbyte is_active { get; set; }
         public int? updater_id { get; set; }
-        public int? opener_id { get; set; }
+        public int opener_id { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual department? department { get; set; }
-        public virtual user? opener { get; set; }
+        public virtual user opener { get; set; } = null!;
         public virtual user? updater { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
         public virtual ICollection<position_hr_company> position_hr_companies { get; set; }

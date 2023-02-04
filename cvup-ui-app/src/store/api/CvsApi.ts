@@ -55,10 +55,14 @@ export default class CvsApi extends BaseApi {
     });
   }
 
-  async detachPosCv(candidateId: number, cvId: number, positionId: number) {
+  async detachPosCandidate(
+    candidateId: number,
+    cvId: number,
+    positionId: number
+  ) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.post(`Cvs/DetachPosCv`, {
+        await this.http.post(`Cvs/DetachPosCandidate`, {
           candidateId,
           cvId,
           positionId,

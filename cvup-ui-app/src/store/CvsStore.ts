@@ -109,6 +109,19 @@ export class CvsStore {
       );
     }
   }
+
+  async detachPosCandidate(
+    positionId: number,
+    cvId: number,
+    candidateId: number
+  ) {
+    const res = await this.cvsApi.detachPosCandidate(
+      candidateId,
+      cvId,
+      positionId
+    );
+  }
+
   // const cv = toJS(this.cvDisplayed);
   // let candPosIds: number[] = [];
   // let cvPosIds: number[] = [];
@@ -147,10 +160,6 @@ export class CvsStore {
   //   });
   // }
   // }
-
-  async detachPosCv(positionId: number, cvId: number, candidateId: number) {
-    const res = await this.cvsApi.detachPosCv(candidateId, cvId, positionId);
-  }
 
   async updateListCvsPosIds(
     list: ICv[],

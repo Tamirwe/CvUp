@@ -2,6 +2,7 @@
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using EmailsLibrary.Models;
+using System.ComponentModel.Design;
 using System.Transactions;
 
 namespace AuthLibrary
@@ -16,15 +17,12 @@ namespace AuthLibrary
                 string hashPassword = SecretHasher.Hash(data.password);
                 user newUser = AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
 
-                string[] emailKeys = GenerateCompanyEmail(newCompany.id);
-                newCompany.key_email = emailKeys[0];
-                newCompany.cvs_email = emailKeys[1];
-                _authQueries.UpdateCompany(newCompany);
+                GenerateCompanyEmail(newCompany.id);
                 AddCompanySatrterData(newCompany.id);
                 string key = generateSecretKey();
                 _authQueries.AddUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
-                AddEmailSent(EmailType.Confirm_Registration, newUser, sentEmail);
+                AddEmailSent(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
                 scope.Complete();
             }
         }
@@ -34,37 +32,30 @@ namespace AuthLibrary
             _authQueries.AddCompanySatrterData(companyId);
         }
 
-        private string[] GenerateCompanyEmail(int companyId)
+        private void GenerateCompanyEmail(int companyId)
         {
-            string uniqueRandomKey = "";
-
-            for (int i = 0; i < 5; i++)
-            {
-                string randKey = GetUniqueRandomEmailKey(companyId);
-                var company = _authQueries.GetCompanyByKeyEmail(uniqueRandomKey);
-
-                if (company is null)
-                {
-                    uniqueRandomKey = randKey;
-                    break;
-                }
-            }
-
-            if (uniqueRandomKey == "")
-            {
-                throw new InvalidOperationException("server error"); ;
-            }
-
             string mailFromAddress = _configuration["GlobalSettings:MailFromAddress"];
             string[] mailFromParts = mailFromAddress.Split("@");
-            return new string[] { uniqueRandomKey, $"{mailFromParts[0]}+{uniqueRandomKey}{companyId}@{mailFromParts[1]}" };
+            company_cvs_email? companyEmail;
+            string generatedCompanyEmail;
+
+            do
+            {
+                string randKey = GetUniqueRandomEmailKey();
+                generatedCompanyEmail = $"{mailFromParts[0]}+{randKey}@{mailFromParts[1]}";
+                companyEmail = _authQueries.GetCompanyEmail(generatedCompanyEmail);
+            }
+            while (companyEmail != null);
+
+            _authQueries.AddCompanyCvsEmail(companyId, generatedCompanyEmail);
+
         }
 
 
-        private string GetUniqueRandomEmailKey(int companyId)
+        private string GetUniqueRandomEmailKey()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var stringChars = new char[7];
+            var stringChars = new char[11];
             var random = new Random();
 
             for (int i = 0; i < stringChars.Length; i++)
@@ -75,9 +66,9 @@ namespace AuthLibrary
             return finalString;
         }
 
-        private void AddEmailSent(EmailType emailType, user user, EmailModel sentEmail)
+        private void AddEmailSent(EmailType emailType,int companyId, user user, EmailModel sentEmail)
         {
-            _emailQueries.AddNewEmailSent(user.id, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
+            _emailQueries.AddNewEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
         private user AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)

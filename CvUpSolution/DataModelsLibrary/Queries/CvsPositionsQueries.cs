@@ -147,7 +147,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId= cvs.key_id,
-                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
@@ -155,8 +155,8 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = Convert.ToDateTime(cand.last_cv_sent),
-                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
-                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids)
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                              }).Skip(skip).Take(take);
 
                 return query.ToList();
@@ -177,7 +177,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId= cvs.key_id,
-                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
@@ -185,8 +185,8 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
-                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
-                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids)
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                              });
 
                 return query.ToList();
@@ -208,7 +208,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId= cvs.key_id,
-                                 fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
+                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
@@ -216,10 +216,10 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
-                                 candPosIds = cand.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cand.pos_ids),
-                                 cvPosIds = cvs.pos_ids == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cvs.pos_ids),
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  stageId = pcv.stage_id,
-                                 dateAttached = pcv.date_created
+                                 dateAttached = pcv.date_created,
                              });
 
                 return query.ToList();
@@ -351,9 +351,9 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var hrs = dbContext.position_hr_companies
-.Where(p => p.company_id == companyId && p.position_id == positionId)
-.Select(p => p.hr_company_id)
-.ToArray();
+                            .Where(p => p.company_id == companyId && p.position_id == positionId)
+                            .Select(p => p.hr_company_id)
+                            .ToArray();
 
                 var inter = dbContext.position_interviewers
                           .Where(p => p.company_id == companyId && p.position_id == positionId)
@@ -451,7 +451,7 @@ namespace DataModelsLibrary.Queries
                                 id = p.id,
                                 name = p.name,
                                 isActive = Convert.ToBoolean(p.is_active),
-                                updated = p.date_updated
+                                updated = p.date_updated,
                             };
 
                 return query.ToList();
@@ -719,7 +719,7 @@ namespace DataModelsLibrary.Queries
             return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        public CandPosModel DetachPosCv(AttachePosCandCvModel posCandCv)
+        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -779,6 +779,14 @@ namespace DataModelsLibrary.Queries
                 return new CandPosModel { candPosIds = candPos, cvPosIds = cvPos };
             }
 
+        }
+
+        public List<company_cvs_email> GetCompaniesEmails()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return dbContext.company_cvs_emails.ToList();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Database.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,6 @@ namespace DataModelsLibrary.Models
         public int departmentId { get; set; } = 0;
         public int[] hrCompaniesIds { get; set; } = new int[] { };
         public int[] interviewersIds { get; set; } = new int[] { };
-
     }
 
     //public class PositionListItemModel

@@ -15,13 +15,14 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public emails_sent AddNewEmailSent(int userId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
+        public emails_sent AddNewEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var email = new emails_sent
                 {
                     user_id = userId,
+                    company_id= companyId,
                     sent_date = DateTime.Now,
                     email_type = emailType.ToString(),
                     to_address = toAddress,

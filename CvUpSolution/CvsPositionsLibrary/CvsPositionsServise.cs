@@ -199,11 +199,15 @@ namespace CvsPositionsLibrary
             return _cvsPositionsQueries.AttachPosCandCv(posCv);
         }
 
-        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv)
+        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCv)
         {
-            return _cvsPositionsQueries.DetachPosCv(posCv);
+            return _cvsPositionsQueries.DetachPosCandidate(posCv);
         }
 
+        public List<company_cvs_email> GetCompaniesEmails()
+        {
+            return _cvsPositionsQueries.GetCompaniesEmails();
+        }
 
     }
 }

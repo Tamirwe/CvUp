@@ -33,6 +33,7 @@ namespace CvsPositionsLibrary
         public void UpdateCandidateLastCv(ImportCvModel importCv);
         public void UpdateSameCv(ImportCvModel importCv);
         public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv);
-        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv);
+        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCv);
+        public List<company_cvs_email> GetCompaniesEmails();
     }
 }

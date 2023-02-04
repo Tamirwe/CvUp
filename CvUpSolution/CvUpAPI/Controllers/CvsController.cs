@@ -66,11 +66,11 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("DetachPosCv")]
-        public CandPosModel DetachPosCv(AttachePosCandCvModel posCv)
+        [Route("DetachPosCandidate")]
+        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            return _cvsPosService.DetachPosCv(posCv);
+            return _cvsPosService.DetachPosCandidate(posCv);
         }
     }
 }

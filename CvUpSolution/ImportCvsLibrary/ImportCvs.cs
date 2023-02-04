@@ -32,6 +32,7 @@ namespace ImportCvsLibrary
         string _yearFolder = DateTime.Now.Year.ToString("0000");
         string _monthFolder = DateTime.Now.Month.ToString("00");
         string _companyFolder = "";
+        List<company_cvs_email>? _companiesEmail;
 
         public ImportCvs(IConfiguration config, ICvsPositionsServise cvsPositionsServise)
         {
@@ -45,6 +46,7 @@ namespace ImportCvsLibrary
 
         public void ImportFromGmail()
         {
+            _companiesEmail = _cvsPositionsServise.GetCompaniesEmails();
 
             using (var client = new ImapClient())
             {
@@ -130,7 +132,7 @@ namespace ImportCvsLibrary
 
         private void CreateCvFolder(int companyId)
         {
-            _companyFolder = companyId + "_";
+            _companyFolder = companyId.ToString();
             Directory.CreateDirectory($"{_cvsRootFolder}\\{_companyFolder}");
             _cvTempFolderPath = $"{_cvsRootFolder}\\{_companyFolder}\\temp";
             Directory.CreateDirectory(_cvTempFolderPath);
@@ -291,7 +293,7 @@ namespace ImportCvsLibrary
 
         private void AddCvToIndex(ImportCvModel importCv)
         {
-            if (!importCv.isDuplicate && !importCv.isSameCv )
+            if (!importCv.isDuplicate && !importCv.isSameCv)
             {
                 _cvsPositionsServise.AddNewCvToIndex(importCv);
             }
@@ -377,8 +379,6 @@ namespace ImportCvsLibrary
 
         private string GetAttachmentFileNamePath(int cvId, string fileExtension, out string cvKey)
         {
-            //string cvDay = DateTime.Now.Day.ToString("00");
-            //string cvTime = DateTime.Now.ToString("HHmm") + "_";
             cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{Utils.FileTypeKey(fileExtension)}-{cvId}";
             string fileName = cvKey + fileExtension;
             var fileNamePath = $"{_cvsRootFolder}\\{_companyFolder}\\{_yearFolder}\\{_monthFolder}\\{fileName}";
@@ -387,30 +387,22 @@ namespace ImportCvsLibrary
 
         private int GetCompanyIdFromAddress(InternetAddressList addressList)
         {
-            string companyIdStr = "";
-
-            try
+            foreach (var toEmail in addressList.ToList())
             {
-                addressList.ToList().ForEach(x =>
+                if (_companiesEmail != null)
                 {
-                    if (companyIdStr == "")
+                    var toAddress = toEmail.ToString();
+
+                    var companyEmail = _companiesEmail.Where(x => x.email == toAddress).FirstOrDefault();
+
+                    if (companyEmail != null)
                     {
-                        var toAddress = x.ToString().Split('@')[0];
-
-                        if (toAddress.IndexOf(_gmailUserName) > -1)
-                        {
-                            companyIdStr = toAddress.Split('+')[1].Substring(7);
-                        }
+                        return companyEmail.company_id;
                     }
-
-                });
-
-                return Convert.ToInt32(companyIdStr);
+                }
             }
-            catch (Exception)
-            {
-                return 0;
-            }
+
+            return 0;
         }
     }
 }

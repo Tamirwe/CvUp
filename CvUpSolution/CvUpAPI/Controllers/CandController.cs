@@ -21,24 +21,24 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetCandList")]
-        public List<CvListItemModel> GetCandList(int page = 1, int take = 50, int positionId = 0, string? searchKeyWords = "")
+        [Route("GetCandsList")]
+        public List<CandModel> GetCandsList(int page = 1, int take = 50, int positionId = 0, string? searchKeyWords = "")
         {
-            return _candPosService.GetCvsList(Globals.CompanyId, page, take, positionId, searchKeyWords);
+            return _candPosService.GetCandsList(Globals.CompanyId, page, take, positionId, searchKeyWords);
         }
 
         [HttpGet]
         [Route("GetCandCvsList")]
-        public List<CvListItemModel> GetCandCvsList(int cvId, int candidateId)
+        public List<CandModel> GetCandCvsList(int cvId, int candidateId)
         {
             return _candPosService.GetCandCvsList(Globals.CompanyId, cvId, candidateId);
         }
 
         [HttpGet]
-        [Route("GetPosCandList")]
-        public List<CvListItemModel> GetPosCandList(int positionId)
+        [Route("GetPosCandsList")]
+        public List<CandModel> GetPosCandsList(int positionId)
         {
-            return _candPosService.GetPosCandList(Globals.CompanyId, positionId);
+            return _candPosService.GetPosCandsList(Globals.CompanyId, positionId);
         }
 
         [HttpGet]

@@ -22,7 +22,7 @@ export const PositionsList = observer(() => {
   const { positionsStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
-  const handleAttachPocCv = (
+  const handleAttachPosCandCv = (
     event: React.ChangeEvent<HTMLInputElement>,
     posId: number
   ) => {
@@ -31,7 +31,7 @@ export const PositionsList = observer(() => {
     }
   };
 
-  const handleDetachPosCv = (
+  const handleDetachPosCand = (
     posId: number,
     cvId: number,
     candidateId: number
@@ -73,7 +73,7 @@ export const PositionsList = observer(() => {
               onClick={() => {
                 // navigate(`/position/${pos.id}`);
                 positionsStore.setPosSelected(pos.id);
-                cvsStore.getPositionCvs(pos.id);
+                cvsStore.getPositionCands(pos.id);
               }}
             >
               <ListItemText
@@ -95,7 +95,7 @@ export const PositionsList = observer(() => {
                   }
                   onChange={(event) => {
                     event.stopPropagation();
-                    handleAttachPocCv(event, pos.id);
+                    handleAttachPosCandCv(event, pos.id);
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -165,7 +165,7 @@ export const PositionsList = observer(() => {
                       <ListItemIcon
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleDetachPosCv(pos.id, cv.cvId, cv.candidateId);
+                          handleDetachPosCand(pos.id, cv.cvId, cv.candidateId);
                         }}
                       >
                         <Tooltip title="Detach Cv">

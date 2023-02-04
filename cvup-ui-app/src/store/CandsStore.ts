@@ -1,20 +1,20 @@
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import { DisplayedCvsListEnum } from "../models/GeneralEnums";
-import { IAppSettings, ICv, ICvReview } from "../models/GeneralModels";
+import { IAppSettings, ICand, ICvReview } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
 
 export class CandsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
-  cvsList: ICv[] = [];
-  duplicatesCvsList: ICv[] = [];
-  posCvsList: ICv[] = [];
+  cvsList: ICand[] = [];
+  duplicatesCvsList: ICand[] = [];
+  posCvsList: ICand[] = [];
   pdfUrl: string = "";
-  cvSelected?: ICv;
-  cvDuplicateSelected?: ICv;
-  cvPositionSelected?: ICv;
-  cvDisplayed?: ICv;
+  cvSelected?: ICand;
+  cvDuplicateSelected?: ICand;
+  cvPositionSelected?: ICand;
+  cvDisplayed?: ICand;
   cvDisplayedList: DisplayedCvsListEnum = DisplayedCvsListEnum.None;
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
@@ -36,7 +36,7 @@ export class CandsStore {
     return this.isCvReviewDialogOpen;
   }
 
-  async displayCvMain(cv: ICv) {
+  async displayCvMain(cv: ICand) {
     runInAction(() => {
       this.cvSelected = cv;
       this.cvDisplayed = this.cvSelected;
@@ -45,7 +45,7 @@ export class CandsStore {
     });
   }
 
-  async displayCvDuplicate(cv: ICv) {
+  async displayCvDuplicate(cv: ICand) {
     runInAction(() => {
       this.cvDuplicateSelected = cv;
       this.cvDisplayed = this.cvDuplicateSelected;
@@ -54,7 +54,7 @@ export class CandsStore {
     });
   }
 
-  async displayCvPosition(cv: ICv) {
+  async displayCvPosition(cv: ICand) {
     runInAction(() => {
       this.cvPositionSelected = cv;
       this.cvDisplayed = this.cvPositionSelected;
@@ -72,16 +72,16 @@ export class CandsStore {
     // const res = await this.cvsApi.saveCvReview(cvReview);
   }
 
-  async getCvsList() {
+  async getCandsList() {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getCvsList();
+    const res = await this.cvsApi.getCandsList();
     runInAction(() => {
       this.cvsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getDuplicatesCvsList(cv: ICv) {
+  async getDuplicatesCvsList(cv: ICand) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getDuplicatesCvsList(cv.cvId, cv.candidateId);
     runInAction(() => {
@@ -90,9 +90,9 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getPositionCvs(positionId: number) {
+  async getPositionCands(positionId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getPosCvsList(positionId);
+    const res = await this.cvsApi.GetPosCandsList(positionId);
     runInAction(() => {
       this.posCvsList = res.data;
     });
@@ -167,7 +167,7 @@ export class CandsStore {
   // }
 
   async updateListCvsPosIds(
-    list: ICv[],
+    list: ICand[],
     candId: number,
     cvId: number,
     candPosIds: number[],

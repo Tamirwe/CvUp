@@ -14,7 +14,7 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDragIndicator } from "react-icons/md";
 
-export const CvReview = observer(() => {
+export const CandReview = observer(() => {
   const { cvsStore } = useStore();
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);

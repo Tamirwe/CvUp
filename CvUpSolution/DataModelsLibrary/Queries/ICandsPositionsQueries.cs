@@ -10,7 +10,7 @@ namespace DataModelsLibrary.Queries
         public void UpdateCandidate( candidate cand);
         public candidate? GetCandidateByEmail(string email);
         public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId);
-        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords);
+        public List<CandModel> GetCandsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
         public List<IdNameModel> GetDepartmentsList(int companyId);
@@ -34,8 +34,8 @@ namespace DataModelsLibrary.Queries
         public void UpdateCandidateLastCv(ImportCvModel importCv);
         public void UpdateSameCv(ImportCvModel importCv);
         public candidate? GetCandidateByPhone(string phone);
-        public List<CvListItemModel> GetCandCvsList(int companyId, int candidateId, string encriptKey);
-        public List<CvListItemModel> GetPosCandList(int companyId, int positionId, string encriptKey);
+        public List<CandModel> GetCandCvsList(int companyId, int candidateId, string encriptKey);
+        public List<CandModel> GetPosCandsList(int companyId, int positionId, string encriptKey);
         public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv);
         public CandPosModel DetachPosCand(AttachePosCandCvModel posCv);
         public List<company_cvs_email> GetCompaniesEmails();

@@ -1,4 +1,4 @@
-import { ICv, ICvReview } from "../../models/GeneralModels";
+import { ICand, ICvReview } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class CandsApi extends BaseApi {
@@ -9,9 +9,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async getCvsList() {
+  async getCandsList() {
     return await this.apiWrapper(async () => {
-      const data = (await this.http.get<ICv[]>("Cand/GetCandList")).data;
+      const data = (await this.http.get<ICand[]>("Cand/GetCandsList")).data;
       return data;
     });
   }
@@ -19,19 +19,19 @@ export default class CandsApi extends BaseApi {
   async getDuplicatesCvsList(cvId: number, candidateId: number) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<ICv[]>(
-          `Cand/GetDuplicatesCvsList?cvId=${cvId}&candidateId=${candidateId}`
+        await this.http.get<ICand[]>(
+          `Cand/GetCandCvsList?cvId=${cvId}&candidateId=${candidateId}`
         )
       ).data;
       return data;
     });
   }
 
-  async getPosCvsList(positionId: number) {
+  async GetPosCandsList(positionId: number) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<ICv[]>(
-          `Cand/GetPosCvsList?positionId=${positionId}`
+        await this.http.get<ICand[]>(
+          `Cand/GetPosCandsList?positionId=${positionId}`
         )
       ).data;
       return data;
@@ -76,7 +76,7 @@ export default class CandsApi extends BaseApi {
 
   async getCv() {
     return await this.apiWrapper(async () => {
-      const data = (await this.http.get<ICv>("Cand/getCv")).data;
+      const data = (await this.http.get<ICand>("Cand/getCv")).data;
       return data;
     });
   }

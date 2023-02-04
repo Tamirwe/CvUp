@@ -14,7 +14,7 @@ export interface IUserClaims {
   role?: string;
 }
 
-export interface ICv {
+export interface ICand {
   cvId: number;
   candidateId: number;
   keyId: string;

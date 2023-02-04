@@ -14,7 +14,7 @@ namespace CandsPositionsLibrary
         public void AddNewCvToIndex(ImportCvModel item);
         public void AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public void IndexCompanyCvs(int companyId);
-        public List<CvListItemModel> GetCvsList(int companyId, int page, int take, int positionId, string? searchKeyWords);
+        public List<CandModel> GetCandsList(int companyId, int page, int take, int positionId, string? searchKeyWords);
         public department AddDepartment(IdNameModel data, int companyId);
         public department? UpdateDepartment(IdNameModel data, int companyId);
         public List<IdNameModel> GetDepartmentsList(int companyId);
@@ -26,8 +26,8 @@ namespace CandsPositionsLibrary
         public position? AddPosition(PositionClientModel data, int companyId, int userId);
         public position? UpdatePosition(PositionClientModel data, int companyId, int userId);
         public List<PositionModel> GetPositionsList(int companyId);
-        public List<CvListItemModel> GetCandCvsList(int companyId, int cvId, int candidateId);
-        public List<CvListItemModel> GetPosCandList(int companyId, int positionId);
+        public List<CandModel> GetCandCvsList(int companyId, int cvId, int candidateId);
+        public List<CandModel> GetPosCandsList(int companyId, int positionId);
         public void DeletePosition(int companyId, int id);
         public PositionClientModel GetPosition(int companyId, int positionId);
         public List<ParserRulesModel> GetParsersRules(int companyId);

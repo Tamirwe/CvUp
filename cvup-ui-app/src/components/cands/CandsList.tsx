@@ -17,13 +17,13 @@ import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 
-export const CvsList = observer(() => {
+export const CandsList = observer(() => {
   const { cvsStore } = useStore();
   let location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    cvsStore.getCvsList();
+    cvsStore.getCandsList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

@@ -133,7 +133,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords)
+        public List<CandModel> GetCandsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords)
         {
             int skip = (page - 1) * take;
             using (var dbContext = new cvup00001Context())
@@ -142,7 +142,7 @@ namespace DataModelsLibrary.Queries
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
                              where cand.company_id == companyId
                              orderby cand.last_cv_sent descending
-                             select new CvListItemModel
+                             select new CandModel
                              {
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
@@ -163,7 +163,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetCandCvsList(int companyId, int candidateId, string encriptKey)
+        public List<CandModel> GetCandCvsList(int companyId, int candidateId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -172,7 +172,7 @@ namespace DataModelsLibrary.Queries
                              where cand.company_id == companyId
                              && cand.id == candidateId
                              orderby cand.last_cv_sent descending
-                             select new CvListItemModel
+                             select new CandModel
                              {
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
@@ -193,7 +193,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetPosCandList(int companyId, int positionId, string encriptKey)
+        public List<CandModel> GetPosCandsList(int companyId, int positionId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -203,7 +203,7 @@ namespace DataModelsLibrary.Queries
                              where pcv.company_id == companyId
                              && pcv.position_id == positionId
                              orderby cand.last_cv_sent descending
-                             select new CvListItemModel
+                             select new CandModel
                              {
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),

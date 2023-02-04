@@ -42,11 +42,11 @@ namespace DataModelsLibrary.Models
         public string? reviewText { get; set; } = "";
     }
 
-    public class CvListItemModel
+    public class CandModel
     {
+        public int candidateId { get; set; }
         public int cvId { get; set; }
         public string? keyId { get; set; } = "";
-        public int candidateId { get; set; }
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";

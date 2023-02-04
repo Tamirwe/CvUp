@@ -120,21 +120,21 @@ namespace CandsPositionsLibrary
             _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId, int page, int take, int positionId, string? searchKeyWords)
+        public List<CandModel> GetCandsList(int companyId, int page, int take, int positionId, string? searchKeyWords)
         {
-            return _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, positionId, searchKeyWords);
+            return _cvsPositionsQueries.GetCandsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, positionId, searchKeyWords);
         }
 
-        public List<CvListItemModel> GetCandCvsList(int companyId, int cvId, int candidateId)
+        public List<CandModel> GetCandCvsList(int companyId, int cvId, int candidateId)
         {
-            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            List<CandModel> cvsList = _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
             cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
 
-        public List<CvListItemModel> GetPosCandList(int companyId, int positionId)
+        public List<CandModel> GetPosCandsList(int companyId, int positionId)
         {
-            return _cvsPositionsQueries.GetPosCandList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            return _cvsPositionsQueries.GetPosCandsList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
         }
 
         public PositionClientModel GetPosition(int companyId, int positionId)

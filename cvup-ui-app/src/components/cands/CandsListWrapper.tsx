@@ -1,17 +1,17 @@
 import { Box } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { CvsList } from "./CvsList";
+import { CandsList } from "./CandsList";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 
-export const CvsListWrapper = () => {
+export const CandsListWrapper = () => {
   const { cvsStore } = useStore();
 
   useEffect(() => {
-    cvsStore.getCvsList();
+    cvsStore.getCandsList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const themeRtl = createTheme({
@@ -28,7 +28,7 @@ export const CvsListWrapper = () => {
     <Box sx={{ marginTop: "0" }}>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
-          <CvsList />
+          <CandsList />
         </ThemeProvider>
       </CacheProvider>
     </Box>

@@ -5,8 +5,8 @@ import { Header } from "../components/header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 import { observer } from "mobx-react";
-import { CvsListWrapper } from "../components/cvs/CvsListWrapper";
-import { CvReview } from "../components/cvs/CvReview";
+import { CandsListWrapper } from "../components/cands/CandsListWrapper";
+import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
 
 const drawerWidth = 340;
@@ -59,8 +59,8 @@ export const LayoutAuth = observer(() => {
                   },
                 }}
               >
-                <CvsListWrapper />
-                {cvsStore.openCvReviewDialogOpen && <CvReview />}
+                <CandsListWrapper />
+                {cvsStore.openCvReviewDialogOpen && <CandReview />}
               </Drawer>
             </Grid>
           </Grid>

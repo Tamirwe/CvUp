@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CvsPositionsLibrary\CvsPositionsLibrary.csproj" />
+    <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\ImportCvsLibrary\ImportCvsLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />

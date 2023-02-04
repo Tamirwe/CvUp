@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CvsPositionsLibrary.CvsFiles;
+using CandsPositionsLibrary.CvsFiles;
 using DataModelsLibrary.Queries;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +13,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
      })
     .ConfigureServices((_, services) =>
     {
-        services.AddTransient<ICvsPositionsQueries, CvsPositionsQueries>();
+        services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICvsFilesService, CvsFilesService>();
     })
     .Build();

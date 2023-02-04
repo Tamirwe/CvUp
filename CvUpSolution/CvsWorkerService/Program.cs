@@ -1,15 +1,15 @@
 using CvsWorkerService;
 using ImportCvsLibrary;
-using CvsPositionsLibrary;
 using DataModelsLibrary.Queries;
 using LuceneLibrary;
+using CandsPositionsLibrary;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddTransient<ILuceneService, LuceneService>();
-        services.AddTransient<ICvsPositionsQueries, CvsPositionsQueries>();
-        services.AddTransient<ICvsPositionsServise, CvsPositionsServise>();
+        services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+        services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
         services.AddSingleton<IImportCvs, ImportCvs>();
         services.AddHostedService<CvsImportWorker>();
     })

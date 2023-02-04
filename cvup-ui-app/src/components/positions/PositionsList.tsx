@@ -27,7 +27,7 @@ export const PositionsList = observer(() => {
     posId: number
   ) => {
     if (event.target.checked) {
-      cvsStore.AttachPosCandCv(posId);
+      cvsStore.attachPosCandCv(posId);
     }
   };
 

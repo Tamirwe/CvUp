@@ -1,4 +1,4 @@
-﻿namespace CvsPositionsLibrary.CvsFiles
+﻿namespace CandsPositionsLibrary.CvsFiles
 {
     public interface ICvsFilesService
     {

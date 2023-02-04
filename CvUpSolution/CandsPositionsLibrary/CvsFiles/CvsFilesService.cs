@@ -1,21 +1,14 @@
 ﻿using DataModelsLibrary.Queries;
-using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CvsPositionsLibrary.CvsFiles
+namespace CandsPositionsLibrary.CvsFiles
 {
     public class CvsFilesService : ICvsFilesService
     {
-        private ICvsPositionsQueries _cvsPositionsQueries;
+        private ICandsPositionsQueries _cvsPositionsQueries;
         string CvsRootFolder;
 
-        public CvsFilesService(IConfiguration config, ICvsPositionsQueries cvsPositionsQueries)
+        public CvsFilesService(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
             CvsRootFolder = $"{config["GlobalSettings:CvsFilesRootFolder"]}";
@@ -81,7 +74,7 @@ namespace CvsPositionsLibrary.CvsFiles
             }
         }
 
-        private  void DeleteEmptyCvsDirs(string startLocation)
+        private void DeleteEmptyCvsDirs(string startLocation)
         {
             foreach (var directory in Directory.GetDirectories(startLocation))
             {

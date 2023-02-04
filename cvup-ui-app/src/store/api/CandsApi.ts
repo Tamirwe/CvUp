@@ -1,7 +1,7 @@
 import { ICv, ICvReview } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
-export default class CvsApi extends BaseApi {
+export default class CandsApi extends BaseApi {
   async search() {
     return await this.apiWrapper(async () => {
       const data = (await this.http.get("Search")).data;
@@ -11,7 +11,7 @@ export default class CvsApi extends BaseApi {
 
   async getCvsList() {
     return await this.apiWrapper(async () => {
-      const data = (await this.http.get<ICv[]>("Cvs/getCvsList")).data;
+      const data = (await this.http.get<ICv[]>("Cand/GetCandList")).data;
       return data;
     });
   }
@@ -20,7 +20,7 @@ export default class CvsApi extends BaseApi {
     return await this.apiWrapper(async () => {
       const data = (
         await this.http.get<ICv[]>(
-          `Cvs/GetDuplicatesCvsList?cvId=${cvId}&candidateId=${candidateId}`
+          `Cand/GetDuplicatesCvsList?cvId=${cvId}&candidateId=${candidateId}`
         )
       ).data;
       return data;
@@ -30,13 +30,15 @@ export default class CvsApi extends BaseApi {
   async getPosCvsList(positionId: number) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.get<ICv[]>(`Cvs/GetPosCvsList?positionId=${positionId}`)
+        await this.http.get<ICv[]>(
+          `Cand/GetPosCvsList?positionId=${positionId}`
+        )
       ).data;
       return data;
     });
   }
 
-  async AttachPosCandCv(
+  async attachPosCandCv(
     candidateId: number,
     cvId: number,
     positionId: number,
@@ -44,7 +46,7 @@ export default class CvsApi extends BaseApi {
   ) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.post(`Cvs/AttachPosCandCv`, {
+        await this.http.post(`Cand/AttachPosCandCv`, {
           candidateId,
           cvId,
           positionId,
@@ -62,7 +64,7 @@ export default class CvsApi extends BaseApi {
   ) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.post(`Cvs/DetachPosCandidate`, {
+        await this.http.post(`Cand/DetachPosCandidate`, {
           candidateId,
           cvId,
           positionId,
@@ -74,14 +76,14 @@ export default class CvsApi extends BaseApi {
 
   async getCv() {
     return await this.apiWrapper(async () => {
-      const data = (await this.http.get<ICv>("Cvs/getCv")).data;
+      const data = (await this.http.get<ICv>("Cand/getCv")).data;
       return data;
     });
   }
 
   async saveCvReview(cvReview: ICvReview) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Cvs/SaveCvReview", cvReview)).data;
+      const data = (await this.http.post("Cand/SaveCvReview", cvReview)).data;
       return data;
     });
 

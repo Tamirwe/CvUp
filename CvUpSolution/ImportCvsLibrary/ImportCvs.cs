@@ -4,7 +4,6 @@ using System.Text;
 using MailKit.Search;
 using MimeKit;
 using Microsoft.Extensions.Configuration;
-using CvsPositionsLibrary;
 using DataModelsLibrary.Models;
 using System.Text.RegularExpressions;
 using static DataModelsLibrary.GlobalConstant;
@@ -17,13 +16,14 @@ using DataModelsLibrary.Enums;
 using Database.models;
 using System.ComponentModel.Design;
 using GeneralLibrary;
+using CandsPositionsLibrary;
 
 namespace ImportCvsLibrary
 {
     public class ImportCvs : IImportCvs
     {
 
-        ICvsPositionsServise _cvsPositionsServise;
+        ICandsPositionsServise _cvsPositionsServise;
         string _cvsRootFolder;
         string _gmailUserName;
         string _mailPassword;
@@ -34,7 +34,7 @@ namespace ImportCvsLibrary
         string _companyFolder = "";
         List<company_cvs_email>? _companiesEmail;
 
-        public ImportCvs(IConfiguration config, ICvsPositionsServise cvsPositionsServise)
+        public ImportCvs(IConfiguration config, ICandsPositionsServise cvsPositionsServise)
         {
             _cvsPositionsServise = cvsPositionsServise;
 

@@ -1,10 +1,10 @@
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import { DisplayedCvsListEnum } from "../models/GeneralEnums";
 import { IAppSettings, ICv, ICvReview } from "../models/GeneralModels";
-import CvsApi from "./api/CvsApi";
+import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
 
-export class CvsStore {
+export class CandsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
   cvsList: ICv[] = [];
@@ -19,7 +19,7 @@ export class CvsStore {
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.cvsApi = new CvsApi(appSettings);
+    this.cvsApi = new CandsApi(appSettings);
   }
 
   reset() {
@@ -99,15 +99,16 @@ export class CvsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async AttachPosCandCv(positionId: number) {
+  async attachPosCandCv(positionId: number) {
     if (this.cvDisplayed) {
-      const res = await this.cvsApi.AttachPosCandCv(
+      const res = await this.cvsApi.attachPosCandCv(
         this.cvDisplayed.candidateId,
         this.cvDisplayed.cvId,
         positionId,
         this.cvDisplayed.keyId
       );
     }
+    this.updateCvsLists(positionId);
   }
 
   async detachPosCandidate(
@@ -120,6 +121,10 @@ export class CvsStore {
       cvId,
       positionId
     );
+  }
+
+  updateCvsLists(positionId: number) {
+    // this.posCvsList.find(x=>x.)
   }
 
   // const cv = toJS(this.cvDisplayed);

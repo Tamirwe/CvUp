@@ -1,20 +1,23 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using GeneralLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
-using System.ComponentModel.Design;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CvsPositionsLibrary
+namespace CandsPositionsLibrary
 {
-    public partial class CvsPositionsServise: ICvsPositionsServise
+    public partial class CandsPositionsServise : ICandsPositionsServise
     {
         private IConfiguration _configuration;
-        private ICvsPositionsQueries _cvsPositionsQueries;
+        private ICandsPositionsQueries _cvsPositionsQueries;
         private ILuceneService _luceneService;
 
-        public CvsPositionsServise(IConfiguration config, ICvsPositionsQueries cvsPositionsQueries, ILuceneService luceneService)
+        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService)
         {
             _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
@@ -117,26 +120,26 @@ namespace CvsPositionsLibrary
             _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
         }
 
-        public List<CvListItemModel> GetCvsList(int companyId, int page, int take , int positionId , string? searchKeyWords )
+        public List<CvListItemModel> GetCvsList(int companyId, int page, int take, int positionId, string? searchKeyWords)
         {
             return _cvsPositionsQueries.GetCvsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, positionId, searchKeyWords);
         }
 
-        public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int cvId, int candidateId)
+        public List<CvListItemModel> GetCandCvsList(int companyId, int cvId, int candidateId)
         {
-            List<CvListItemModel> cvsList =  _cvsPositionsQueries.GetDuplicatesCvsList(companyId,  candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
-            cvsList.RemoveAll(x=>x.cvId== cvId);
+            List<CvListItemModel> cvsList = _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
 
-        public List<CvListItemModel> GetPosCvsList(int companyId, int positionId)
+        public List<CvListItemModel> GetPosCandList(int companyId, int positionId)
         {
-            return _cvsPositionsQueries.GetPosCvsList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            return _cvsPositionsQueries.GetPosCandList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
         }
 
         public PositionClientModel GetPosition(int companyId, int positionId)
         {
-            PositionClientModel pos = _cvsPositionsQueries.GetPosition( companyId, positionId);
+            PositionClientModel pos = _cvsPositionsQueries.GetPosition(companyId, positionId);
             return pos;
         }
 
@@ -170,7 +173,7 @@ namespace CvsPositionsLibrary
 
         public CvModel? GetCv(int cvId, int companyId)
         {
-            return _cvsPositionsQueries.GetCv( cvId,  companyId);
+            return _cvsPositionsQueries.GetCv(cvId, companyId);
         }
 
         public void SaveCvReview(CvReviewModel cvReview)
@@ -178,9 +181,9 @@ namespace CvsPositionsLibrary
             _cvsPositionsQueries.SaveCvReview(cvReview);
         }
 
-        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId,  int cvAsciiSum)
+        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
         {
-            List<cv> cvs = _cvsPositionsQueries.CheckIsCvDuplicate( companyId,  candidateId,   cvAsciiSum);
+            List<cv> cvs = _cvsPositionsQueries.CheckIsCvDuplicate(companyId, candidateId, cvAsciiSum);
             return cvs;
         }
 
@@ -199,9 +202,9 @@ namespace CvsPositionsLibrary
             return _cvsPositionsQueries.AttachPosCandCv(posCv);
         }
 
-        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCv)
+        public CandPosModel DetachPosCand(AttachePosCandCvModel posCv)
         {
-            return _cvsPositionsQueries.DetachPosCandidate(posCv);
+            return _cvsPositionsQueries.DetachPosCand(posCv);
         }
 
         public List<company_cvs_email> GetCompaniesEmails()

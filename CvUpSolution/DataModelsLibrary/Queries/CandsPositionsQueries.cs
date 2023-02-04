@@ -20,10 +20,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
 {
-    public class CvsPositionsQueries : ICvsPositionsQueries
+    public class CandsPositionsQueries : ICandsPositionsQueries
     {
 
-        public CvsPositionsQueries()
+        public CandsPositionsQueries()
         {
         }
 
@@ -163,7 +163,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetDuplicatesCvsList(int companyId, int candidateId, string encriptKey)
+        public List<CvListItemModel> GetCandCvsList(int companyId, int candidateId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -193,7 +193,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<CvListItemModel> GetPosCvsList(int companyId, int positionId, string encriptKey)
+        public List<CvListItemModel> GetPosCandList(int companyId, int positionId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -719,7 +719,7 @@ namespace DataModelsLibrary.Queries
             return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        public CandPosModel DetachPosCandidate(AttachePosCandCvModel posCandCv)
+        public CandPosModel DetachPosCand(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {

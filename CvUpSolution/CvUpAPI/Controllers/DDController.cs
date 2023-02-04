@@ -1,4 +1,4 @@
-﻿using CvsPositionsLibrary;
+﻿using CandsPositionsLibrary;
 using GeneralLibrary;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -13,7 +13,7 @@ namespace CvUpAPI.Controllers
     {
         private IConfiguration _configuration;
 
-        public DDController(IConfiguration config, ICvsPositionsServise cvsPosService)
+        public DDController(IConfiguration config, ICandsPositionsServise cvsPosService)
         {
             _configuration = config;
         }

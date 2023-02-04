@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CvsPositionsLibrary;
+using CandsPositionsLibrary;
 using DataModelsLibrary.Queries;
 using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
@@ -16,11 +16,11 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
     {
         services.AddTransient<ILuceneService, LuceneService>();
-        services.AddTransient<ICvsPositionsQueries, CvsPositionsQueries>();
-        services.AddTransient<ICvsPositionsServise, CvsPositionsServise>();
+        services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+        services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
     })
     .Build();
 
-var cvsPositionsServise = host.Services.GetRequiredService<ICvsPositionsServise>();
+var cvsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();
 cvsPositionsServise.IndexCompanyCvs(132);
 

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CvsPositionsLibrary
+namespace CandsPositionsLibrary
 {
-    public partial class CvsPositionsServise
+    public partial class CandsPositionsServise
     {
         public department AddDepartment(IdNameModel data, int companyId)
         {

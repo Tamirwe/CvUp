@@ -2,7 +2,7 @@
 using LuceneLibrary;
 using DataModelsLibrary.Queries;
 using AuthLibrary;
-using CvsPositionsLibrary;
+using CandsPositionsLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -15,8 +15,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IEmailQueries, EmailQueries>();
             services.AddTransient<IAuthQueries, AuthQueries>();
             services.AddTransient<IAuthServise, AuthServise>();
-            services.AddTransient<ICvsPositionsServise, CvsPositionsServise>();
-            services.AddTransient<ICvsPositionsQueries, CvsPositionsQueries>();
+            services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+            services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             return services;
         }
     }

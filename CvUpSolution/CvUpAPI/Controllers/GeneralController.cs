@@ -1,4 +1,4 @@
-﻿using CvsPositionsLibrary;
+﻿using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +11,9 @@ namespace CvUpAPI.Controllers
     public class GeneralController : ControllerBase
     {
         private IConfiguration _configuration;
-        private ICvsPositionsServise _cvsPosService;
+        private ICandsPositionsServise _cvsPosService;
 
-        public GeneralController(IConfiguration config, ICvsPositionsServise cvsPosService)
+        public GeneralController(IConfiguration config, ICandsPositionsServise cvsPosService)
         {
             _configuration = config;
             _cvsPosService = cvsPosService;

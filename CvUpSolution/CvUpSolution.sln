@@ -17,13 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsWorkerService", "CvsWork
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImportCvsLibrary", "ImportCvsLibrary\ImportCvsLibrary.csproj", "{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsPositionsLibrary", "CvsPositionsLibrary\CvsPositionsLibrary.csproj", "{3AF38A62-CE91-442E-B81F-19C19EC06128}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndexCvsConsoleApp", "IndexCvsConsoleApp\IndexCvsConsoleApp.csproj", "{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralLibrary", "GeneralLibrary\GeneralLibrary.csproj", "{2C0A33CC-C03B-47FE-8098-E3A9C51CC05C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CvsFilesConsoleApp", "CvsFilesConsoleApp\CvsFilesConsoleApp.csproj", "{61F87A28-E44F-45EE-A008-F41D14B5B0A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsFilesConsoleApp", "CvsFilesConsoleApp\CvsFilesConsoleApp.csproj", "{61F87A28-E44F-45EE-A008-F41D14B5B0A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CandsPositionsLibrary", "CandsPositionsLibrary\CandsPositionsLibrary.csproj", "{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,6 @@ Global
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AF38A62-CE91-442E-B81F-19C19EC06128}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +71,10 @@ Global
 		{61F87A28-E44F-45EE-A008-F41D14B5B0A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61F87A28-E44F-45EE-A008-F41D14B5B0A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61F87A28-E44F-45EE-A008-F41D14B5B0A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

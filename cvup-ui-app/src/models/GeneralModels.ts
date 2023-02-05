@@ -31,6 +31,13 @@ export interface ICand {
   cvPosIds: number[];
   stageId: number;
   dateAttached: Date;
+  candCvs: IPosCandCvs[];
+}
+
+export interface IPosCandCvs {
+  cvId: number;
+  keyId: string;
+  isSentByEmail: boolean;
 }
 
 export interface IPosition {

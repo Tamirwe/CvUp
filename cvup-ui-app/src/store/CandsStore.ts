@@ -7,14 +7,14 @@ import { RootStore } from "./RootStore";
 export class CandsStore {
   private cvsApi;
   private isCvReviewDialogOpen: boolean = false;
-  cvsList: ICand[] = [];
-  duplicatesCvsList: ICand[] = [];
-  posCvsList: ICand[] = [];
+  candsList: ICand[] = [];
+  candDupCvsList: ICand[] = [];
+  posCandsList: ICand[] = [];
   pdfUrl: string = "";
-  cvSelected?: ICand;
-  cvDuplicateSelected?: ICand;
-  cvPositionSelected?: ICand;
-  cvDisplayed?: ICand;
+  candSelected?: ICand;
+  candDupSelected?: ICand;
+  candPosSelected?: ICand;
+  candDisplayed?: ICand;
   cvDisplayedList: DisplayedCvsListEnum = DisplayedCvsListEnum.None;
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
@@ -23,9 +23,8 @@ export class CandsStore {
   }
 
   reset() {
-    this.cvsList = [];
-    // this.cvId = "";
-    this.cvSelected = undefined;
+    this.candsList = [];
+    this.candSelected = undefined;
   }
 
   set openCvReviewDialogOpen(val) {
@@ -36,35 +35,35 @@ export class CandsStore {
     return this.isCvReviewDialogOpen;
   }
 
-  async displayCvMain(cv: ICand) {
+  async displayCvMain(cand: ICand) {
     runInAction(() => {
-      this.cvSelected = cv;
-      this.cvDisplayed = this.cvSelected;
+      this.candSelected = cand;
+      this.candDisplayed = this.candSelected;
       this.cvDisplayedList = DisplayedCvsListEnum.SearchCvsList;
       this.getPdf();
     });
   }
 
-  async displayCvDuplicate(cv: ICand) {
+  async displayCvDuplicate(cand: ICand) {
     runInAction(() => {
-      this.cvDuplicateSelected = cv;
-      this.cvDisplayed = this.cvDuplicateSelected;
+      this.candDupSelected = cand;
+      this.candDisplayed = this.candDupSelected;
       this.cvDisplayedList = DisplayedCvsListEnum.DuplicateCvsList;
       this.getPdf();
     });
   }
 
-  async displayCvPosition(cv: ICand) {
+  async displayCvPosition(cand: ICand) {
     runInAction(() => {
-      this.cvPositionSelected = cv;
-      this.cvDisplayed = this.cvPositionSelected;
+      this.candPosSelected = cand;
+      this.candDisplayed = this.candPosSelected;
       this.cvDisplayedList = DisplayedCvsListEnum.PositionCvsList;
       this.getPdf();
     });
   }
 
   async getPdf() {
-    this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${this.cvDisplayed?.keyId}`;
+    this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${this.candDisplayed?.keyId}`;
   }
 
   async saveCvReview(reviewText: any, reviewHtml: any) {
@@ -76,7 +75,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getCandsList();
     runInAction(() => {
-      this.cvsList = res.data;
+      this.candsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -85,7 +84,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getDuplicatesCvsList(cv.cvId, cv.candidateId);
     runInAction(() => {
-      this.duplicatesCvsList = res.data;
+      this.candDupCvsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -94,21 +93,28 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.GetPosCandsList(positionId);
     runInAction(() => {
-      this.posCvsList = res.data;
+      this.posCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
   async attachPosCandCv(positionId: number) {
-    if (this.cvDisplayed) {
+    if (this.candDisplayed) {
       const res = await this.cvsApi.attachPosCandCv(
-        this.cvDisplayed.candidateId,
-        this.cvDisplayed.cvId,
+        this.candDisplayed.candidateId,
+        this.candDisplayed.cvId,
         positionId,
-        this.cvDisplayed.keyId
+        this.candDisplayed.keyId
       );
     }
-    this.updateCvsLists(positionId);
+
+    await this.updateCandsPositionArrays(
+      positionId,
+      true,
+      this.candDisplayed?.candidateId,
+      this.candDisplayed?.cvId,
+      this.candDisplayed?.keyId
+    );
   }
 
   async detachPosCandidate(
@@ -121,50 +127,124 @@ export class CandsStore {
       cvId,
       positionId
     );
+
+    await this.updateCandsPositionArrays(positionId, false, candidateId, cvId);
   }
 
-  updateCvsLists(positionId: number) {
-    // this.posCvsList.find(x=>x.)
+  async updateCandsPositionArrays(
+    positionId: number,
+    isAttach: boolean,
+    candidateId?: number,
+    cvId?: number,
+    keyId?: string
+  ) {
+    if (candidateId && cvId) {
+      this.updateCandsListPosArrays(positionId, isAttach, candidateId, cvId);
+      this.updateCandDupCvsListPosArrays(
+        positionId,
+        isAttach,
+        candidateId,
+        cvId
+      );
+      await this.updatePosCandsListPosArrays(
+        positionId,
+        isAttach,
+        candidateId,
+        cvId,
+        keyId
+      );
+    }
   }
 
-  // const cv = toJS(this.cvDisplayed);
-  // let candPosIds: number[] = [];
-  // let cvPosIds: number[] = [];
+  updateCandsListPosArrays(
+    positionId: number,
+    isAttach: boolean,
+    candidateId: number,
+    cvId: number
+  ) {
+    const cand = this.posCandsList.find((x) => x.candidateId === candidateId);
 
-  // if (cv && cv.candPosIds) {
-  //   if (checked) {
-  //     cv.candPosIds.push(positionId);
-  //     cv.cvPosIds.push(positionId);
-  //   } else {
-  //     let posIndex = cv.candPosIds.indexOf(positionId);
-  //     cv.candPosIds.splice(posIndex, 1);
-  //     posIndex = cv.cvPosIds.indexOf(positionId);
-  //     cv.cvPosIds.splice(posIndex, 1);
-  //   }
+    if (cand) {
+      if (isAttach) {
+        cand.candPosIds.push(positionId);
+      } else {
+        this.unPushNumArr(positionId, cand?.candPosIds);
+      }
 
-  //   candPosIds = [...cv.candPosIds];
-  //   cvPosIds = [...cv.cvPosIds];
+      if (cand.cvId === cvId) {
+        if (isAttach) {
+          cand.cvPosIds.push(positionId);
+        } else {
+          this.unPushNumArr(positionId, cand?.cvPosIds);
+        }
+      }
+    }
+  }
 
-  //   this.updateListCvsPosIds(
-  //     this.cvsList,
-  //     cv.candidateId,
-  //     cv.cvId,
-  //     candPosIds,
-  //     cvPosIds
-  //   );
-  //   this.updateListCvsPosIds(
-  //     this.duplicatesCvsList,
-  //     cv.candidateId,
-  //     cv.cvId,
-  //     candPosIds,
-  //     cvPosIds
-  //   );
+  updateCandDupCvsListPosArrays(
+    positionId: number,
+    isAttach: boolean,
+    candidateId: number,
+    cvId: number
+  ) {
+    this.posCandsList.forEach((candDupCv) => {
+      if (candDupCv?.candidateId === candidateId) {
+        if (isAttach) {
+          candDupCv?.candPosIds.push(positionId);
+        } else {
+          this.unPushNumArr(positionId, candDupCv?.candPosIds);
+        }
 
-  //   runInAction(() => {
-  //     this.cvDisplayed = cv;
-  //   });
-  // }
-  // }
+        if (candDupCv.cvId === cvId) {
+          if (isAttach) {
+            candDupCv.cvPosIds.push(positionId);
+          } else {
+            this.unPushNumArr(positionId, candDupCv?.cvPosIds);
+          }
+        }
+      }
+    });
+  }
+
+  async updatePosCandsListPosArrays(
+    positionId: number,
+    isAttach: boolean,
+    candidateId: number,
+    cvId: number,
+    keyId?: string
+  ) {
+    if (isAttach) {
+      if (this.rootStore.positionsStore.posSelected?.id === positionId) {
+        const cand = this.posCandsList.find(
+          (x) => x.candidateId === candidateId
+        );
+
+        if (cand && keyId) {
+          cand.candCvs.push({ cvId, keyId, isSentByEmail: false });
+        }
+      } else {
+        await this.getPositionCands(positionId);
+      }
+    } else {
+      const index = this.posCandsList.findIndex(
+        (x) => x.candidateId === candidateId
+      );
+
+      if (index > -1) {
+        this.posCandsList.splice(index, 1);
+      }
+    }
+  }
+
+  unPushNumArr(id: number, numArr?: number[]) {
+    if (numArr) {
+      let index = numArr.indexOf(id);
+
+      if (index && index > -1) {
+        numArr.splice(index, 1);
+      }
+    }
+  }
 
   async updateListCvsPosIds(
     list: ICand[],
@@ -183,14 +263,4 @@ export class CandsStore {
       }
     });
   }
-
-  // setDoc(cvId: string) {
-  //   runInAction(() => {
-  //     this.cvId = cvId;
-  //   });
-  // }
-  //   async search() {
-  //     const aaa = await this.cvsApi.search();
-  //     console.log(aaa);
-  //   }
 }

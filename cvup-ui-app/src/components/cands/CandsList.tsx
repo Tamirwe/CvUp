@@ -38,7 +38,7 @@ export const CandsList = observer(() => {
         },
       }}
     >
-      {cvsStore.cvsList.map((cv, i) => {
+      {cvsStore.candsList.map((cv, i) => {
         return (
           <ListItem
             key={cv.cvId}
@@ -52,7 +52,7 @@ export const CandsList = observer(() => {
             }}
           >
             <ListItemButton
-              selected={cv.candidateId === cvsStore.cvDisplayed?.candidateId}
+              selected={cv.candidateId === cvsStore.candDisplayed?.candidateId}
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
@@ -88,7 +88,7 @@ export const CandsList = observer(() => {
               />
             </ListItemButton>
             <Collapse
-              in={cv.cvId === cvsStore.cvSelected?.cvId}
+              in={cv.cvId === cvsStore.candSelected?.cvId}
               timeout="auto"
               unmountOnExit
             >
@@ -106,12 +106,12 @@ export const CandsList = observer(() => {
                   },
                 }}
               >
-                {cvsStore.duplicatesCvsList.map((cv, i) => {
+                {cvsStore.candDupCvsList.map((cv, i) => {
                   return (
                     <ListItemButton
                       key={`${cv.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 4 }}
-                      selected={cv.cvId === cvsStore.cvDisplayed?.cvId}
+                      selected={cv.cvId === cvsStore.candDisplayed?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);

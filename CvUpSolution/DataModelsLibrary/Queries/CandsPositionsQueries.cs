@@ -220,6 +220,8 @@ namespace DataModelsLibrary.Queries
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
+                                 candCvs= pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
+                                 
                              });
 
                 return query.ToList();
@@ -691,9 +693,9 @@ namespace DataModelsLibrary.Queries
                 string? posCvsStr = null;
                 List<PosCvsModel>? posCvs = null;
 
-                if (posCand != null && posCand.cvs != null)
+                if (posCand != null && posCand.cand_cvs != null)
                 {
-                    posCvs = JsonConvert.DeserializeObject<List<PosCvsModel>>(posCand.cvs);
+                    posCvs = JsonConvert.DeserializeObject<List<PosCvsModel>>(posCand.cand_cvs);
                 }
 
                 if (posCvs == null)
@@ -709,7 +711,7 @@ namespace DataModelsLibrary.Queries
                     candidate_id = posCandCv.candidateId,
                     cv_id = posCandCv.cvId,
                     stage_id = 1,
-                    cvs = posCvsStr
+                    cand_cvs = posCvsStr
                 };
 
                 dbContext.position_candidates.Add(newPosCv);

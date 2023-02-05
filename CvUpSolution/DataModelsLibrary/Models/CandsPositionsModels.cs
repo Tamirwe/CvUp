@@ -58,7 +58,15 @@ namespace DataModelsLibrary.Models
         public int[]? cvPosIds { get; set; }
         public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
+        public List<PosCandCvsModel>? candCvs { get; set; }
 
+    }
+
+    public class PosCandCvsModel
+    {
+        public int cvId { get; set; }
+        public string? keyId { get; set; }
+        public bool isSentByEmail { get; set; } 
     }
 
     public class CvReviewModel

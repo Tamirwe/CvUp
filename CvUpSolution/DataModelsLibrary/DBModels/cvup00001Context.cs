@@ -385,7 +385,7 @@ namespace Database.models
 
                 entity.HasIndex(e => e.stage_id, "fk_position_candidates_stage_id_position_candidate_stages_id");
 
-                entity.Property(e => e.cvs).HasColumnType("json");
+                entity.Property(e => e.cand_cvs).HasColumnType("json");
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")

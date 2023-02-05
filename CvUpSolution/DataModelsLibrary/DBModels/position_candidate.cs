@@ -12,7 +12,7 @@ namespace Database.models
         public int cv_id { get; set; }
         public int? stage_id { get; set; }
         public DateTime date_created { get; set; }
-        public string? cvs { get; set; }
+        public string? cand_cvs { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual company company { get; set; } = null!;

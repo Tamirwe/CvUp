@@ -89,8 +89,8 @@ export const PositionsList = observer(() => {
               <Tooltip title="Attach to position">
                 <Checkbox
                   checked={
-                    cvsStore.cvDisplayed && cvsStore.cvDisplayed.candPosIds
-                      ? cvsStore.cvDisplayed.candPosIds.indexOf(pos.id) > -1
+                    cvsStore.candDisplayed && cvsStore.candDisplayed.candPosIds
+                      ? cvsStore.candDisplayed.candPosIds.indexOf(pos.id) > -1
                       : false
                   }
                   onChange={(event) => {
@@ -134,12 +134,12 @@ export const PositionsList = observer(() => {
                   },
                 }}
               >
-                {cvsStore.posCvsList.map((cv, i) => {
+                {cvsStore.posCandsList.map((cv, i) => {
                   return (
                     <ListItemButton
                       key={`${cv.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 1 }}
-                      selected={cv.cvId === cvsStore.cvDisplayed?.cvId}
+                      selected={cv.cvId === cvsStore.candDisplayed?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
@@ -186,36 +186,6 @@ export const PositionsList = observer(() => {
                           </IconButton>
                         </Tooltip>
                       </ListItemIcon>
-                      {/* <Tooltip title="Attach to position">
-                        <Checkbox
-                          checked={
-                            cvsStore.cvDisplayed &&
-                            cvsStore.cvDisplayed.candPosIds
-                              ? cvsStore.cvDisplayed.candPosIds.indexOf(
-                                  pos.id
-                                ) > -1
-                              : false
-                          }
-                          onChange={(event) => {
-                            event.stopPropagation();
-                            handleDetachPosCv(event, pos.id);
-                          }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                          }}
-                          sx={{
-                            right: 0,
-                            marginRight: 1,
-                            color: "#d7d2d2",
-                            "& svg": { fontSize: 22 },
-                            "&.Mui-checked": {
-                              color: "#aba6a0",
-                            },
-                          }}
-                          icon={<MdRemove />}
-                          checkedIcon={<MdRemove />}
-                        />
-                      </Tooltip> */}
                     </ListItemButton>
                   );
                 })}

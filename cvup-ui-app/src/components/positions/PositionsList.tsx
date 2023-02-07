@@ -16,27 +16,23 @@ import { useStore } from "../../Hooks/useStore";
 import { MdRemove, MdPostAdd } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
+import { ICand } from "../../models/GeneralModels";
 
 export const PositionsList = observer(() => {
   let location = useLocation();
   const { positionsStore, cvsStore } = useStore();
   const navigate = useNavigate();
 
-  const handleAttachPosCandCv = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    posId: number
-  ) => {
-    if (event.target.checked) {
-      cvsStore.attachPosCandCv(posId);
-    }
+  const handleAttachPosCandCv = (posId: number) => {
+    cvsStore.attachPosCandCv(posId);
   };
 
   const handleDetachPosCand = (
-    posId: number,
-    cvId: number,
-    candidateId: number
+    positionId: number,
+    cand: ICand,
+    index: number
   ) => {
-    cvsStore.detachPosCandidate(posId, cvId, candidateId);
+    cvsStore.detachPosCandidate(positionId, cand, index);
   };
 
   useEffect(() => {
@@ -89,13 +85,14 @@ export const PositionsList = observer(() => {
               <Tooltip title="Attach to position">
                 <Checkbox
                   checked={
-                    cvsStore.candDisplayed && cvsStore.candDisplayed.candPosIds
-                      ? cvsStore.candDisplayed.candPosIds.indexOf(pos.id) > -1
+                    cvsStore.candDisplaying &&
+                    cvsStore.candDisplaying.candPosIds
+                      ? cvsStore.candDisplaying.candPosIds.indexOf(pos.id) > -1
                       : false
                   }
                   onChange={(event) => {
                     event.stopPropagation();
-                    handleAttachPosCandCv(event, pos.id);
+                    handleAttachPosCandCv(pos.id);
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -134,21 +131,21 @@ export const PositionsList = observer(() => {
                   },
                 }}
               >
-                {cvsStore.posCandsList.map((cv, i) => {
+                {cvsStore.posCandsList.map((cand, i) => {
                   return (
                     <ListItemButton
-                      key={`${cv.cvId}dup`}
+                      key={`${cand.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 1 }}
-                      selected={cv.cvId === cvsStore.candDisplayed?.cvId}
+                      selected={cand.cvId === cvsStore.candDisplaying?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
-                        cvsStore.displayCvPosition(cv);
+                        cvsStore.displayCvPosition(cand);
                       }}
                     >
                       <ListItemText
-                        primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
+                        primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
                         sx={{
                           textAlign: "right",
                           color: "#bcc9d5",
@@ -159,13 +156,13 @@ export const PositionsList = observer(() => {
                       />
                       <ListItemText
                         sx={{ "& span, p": { fontSize: "0.75rem" } }}
-                        primary={cv.candidateName}
-                        secondary={cv.emailSubject}
+                        primary={cand.candidateName}
+                        secondary={cand.emailSubject}
                       />
                       <ListItemIcon
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleDetachPosCand(pos.id, cv.cvId, cv.candidateId);
+                          handleDetachPosCand(pos.id, cand, i);
                         }}
                       >
                         <Tooltip title="Detach Cv">

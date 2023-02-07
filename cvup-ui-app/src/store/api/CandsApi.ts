@@ -57,14 +57,10 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async detachPosCandidate(
-    candidateId: number,
-    cvId: number,
-    positionId: number
-  ) {
+  async detachPosCand(candidateId: number, cvId: number, positionId: number) {
     return await this.apiWrapper(async () => {
       const data = (
-        await this.http.post(`Cand/DetachPosCandidate`, {
+        await this.http.post(`Cand/DetachPosCand`, {
           candidateId,
           cvId,
           positionId,

@@ -52,7 +52,7 @@ export const CandsList = observer(() => {
             }}
           >
             <ListItemButton
-              selected={cv.candidateId === cvsStore.candDisplayed?.candidateId}
+              selected={cv.candidateId === cvsStore.candDisplaying?.candidateId}
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
@@ -111,7 +111,7 @@ export const CandsList = observer(() => {
                     <ListItemButton
                       key={`${cv.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 4 }}
-                      selected={cv.cvId === cvsStore.candDisplayed?.cvId}
+                      selected={cv.cvId === cvsStore.candDisplaying?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IconButton, Grid, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { CiLogout, CiEdit } from "react-icons/ci";
+import { CiLogout, CiEdit, CiMail, CiSearch } from "react-icons/ci";
 
 export const Header = () => {
   const { authStore, cvsStore } = useStore();
@@ -23,7 +22,6 @@ export const Header = () => {
           style={{
             backgroundColor: "#fff",
             padding: "0 10px",
-            // borderRadius: "6px",
             height: "100%",
             display: "flex",
             alignItems: "center",
@@ -48,6 +46,22 @@ export const Header = () => {
                   }}
                 >
                   <CiEdit />
+                </IconButton>
+                <IconButton
+                  size="medium"
+                  onClick={() => {
+                    cvsStore.openCvReviewDialogOpen = true;
+                  }}
+                >
+                  <CiMail />
+                </IconButton>
+                <IconButton
+                  size="medium"
+                  onClick={() => {
+                    cvsStore.openCvReviewDialogOpen = true;
+                  }}
+                >
+                  <CiSearch />
                 </IconButton>
               </Stack>
             </Grid>

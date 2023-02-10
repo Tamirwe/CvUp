@@ -197,17 +197,16 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = (from cand in dbContext.candidates
-                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                             join pcv in dbContext.position_candidates on cvs.id equals pcv.cv_id
+                var query = (from pcv in dbContext.position_candidates
+                             join cand in dbContext.candidates on pcv.candidate_id equals cand.id
+                             join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
                              where pcv.company_id == companyId
-                             && pcv.position_id == positionId
-                             orderby cand.last_cv_sent descending
+                                    && pcv.position_id == positionId
                              select new CandModel
                              {
                                  cvId = cvs.id,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                 keyId= cvs.key_id,
+                                 keyId = cvs.key_id,
                                  //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -220,8 +219,8 @@ namespace DataModelsLibrary.Queries
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
-                                 candCvs= pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
-                                 
+                                 candCvs = pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
+
                              });
 
                 return query.ToList();

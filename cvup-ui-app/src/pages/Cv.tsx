@@ -4,6 +4,7 @@ import "react-quill/dist/quill.snow.css";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "../Hooks/useStore";
+import styles from "./Cv.module.scss";
 
 export const Cv = observer(() => {
   // let { id } = useParams();
@@ -15,5 +16,18 @@ export const Cv = observer(() => {
   //   })();
   // }, [id]);
 
-  return <PdfViewer />;
+  return (
+    <div className={styles.scrollCv}>
+      fdgdfgdfgdfg
+      <br />
+      dfgdfgdgdg
+      <br />
+      dfgdfgdgdg
+      <br />
+      dfgdfgdgdg
+      <br />
+      dfgdfgdgdg
+      <PdfViewer />
+    </div>
+  );
 });

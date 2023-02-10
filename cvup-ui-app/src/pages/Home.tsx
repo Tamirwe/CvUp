@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { observer } from "mobx-react";
-import { CandsListWrapper } from "../components/cands/CandsListWrapper";
+import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { useStore } from "../Hooks/useStore";
 
 export const Home = observer(() => {
@@ -95,7 +95,7 @@ export const Home = observer(() => {
       </Grid>
       <Grid>
         <div>
-          <CandsListWrapper />
+          <CandsListsWrapper />
         </div>
       </Grid>
     </Grid>

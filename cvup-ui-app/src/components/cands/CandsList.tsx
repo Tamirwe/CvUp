@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   Collapse,
   IconButton,
   List,
@@ -8,23 +7,29 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { useState } from "react";
+import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
+import { ICand } from "../../models/GeneralModels";
+import { CandDupCvsList } from "./CandDupCvsList";
 
-export const CandsList = observer(() => {
+interface IProps {
+  candsList: ICand[];
+}
+
+export const CandsList = observer(({ candsList }: IProps) => {
   const { cvsStore } = useStore();
+  const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    cvsStore.getCandsList();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleDetachPosCand = (cand: ICand, index: number) => {
+    cvsStore.detachPosCandidate(cand, index);
+  };
 
   return (
     <List
@@ -38,106 +43,102 @@ export const CandsList = observer(() => {
         },
       }}
     >
-      {cvsStore.candsList.map((cv, i) => {
+      {candsList.map((cand, i) => {
         return (
           <ListItem
-            key={cv.cvId}
+            key={cand.cvId}
             dense
             disablePadding
             component="nav"
             sx={{
               flexDirection: "column",
               alignItems: "normal",
-              pl: "18px",
+              pl: "10px",
             }}
           >
             <ListItemButton
-              selected={cv.candidateId === cvsStore.candDisplaying?.candidateId}
+              sx={{ pr: "4px", pl: "4px" }}
+              selected={cand.candidateId === cvsStore.candDisplay?.candidateId}
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                cvsStore.displayCvMain(cv);
-                cvsStore.getDuplicatesCvsList(cv);
+                cvsStore.displayCvMain(cand);
               }}
             >
-              <ListItemIcon>
-                <Tooltip title="Duplicates">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="label"
-                  >
+              <ListItemIcon
+                onClick={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+
+                  if (!dupCv || dupCv !== cand.cvId) {
+                    setDupCv(cand.cvId);
+                    cvsStore.getDuplicatesCvsList(cand);
+                  } else {
+                    setDupCv(0);
+                  }
+                }}
+                sx={{
+                  visibility: !cand.hasDuplicates ? "hidden" : "visible",
+                  minWidth: "45px",
+                }}
+              >
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
+                >
+                  {dupCv && dupCv === cand.cvId ? (
+                    <MdExpandLess />
+                  ) : (
                     <MdExpandMore />
-                  </IconButton>
-                </Tooltip>
+                  )}
+                </IconButton>
               </ListItemIcon>
 
               <ListItemText
-                primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
+                primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
                 sx={{
                   textAlign: "right",
                   color: "#bcc9d5",
                   fontSize: "0.775rem",
                   alignSelf: "start",
+                  whiteSpace: "nowrap",
                 }}
               />
               <ListItemText
-                primary={cv.candidateName}
-                secondary={cv.emailSubject}
+                primary={cand.candidateName}
+                secondary={cand.emailSubject}
               />
+              {cvsStore.currentTabCandsList === "positionCandsList" ? (
+                <ListItemIcon
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleDetachPosCand(cand, i);
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      right: 0,
+                      marginRight: 1,
+                      color: "#d7d2d2",
+                      "&:hover ": {
+                        color: "#ffab55",
+                      },
+                    }}
+                    color="primary"
+                    aria-label="upload picture"
+                    component="label"
+                  >
+                    <MdRemove />
+                  </IconButton>
+                </ListItemIcon>
+              ) : (
+                <div>&nbsp;&nbsp;</div>
+              )}
             </ListItemButton>
-            <Collapse
-              in={cv.cvId === cvsStore.candSelected?.cvId}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List
-                component="div"
-                disablePadding
-                dense={true}
-                sx={{
-                  backgroundColor: "#fbfbfb",
-                  border: "1px solid #ffdcdc",
-                  maxHeight: "300px",
-                  overflowY: "hidden",
-                  "&:hover ": {
-                    overflow: "overlay",
-                  },
-                }}
-              >
-                {cvsStore.candDupCvsList.map((cv, i) => {
-                  return (
-                    <ListItemButton
-                      key={`${cv.cvId}dup`}
-                      sx={{ fontSize: "0.75rem", pl: 4 }}
-                      selected={cv.cvId === cvsStore.candDisplaying?.cvId}
-                      onClick={() => {
-                        if (location.pathname !== "/cv") {
-                          navigate(`/cv`);
-                        }
-                        cvsStore.displayCvDuplicate(cv);
-                      }}
-                    >
-                      <ListItemText
-                        primary={format(new Date(cv.cvSent), "MMM d, yyyy")}
-                        sx={{
-                          textAlign: "right",
-                          color: "#bcc9d5",
-                          fontSize: "0.775rem",
-                          alignSelf: "start",
-                          "& span": { fontSize: "0.75rem" },
-                        }}
-                      />
-                      <ListItemText
-                        sx={{ "& span, p": { fontSize: "0.75rem" } }}
-                        primary={cv.candidateName}
-                        secondary={cv.emailSubject}
-                      />
-                    </ListItemButton>
-                  );
-                })}
-              </List>
+            <Collapse in={cand.cvId === dupCv} timeout="auto" unmountOnExit>
+              <CandDupCvsList />
             </Collapse>
           </ListItem>
         );

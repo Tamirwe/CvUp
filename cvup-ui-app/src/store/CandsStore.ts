@@ -14,8 +14,9 @@ export class CandsStore {
   candSelected?: ICand;
   candDupSelected?: ICand;
   candPosSelected?: ICand;
-  candDisplaying?: ICand;
-  cvDisplayedList: DisplayedCvsListEnum = DisplayedCvsListEnum.None;
+  candDisplay?: ICand;
+  candListDisplay: DisplayedCvsListEnum = DisplayedCvsListEnum.None;
+  tabDisplayCandsList: string = "candList";
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -35,11 +36,19 @@ export class CandsStore {
     return this.isCvReviewDialogOpen;
   }
 
+  set currentTabCandsList(val) {
+    this.tabDisplayCandsList = val;
+  }
+
+  get currentTabCandsList() {
+    return this.tabDisplayCandsList;
+  }
+
   async displayCvMain(cand: ICand) {
     runInAction(() => {
       this.candSelected = cand;
-      this.candDisplaying = this.candSelected;
-      this.cvDisplayedList = DisplayedCvsListEnum.SearchCvsList;
+      this.candDisplay = this.candSelected;
+      this.candListDisplay = DisplayedCvsListEnum.SearchCvsList;
       this.getPdf();
     });
   }
@@ -47,8 +56,8 @@ export class CandsStore {
   async displayCvDuplicate(cand: ICand) {
     runInAction(() => {
       this.candDupSelected = cand;
-      this.candDisplaying = this.candDupSelected;
-      this.cvDisplayedList = DisplayedCvsListEnum.DuplicateCvsList;
+      this.candDisplay = this.candDupSelected;
+      this.candListDisplay = DisplayedCvsListEnum.DuplicateCvsList;
       this.getPdf();
     });
   }
@@ -56,14 +65,14 @@ export class CandsStore {
   async displayCvPosition(cand: ICand) {
     runInAction(() => {
       this.candPosSelected = cand;
-      this.candDisplaying = this.candPosSelected;
-      this.cvDisplayedList = DisplayedCvsListEnum.PositionCvsList;
+      this.candDisplay = this.candPosSelected;
+      this.candListDisplay = DisplayedCvsListEnum.PositionCvsList;
       this.getPdf();
     });
   }
 
   async getPdf() {
-    this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${this.candDisplaying?.keyId}`;
+    this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${this.candDisplay?.keyId}`;
   }
 
   async saveCvReview(reviewText: any, reviewHtml: any) {
@@ -80,9 +89,12 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getDuplicatesCvsList(cv: ICand) {
+  async getDuplicatesCvsList(cand: ICand) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getDuplicatesCvsList(cv.cvId, cv.candidateId);
+    const res = await this.cvsApi.getDuplicatesCvsList(
+      cand.cvId,
+      cand.candidateId
+    );
     runInAction(() => {
       this.candDupCvsList = res.data;
     });
@@ -99,71 +111,76 @@ export class CandsStore {
   }
 
   async attachPosCandCv(positionId: number) {
-    if (this.candDisplaying) {
+    if (this.candDisplay) {
       const res = await this.cvsApi.attachPosCandCv(
-        this.candDisplaying.candidateId,
-        this.candDisplaying.cvId,
+        this.candDisplay.candidateId,
+        this.candDisplay.cvId,
         positionId,
-        this.candDisplaying.keyId
+        this.candDisplay.keyId
       );
     }
 
-    if (this.candDisplaying) {
-      this.candDisplaying.candPosIds.push(positionId);
-      this.candDisplaying.cvPosIds.push(positionId);
+    if (this.candDisplay) {
+      this.candDisplay.candPosIds.push(positionId);
+      this.candDisplay.cvPosIds.push(positionId);
 
       const cand = this.candsList.find(
-        (x) => x.candidateId === this.candDisplaying?.candidateId
+        (x) => x.candidateId === this.candDisplay?.candidateId
       );
 
       if (cand) {
-        this.updateCandPosArrays(cand, this.candDisplaying);
+        this.updateCandPosArrays(cand, this.candDisplay);
       }
 
       const candDup = this.candDupCvsList.filter(
-        (x) => x.candidateId === this.candDisplaying?.candidateId
+        (x) => x.candidateId === this.candDisplay?.candidateId
       );
 
       candDup.forEach((cand) => {
-        this.updateCandPosArrays(cand, this.candDisplaying!);
+        this.updateCandPosArrays(cand, this.candDisplay!);
       });
 
-      this.rootStore.positionsStore.setPosSelected(positionId);
-      this.getPositionCands(positionId);
+      if (this.rootStore.positionsStore.posSelected?.id === positionId) {
+        this.getPositionCands(positionId);
+      }
     }
   }
 
-  async detachPosCandidate(positionId: number, posCand: ICand, index: number) {
-    const res = await this.cvsApi.detachPosCand(
-      posCand.candidateId,
-      posCand.cvId,
-      positionId
-    );
+  async detachPosCandidate(posCand: ICand, index: number) {
+    const positionId = this.rootStore.positionsStore.posSelected?.id;
 
-    this.unPushNumArr(positionId, posCand.candPosIds);
-    this.unPushNumArr(positionId, posCand.cvPosIds);
+    if (positionId) {
+      const res = await this.cvsApi.detachPosCand(
+        posCand.candidateId,
+        posCand.cvId,
+        positionId
+      );
 
-    if (this.candDisplaying?.candidateId === posCand.candidateId) {
-      this.updateCandPosArrays(this.candDisplaying, posCand);
+      this.unPushNumArr(positionId, posCand.candPosIds);
+      this.unPushNumArr(positionId, posCand.cvPosIds);
+
+      if (this.candDisplay?.candidateId === posCand.candidateId) {
+        this.updateCandPosArrays(this.candDisplay, posCand);
+      }
+
+      const cand = this.candsList.find(
+        (x) => x.candidateId === posCand.candidateId
+      );
+
+      if (cand) {
+        this.updateCandPosArrays(cand, posCand);
+      }
+
+      const candDup = this.candDupCvsList.filter(
+        (x) => x.candidateId === posCand.candidateId
+      );
+
+      candDup.forEach((cand) => {
+        this.updateCandPosArrays(cand, posCand);
+      });
+
+      this.posCandsList.splice(index, 1);
     }
-
-    const cand = this.candsList.find(
-      (x) => x.candidateId === posCand.candidateId
-    );
-
-    if (cand) {
-      this.updateCandPosArrays(cand, posCand);
-    }
-
-    const candDup = this.candDupCvsList.filter(
-      (x) => x.candidateId === posCand.candidateId
-    );
-
-    candDup.forEach((cand) => {
-      this.updateCandPosArrays(cand, posCand);
-    });
-
-    this.posCandsList.splice(index, 1);
   }
 
   updateCandPosArrays(candTarget: ICand, candSource: ICand) {

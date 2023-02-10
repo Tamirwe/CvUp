@@ -32,6 +32,7 @@ export interface ICand {
   stageId: number;
   dateAttached: Date;
   candCvs: IPosCandCvs[];
+  hasDuplicates: boolean;
 }
 
 export interface IPosCandCvs {

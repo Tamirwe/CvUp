@@ -15,7 +15,7 @@ import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDragIndicator } from "react-icons/md";
 
 export const CandReview = observer(() => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);
 
@@ -55,14 +55,14 @@ export const CandReview = observer(() => {
   };
 
   const handleCancel = () => {
-    cvsStore.openCvReviewDialogOpen = false;
+    candsStore.openCvReviewDialogOpen = false;
   };
 
   const handleSave = async () => {
     const reviewText = reactQuillRef.getEditor().getText();
     const reviewHtml = reactQuillRef.getEditor().root.innerHTML;
-    await cvsStore.saveCvReview(reviewText, reviewHtml);
-    cvsStore.openCvReviewDialogOpen = false;
+    await candsStore.saveCvReview(reviewText, reviewHtml);
+    candsStore.openCvReviewDialogOpen = false;
   };
 
   const modulesRef = {
@@ -108,7 +108,7 @@ export const CandReview = observer(() => {
   return (
     <div
       className="quill-rte"
-      style={{ display: cvsStore.openCvReviewDialogOpen ? "block" : "none" }}
+      style={{ display: candsStore.openCvReviewDialogOpen ? "block" : "none" }}
     >
       <Draggable handle="strong" onStop={handleStop} position={{ x: x, y: y }}>
         <Card sx={{ backgroundColor: "#f1f1f1" }}>

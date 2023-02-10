@@ -22,7 +22,7 @@ import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { useStore } from "../../Hooks/useStore";
 
 export const PdfViewer = observer(() => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   // const defaultLayoutPluginInstance = defaultLayoutPlugin({
   //   sidebarTabs: (defaultTabs) => [],
   // });
@@ -164,10 +164,10 @@ export const PdfViewer = observer(() => {
           overflow: "hidden",
         }}
       >
-        {cvsStore.pdfUrl && (
+        {candsStore.pdfUrl && (
           <Viewer
             defaultScale={SpecialZoomLevel.PageWidth}
-            fileUrl={cvsStore.pdfUrl}
+            fileUrl={candsStore.pdfUrl}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}
           />

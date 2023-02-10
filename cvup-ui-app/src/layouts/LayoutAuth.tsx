@@ -12,7 +12,7 @@ import { useStore } from "../Hooks/useStore";
 const drawerWidth = 340;
 
 export const LayoutAuth = observer(() => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   const matches = useMediaQuery("(min-width:600px)");
   const [isOpen, setIsOpen] = useState(matches ? true : false);
 
@@ -60,7 +60,7 @@ export const LayoutAuth = observer(() => {
                 }}
               >
                 <CandsListsWrapper />
-                {/* {cvsStore.openCvReviewDialogOpen && <CandReview />} */}
+                {/* {candsStore.openCvReviewDialogOpen && <CandReview />} */}
               </Drawer>
             </Grid>
           </Grid>

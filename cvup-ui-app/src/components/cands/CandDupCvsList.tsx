@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 
 export const CandDupCvsList = observer(() => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   let location = useLocation();
   const navigate = useNavigate();
 
@@ -24,17 +24,17 @@ export const CandDupCvsList = observer(() => {
         },
       }}
     >
-      {cvsStore.candDupCvsList.map((dupCv, i) => {
+      {candsStore.candDupCvsList.map((dupCv, i) => {
         return (
           <ListItemButton
             key={`${dupCv.cvId}dup`}
             sx={{ fontSize: "0.75rem", pl: 4 }}
-            selected={dupCv.cvId === cvsStore.candDisplay?.cvId}
+            selected={dupCv.cvId === candsStore.candDisplay?.cvId}
             onClick={() => {
               if (location.pathname !== "/cv") {
                 navigate(`/cv`);
               }
-              cvsStore.displayCvDuplicate(dupCv);
+              candsStore.displayCvDuplicate(dupCv);
             }}
           >
             <ListItemText

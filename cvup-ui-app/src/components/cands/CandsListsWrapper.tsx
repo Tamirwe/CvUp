@@ -10,10 +10,10 @@ import { observer } from "mobx-react";
 import { PosCandsList } from "./PosCandsList";
 
 export const CandsListsWrapper = observer(() => {
-  const { cvsStore, positionsStore } = useStore();
+  const { candsStore, positionsStore } = useStore();
 
   useEffect(() => {
-    cvsStore.getCandsList();
+    candsStore.getCandsList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const themeRtl = createTheme({
@@ -27,14 +27,14 @@ export const CandsListsWrapper = observer(() => {
   });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    cvsStore.currentTabCandsList = newValue;
+    candsStore.currentTabCandsList = newValue;
   };
 
   return (
     <Box sx={{ marginTop: "0" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={cvsStore.currentTabCandsList}
+          value={candsStore.currentTabCandsList}
           onChange={handleTabChange}
           sx={{ direction: "rtl" }}
         >
@@ -52,10 +52,10 @@ export const CandsListsWrapper = observer(() => {
       </Box>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
-          {cvsStore.currentTabCandsList === "candList" ? (
-            <CandsList candsList={cvsStore.candsList} />
+          {candsStore.currentTabCandsList === "candList" ? (
+            <CandsList candsList={candsStore.candsList} />
           ) : (
-            <CandsList candsList={cvsStore.posCandsList} />
+            <CandsList candsList={candsStore.posCandsList} />
           )}
         </ThemeProvider>
       </CacheProvider>

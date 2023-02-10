@@ -36,7 +36,7 @@ export class PositionsStore {
 
   setPosSelected(posId: number) {
     this.posSelected = this.positionsList.find((x) => x.id === posId);
-    this.rootStore.cvsStore.currentTabCandsList = "positionCandsList";
+    this.rootStore.candsStore.currentTabCandsList = "positionCandsList";
   }
 
   async getPosition(posId: number) {

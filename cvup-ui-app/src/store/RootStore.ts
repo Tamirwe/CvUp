@@ -8,12 +8,12 @@ export class RootStore {
   authStore: AuthStore;
   generalStore: GeneralStore;
   positionsStore: PositionsStore;
-  cvsStore: CandsStore;
+  candsStore: CandsStore;
 
   constructor(appSettings: IAppSettings) {
     this.authStore = new AuthStore(this, appSettings);
     this.generalStore = new GeneralStore(this, appSettings);
     this.positionsStore = new PositionsStore(this, appSettings);
-    this.cvsStore = new CandsStore(this, appSettings);
+    this.candsStore = new CandsStore(this, appSettings);
   }
 }

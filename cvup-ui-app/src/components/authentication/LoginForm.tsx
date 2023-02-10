@@ -25,7 +25,7 @@ interface IProps {
 
 export const LoginForm = ({ loginType }: IProps) => {
   const navigate = useNavigate();
-  const { authStore, cvsStore, generalStore, positionsStore } = useStore();
+  const { authStore, candsStore, generalStore, positionsStore } = useStore();
   const params = new URLSearchParams(window.location.search);
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -48,7 +48,7 @@ export const LoginForm = ({ loginType }: IProps) => {
 
   useEffect(() => {
     authStore.reset();
-    cvsStore.reset();
+    candsStore.reset();
     generalStore.reset();
     positionsStore.reset();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CiLogout, CiEdit, CiMail, CiSearch } from "react-icons/ci";
 
 export const Header = () => {
-  const { authStore, cvsStore } = useStore();
+  const { authStore, candsStore } = useStore();
   const navigate = useNavigate();
 
   return (
@@ -42,7 +42,7 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    cvsStore.openCvReviewDialogOpen = true;
+                    candsStore.openCvReviewDialogOpen = true;
                   }}
                 >
                   <CiEdit />
@@ -50,7 +50,7 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    cvsStore.openCvReviewDialogOpen = true;
+                    candsStore.openCvReviewDialogOpen = true;
                   }}
                 >
                   <CiMail />
@@ -58,7 +58,7 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    cvsStore.openCvReviewDialogOpen = true;
+                    candsStore.openCvReviewDialogOpen = true;
                   }}
                 >
                   <CiSearch />

@@ -22,13 +22,13 @@ interface IProps {
 }
 
 export const CandsList = observer(({ candsList }: IProps) => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
   const navigate = useNavigate();
 
   const handleDetachPosCand = (cand: ICand, index: number) => {
-    cvsStore.detachPosCandidate(cand, index);
+    candsStore.detachPosCandidate(cand, index);
   };
 
   return (
@@ -58,12 +58,14 @@ export const CandsList = observer(({ candsList }: IProps) => {
           >
             <ListItemButton
               sx={{ pr: "4px", pl: "4px" }}
-              selected={cand.candidateId === cvsStore.candDisplay?.candidateId}
+              selected={
+                cand.candidateId === candsStore.candDisplay?.candidateId
+              }
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                cvsStore.displayCvMain(cand);
+                candsStore.displayCvMain(cand);
               }}
             >
               <ListItemIcon
@@ -73,7 +75,7 @@ export const CandsList = observer(({ candsList }: IProps) => {
 
                   if (!dupCv || dupCv !== cand.cvId) {
                     setDupCv(cand.cvId);
-                    cvsStore.getDuplicatesCvsList(cand);
+                    candsStore.getDuplicatesCvsList(cand);
                   } else {
                     setDupCv(0);
                   }
@@ -110,7 +112,7 @@ export const CandsList = observer(({ candsList }: IProps) => {
                 primary={cand.candidateName}
                 secondary={cand.emailSubject}
               />
-              {cvsStore.currentTabCandsList === "positionCandsList" ? (
+              {candsStore.currentTabCandsList === "positionCandsList" ? (
                 <ListItemIcon
                   onClick={(event) => {
                     event.stopPropagation();

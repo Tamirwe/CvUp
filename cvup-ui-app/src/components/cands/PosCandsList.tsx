@@ -23,7 +23,7 @@ interface IProps {
 }
 
 export const PosCandsList = observer(({ candsList }: IProps) => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   let location = useLocation();
   const navigate = useNavigate();
 
@@ -53,13 +53,13 @@ export const PosCandsList = observer(({ candsList }: IProps) => {
             }}
           >
             <ListItemButton
-              selected={cv.candidateId === cvsStore.candDisplay?.candidateId}
+              selected={cv.candidateId === candsStore.candDisplay?.candidateId}
               onClick={() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                cvsStore.displayCvMain(cv);
-                cvsStore.getDuplicatesCvsList(cv);
+                candsStore.displayCvMain(cv);
+                candsStore.getDuplicatesCvsList(cv);
               }}
             >
               <ListItemIcon>
@@ -89,7 +89,7 @@ export const PosCandsList = observer(({ candsList }: IProps) => {
               />
             </ListItemButton>
             <Collapse
-              in={cv.cvId === cvsStore.candSelected?.cvId}
+              in={cv.cvId === candsStore.candSelected?.cvId}
               timeout="auto"
               unmountOnExit
             >
@@ -107,17 +107,17 @@ export const PosCandsList = observer(({ candsList }: IProps) => {
                   },
                 }}
               >
-                {cvsStore.candDupCvsList.map((cv, i) => {
+                {candsStore.candDupCvsList.map((cv, i) => {
                   return (
                     <ListItemButton
                       key={`${cv.cvId}dup`}
                       sx={{ fontSize: "0.75rem", pl: 4 }}
-                      selected={cv.cvId === cvsStore.candDisplay?.cvId}
+                      selected={cv.cvId === candsStore.candDisplay?.cvId}
                       onClick={() => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
-                        cvsStore.displayCvDuplicate(cv);
+                        candsStore.displayCvDuplicate(cv);
                       }}
                     >
                       <ListItemText

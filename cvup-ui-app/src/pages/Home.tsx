@@ -4,7 +4,7 @@ import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { useStore } from "../Hooks/useStore";
 
 export const Home = observer(() => {
-  const { cvsStore } = useStore();
+  const { candsStore } = useStore();
   // const [doc, setDoc] = useState(
   //   "http://89.237.94.86:8010/api/Download/GetWord2"
   // );
@@ -80,7 +80,7 @@ export const Home = observer(() => {
           title="iViewDoc"
           seamless
           // src="https://drive.google.com/viewer?embedded=true&hl=en-US&url=http://89.237.94.86:8025/cv_57064.doc"
-          src={`https://drive.google.com/viewer?embedded=true&url=${cvsStore.cvId}`}
+          src={`https://drive.google.com/viewer?embedded=true&url=${candsStore.cvId}`}
           style={{
             overflow: "hidden",
             height: "99vh",

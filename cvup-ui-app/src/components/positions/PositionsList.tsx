@@ -14,10 +14,10 @@ import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
 
 export const PositionsList = observer(() => {
-  const { positionsStore, cvsStore } = useStore();
+  const { positionsStore, candsStore } = useStore();
 
   const handleAttachPosCandCv = (posId: number) => {
-    cvsStore.attachPosCandCv(posId);
+    candsStore.attachPosCandCv(posId);
   };
 
   // const handleDetachPosCand = (
@@ -25,7 +25,7 @@ export const PositionsList = observer(() => {
   //   cand: ICand,
   //   index: number
   // ) => {
-  //   cvsStore.detachPosCandidate(positionId, cand, index);
+  //   candsStore.detachPosCandidate(positionId, cand, index);
   // };
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const PositionsList = observer(() => {
               onClick={() => {
                 // navigate(`/position/${pos.id}`);
                 positionsStore.setPosSelected(pos.id);
-                cvsStore.getPositionCands(pos.id);
+                candsStore.getPositionCands(pos.id);
               }}
             >
               <ListItemText
@@ -77,14 +77,14 @@ export const PositionsList = observer(() => {
               <ListItemText primary={pos.name} />
               <Checkbox
                 checked={
-                  cvsStore.candDisplay && cvsStore.candDisplay.candPosIds
-                    ? cvsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
+                  candsStore.candDisplay && candsStore.candDisplay.candPosIds
+                    ? candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
                     : false
                 }
                 disabled={
-                  cvsStore.candDisplay &&
-                  cvsStore.candDisplay.candPosIds &&
-                  cvsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
+                  candsStore.candDisplay &&
+                  candsStore.candDisplay.candPosIds &&
+                  candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
                 }
                 onChange={(event) => {
                   event.stopPropagation();

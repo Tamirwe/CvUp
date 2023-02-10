@@ -8,11 +8,11 @@ import styles from "./Cv.module.scss";
 
 export const Cv = observer(() => {
   // let { id } = useParams();
-  // const { cvsStore } = useStore();
+  // const { candsStore } = useStore();
 
   // useEffect(() => {
   //   (async () => {
-  //     await cvsStore.getCv(id || "");
+  //     await candsStore.getCv(id || "");
   //   })();
   // }, [id]);
 

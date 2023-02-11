@@ -33,13 +33,15 @@ export const CandReview = observer(() => {
 
   let quillRef: any = null;
   let reactQuillRef: any = null;
-  const [quillHtml, setQuillHtml] = useState(
-    '<p class="ql-direction-rtl ql-align-right"><u>sdf sdf sfdf sdfsdf sdfsdf</u></p><p class="ql-align-right ql-direction-rtl">sdf</p><p class="ql-align-right ql-direction-rtl">sdf</p><p class="ql-align-right ql-direction-rtl"><br></p><p class="ql-align-right ql-direction-rtl">sdfsdfsdf <em>dsfsfd </em><strong>sdfhjgjkjhk </strong><u>jhlkjklljklj</u></p>'
-  );
+  const [quillHtml, setQuillHtml] = useState("");
 
   const handleChange = (html: string) => {
     setQuillHtml(html);
   };
+
+  useEffect(() => {
+    setQuillHtml(candsStore.candSelected?.review || "");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (reactQuillRef) {
@@ -55,14 +57,14 @@ export const CandReview = observer(() => {
   };
 
   const handleCancel = () => {
-    candsStore.openCvReviewDialogOpen = false;
+    candsStore.cvReviewDialogOpen = false;
   };
 
   const handleSave = async () => {
     const reviewText = reactQuillRef.getEditor().getText();
     const reviewHtml = reactQuillRef.getEditor().root.innerHTML;
     await candsStore.saveCvReview(reviewText, reviewHtml);
-    candsStore.openCvReviewDialogOpen = false;
+    candsStore.cvReviewDialogOpen = false;
   };
 
   const modulesRef = {
@@ -106,66 +108,73 @@ export const CandReview = observer(() => {
   ];
 
   return (
-    <div
-      className="quill-rte"
-      style={{ display: candsStore.openCvReviewDialogOpen ? "block" : "none" }}
-    >
-      <Draggable handle="strong" onStop={handleStop} position={{ x: x, y: y }}>
-        <Card sx={{ backgroundColor: "#f1f1f1" }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              <strong
+    // <div
+    //   className="quill-rte"
+    //   style={{ display: candsStore.cvReviewDialogOpen ? "block" : "none" }}
+    // >
+    <Draggable handle="strong" onStop={handleStop} position={{ x: x, y: y }}>
+      <Card
+        sx={{
+          backgroundColor: "#f1f1f1",
+          width: "40rem",
+          zIndex: 9999,
+          position: "fixed",
+        }}
+      >
+        <CardContent>
+          <Typography variant="h5" component="div">
+            <strong
+              style={{
+                cursor: "move",
+                backgroundColor: "#d0e9ff",
+              }}
+            >
+              <div
+                title="click to drag"
                 style={{
-                  cursor: "move",
                   backgroundColor: "#d0e9ff",
+                  marginBottom: 12,
+                  display: "flex",
                 }}
               >
-                <div
-                  title="click to drag"
-                  style={{
-                    backgroundColor: "#d0e9ff",
-                    marginBottom: 12,
-                    display: "flex",
-                  }}
-                >
-                  <div style={{ paddingTop: 6, color: "#a1a1a1" }}>
-                    <MdOutlineDragIndicator />
-                  </div>
-                  <div
-                    style={{ paddingTop: 3, paddingLeft: 13, color: "#524f4f" }}
-                  >
-                    Review
-                  </div>
+                <div style={{ paddingTop: 6, color: "#a1a1a1" }}>
+                  <MdOutlineDragIndicator />
                 </div>
-              </strong>
-            </Typography>
-            <ReactQuill
-              style={{ backgroundColor: "#fff" }}
-              ref={(el) => {
-                reactQuillRef = el;
-              }}
-              modules={modulesRef}
-              theme={"snow"}
-              formats={formats}
-              value={quillHtml}
-              onChange={handleChange}
-            />
-          </CardContent>
-          <CardActions>
-            <Button
-              color="secondary"
-              sx={{ marginLeft: "auto" }}
-              onClick={handleCancel}
-              size="small"
-            >
-              Cancel
-            </Button>
-            <Button sx={{ marginLeft: 25 }} onClick={handleSave} size="small">
-              Save
-            </Button>
-          </CardActions>
-        </Card>
-      </Draggable>
-    </div>
+                <div
+                  style={{ paddingTop: 3, paddingLeft: 13, color: "#524f4f" }}
+                >
+                  Review
+                </div>
+              </div>
+            </strong>
+          </Typography>
+          <ReactQuill
+            style={{ backgroundColor: "#fff" }}
+            ref={(el) => {
+              reactQuillRef = el;
+            }}
+            modules={modulesRef}
+            theme={"snow"}
+            formats={formats}
+            value={quillHtml}
+            // onChange={handleChange}
+          />
+        </CardContent>
+        <CardActions>
+          <Button
+            color="secondary"
+            sx={{ marginLeft: "auto" }}
+            onClick={handleCancel}
+            size="small"
+          >
+            Cancel
+          </Button>
+          <Button sx={{ marginLeft: 25 }} onClick={handleSave} size="small">
+            Save
+          </Button>
+        </CardActions>
+      </Card>
+    </Draggable>
+    // </div>
   );
 });

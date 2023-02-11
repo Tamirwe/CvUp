@@ -16,6 +16,7 @@ export interface IUserClaims {
 
 export interface ICand {
   cvId: number;
+  review?: string;
   candidateId: number;
   keyId: string;
   encriptedId: string;
@@ -23,7 +24,6 @@ export interface ICand {
   email?: string;
   emailSubject: string;
   candidateName?: string;
-  reviewHtml: string;
   reviewTct: string;
   fileType: string;
   cvSent: Date;
@@ -55,7 +55,6 @@ export interface IPosition {
 
 export interface ICvReview {
   candidateId: number;
-  cvId: number;
   reviewHtml: string;
   reviewText: string;
 }

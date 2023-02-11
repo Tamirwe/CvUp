@@ -18,6 +18,7 @@ export const LayoutAuth = observer(() => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {candsStore.cvReviewDialogOpen && <CandReview />}
       <Grid container spacing={0} columns={18}>
         <Grid item xs={5}>
           <Drawer
@@ -60,7 +61,6 @@ export const LayoutAuth = observer(() => {
                 }}
               >
                 <CandsListsWrapper />
-                {/* {candsStore.openCvReviewDialogOpen && <CandReview />} */}
               </Drawer>
             </Grid>
           </Grid>

@@ -145,8 +145,9 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
+                                 review= cand.review_html,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                 keyId= cvs.key_id,
+                                 keyId = cvs.key_id,
                                  //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -175,8 +176,9 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
+                                 review = cand.review_html,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                 keyId= cvs.key_id,
+                                 keyId = cvs.key_id,
                                  //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -205,6 +207,7 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
+                                 review = cand.review_html,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId = cvs.key_id,
                                  //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",

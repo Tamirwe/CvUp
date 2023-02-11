@@ -42,25 +42,15 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    candsStore.openCvReviewDialogOpen = true;
+                    candsStore.cvReviewDialogOpen = true;
                   }}
                 >
                   <CiEdit />
                 </IconButton>
-                <IconButton
-                  size="medium"
-                  onClick={() => {
-                    candsStore.openCvReviewDialogOpen = true;
-                  }}
-                >
+                <IconButton size="medium" onClick={() => {}}>
                   <CiMail />
                 </IconButton>
-                <IconButton
-                  size="medium"
-                  onClick={() => {
-                    candsStore.openCvReviewDialogOpen = true;
-                  }}
-                >
+                <IconButton size="medium" onClick={() => {}}>
                   <CiSearch />
                 </IconButton>
               </Stack>

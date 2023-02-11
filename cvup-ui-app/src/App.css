@@ -16,10 +16,6 @@ body {
   z-index: 1;
 }
 
-.ql-editor{
-  min-height:150px;
-}
-
 /* width */
 ::-webkit-scrollbar {
   width: 8px;
@@ -46,4 +42,5 @@ body {
 .ql-editor{
   max-height: 250px;
   overflow: auto;
+  min-height:150px;
 }

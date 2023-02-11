@@ -28,11 +28,11 @@ export class CandsStore {
     this.candSelected = undefined;
   }
 
-  set openCvReviewDialogOpen(val) {
+  set cvReviewDialogOpen(val) {
     this.isCvReviewDialogOpen = val;
   }
 
-  get openCvReviewDialogOpen() {
+  get cvReviewDialogOpen() {
     return this.isCvReviewDialogOpen;
   }
 
@@ -76,8 +76,14 @@ export class CandsStore {
   }
 
   async saveCvReview(reviewText: any, reviewHtml: any) {
-    // const cvReview:ICvReview = {  candidateId:};
-    // const res = await this.cvsApi.saveCvReview(cvReview);
+    if (this.candSelected?.candidateId) {
+      const cvReview: ICvReview = {
+        candidateId: this.candSelected?.candidateId,
+        reviewText,
+        reviewHtml,
+      };
+      const res = await this.cvsApi.saveCvReview(cvReview);
+    }
   }
 
   async getCandsList() {

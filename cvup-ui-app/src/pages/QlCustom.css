@@ -1,0 +1,11 @@
+.scrollCv {
+    overflow: hidden;
+    height: calc(100vh - 59px);
+    z-index: 9999;
+  }
+  
+  .scrollCv:hover {
+    overflow: overlay !important;
+    z-index: 9999;
+  }
+  

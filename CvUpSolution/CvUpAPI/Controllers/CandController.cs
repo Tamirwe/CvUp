@@ -1,8 +1,10 @@
 ﻿using CandsPositionsLibrary;
+using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CvUpAPI.Controllers
 {
@@ -22,30 +24,38 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCandsList")]
-        public List<CandModel> GetCandsList(int page = 1, int take = 50, int positionId = 0, string? searchKeyWords = "")
+        public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 50)
         {
-            return _candPosService.GetCandsList(Globals.CompanyId, page, take, positionId, searchKeyWords);
+            return await _candPosService.GetCandsList(Globals.CompanyId, page, take, null);
+        }
+
+        [HttpGet]
+        [Route("SearchCands")]
+        public async Task<List<CandModel?>> SearchCands(string searchKeyWords = "")
+        {
+            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, searchKeyWords);
+            return await _candPosService.GetCandsList(Globals.CompanyId, 1, 50, candsIds);
         }
 
         [HttpGet]
         [Route("GetCandCvsList")]
-        public List<CandModel> GetCandCvsList(int cvId, int candidateId)
+        public async Task<List<CandModel>> GetCandCvsList(int cvId, int candidateId)
         {
-            return _candPosService.GetCandCvsList(Globals.CompanyId, cvId, candidateId);
+            return await _candPosService.GetCandCvsList(Globals.CompanyId, cvId, candidateId);
         }
 
         [HttpGet]
         [Route("GetPosCandsList")]
-        public List<CandModel> GetPosCandsList(int positionId)
+        public async Task<List<CandModel>> GetPosCandsList(int positionId)
         {
-            return _candPosService.GetPosCandsList(Globals.CompanyId, positionId);
+            return await _candPosService.GetPosCandsList(Globals.CompanyId, positionId);
         }
 
         [HttpGet]
         [Route("getCv")]
-        public CvModel? getCv(int cvId)
+        public async Task<CvModel?> getCv(int cvId)
         {
-            return _candPosService.GetCv(cvId, Globals.CompanyId);
+            return await _candPosService.GetCv(cvId, Globals.CompanyId);
         }
 
         [HttpPost]
@@ -57,18 +67,18 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("AttachPosCandCv")]
-        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCv)
+        public async Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            return _candPosService.AttachPosCandCv(posCv);
+            return await _candPosService.AttachPosCandCv(posCv);
         }
 
         [HttpPost]
         [Route("DetachPosCand")]
-        public CandPosModel DetachPosCand(AttachePosCandCvModel posCv)
+        public async Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            return _candPosService.DetachPosCand(posCv);
+            return await _candPosService.DetachPosCand(posCv);
         }
     }
 }

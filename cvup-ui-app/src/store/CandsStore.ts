@@ -84,6 +84,43 @@ export class CandsStore {
       };
       const res = await this.cvsApi.saveCvReview(cvReview);
     }
+
+    if (this.candDisplay) {
+      this.candDisplay.review = reviewHtml;
+
+      let cand = this.candsList.find(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
+
+      if (cand) {
+        cand.review = reviewHtml;
+      }
+
+      const candDup = this.candDupCvsList.filter(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
+
+      candDup.forEach((cand) => {
+        cand.review = reviewHtml;
+      });
+
+      cand = this.posCandsList.find(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
+
+      if (cand) {
+        cand.review = reviewHtml;
+      }
+    }
+  }
+
+  async searchCands(value: string) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.searchCands(value);
+    runInAction(() => {
+      this.candsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
   }
 
   async getCandsList() {

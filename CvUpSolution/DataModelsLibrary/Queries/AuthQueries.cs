@@ -20,32 +20,33 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public List<user> GetUsersByEmail(string email)
+        public async Task<List<user>> GetUsersByEmail(string email)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var usersList = dbContext.users.Where(x => x.email == email).ToList();
+                var usersList = await dbContext.users.Where(x => x.email == email).ToListAsync();
                 return usersList;
             }
         }
 
-        public registeration_key? GetRegistrationKey(string key)
+        public async Task<registeration_key?> GetRegistrationKey(string key)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefault();
+                return await dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefaultAsync();
             }
         }
 
-        public void RemoveRegistrationKey(registeration_key rkey)
+        public async Task RemoveRegistrationKey(registeration_key rkey)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var count = dbContext.registeration_keys.Remove(rkey);
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public List<IdNameModel> GetUserCompanies(string email)
+        public async Task<List<IdNameModel>> GetUserCompanies(string email)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -56,41 +57,41 @@ namespace DataModelsLibrary.Queries
                         WHERE u.email='" + email + "'" +
                         @"AND  u.active_status = '" + UserActiveStatus.Active.ToString() + "'";
 
-                var userCompaniesList = dbContext.idNameModelDB.FromSqlRaw(sql).ToList();
+                var userCompaniesList = await dbContext.idNameModelDB.FromSqlRaw(sql).ToListAsync();
                 return userCompaniesList;
             }
         }
 
-        public user? GetUser(int userId)
+        public async Task<user?> GetUser(int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.users.Where(x => x.id == userId).FirstOrDefault();
+                return await dbContext.users.Where(x => x.id == userId).FirstOrDefaultAsync();
             }
         }
 
-        public company? GetCompany(int companyId)
+        public async Task<company?> GetCompany(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.companies.Where(x => x.id == companyId).FirstOrDefault();
+                return await dbContext.companies.Where(x => x.id == companyId).FirstOrDefaultAsync();
             }
         }
 
-        public List<user> GetUsers(string email, int? companyId)
+        public async Task<List<user>> GetUsers(string email, int? companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 if (companyId != 0)
                 {
-                    return dbContext.users.Where(x => x.email == email && x.company_id == companyId && x.active_status == UserActiveStatus.Active.ToString()).ToList();
+                    return await dbContext.users.Where(x => x.email == email && x.company_id == companyId && x.active_status == UserActiveStatus.Active.ToString()).ToListAsync();
                 }
 
-                return dbContext.users.Where(x => x.email == email && x.active_status == UserActiveStatus.Active.ToString()).ToList();
+                return await dbContext.users.Where(x => x.email == email && x.active_status == UserActiveStatus.Active.ToString()).ToListAsync();
             }
         }
 
-        public company AddNewCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
+        public async Task<company> AddNewCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -102,12 +103,12 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.companies.Add(company);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return company;
             }
         }
 
-        public user AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -124,22 +125,22 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.users.Add(user);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return user;
             }
         }
 
-        public company UpdateCompany(company _company)
+        public async Task<company> UpdateCompany(company _company)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var result = dbContext.companies.Update(_company);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return _company;
             }
         }
 
-        public void AddUserPasswordReset(string key, user user)
+        public async Task AddUserPasswordReset(string key, user user)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -154,57 +155,57 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.registeration_keys.Add(pr);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void ActivateUser(user user)
+        public async Task ActivateUser(user user)
         {
             using (var dbContext = new cvup00001Context())
             {
                 user.active_status = UserActiveStatus.Active.ToString();
                 var result = dbContext.users.Update(user);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void SaveRefreshToken(string refreshToken, user authenticateUser)
+        public async Task SaveRefreshToken(string refreshToken, user authenticateUser)
         {
             using (var dbContext = new cvup00001Context())
             {
                 authenticateUser.refresh_token = refreshToken;
                 authenticateUser.refresh_token_expiry = DateTime.Now;
                 var result = dbContext.users.Update(authenticateUser);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void RevokeUserToken(int userId)
+        public async Task RevokeUserToken(int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                user? user = dbContext.users.Where(x => x.id == userId).FirstOrDefault();
+                user? user = await dbContext.users.Where(x => x.id == userId).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
                     user.refresh_token = null;
                     user.refresh_token_expiry = null;
                     var result = dbContext.users.Update(user);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public void UpdateUser(user user)
+        public async Task UpdateUser(user user)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var result = dbContext.users.Update(user);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void AddInterviewer(InterviewerModel data, int companyId)
+        public async Task AddInterviewer(InterviewerModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -219,15 +220,15 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.users.Add(user);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void UpdateInterviewer(InterviewerModel data, int companyId)
+        public async Task UpdateInterviewer(InterviewerModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                user? user = dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefault();
+                user? user = await dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
@@ -237,12 +238,12 @@ namespace DataModelsLibrary.Queries
                     user.permission_type = data.permissionType.ToString();
 
                     var result = dbContext.users.Update(user);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public List<InterviewerModel> GetInterviewersList(int companyId)
+        public async Task<List<InterviewerModel>> GetInterviewersList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -258,36 +259,36 @@ namespace DataModelsLibrary.Queries
                                 permissionType = Enum.Parse<UserPermission>(u.permission_type)
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
 
             }
         }
 
-        public void DeleteInterviewer(int companyId, int id)
+        public async Task DeleteInterviewer(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var usr = (from u in dbContext.users
+                var usr = await (from u in dbContext.users
                            where u.id == id && u.company_id == companyId
-                           select u).FirstOrDefault();
+                           select u).FirstOrDefaultAsync();
 
                 if (usr != null)
                 {
                     var result = dbContext.users.Remove(usr);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public company_cvs_email? GetCompanyEmail(string newEmail)
+        public async Task<company_cvs_email?> GetCompanyEmail(string newEmail)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.company_cvs_emails.Where(x => x.email == newEmail).FirstOrDefault();
+                return await dbContext.company_cvs_emails.Where(x => x.email == newEmail).FirstOrDefaultAsync();
             }
         }
 
-        public void AddCompanySatrterData(int companyId)
+        public async Task AddCompanySatrterData(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -309,12 +310,12 @@ namespace DataModelsLibrary.Queries
 
                 dbContext.position_candidate_stages.Add(stages);
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
             }
         }
 
-        public void AddCompanyCvsEmail(int companyId, string generatedCompanyEmail)
+        public async Task AddCompanyCvsEmail(int companyId, string generatedCompanyEmail)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -325,8 +326,10 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.company_cvs_emails.Add(newRec);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
+
+
     }
 }

@@ -33,6 +33,7 @@ namespace DataModelsLibrary.Models
     {
         public int companyId { get; set; }
         public int cvId { get; set; }
+        public int candidateId { get; set; }
         public string cvKey { get; set; } = "";
         public string? cvTxt { get; set; } = "";
         public string? phone { get; set; } = "";

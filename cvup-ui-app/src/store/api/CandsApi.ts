@@ -9,6 +9,15 @@ export default class CandsApi extends BaseApi {
     });
   }
 
+  async searchCands(value: string) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<ICand[]>(`Cand/SearchCands?searchKeyWords=${value}`)
+      ).data;
+      return data;
+    });
+  }
+
   async getCandsList() {
     return await this.apiWrapper(async () => {
       const data = (await this.http.get<ICand[]>("Cand/GetCandsList")).data;

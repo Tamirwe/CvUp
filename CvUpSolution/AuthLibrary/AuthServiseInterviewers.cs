@@ -16,26 +16,25 @@ namespace AuthLibrary
     public partial class AuthServise
     {
 
-        public void AddInterviewer(InterviewerModel data, int companyId)
+        public async Task AddInterviewer(InterviewerModel data, int companyId)
         {
-            _authQueries.AddInterviewer(data, companyId);
+            await _authQueries.AddInterviewer(data, companyId);
         }
 
-        public void UpdateInterviewer(InterviewerModel data, int companyId)
+        public async Task UpdateInterviewer(InterviewerModel data, int companyId)
         {
-            _authQueries.UpdateInterviewer(data, companyId);
+            await _authQueries.UpdateInterviewer(data, companyId);
         }
 
-        public List<InterviewerModel> GetInterviewersList(int companyId)
+        public async Task<List<InterviewerModel>> GetInterviewersList(int companyId)
         {
-            List<InterviewerModel> depList = _authQueries.GetInterviewersList(companyId);
+            List<InterviewerModel> depList = await _authQueries.GetInterviewersList(companyId);
             return depList;
         }
 
-        public void DeleteInterviewer(int companyId, int id)
+        public async Task DeleteInterviewer(int companyId, int id)
         {
-            _authQueries.DeleteInterviewer(companyId, id);
+            await _authQueries.DeleteInterviewer(companyId, id);
         }
-
     }
 }

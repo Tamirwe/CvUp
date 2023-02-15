@@ -44,9 +44,9 @@ namespace ImportCvsLibrary
             _mailPassword = config["GlobalSettings:gmailPassword"];
         }
 
-        public void ImportFromGmail()
+        public async void ImportFromGmail()
         {
-            _companiesEmail = _cvsPositionsServise.GetCompaniesEmails();
+            _companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
 
             using (var client = new ImapClient())
             {
@@ -104,7 +104,7 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void CvExtractDataAndSave(ImportCvModel importCv)
+        private async Task CvExtractDataAndSave(ImportCvModel importCv)
         {
             ExtractCvProps(importCv);
             CandidateFindOrCreate(importCv);
@@ -112,21 +112,21 @@ namespace ImportCvsLibrary
             CheckIsCvDuplicate(importCv);
             AddCvToDb(importCv);
             RenameAndMoveAttachmentToFolder(importCv);
-            UpdateCvKeyId(importCv);
-            UpdateCandidateLastCv(importCv);
+            await UpdateCvKeyId(importCv);
+            await UpdateCandidateLastCv(importCv);
             AddCvToIndex(importCv);
         }
 
-        private void UpdateCandidateLastCv(ImportCvModel importCv)
+        private async Task UpdateCandidateLastCv(ImportCvModel importCv)
         {
-            _cvsPositionsServise.UpdateCandidateLastCv(importCv);
+            await _cvsPositionsServise.UpdateCandidateLastCv(importCv);
         }
 
-        private void UpdateCvKeyId(ImportCvModel importCv)
+        private async Task UpdateCvKeyId(ImportCvModel importCv)
         {
             if (!importCv.isSameCv)
             {
-                _cvsPositionsServise.UpdateCvKeyId(importCv);
+                await _cvsPositionsServise.UpdateCvKeyId(importCv);
             }
         }
 
@@ -186,11 +186,11 @@ namespace ImportCvsLibrary
             GetCandidatePhone(importCv);
         }
 
-        private void CheckIsCvDuplicate(ImportCvModel importCv)
+        private async void CheckIsCvDuplicate(ImportCvModel importCv)
         {
             if (!importCv.isNewCandidate)
             {
-                List<cv> cvs = _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.cvAsciiSum);
+                List<cv> cvs = await _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.cvAsciiSum);
 
                 if (cvs.Count > 0)
                 {
@@ -212,9 +212,9 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void ParseEmailSubject(ImportCvModel cv)
+        private async void ParseEmailSubject(ImportCvModel cv)
         {
-            List<ParserRulesModel> parsersRules = _cvsPositionsServise.GetParsersRules(cv.companyId);
+            List<ParserRulesModel> parsersRules = await _cvsPositionsServise.GetParsersRules(cv.companyId);
 
             if (parsersRules.Count > 0)
             {
@@ -279,7 +279,7 @@ namespace ImportCvsLibrary
             _cvsPositionsServise.AddUpdateCandidateFromCvImport(importCv);
         }
 
-        private void AddCvToDb(ImportCvModel importCv)
+        private async void AddCvToDb(ImportCvModel importCv)
         {
             if (importCv.isSameCv)
             {
@@ -287,7 +287,7 @@ namespace ImportCvsLibrary
             }
             else
             {
-                importCv.cvId = _cvsPositionsServise.AddCv(importCv);
+                importCv.cvId = await _cvsPositionsServise.AddCv(importCv);
             }
         }
 

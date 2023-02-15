@@ -18,19 +18,18 @@ namespace CvUpAPI.Controllers
             _configuration = config;
             _cvsPosService = cvsPosService;
         }
-        
 
         [HttpPost]
         [Route("AddUpdateDepartment")]
-        public IActionResult AddUpdateDepartment(IdNameModel data)
+        public async Task<IActionResult> AddUpdateDepartment(IdNameModel data)
         {
             if (data.id == 0)
             {
-                _cvsPosService.AddDepartment(data, Globals.CompanyId);
+                await _cvsPosService.AddDepartment(data, Globals.CompanyId);
             }
             else
             {
-                _cvsPosService.UpdateDepartment(data, Globals.CompanyId);
+                await _cvsPosService.UpdateDepartment(data, Globals.CompanyId);
             }
 
             return Ok();
@@ -38,31 +37,31 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetDepartmentsList")]
-        public IActionResult GetDepartmentsList()
+        public async Task<IActionResult> GetDepartmentsList()
         {
-           List<IdNameModel> departments = _cvsPosService.GetDepartmentsList(Globals.CompanyId);
+            List<IdNameModel> departments = await _cvsPosService.GetDepartmentsList(Globals.CompanyId);
             return Ok(departments);
         }
 
         [HttpDelete]
         [Route("DeleteDepartment")]
-        public IActionResult DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment(int id)
         {
-            _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
+            await _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
             return Ok();
         }
 
         [HttpPost]
         [Route("AddUpdateHrCompany")]
-        public IActionResult AddUpdateHrCompany(IdNameModel data)
+        public async Task<IActionResult> AddUpdateHrCompany(IdNameModel data)
         {
             if (data.id == 0)
             {
-                _cvsPosService.AddHrCompany(data, Globals.CompanyId);
+                await _cvsPosService.AddHrCompany(data, Globals.CompanyId);
             }
             else
             {
-                _cvsPosService.UpdateHrCompany(data, Globals.CompanyId);
+                await _cvsPosService.UpdateHrCompany(data, Globals.CompanyId);
             }
 
             return Ok();
@@ -70,17 +69,17 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetHrCompaniesList")]
-        public IActionResult GetHrCompaniesList()
+        public async Task<IActionResult> GetHrCompaniesList()
         {
-            List<IdNameModel> departments = _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
+            List<IdNameModel> departments = await _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
             return Ok(departments);
         }
 
         [HttpDelete]
         [Route("DeleteHrCompany")]
-        public IActionResult DeleteHrCompany(int id)
+        public async Task<IActionResult> DeleteHrCompany(int id)
         {
-            _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
+            await _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
             return Ok();
         }
     }

@@ -15,26 +15,26 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-      
-        public TokenModel? RefreshToken(string token, string refreshToken)
+
+        public async Task<TokenModel?> RefreshToken(string token, string refreshToken)
         {
             var principal = GetPrincipalFromExpiredToken(token);
             bool isUserId = int.TryParse(principal.Claims.Where(x => x.Type == "UserId").First().Value, out var userId);
 
             if (isUserId)
             {
-                var user = _authQueries.GetUser(userId);
+                var user = await _authQueries.GetUser(userId);
 
                 if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry < DateTime.Now)
                 {
-                    return GeneratedToken(principal.Claims, user,true);
+                    return await GeneratedToken(principal.Claims, user, true);
                 }
             }
 
             return null;
         }
 
-        private TokenModel GeneratedToken(IEnumerable<Claim> claims, user authenticateUser, bool isRemember)
+        private async Task<TokenModel> GeneratedToken(IEnumerable<Claim> claims, user authenticateUser, bool isRemember)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
 
@@ -54,14 +54,14 @@ namespace AuthLibrary
             if (isRemember)
             {
                 refreshToken = GenerateRefreshToken();
-                _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
+                await _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
             }
-           
+
 
             return new TokenModel { token = tokenString, refreshToken = refreshToken };
         }
 
-        public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember)
+        public async Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember)
         {
             var claims = new[] {
                                 //new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
@@ -74,7 +74,7 @@ namespace AuthLibrary
                                 new Claim("role",Enum.Parse<UserPermission>(authenticateUser.permission_type).ToString()),
                             };
 
-            return GeneratedToken(claims, authenticateUser, isRemember);
+            return await GeneratedToken(claims, authenticateUser, isRemember);
 
             //var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             //var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -123,10 +123,9 @@ namespace AuthLibrary
             return principal;
         }
 
-        public void RevokeToken(int userId)
+        public async Task RevokeToken(int userId)
         {
-            _authQueries.RevokeUserToken(userId);
+            await _authQueries.RevokeUserToken(userId);
         }
-
     }
 }

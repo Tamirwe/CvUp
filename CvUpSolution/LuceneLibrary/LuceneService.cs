@@ -17,7 +17,7 @@ using static Lucene.Net.Util.Packed.PackedInt32s;
 
 namespace LuceneLibrary
 {
-    public class LuceneService : ILuceneService,IDisposable
+    public class LuceneService : ILuceneService, IDisposable
     {
         string _luceneIndexesRootFolder;
 
@@ -37,7 +37,7 @@ namespace LuceneLibrary
             mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
         }
 
-        public void BuildCompanyIndex(int companyId, List<CvPropsToIndexModel> CompanyTextToIndexList)
+        public async Task BuildCompanyIndex(int companyId, List<CvPropsToIndexModel> CompanyTextToIndexList)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
@@ -52,14 +52,15 @@ namespace LuceneLibrary
                         string txtToIndex = $"{item.email}~~~{item.phone}~~~{item.emailSubject}~~~{item.cvTxt}";
                         var doc = new Document();
                         doc.Add(new TextField("Id", item.cvId.ToString(), Field.Store.YES));
+                        doc.Add(new TextField("CAND_Id", item.candidateId.ToString(), Field.Store.YES));
                         doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
-                        indexWriter.AddDocument(doc);
+                        await Task.Run(() => indexWriter.AddDocument(doc));
                     }
                 }
             }
         }
 
-        public void DocumentAdd(int companyId, CvPropsToIndexModel cvPropsToIndex)
+        public async Task DocumentAdd(int companyId, CvPropsToIndexModel cvPropsToIndex)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
@@ -73,19 +74,20 @@ namespace LuceneLibrary
                     string txtToIndex = $"{cvPropsToIndex.email}~~~{cvPropsToIndex.phone}~~~{cvPropsToIndex.emailSubject}~~~{cvPropsToIndex.cvTxt}";
                     var doc = new Document();
                     doc.Add(new TextField("Id", cvPropsToIndex.cvId.ToString(), Field.Store.YES));
+                    doc.Add(new TextField("CAND_Id", cvPropsToIndex.candidateId.ToString(), Field.Store.YES));
                     doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
-                    indexWriter.AddDocument(doc);
+                    await Task.Run(() => indexWriter.AddDocument(doc));
                 }
             }
         }
 
-        public void DocumentUpdate(int companyId, CvPropsToIndexModel cvPropsToIndex)
+        public async Task DocumentUpdate(int companyId, CvPropsToIndexModel cvPropsToIndex)
         {
-            DocumentDelete(companyId, cvPropsToIndex.cvId);
-            DocumentAdd(companyId, cvPropsToIndex);
+            await DocumentDelete(companyId, cvPropsToIndex.cvId);
+            await DocumentAdd(companyId, cvPropsToIndex);
         }
 
-        private void DocumentDelete(int companyId, int cvId)
+        private async Task DocumentDelete(int companyId, int cvId)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
@@ -96,53 +98,57 @@ namespace LuceneLibrary
                 using (var indexWriter = new IndexWriter(indexDir, config))
                 {
                     var DocIdToDelete = new TermQuery(new Term("Id", cvId.ToString()));
-                    indexWriter.DeleteDocuments(DocIdToDelete);
+                    await Task.Run(() => indexWriter.DeleteDocuments(DocIdToDelete));
                 }
             }
         }
 
 
-        public void WarmupSearch(int companyId)
+        void WarmupSearch(int companyId)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
             mIndexDirectory = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
             mIndexSearcher = new IndexSearcher(mIndexReader);
-            mQueryParser = new QueryParser(Lucene.Net.Util.LuceneVersion.LUCENE_48, "Name", mAnalyzer);
+            mQueryParser = new QueryParser(Lucene.Net.Util.LuceneVersion.LUCENE_48, "CV", mAnalyzer);
         }
 
-        public IEnumerable<SearchEntry> Search(int companyId, string searchQuery)
+        public async Task<List<SearchEntry>> Search(int companyId, string searchQuery)
         {
+            WarmupSearch(companyId);
             var result = new List<SearchEntry>();
 
-            FuzzyQuery query = new FuzzyQuery(new Term("Name", "הסכם"));
+            //FuzzyQuery query = new FuzzyQuery(new Term("CV", searchQuery));
 
             //query.setRewriteMethod(FuzzyQuery.SCORING_BOOLEAN_QUERY_REWRITE);
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
-
-            //var query = mQueryParser.Parse("?הסכם");
-            //var query = new WildcardQuery(new Term("name", "הסכם?"));
-
-            if (mIndexSearcher != null)
+            if (mQueryParser != null)
             {
-                ScoreDoc[] hitIdxs = mIndexSearcher.Search(query, null, 40).ScoreDocs;
+                var query = mQueryParser.Parse(searchQuery + "*");
+                //var query = new WildcardQuery(new Term("name", "הסכם?"));
 
-                for (int i = 0; i < hitIdxs.Length; i++)
+                if (mIndexSearcher != null)
                 {
-                    var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
+                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 40).ScoreDocs);
 
-                    result.Add(new SearchEntry
+                    for (int i = 0; i < hitIdxs.Length; i++)
                     {
-                        Id = (int)doc.GetField("Id").NumericType,
-                        Name = doc.Get("Name")
-                    });
+                        var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
+
+                        result.Add(new SearchEntry
+                        {
+                            Id = Convert.ToInt32(doc.Get("Id")),
+                            CandId = Convert.ToInt32(doc.Get("CAND_Id")),
+                            CV = doc.Get("CV")
+                        });
+                    }
                 }
-            }
+            };
 
             return result;
         }
 
-        public void SearchBoolean(int companyId,long collectionId, string text)
+        public void SearchBoolean(int companyId, long collectionId, string text)
         {
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
             Console.WriteLine();
@@ -195,15 +201,13 @@ namespace LuceneLibrary
             if (mIndexReader != null) mIndexReader.Dispose();
             if (mIndexDirectory != null) mIndexDirectory.Dispose();
         }
-      
+
     }
 
     public class SearchEntry
     {
         public int Id { get; set; }
-        public string Name { get; set; } = String.Empty;
+        public int CandId { get; set; }
+        public string CV { get; set; } = String.Empty;
     }
-
-    
-
 }

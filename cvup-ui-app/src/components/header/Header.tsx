@@ -1,7 +1,10 @@
 import { useStore } from "../../Hooks/useStore";
 import { IconButton, Grid, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { CiLogout, CiEdit, CiMail, CiSearch } from "react-icons/ci";
+import { CiLogout, CiEdit, CiMail } from "react-icons/ci";
+import { SearchCands } from "./SearchCands";
+import { SettingsMenu } from "./SettingsMenu";
+import { EmailSender } from "./EmailSender";
 
 export const Header = () => {
   const { authStore, candsStore } = useStore();
@@ -47,12 +50,9 @@ export const Header = () => {
                 >
                   <CiEdit />
                 </IconButton>
-                <IconButton size="medium" onClick={() => {}}>
-                  <CiMail />
-                </IconButton>
-                <IconButton size="medium" onClick={() => {}}>
-                  <CiSearch />
-                </IconButton>
+                <EmailSender />
+                <SettingsMenu />
+                <SearchCands />
               </Stack>
             </Grid>
             <Grid item xs={5}></Grid>

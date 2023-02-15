@@ -21,25 +21,25 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetPosition")]
-        public IActionResult GetPosition(int id)
+        public async Task<IActionResult> GetPosition(int id)
         {
-            PositionClientModel position = _cvsPosService.GetPosition(Globals.CompanyId,id);
+            PositionClientModel position = await _cvsPosService.GetPosition(Globals.CompanyId, id);
             return Ok(position);
         }
 
         [HttpPost]
         [Route("AddUpdatePosition")]
-        public IActionResult AddUpdatePosition(PositionClientModel data)
+        public async Task<IActionResult> AddUpdatePosition(PositionClientModel data)
         {
             position? pos;
 
             if (data.id == 0)
             {
-                pos = _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
+                pos = await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
             }
             else
             {
-                pos = _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
+                pos = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
             }
 
             return Ok(pos != null ? pos.id : 0);
@@ -47,17 +47,17 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetPositionsList")]
-        public IActionResult GetPositionsList()
+        public async Task<IActionResult> GetPositionsList()
         {
-            List<PositionModel> positions = _cvsPosService.GetPositionsList(Globals.CompanyId);
+            List<PositionModel> positions = await _cvsPosService.GetPositionsList(Globals.CompanyId);
             return Ok(positions);
         }
 
         [HttpDelete]
         [Route("DeletePosition")]
-        public IActionResult DeletePosition(int id)
+        public async Task<IActionResult> DeletePosition(int id)
         {
-            _cvsPosService.DeletePosition(Globals.CompanyId, id);
+            await _cvsPosService.DeletePosition(Globals.CompanyId, id);
             return Ok();
         }
     }

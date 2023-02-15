@@ -1,11 +1,5 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Queries
 {
@@ -15,14 +9,14 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public emails_sent AddNewEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
+        public async Task<emails_sent> AddNewEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var email = new emails_sent
                 {
                     user_id = userId,
-                    company_id= companyId,
+                    company_id = companyId,
                     sent_date = DateTime.Now,
                     email_type = emailType.ToString(),
                     to_address = toAddress,
@@ -32,7 +26,7 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.emails_sents.Add(email);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return email;
             }
         }

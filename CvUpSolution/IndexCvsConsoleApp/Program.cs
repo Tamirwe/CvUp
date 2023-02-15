@@ -22,5 +22,5 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var cvsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();
-cvsPositionsServise.IndexCompanyCvs(132);
+cvsPositionsServise.IndexCompanyCvs(154);
 

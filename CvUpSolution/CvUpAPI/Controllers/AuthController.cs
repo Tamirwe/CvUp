@@ -22,13 +22,13 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(UserLoginModel data)
+        public async Task<IActionResult> Login(UserLoginModel data)
         {
-            user? authenticateUser = _authServise.Login(data);
+            user? authenticateUser = await _authServise.Login(data);
 
             if (authenticateUser != null)
             {
-                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                TokenModel tokens = await _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
                 return Ok(tokens);
             }
 
@@ -37,13 +37,13 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("CompleteRegistration")]
-        public IActionResult CompleteRegistration(UserLoginModel data)
+        public async Task<IActionResult> CompleteRegistration(UserLoginModel data)
         {
-            user? authenticateUser = _authServise.CompleteRegistration(data);
+            user? authenticateUser = await _authServise.CompleteRegistration(data);
 
             if (authenticateUser != null)
             {
-                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                TokenModel tokens = await _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
                 return Ok(tokens);
             }
 
@@ -52,13 +52,13 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("PasswordReset")]
-        public IActionResult PasswordReset(UserLoginModel data)
+        public async Task<IActionResult> PasswordReset(UserLoginModel data)
         {
-            user? authenticateUser = _authServise.PasswordReset(data);
+            user? authenticateUser = await _authServise.PasswordReset(data);
 
             if (authenticateUser != null)
             {
-                TokenModel tokens = _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                TokenModel tokens = await _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
                 return Ok(tokens);
             }
 
@@ -67,9 +67,9 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("Registration")]
-        public IActionResult Registration(CompanyAndUserRegisetModel data)
+        public async Task<IActionResult> Registration(CompanyAndUserRegisetModel data)
         {
-            bool isDuplicateUserPassword = _authServise.CheckDuplicateUserPassword(data);
+            bool isDuplicateUserPassword = await _authServise.CheckDuplicateUserPassword(data);
 
             if (isDuplicateUserPassword)
             {
@@ -77,13 +77,13 @@ namespace CvUpAPI.Controllers
             }
 
             string? origin = Request.Headers["Origin"].First();
-            _authServise.Register(origin, data);
+            await _authServise.Register(origin, data);
             return Ok();
         }
 
         [HttpPost]
         [Route("ForgotPassword")]
-        public IActionResult ForgotPassword(ForgotPasswordModel data)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel data)
         {
             string? origin = Request.Headers["Origin"].FirstOrDefault();
 
@@ -92,16 +92,16 @@ namespace CvUpAPI.Controllers
                 return BadRequest();
             }
 
-            user? authenticateUser = _authServise.ForgotPassword(origin, data.email, data.companyId, out UserAuthStatus status);
+            UserStatusModel authenticateUser = await _authServise.ForgotPassword(origin, data.email, data.companyId);
 
-            if (authenticateUser != null)
+            if (authenticateUser.user != null)
             {
                 return Ok("emailSent");
                 //return Ok(new { data="emailSent" });
             }
-            else if (status == UserAuthStatus.more_then_one_company_per_email)
+            else if (authenticateUser.status == UserAuthStatus.more_then_one_company_per_email)
             {
-                var userCompanies = _authServise.UserCompanies(data.email);
+                var userCompanies = await _authServise.UserCompanies(data.email);
                 return Ok(userCompanies);
             }
 
@@ -112,12 +112,12 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("Refresh")]
-        public IActionResult Refresh(TokenModel tokens)
+        public async Task<IActionResult> Refresh(TokenModel tokens)
         {
             if (tokens.refreshToken is null || tokens.token is null)
                 return BadRequest("Invalid client request");
 
-            TokenModel? newToken = _authServise.RefreshToken(tokens.token, tokens.refreshToken);
+            TokenModel? newToken = await _authServise.RefreshToken(tokens.token, tokens.refreshToken);
 
             if (newToken is null)
             {
@@ -130,24 +130,24 @@ namespace CvUpAPI.Controllers
 
         [HttpPost, Authorize]
         [Route("revoke")]
-        public IActionResult Revoke()
+        public async Task<IActionResult> Revoke()
         {
-            _authServise.RevokeToken(Globals.UserId);
+            await _authServise.RevokeToken(Globals.UserId);
             return NoContent();
         }
 
         [HttpPost]
         [Route("AddUpdateInterviewer")]
-        public IActionResult AddUpdateInterviewer(InterviewerModel data)
+        public async Task<IActionResult> AddUpdateInterviewer(InterviewerModel data)
         {
 
             if (data.id == 0)
             {
-                _authServise.AddInterviewer(data, Globals.CompanyId);
+                await _authServise.AddInterviewer(data, Globals.CompanyId);
             }
             else
             {
-                _authServise.UpdateInterviewer(data, Globals.CompanyId);
+                await _authServise.UpdateInterviewer(data, Globals.CompanyId);
             }
 
             return Ok();
@@ -155,17 +155,17 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetInterviewersList")]
-        public IActionResult GetInterviewersList()
+        public async Task<IActionResult> GetInterviewersList()
         {
-            List<InterviewerModel> users = _authServise.GetInterviewersList(Globals.CompanyId);
+            List<InterviewerModel> users = await _authServise.GetInterviewersList(Globals.CompanyId);
             return Ok(users);
         }
 
         [HttpDelete]
         [Route("DeleteInterviewer")]
-        public IActionResult DeleteInterviewer(int id)
+        public async Task<IActionResult> DeleteInterviewer(int id)
         {
-            _authServise.DeleteInterviewer(Globals.CompanyId, id);
+            await _authServise.DeleteInterviewer(Globals.CompanyId, id);
             return Ok();
         }
     }

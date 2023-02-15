@@ -24,9 +24,9 @@ namespace AuthLibrary
             _configuration = config;
         }
 
-        public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data)
+        public async Task<bool> CheckDuplicateUserPassword(CompanyAndUserRegisetModel data)
         {
-            List<user> usersList = _authQueries.GetUsersByEmail(data.email);
+            List<user> usersList = await _authQueries.GetUsersByEmail(data.email);
 
             if (usersList.Count > 0)
             {
@@ -44,18 +44,18 @@ namespace AuthLibrary
             return false;
         }
 
-        public user? PasswordReset(UserLoginModel data)
+        public async Task<user?> PasswordReset(UserLoginModel data)
         {
-            registeration_key? rKey = _authQueries.GetRegistrationKey(data.key);
+            registeration_key? rKey = await _authQueries.GetRegistrationKey(data.key);
 
             if (rKey is not null)
             {
-                var user = _authQueries.GetUser(rKey.user_id);
+                var user = await _authQueries.GetUser(rKey.user_id);
 
                 if (user is not null)
                 {
                     user.passwaord = SecretHasher.Hash(data.password);
-                    _authQueries.UpdateUser(user);
+                    await _authQueries.UpdateUser(user);
                     return user;
                 }
             }
@@ -63,27 +63,28 @@ namespace AuthLibrary
             return null;
         }
 
-        public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status)
+        public async Task<UserStatusModel?> ForgotPassword(string origin, string email, int? companyId)
         {
-            List<user> users = _authQueries.GetUsers(email, companyId);
+            List<user> users = await _authQueries.GetUsers(email, companyId);
 
             if (users.Count == 0)
             {
-                status = UserAuthStatus.not_registered;
-                return null;
+                UserAuthStatus status = UserAuthStatus.not_registered;
+                return new UserStatusModel { status = status, user = null };
             }
             else if (users.Count == 1)
             {
-                status = UserAuthStatus.Authenticated;
+                UserAuthStatus status = UserAuthStatus.Authenticated;
                 string key = generateSecretKey();
-                _authQueries.AddUserPasswordReset(key, users[0]);
-                SendResetPasswordEmail(origin, key, users[0]);
-                return users[0];
+                await _authQueries.AddUserPasswordReset(key, users[0]);
+                await SendResetPasswordEmail(origin, key, users[0]);
+                return new UserStatusModel { status = status, user = users[0] };
+
             }
             else
             {
-                status = UserAuthStatus.more_then_one_company_per_email;
-                return null;
+                UserAuthStatus status = UserAuthStatus.more_then_one_company_per_email;
+                return new UserStatusModel { status = status, user = null };
             }
         }
 
@@ -93,7 +94,7 @@ namespace AuthLibrary
             return guid;
         }
 
-        private EmailModel SendResetPasswordEmail(string origin, string key, user user)
+        private async Task<EmailModel> SendResetPasswordEmail(string origin, string key, user user)
         {
             var email = new EmailModel
             {
@@ -102,14 +103,13 @@ namespace AuthLibrary
                 Body = _emailService.ResetPasswordEmailBody(origin, key)
             };
 
-            _emailService.Send(email);
+            await _emailService.Send(email);
             return email;
         }
 
-        public List<IdNameModel> UserCompanies(string email)
+        public Task<List<IdNameModel>> UserCompanies(string email)
         {
-            return _authQueries.GetUserCompanies(email);
+            throw new NotImplementedException();
         }
-       
     }
 }

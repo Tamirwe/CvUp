@@ -1,22 +1,9 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Options;
-using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Data;
-using System.Linq;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
 {
@@ -27,7 +14,7 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public int AddCv(ImportCvModel importCv)
+        public async Task<int> AddCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -44,7 +31,7 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.cvs.Add(newCv);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 var cvTxt = new cvs_txt
                 {
@@ -55,61 +42,61 @@ namespace DataModelsLibrary.Queries
 
                 dbContext.cvs_txts.Add(cvTxt);
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 return newCv.id;
             }
         }
 
-        public void UpdateCvKeyId(ImportCvModel importCv)
+        public async Task UpdateCvKeyId(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
                 cv? cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
                 cv.key_id = importCv.cvKey;
                 var result = dbContext.cvs.Update(cv);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public int AddCandidate(candidate newCand)
+        public async Task<int> AddCandidate(candidate newCand)
         {
             using (var dbContext = new cvup00001Context())
             {
                 dbContext.candidates.Add(newCand);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return newCand.id;
             }
         }
 
-        public void UpdateCandidate(candidate cand)
+        public async Task UpdateCandidate(candidate cand)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var result = dbContext.candidates.Update(cand);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public candidate? GetCandidateByEmail(string email)
+        public async Task<candidate?> GetCandidateByEmail(string email)
         {
             using (var dbContext = new cvup00001Context())
             {
-                candidate? cand = dbContext.candidates.Where(x => x.email == email).FirstOrDefault();
+                candidate? cand = await dbContext.candidates.Where(x => x.email == email).FirstOrDefaultAsync();
                 return cand;
             }
         }
 
-        public candidate? GetCandidateByPhone(string phone)
+        public async Task<candidate?> GetCandidateByPhone(string phone)
         {
             using (var dbContext = new cvup00001Context())
             {
-                candidate? cand = dbContext.candidates.Where(x => x.phone == phone).FirstOrDefault();
+                candidate? cand = await dbContext.candidates.Where(x => x.phone == phone).FirstOrDefaultAsync();
                 return cand;
             }
         }
 
-        public List<CvPropsToIndexModel> GetCompanyCvsToIndex(int companyId)
+        public async Task<List<CvPropsToIndexModel>> GetCompanyCvsToIndex(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -121,6 +108,7 @@ namespace DataModelsLibrary.Queries
                             {
                                 companyId = companyId,
                                 cvId = cvs.id,
+                                candidateId = cand.id,
                                 cvTxt = cvTxt.cv_txt,
                                 email = cand.email,
                                 emailSubject = cvs.subject,
@@ -129,23 +117,23 @@ namespace DataModelsLibrary.Queries
                                 phone = cand.phone,
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public List<CandModel> GetCandsList(int companyId, string encriptKey, int page, int take, int positionId, string? searchKeyWords)
+        public async Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds)
         {
             int skip = (page - 1) * take;
             using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
-                             where cand.company_id == companyId
+                             where cand.company_id == companyId && candsIds != null ? candsIds.Contains(cand.id) : 1 == 1
                              orderby cand.last_cv_sent descending
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review= cand.review_html,
+                                 review = cand.review_html,
                                  //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId = cvs.key_id,
                                  //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
@@ -160,11 +148,12 @@ namespace DataModelsLibrary.Queries
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                              }).Skip(skip).Take(take);
 
-                return query.ToList();
+                var result = await query.ToListAsync();
+                return result;
             }
         }
 
-        public List<CandModel> GetCandCvsList(int companyId, int candidateId, string encriptKey)
+        public async Task<List<CandModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -191,11 +180,11 @@ namespace DataModelsLibrary.Queries
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                              });
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public List<CandModel> GetPosCandsList(int companyId, int positionId, string encriptKey)
+        public async Task<List<CandModel>> GetPosCandsList(int companyId, int positionId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -226,11 +215,11 @@ namespace DataModelsLibrary.Queries
 
                              });
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public department AddDepartment(IdNameModel data, int companyId)
+        public async Task<department> AddDepartment(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -241,23 +230,23 @@ namespace DataModelsLibrary.Queries
                 };
 
                 var result = dbContext.departments.Add(dep);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public department? UpdateDepartment(IdNameModel data, int companyId)
+        public async Task<department?> UpdateDepartment(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 department dep = new department { id = data.id, name = data.name, company_id = companyId };
                 var result = dbContext.departments.Update(dep);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public List<IdNameModel> GetDepartmentsList(int companyId)
+        public async Task<List<IdNameModel>> GetDepartmentsList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -270,27 +259,27 @@ namespace DataModelsLibrary.Queries
                                 name = dep.name,
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public void DeleteDepartment(int companyId, int id)
+        public async Task DeleteDepartment(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var dep = (from d in dbContext.departments
-                           where d.id == id && d.company_id == companyId
-                           select d).FirstOrDefault();
+                var dep = await (from d in dbContext.departments
+                                 where d.id == id && d.company_id == companyId
+                                 select d).FirstOrDefaultAsync();
 
                 if (dep != null)
                 {
                     var result = dbContext.departments.Remove(dep);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public hr_company AddHrCompany(IdNameModel data, int companyId)
+        public async Task<hr_company> AddHrCompany(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -301,23 +290,23 @@ namespace DataModelsLibrary.Queries
                 };
 
                 var result = dbContext.hr_companies.Add(hr);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public hr_company? UpdateHrCompany(IdNameModel data, int companyId)
+        public async Task<hr_company?> UpdateHrCompany(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 hr_company hr = new hr_company { id = data.id, name = data.name, company_id = companyId };
                 var result = dbContext.hr_companies.Update(hr);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public List<IdNameModel> GetHrCompaniesList(int companyId)
+        public async Task<List<IdNameModel>> GetHrCompaniesList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -330,39 +319,39 @@ namespace DataModelsLibrary.Queries
                                 name = hr.name,
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public void DeleteHrCompany(int companyId, int id)
+        public async Task DeleteHrCompany(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var hr = (from h in dbContext.hr_companies
-                          where h.id == id && h.company_id == companyId
-                          select h).FirstOrDefault();
+                var hr = await (from h in dbContext.hr_companies
+                                where h.id == id && h.company_id == companyId
+                                select h).FirstOrDefaultAsync();
 
                 if (hr != null)
                 {
                     var result = dbContext.hr_companies.Remove(hr);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public PositionClientModel GetPosition(int companyId, int positionId)
+        public async Task<PositionClientModel> GetPosition(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var hrs = dbContext.position_hr_companies
+                var hrs = await dbContext.position_hr_companies
                             .Where(p => p.company_id == companyId && p.position_id == positionId)
                             .Select(p => p.hr_company_id)
-                            .ToArray();
+                            .ToArrayAsync();
 
-                var inter = dbContext.position_interviewers
+                var inter = await dbContext.position_interviewers
                           .Where(p => p.company_id == companyId && p.position_id == positionId)
                           .Select(p => p.user_id)
-                          .ToArray();
+                          .ToArrayAsync();
 
                 var query = from p in dbContext.positions
                             where p.id == positionId && p.company_id == companyId
@@ -381,11 +370,11 @@ namespace DataModelsLibrary.Queries
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-                return query.First();
+                return await query.FirstAsync();
             }
         }
 
-        public position AddPosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position> AddPosition(PositionClientModel data, int companyId, int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -407,7 +396,7 @@ namespace DataModelsLibrary.Queries
                 }
 
                 var result = dbContext.positions.Add(ent);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 AddHrCompanies(companyId, result.Entity.id, data.hrCompaniesIds);
                 AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
@@ -416,7 +405,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public position? UpdatePosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -434,7 +423,7 @@ namespace DataModelsLibrary.Queries
                 };
 
                 var result = dbContext.positions.Update(ent);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 UpdateHrCompanies(companyId, data.id, data.hrCompaniesIds);
                 UpdateInterviewers(companyId, data.id, data.interviewersIds);
@@ -443,7 +432,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public List<PositionModel> GetPositionsList(int companyId)
+        public async Task<List<PositionModel>> GetPositionsList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -458,11 +447,11 @@ namespace DataModelsLibrary.Queries
                                 updated = p.date_updated,
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public void DeletePosition(int companyId, int id)
+        public async Task DeletePosition(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -473,18 +462,18 @@ namespace DataModelsLibrary.Queries
                 if (ent != null)
                 {
                     var result = dbContext.positions.Remove(ent);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        private void UpdateHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
+        private async Task UpdateHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var dbHrs = (from h in dbContext.position_hr_companies
-                             where h.company_id == companyId && h.position_id == positionId
-                             select h).ToList();
+                var dbHrs = await (from h in dbContext.position_hr_companies
+                                   where h.company_id == companyId && h.position_id == positionId
+                                   select h).ToListAsync();
 
                 foreach (var id in hrCompaniesIds)
                 {
@@ -507,17 +496,17 @@ namespace DataModelsLibrary.Queries
                     }
                 }
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        private void UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
+        private async Task UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var dbInterviewer = (from i in dbContext.position_interviewers
-                                     where i.company_id == companyId && i.position_id == positionId
-                                     select i).ToList();
+                var dbInterviewer = await (from i in dbContext.position_interviewers
+                                           where i.company_id == companyId && i.position_id == positionId
+                                           select i).ToListAsync();
 
                 foreach (var id in interviewersIds)
                 {
@@ -540,11 +529,11 @@ namespace DataModelsLibrary.Queries
                     }
                 }
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        private void AddHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
+        private async Task AddHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -560,11 +549,11 @@ namespace DataModelsLibrary.Queries
                     dbContext.position_hr_companies.Add(hr);
                 }
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        private void AddInterviewers(int companyId, int positionId, int[] interviewersIds)
+        private async Task AddInterviewers(int companyId, int positionId, int[] interviewersIds)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -580,11 +569,11 @@ namespace DataModelsLibrary.Queries
                     dbContext.position_interviewers.Add(interviewer);
                 }
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public List<ParserRulesModel> GetParsersRules(int companyId)
+        public async Task<List<ParserRulesModel>> GetParsersRules(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -600,27 +589,27 @@ namespace DataModelsLibrary.Queries
                                 order = r.order,
                             };
 
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public List<int> GetCompaniesIds()
+        public async Task<List<int>> GetCompaniesIds()
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.companies.Select(c => c.id).ToList();
+                return await dbContext.companies.Select(c => c.id).ToListAsync();
             }
         }
 
-        public List<string?> GetCompanyCvsIds(int companyId)
+        public async Task<List<string?>> GetCompanyCvsIds(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.cvs.Where(x => x.company_id == companyId).Select(c => c.key_id).ToList();
+                return await dbContext.cvs.Where(x => x.company_id == companyId).Select(c => c.key_id).ToListAsync();
             }
         }
 
-        public CvModel? GetCv(int cvId, int companyId)
+        public async Task<CvModel?> GetCv(int cvId, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -634,11 +623,11 @@ namespace DataModelsLibrary.Queries
                                 reviewHtml = cand.review_html,
                             };
 
-                return query.FirstOrDefault();
+                return await query.FirstOrDefaultAsync();
             }
         }
 
-        public void SaveCvReview(CvReviewModel cvReview)
+        public async Task SaveCvReview(CvReviewModel cvReview)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -646,20 +635,20 @@ namespace DataModelsLibrary.Queries
                 cand.review_html = cvReview.reviewHtml;
                 cand.review_text = cvReview.reviewText;
                 var result = dbContext.candidates.Update(cand);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public List<cv> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
+        public async Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<cv> cvs = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).ToList();
+                List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).ToListAsync();
                 return cvs;
             }
         }
 
-        public void UpdateCandidateLastCv(ImportCvModel importCv)
+        public async Task UpdateCandidateLastCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -669,28 +658,28 @@ namespace DataModelsLibrary.Queries
                 cand.last_cv_sent = DateTime.Now;
                 cand.date_updated = DateTime.Now;
                 var result = dbContext.candidates.Update(cand);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public void UpdateSameCv(ImportCvModel importCv)
+        public async Task UpdateSameCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {
                 cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
                 cv.date_created = DateTime.Now;
                 var result = dbContext.cvs.Update(cv);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
         }
 
-        public CandPosModel AttachPosCandCv(AttachePosCandCvModel posCandCv)
+        public async Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
-                position_candidate? posCand = dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
+                position_candidate? posCand = await dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
                   && x.position_id == posCandCv.positionId
-                  && x.candidate_id == posCandCv.candidateId).FirstOrDefault();
+                  && x.candidate_id == posCandCv.candidateId).FirstOrDefaultAsync();
 
                 string? posCvsStr = null;
                 List<PosCvsModel>? posCvs = null;
@@ -717,13 +706,13 @@ namespace DataModelsLibrary.Queries
                 };
 
                 dbContext.position_candidates.Add(newPosCv);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
 
-            return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
+            return await UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        public CandPosModel DetachPosCand(AttachePosCandCvModel posCandCv)
+        public async Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -735,19 +724,19 @@ namespace DataModelsLibrary.Queries
                 if (posCvs != null)
                 {
                     dbContext.position_candidates.Remove(posCvs);
-                    dbContext.SaveChanges();
+                    await dbContext.SaveChangesAsync();
                 }
             }
 
-            return UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
+            return await UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        private CandPosModel UpdateCandPosCv(int companyId, int candidateId, int cvId)
+        private async Task<CandPosModel> UpdateCandPosCv(int companyId, int candidateId, int cvId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<position_candidate>? candPosList = dbContext.position_candidates.Where(x => x.company_id == companyId
-                   && x.candidate_id == candidateId).ToList();
+                List<position_candidate>? candPosList = await dbContext.position_candidates.Where(x => x.company_id == companyId
+                   && x.candidate_id == candidateId).ToListAsync();
 
                 List<int> candPos = new List<int>();
                 List<int> cvPos = new List<int>();
@@ -778,18 +767,18 @@ namespace DataModelsLibrary.Queries
                     var result = dbContext.cvs.Update(cv);
                 }
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 return new CandPosModel { candPosIds = candPos, cvPosIds = cvPos };
             }
 
         }
 
-        public List<company_cvs_email> GetCompaniesEmails()
+        public async Task<List<company_cvs_email>> GetCompaniesEmails()
         {
             using (var dbContext = new cvup00001Context())
             {
-                return dbContext.company_cvs_emails.ToList();
+                return await dbContext.company_cvs_emails.ToListAsync();
             }
         }
     }

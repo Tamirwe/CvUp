@@ -14,17 +14,17 @@ namespace CandsPositionsLibrary.CvsFiles
             CvsRootFolder = $"{config["GlobalSettings:CvsFilesRootFolder"]}";
         }
 
-        public void RemoveUnRelatedCvsFiles()
+        public async void RemoveUnRelatedCvsFiles()
         {
 
             //security this operation is un reversable
             //return;
-            List<int> companiesIds = _cvsPositionsQueries.GetCompaniesIds();
+            List<int> companiesIds = await _cvsPositionsQueries.GetCompaniesIds();
             DeleteNotRelatedCompaniesFolders(companiesIds);
 
             foreach (var companyId in companiesIds)
             {
-                List<string?> cvsIds = _cvsPositionsQueries.GetCompanyCvsIds(companyId);
+                List<string?> cvsIds = await _cvsPositionsQueries.GetCompanyCvsIds(companyId);
                 DeleteNotRelatedCvs(companyId, cvsIds);
             }
         }

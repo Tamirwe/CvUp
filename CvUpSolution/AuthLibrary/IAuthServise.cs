@@ -7,20 +7,20 @@ namespace AuthLibrary
 {
     public interface IAuthServise
     {
-        public user? Login(UserLoginModel dataa);
-        public List<IdNameModel> UserCompanies(string email);
-        public user? ForgotPassword(string origin, string email, int? companyId, out UserAuthStatus status);
-        void Register(string? origin, CompanyAndUserRegisetModel data);
+        public Task<user?> Login(UserLoginModel dataa);
+        public Task<List<IdNameModel>> UserCompanies(string email);
+        public Task<UserStatusModel> ForgotPassword(string origin, string email, int? companyId);
+        Task Register(string? origin, CompanyAndUserRegisetModel data);
         public string GenerateRefreshToken();
-        public TokenModel GenerateAccessToken(user authenticateUser, bool isRemember);
-        public TokenModel? RefreshToken(string token, string refreshToken);
-        public void RevokeToken(int userId);
-        public user? CompleteRegistration(UserLoginModel data);
-        public user? PasswordReset(UserLoginModel data);
-        public bool CheckDuplicateUserPassword(CompanyAndUserRegisetModel data);
-        public void AddInterviewer(InterviewerModel data, int companyId);
-        public void UpdateInterviewer(InterviewerModel data, int companyId);
-        public List<InterviewerModel> GetInterviewersList(int companyId);
-        public void DeleteInterviewer(int companyId, int id);
+        public Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember);
+        public Task<TokenModel?> RefreshToken(string token, string refreshToken);
+        public Task RevokeToken(int userId);
+        public Task<user?> CompleteRegistration(UserLoginModel data);
+        public Task<user?> PasswordReset(UserLoginModel data);
+        public Task<bool> CheckDuplicateUserPassword(CompanyAndUserRegisetModel data);
+        public Task AddInterviewer(InterviewerModel data, int companyId);
+        public Task UpdateInterviewer(InterviewerModel data, int companyId);
+        public Task<List<InterviewerModel>> GetInterviewersList(int companyId);
+        public Task DeleteInterviewer(int companyId, int id);
     }
 }

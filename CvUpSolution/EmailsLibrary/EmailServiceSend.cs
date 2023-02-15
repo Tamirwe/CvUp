@@ -25,7 +25,7 @@ namespace EmailsLibrary
             _mailPassword = config["GlobalSettings:gmailPassword"];
         }
 
-        public void Send(EmailModel eml)
+        public async Task Send(EmailModel eml)
         {
             var message = new MimeMessage();
 
@@ -63,7 +63,7 @@ namespace EmailsLibrary
             //{
             using (var client = new SmtpClient())
             {
-                client.Connect("smtp.gmail.com", 587);
+                await client.ConnectAsync("smtp.gmail.com", 587);
 
 
                 // Note: since we don't have an OAuth2 token, disable
@@ -73,15 +73,13 @@ namespace EmailsLibrary
                 // Note: only needed if the SMTP server requires authentication
                 client.Authenticate(_mailUserName, _mailPassword);
 
-                client.Send(message);
-                client.Disconnect(true);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
             //});
 
             //    emailThread.IsBackground = true;
             //    emailThread.Start();
         }
-
-     
     }
 }

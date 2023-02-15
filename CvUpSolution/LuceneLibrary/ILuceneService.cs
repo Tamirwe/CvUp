@@ -6,10 +6,9 @@ namespace LuceneLibrary
 {
     public interface ILuceneService
     {
-        public void DocumentAdd(int companyId, CvPropsToIndexModel cvPropsToIndex);
-        public void DocumentUpdate(int companyId, CvPropsToIndexModel cvPropsToIndex);
-        public void WarmupSearch(int companyId);
-        public IEnumerable<SearchEntry> Search(int companyId, string searchQuery);
-        public void BuildCompanyIndex(int companyId, List<CvPropsToIndexModel> cvPropsToIndexList);
+        public Task DocumentAdd(int companyId, CvPropsToIndexModel cvPropsToIndex);
+        public Task DocumentUpdate(int companyId, CvPropsToIndexModel cvPropsToIndex);
+        public Task<List<SearchEntry>> Search(int companyId, string searchQuery);
+        public Task BuildCompanyIndex(int companyId, List<CvPropsToIndexModel> cvPropsToIndexList);
     }
 }

@@ -10,18 +10,16 @@ namespace EmailsLibrary.Models
     {
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-
     }
 
     public class EmailModel
     {
-        public List<EmailAddress> To { get; set; }= new List<EmailAddress>();
-        public List<EmailAddress> Cc { get; set; }= new List<EmailAddress>();
-        public List<EmailAddress> Bcc { get; set; }= new List<EmailAddress>();
-        public EmailAddress From { get; set; }=new EmailAddress();
+        public List<EmailAddress> To { get; set; } = new List<EmailAddress>();
+        public List<EmailAddress> Cc { get; set; } = new List<EmailAddress>();
+        public List<EmailAddress> Bcc { get; set; } = new List<EmailAddress>();
+        public EmailAddress From { get; set; } = new EmailAddress();
         public string Subject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
-
     }
 
     public class GMmailSettings
@@ -30,6 +28,5 @@ namespace EmailsLibrary.Models
         public string password { get; set; } = string.Empty;
         public string fromName { get; set; } = string.Empty;
         public string fromAddress { get; set; } = string.Empty;
-
     }
 }

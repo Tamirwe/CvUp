@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction, toJS } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { DisplayedCvsListEnum } from "../models/GeneralEnums";
 import { IAppSettings, ICand, ICvReview } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
@@ -82,36 +82,36 @@ export class CandsStore {
         reviewText,
         reviewHtml,
       };
-      const res = await this.cvsApi.saveCvReview(cvReview);
+      await this.cvsApi.saveCvReview(cvReview);
     }
 
-    if (this.candDisplay) {
-      this.candDisplay.review = reviewHtml;
+    runInAction(() => {
+      if (this.candDisplay) {
+        this.candDisplay.review = reviewHtml;
+        let cand = this.candsList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+        if (cand) {
+          cand.review = reviewHtml;
+        }
 
-      let cand = this.candsList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
+        const candDup = this.candDupCvsList.filter(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
 
-      if (cand) {
-        cand.review = reviewHtml;
+        candDup.forEach((cand) => {
+          cand.review = reviewHtml;
+        });
+
+        cand = this.posCandsList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (cand) {
+          cand.review = reviewHtml;
+        }
       }
-
-      const candDup = this.candDupCvsList.filter(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
-
-      candDup.forEach((cand) => {
-        cand.review = reviewHtml;
-      });
-
-      cand = this.posCandsList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
-
-      if (cand) {
-        cand.review = reviewHtml;
-      }
-    }
+    });
   }
 
   async searchCands(value: string) {
@@ -155,7 +155,7 @@ export class CandsStore {
 
   async attachPosCandCv(positionId: number) {
     if (this.candDisplay) {
-      const res = await this.cvsApi.attachPosCandCv(
+      await this.cvsApi.attachPosCandCv(
         this.candDisplay.candidateId,
         this.candDisplay.cvId,
         positionId,
@@ -193,7 +193,7 @@ export class CandsStore {
     const positionId = this.rootStore.positionsStore.posSelected?.id;
 
     if (positionId) {
-      const res = await this.cvsApi.detachPosCand(
+      await this.cvsApi.detachPosCand(
         posCand.candidateId,
         posCand.cvId,
         positionId

@@ -1,20 +1,14 @@
-import { Box, Drawer, Grid, Toolbar } from "@mui/material";
-import { useState } from "react";
+import { Box, Drawer, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 import { observer } from "mobx-react";
 import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
 
-const drawerWidth = 340;
-
 export const LayoutAuth = observer(() => {
   const { candsStore } = useStore();
-  const matches = useMediaQuery("(min-width:600px)");
-  const [isOpen, setIsOpen] = useState(matches ? true : false);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -22,7 +16,7 @@ export const LayoutAuth = observer(() => {
       <Grid container spacing={0} columns={18}>
         <Grid item xs={5}>
           <Drawer
-            open={isOpen}
+            open={true}
             variant="persistent"
             anchor="left"
             sx={{
@@ -51,7 +45,7 @@ export const LayoutAuth = observer(() => {
             </Grid>
             <Grid item xs={5}>
               <Drawer
-                open={isOpen}
+                open={true}
                 variant="persistent"
                 anchor="right"
                 sx={{

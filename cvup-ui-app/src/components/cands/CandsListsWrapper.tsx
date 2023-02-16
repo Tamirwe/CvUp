@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { CandsList } from "./CandsList";
@@ -7,7 +7,6 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
-import { PosCandsList } from "./PosCandsList";
 
 export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore } = useStore();

@@ -1,7 +1,7 @@
 import { useStore } from "../../Hooks/useStore";
 import { IconButton, Grid, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { CiLogout, CiEdit, CiMail } from "react-icons/ci";
+import { CiLogout, CiEdit } from "react-icons/ci";
 import { SearchCands } from "./SearchCands";
 import { SettingsMenu } from "./SettingsMenu";
 import { EmailSender } from "./EmailSender";

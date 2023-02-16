@@ -6,18 +6,18 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useStore } from "../../Hooks/useStore";
 import { MdOutlineDragIndicator } from "react-icons/md";
+import { QuillRte } from "../rte/QuillRte";
 
 export const CandReview = observer(() => {
   const { candsStore } = useStore();
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);
+  const [quillEditor, setQuillEditor] = useState<any>(null);
 
   useEffect(() => {
     setX(parseInt(localStorage.getItem("rteX") || "50"));
@@ -31,29 +31,8 @@ export const CandReview = observer(() => {
     localStorage.setItem("rteY", data.y.toString());
   };
 
-  let quillRef: any = null;
-  let reactQuillRef: any = null;
-  const [quillHtml, setQuillHtml] = useState("");
-
-  const handleChange = (html: string) => {
-    setQuillHtml(html);
-  };
-
-  useEffect(() => {
-    setQuillHtml(candsStore.candSelected?.review || "");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (reactQuillRef) {
-      attachQuillRefs();
-    }
-  }, [reactQuillRef]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const attachQuillRefs = () => {
-    if (typeof reactQuillRef.getEditor !== "function") return;
-    quillRef = reactQuillRef.getEditor();
-    quillRef.format("direction", "rtl");
-    quillRef.format("align", "right");
+  const handleRteInit = (editor: any) => {
+    setQuillEditor(editor);
   };
 
   const handleCancel = () => {
@@ -61,57 +40,13 @@ export const CandReview = observer(() => {
   };
 
   const handleSave = async () => {
-    const reviewText = reactQuillRef.getEditor().getText();
-    const reviewHtml = reactQuillRef.getEditor().root.innerHTML;
+    const reviewText = quillEditor.getText();
+    const reviewHtml = quillEditor.root.innerHTML;
     await candsStore.saveCvReview(reviewText, reviewHtml);
     candsStore.cvReviewDialogOpen = false;
   };
 
-  const modulesRef = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "link"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      // ["link"],
-      // ["clean"],
-      [{ direction: "rtl" }],
-      ["save"],
-    ],
-  };
-
-  const formats = [
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "script",
-    "header",
-    "blockquote",
-    "code-block",
-    "indent",
-    "list",
-    "direction",
-    "align",
-    "link",
-    "image",
-    "video",
-    "formula",
-  ];
-
   return (
-    // <div
-    //   className="quill-rte"
-    //   style={{ display: candsStore.cvReviewDialogOpen ? "block" : "none" }}
-    // >
     <Draggable handle="strong" onStop={handleStop} position={{ x: x, y: y }}>
       <Card
         sx={{
@@ -148,16 +83,9 @@ export const CandReview = observer(() => {
               </div>
             </strong>
           </Typography>
-          <ReactQuill
-            style={{ backgroundColor: "#fff" }}
-            ref={(el) => {
-              reactQuillRef = el;
-            }}
-            modules={modulesRef}
-            theme={"snow"}
-            formats={formats}
-            value={quillHtml}
-            // onChange={handleChange}
+          <QuillRte
+            onInit={handleRteInit}
+            quillHtml={candsStore.candSelected?.review}
           />
         </CardContent>
         <CardActions>
@@ -175,6 +103,5 @@ export const CandReview = observer(() => {
         </CardActions>
       </Card>
     </Draggable>
-    // </div>
   );
 });

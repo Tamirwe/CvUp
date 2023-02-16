@@ -19,7 +19,7 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult? Get(string id)
+        public async Task<IActionResult?> Get(string id)
         {
             //string decripted = GeneralLibrary.Encriptor.Decrypt(id, _configuration["GlobalSettings:cvsEncryptorKey"] ?? "");
             //string[] secArr = decripted.Split("~");
@@ -40,16 +40,15 @@ namespace CvUpAPI.Controllers
 
             if (fileType == ".pdf")
             {
-                return PhysicalFile(path, "application/pdf", true);
+                return await Task.Run(() => PhysicalFile(path, "application/pdf", true));
             }
 
             Spire.Doc.Document document = new Spire.Doc.Document(path);
             var stream = new MemoryStream();
-            document.SaveToFile(stream, Spire.Doc.FileFormat.PDF);
+            await Task.Run(() => document.SaveToFile(stream, Spire.Doc.FileFormat.PDF));
             //stream.Position = 0;
             stream.Seek(0, SeekOrigin.Begin);
-            var pdfFile = File(stream, "application/pdf", $"{id}.pdf");
-            return pdfFile;
+            return await Task.Run(() => File(stream, "application/pdf", $"{id}.pdf"));
 
         }
 

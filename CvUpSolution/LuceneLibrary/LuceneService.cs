@@ -124,8 +124,8 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                var query = mQueryParser.Parse(searchQuery + "*");
-                //var query = new WildcardQuery(new Term("name", "הסכם?"));
+                var query = mQueryParser.Parse(searchQuery);
+                //var query = new WildcardQuery(new Term("CV", searchQuery));
 
                 if (mIndexSearcher != null)
                 {

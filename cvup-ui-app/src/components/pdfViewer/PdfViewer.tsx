@@ -2,13 +2,8 @@ import { observer } from "mobx-react";
 import { LoadError, SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
-import { RenderGoToPageProps } from "@react-pdf-viewer/page-navigation";
 import { toolbarPlugin, ToolbarSlot } from "@react-pdf-viewer/toolbar";
-import {
-  RenderCurrentScaleProps,
-  RenderZoomInProps,
-  RenderZoomOutProps,
-} from "@react-pdf-viewer/zoom";
+
 
 // import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
 // import type {

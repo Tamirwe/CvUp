@@ -16,3 +16,9 @@ export enum DisplayedCvsListEnum {
   PositionCvsList,
   CategoriesCvsList,
 }
+
+export enum EmailTypeEnum {
+  None,
+  Candidate,
+  Contact,
+}

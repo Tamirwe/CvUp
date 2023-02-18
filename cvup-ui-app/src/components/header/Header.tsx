@@ -4,14 +4,35 @@ import { useNavigate } from "react-router-dom";
 import { CiLogout, CiEdit } from "react-icons/ci";
 import { SearchCands } from "./SearchCands";
 import { SettingsMenu } from "./SettingsMenu";
-import { EmailSender } from "./EmailSender";
+import { EmailMenu } from "./EmailMenu";
+import { EmailTypeEnum } from "../../models/GeneralEnums";
+import { useState } from "react";
+import { CandidateEmailSender } from "../email/CandidateEmailSender";
+import { ContactEmailSender } from "../email/ContactEmailSender";
 
 export const Header = () => {
   const { authStore, candsStore } = useStore();
   const navigate = useNavigate();
+  const [emailShow, setEmailShow] = useState<EmailTypeEnum>(EmailTypeEnum.None);
+
+  const handleEmailTypeClick = (emailType: EmailTypeEnum) => {
+    setEmailShow(emailType);
+  };
 
   return (
     <div style={{ position: "relative", backgroundColor: "#f3f4f5" }}>
+      {emailShow === EmailTypeEnum.Candidate && (
+        <CandidateEmailSender
+          onClose={() => setEmailShow(EmailTypeEnum.None)}
+          open={emailShow === EmailTypeEnum.Candidate}
+        />
+      )}
+      {emailShow === EmailTypeEnum.Contact && (
+        <ContactEmailSender
+          onClose={() => setEmailShow(EmailTypeEnum.None)}
+          open={emailShow === EmailTypeEnum.Contact}
+        />
+      )}
       <div
         style={{
           position: "absolute",
@@ -45,12 +66,18 @@ export const Header = () => {
                 <IconButton
                   size="medium"
                   onClick={() => {
-                    candsStore.cvReviewDialogOpen = true;
+                    if (candsStore.cvReviewDialogOpen) {
+                      localStorage.setItem("rteX", "50");
+                      localStorage.setItem("rteY", "50");
+                    }
+
+                    candsStore.cvReviewDialogOpen =
+                      !candsStore.cvReviewDialogOpen;
                   }}
                 >
                   <CiEdit />
                 </IconButton>
-                <EmailSender />
+                <EmailMenu onEmailTypeClick={handleEmailTypeClick} />
                 <SettingsMenu />
                 <SearchCands />
               </Stack>

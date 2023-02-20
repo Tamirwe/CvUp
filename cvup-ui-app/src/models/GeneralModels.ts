@@ -58,3 +58,9 @@ export interface ICvReview {
   reviewHtml: string;
   reviewText: string;
 }
+
+export interface IMailsList {
+  email: string;
+  name: string;
+  userTyped?: boolean;
+}

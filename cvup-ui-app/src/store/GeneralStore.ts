@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
+import { EmailTypeEnum } from "../models/GeneralEnums";
 import { IAppSettings } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
@@ -9,6 +10,8 @@ export class GeneralStore {
   departmentsList: IIdName[] = [];
   hrCompaniesList: IIdName[] = [];
   isShowBackdrop: boolean = false;
+  private isCvReviewDialogOpen: boolean = false;
+  private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
 
   set backdrop(val) {
     this.isShowBackdrop = val;
@@ -16,6 +19,22 @@ export class GeneralStore {
 
   get backdrop() {
     return this.isShowBackdrop;
+  }
+
+  set cvReviewDialogOpen(val) {
+    this.isCvReviewDialogOpen = val;
+  }
+
+  get cvReviewDialogOpen() {
+    return this.isCvReviewDialogOpen;
+  }
+
+  set showEmailDialog(val) {
+    this.showEmailDialogType = val;
+  }
+
+  get showEmailDialog() {
+    return this.showEmailDialogType;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

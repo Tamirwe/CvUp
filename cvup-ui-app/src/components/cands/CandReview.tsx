@@ -14,7 +14,7 @@ import { MdOutlineDragIndicator } from "react-icons/md";
 import { QuillRte } from "../rte/QuillRte";
 
 export const CandReview = observer(() => {
-  const { candsStore } = useStore();
+  const { candsStore, generalStore } = useStore();
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);
   const [quillEditor, setQuillEditor] = useState<any>(null);
@@ -36,14 +36,14 @@ export const CandReview = observer(() => {
   };
 
   const handleCancel = () => {
-    candsStore.cvReviewDialogOpen = false;
+    generalStore.cvReviewDialogOpen = false;
   };
 
   const handleSave = async () => {
     const reviewText = quillEditor.getText();
     const reviewHtml = quillEditor.root.innerHTML;
     await candsStore.saveCvReview(reviewText, reviewHtml);
-    candsStore.cvReviewDialogOpen = false;
+    generalStore.cvReviewDialogOpen = false;
   };
 
   return (

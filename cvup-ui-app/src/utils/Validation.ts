@@ -31,16 +31,21 @@ export const emailValidte = (email: string) => {
     return "Password is required";
   }
 
-  const isMatch = email.match(
-    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  );
-
-  if (!isMatch) {
+  if (!isEmailValid(email)) {
     return "Must be a valid email";
   }
 
   return "";
 };
+
+export const isEmailValid = (email: string) => {
+  const isMatch = email.match(
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+
+  return isMatch;
+};
+
 
 export const passwordValidate = (p: string) => {
   if (p.length === 0) {

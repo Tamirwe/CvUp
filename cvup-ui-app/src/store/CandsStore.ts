@@ -6,7 +6,6 @@ import { RootStore } from "./RootStore";
 
 export class CandsStore {
   private cvsApi;
-  private isCvReviewDialogOpen: boolean = false;
   candsList: ICand[] = [];
   candDupCvsList: ICand[] = [];
   posCandsList: ICand[] = [];
@@ -26,14 +25,6 @@ export class CandsStore {
   reset() {
     this.candsList = [];
     this.candSelected = undefined;
-  }
-
-  set cvReviewDialogOpen(val) {
-    this.isCvReviewDialogOpen = val;
-  }
-
-  get cvReviewDialogOpen() {
-    return this.isCvReviewDialogOpen;
   }
 
   set currentTabCandsList(val) {

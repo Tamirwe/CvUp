@@ -1,7 +1,9 @@
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
+import { IMailsList } from "../../models/GeneralModels";
 import { QuillRte } from "../rte/QuillRte";
+import { EmailsToControl } from "./EmailsToControl";
 
 interface IProps {
   open: boolean;
@@ -10,8 +12,23 @@ interface IProps {
 
 export const ContactEmailSender = (props: IProps) => {
   const { candsStore } = useStore();
-
   const [quillEditor, setQuillEditor] = useState<any>(null);
+  const [emailsToList, setEmailsToList] = useState<IMailsList[]>([]);
+  const [listDefaultEmails, setListDefaultEmails] = useState<IMailsList[]>([]);
+
+  useEffect(() => {
+    if (candsStore.candSelected) {
+      const emailsList = [
+        {
+          email: candsStore.candSelected?.email || "",
+          name: candsStore.candSelected?.candidateName || "",
+        },
+      ];
+
+      setEmailsToList(emailsList);
+      setListDefaultEmails(emailsList);
+    }
+  }, []);
 
   const handleRteInit = (editor: any) => {
     setQuillEditor(editor);
@@ -21,6 +38,10 @@ export const ContactEmailSender = (props: IProps) => {
     <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth="md">
       <DialogTitle>Send Email To Contact</DialogTitle>
       <DialogContent>
+        <EmailsToControl
+          listEmailsTo={emailsToList}
+          listDefaultEmails={listDefaultEmails}
+        />
         <QuillRte
           onInit={handleRteInit}
           quillHtml={candsStore.candSelected?.review}

@@ -6,13 +6,28 @@ import { observer } from "mobx-react";
 import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
+import { EmailTypeEnum } from "../models/GeneralEnums";
+import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
+import { ContactEmailSender } from "../components/email/ContactEmailSender";
 
 export const LayoutAuth = observer(() => {
-  const { candsStore } = useStore();
+  const { generalStore } = useStore();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {candsStore.cvReviewDialogOpen && <CandReview />}
+      {generalStore.cvReviewDialogOpen && <CandReview />}
+      {generalStore.showEmailDialog === EmailTypeEnum.Candidate && (
+        <CandidateEmailSender
+          onClose={() => (generalStore.showEmailDialog = EmailTypeEnum.None)}
+          open={generalStore.showEmailDialog === EmailTypeEnum.Candidate}
+        />
+      )}
+      {generalStore.showEmailDialog === EmailTypeEnum.Contact && (
+        <ContactEmailSender
+          onClose={() => (generalStore.showEmailDialog = EmailTypeEnum.None)}
+          open={generalStore.showEmailDialog === EmailTypeEnum.Contact}
+        />
+      )}
       <Grid container spacing={0} columns={18}>
         <Grid item xs={5}>
           <Drawer

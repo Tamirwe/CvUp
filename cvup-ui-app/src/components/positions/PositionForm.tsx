@@ -29,7 +29,7 @@ import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
-import { DepartmentsListDialog } from "../departments/DepartmentsListDialog";
+import { CustomersListDialog } from "../customers/CustomersListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 
@@ -37,7 +37,7 @@ export const PositionForm = observer(() => {
   let { pid } = useParams();
   const navigate = useNavigate();
   const { positionsStore, generalStore, authStore } = useStore();
-  const [openDepartmentsList, setOpenDepartmentsList] = useState(false);
+  const [openCustomersList, setOpenCustomersList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
   const [isRtlDirection, setIsRtlDirection] = useState(false);
@@ -85,7 +85,7 @@ export const PositionForm = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
-        generalStore.getDepartmentsList(false),
+        generalStore.getCustomersList(false),
         generalStore.getHrCompaniesList(false),
         authStore.getInterviewersList(false),
       ]);
@@ -199,8 +199,8 @@ export const PositionForm = observer(() => {
     setInterviewersNames(typeof value === "string" ? value.split(",") : value);
   };
 
-  const handleDepartmentsListClose = () => {
-    setOpenDepartmentsList(false);
+  const handleCustomersListClose = () => {
+    setOpenCustomersList(false);
   };
 
   const handleHrCompaniesListClose = () => {
@@ -385,36 +385,36 @@ export const PositionForm = observer(() => {
 
                 <Grid item xs={12} lg={6}>
                   <FormControl fullWidth>
-                    <InputLabel id="departmentLabel">Department</InputLabel>
+                    <InputLabel id="customerLabel">Customer</InputLabel>
                     <Select
-                      labelId="departmentLabel"
-                      id="departmentSelect"
+                      labelId="customerLabel"
+                      id="customerSelect"
                       value={
-                        frmState.departmentId === 0
+                        frmState.customerId === 0
                           ? ""
-                          : frmState.departmentId.toString()
+                          : frmState.customerId.toString()
                       }
-                      label="Department"
+                      label="Customer"
                       onChange={(event: SelectChangeEvent) => {
                         setIsDirty(true);
 
                         setFrmState((currentProps) => ({
                           ...currentProps,
-                          departmentId: parseInt(event.target.value),
+                          customerId: parseInt(event.target.value),
                         }));
                       }}
                       sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
                       endAdornment={
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={() => setOpenDepartmentsList(true)}
+                          onClick={() => setOpenCustomersList(true)}
                           edge="end"
                         >
                           <MdFormatIndentIncrease />
                         </IconButton>
                       }
                     >
-                      {generalStore.departmentsList?.map((item, i) => {
+                      {generalStore.customersList?.map((item, i) => {
                         return (
                           <MenuItem key={item.id} value={item.id}>
                             {item.name}
@@ -518,10 +518,10 @@ export const PositionForm = observer(() => {
               </Grid>
             </Grid>
           </Grid>
-          {openDepartmentsList && (
-            <DepartmentsListDialog
-              isOpen={openDepartmentsList}
-              close={handleDepartmentsListClose}
+          {openCustomersList && (
+            <CustomersListDialog
+              isOpen={openCustomersList}
+              close={handleCustomersListClose}
             />
           )}
           {openHrCompaniesList && (

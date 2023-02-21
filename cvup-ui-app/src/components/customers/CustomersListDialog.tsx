@@ -11,36 +11,36 @@ import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
-import { DepartmentFormDialog } from "./DepartmentFormDialog";
-import { DepartmentsList } from "./DepartmentsList";
+import { CustomerFormDialog } from "./CustomerFormDialog";
+import { CustomersList } from "./CustomersList";
 
 interface IProps {
   isOpen: boolean;
   close: () => void;
 }
 
-export const DepartmentsListDialog = ({ isOpen, close }: IProps) => {
+export const CustomersListDialog = ({ isOpen, close }: IProps) => {
   const { generalStore } = useStore();
   const [open, setOpen] = useState(false);
-  const [openDepartmentForm, setOpenDepartmentForm] = useState(false);
-  const [editDepartment, setEditDepartment] = useState<IIdName>();
+  const [openCustomerForm, setOpenCustomerForm] = useState(false);
+  const [editCustomer, setEditCustomer] = useState<IIdName>();
   const [crudType, setCrudType] = useState<CrudTypesEnum>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEditDelete = (department: IIdName, type: CrudTypesEnum) => {
-    setEditDepartment(department);
+  const handleAddEditDelete = (customer: IIdName, type: CrudTypesEnum) => {
+    setEditCustomer(customer);
     setCrudType(type);
-    setOpenDepartmentForm(true);
+    setOpenCustomerForm(true);
   };
 
   const handleFormClose = (isSaved: boolean) => {
-    setOpenDepartmentForm(false);
+    setOpenCustomerForm(false);
 
     if (isSaved) {
-      generalStore.getDepartmentsList(true);
+      generalStore.getCustomersList(true);
     }
   };
 
@@ -62,7 +62,7 @@ export const DepartmentsListDialog = ({ isOpen, close }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DepartmentsList onAddEditDeleteclick={handleAddEditDelete} />
+        <CustomersList onAddEditDeleteclick={handleAddEditDelete} />
         <Button
           onClick={() =>
             handleAddEditDelete({ id: 0, name: "" }, CrudTypesEnum.Insert)
@@ -72,11 +72,11 @@ export const DepartmentsListDialog = ({ isOpen, close }: IProps) => {
         >
           Add
         </Button>
-        {openDepartmentForm && editDepartment && (
-          <DepartmentFormDialog
-            department={editDepartment}
+        {openCustomerForm && editCustomer && (
+          <CustomerFormDialog
+            customer={editCustomer}
             crudType={crudType}
-            isOpen={openDepartmentForm}
+            isOpen={openCustomerForm}
             onClose={(isSaved) => handleFormClose(isSaved)}
           />
         )}

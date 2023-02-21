@@ -6,14 +6,14 @@ import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
-  department: IIdName;
+  customer: IIdName;
   crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const DepartmentForm = ({
-  department,
+export const CustomerForm = ({
+  customer,
   crudType,
   onSaved,
   onCancel,
@@ -21,7 +21,7 @@ export const DepartmentForm = ({
   const { generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [formModel, setFormModel] = useState<IIdName>(department);
+  const [formModel, setFormModel] = useState<IIdName>(customer);
   const [formValError, setFormValError] = useState({
     name: false,
   });
@@ -30,8 +30,8 @@ export const DepartmentForm = ({
   });
 
   useEffect(() => {
-    department && setFormModel({ ...department });
-  }, [department]);
+    customer && setFormModel({ ...customer });
+  }, [customer]);
 
   const updateFieldError = (field: string, errTxt: string) => {
     const isValid = errTxt === "" ? true : false;
@@ -58,7 +58,7 @@ export const DepartmentForm = ({
   };
 
   const submitForm = async () => {
-    const response = await generalStore.addUpdateDepartment(formModel);
+    const response = await generalStore.addUpdateCustomer(formModel);
 
     if (response.isSuccess) {
       onSaved();
@@ -68,7 +68,7 @@ export const DepartmentForm = ({
   };
 
   const deleteRecord = async () => {
-    const response = await generalStore.deleteDepartment(formModel.id);
+    const response = await generalStore.deleteCustomer(formModel.id);
 
     if (response.isSuccess) {
       onSaved();

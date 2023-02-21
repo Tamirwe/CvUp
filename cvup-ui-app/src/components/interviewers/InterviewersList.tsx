@@ -7,7 +7,7 @@ import { observer } from "mobx-react";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IInterviewer, type: CrudTypesEnum) => void;
+  onAddEditDeleteclick: (customer: IInterviewer, type: CrudTypesEnum) => void;
 }
 
 export const InterviewersList = observer((props: IProps) => {

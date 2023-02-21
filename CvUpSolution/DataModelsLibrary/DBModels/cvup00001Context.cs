@@ -21,9 +21,9 @@ namespace Database.models
         public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
+        public virtual DbSet<customer> customers { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
-        public virtual DbSet<department> departments { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
@@ -162,6 +162,22 @@ namespace Database.models
                     .HasConstraintName("fk_contacts_company_id_companies_id");
             });
 
+            modelBuilder.Entity<customer>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_customers_company_id_companies_id");
+
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.name).HasMaxLength(100);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.customers)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_customers_company_id_companies_id");
+            });
+
             modelBuilder.Entity<cv>(entity =>
             {
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
@@ -207,22 +223,6 @@ namespace Database.models
                     .WithMany(p => p.cvs_txts)
                     .HasForeignKey(d => d.cv_id)
                     .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
-            });
-
-            modelBuilder.Entity<department>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_departments_company_id_companies_id");
-
-                entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.name).HasMaxLength(100);
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.departments)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_departments_company_id_companies_id");
             });
 
             modelBuilder.Entity<emails_sent>(entity =>
@@ -334,7 +334,7 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_positions_company_id_companies_id");
 
-                entity.HasIndex(e => e.department_id, "fk_positions_department_id_departments_id");
+                entity.HasIndex(e => e.customer_id, "fk_positions_department_id_departments_id");
 
                 entity.HasIndex(e => e.opener_id, "fk_positions_opener_id_users_id");
 
@@ -355,11 +355,10 @@ namespace Database.models
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_positions_company_id_companies_id");
 
-                entity.HasOne(d => d.department)
+                entity.HasOne(d => d.customer)
                     .WithMany(p => p.positions)
-                    .HasForeignKey(d => d.department_id)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("fk_positions_department_id_departments_id");
+                    .HasForeignKey(d => d.customer_id)
+                    .HasConstraintName("fk_positions_customer_id_customers_id");
 
                 entity.HasOne(d => d.opener)
                     .WithMany(p => p.positionopeners)

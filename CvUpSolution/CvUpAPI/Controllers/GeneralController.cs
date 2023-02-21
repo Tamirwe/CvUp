@@ -20,34 +20,34 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("AddUpdateDepartment")]
-        public async Task<IActionResult> AddUpdateDepartment(IdNameModel data)
+        [Route("AddUpdateCustomer")]
+        public async Task<IActionResult> AddUpdateCustomer(IdNameModel data)
         {
             if (data.id == 0)
             {
-                await _cvsPosService.AddDepartment(data, Globals.CompanyId);
+                await _cvsPosService.AddCustomer(data, Globals.CompanyId);
             }
             else
             {
-                await _cvsPosService.UpdateDepartment(data, Globals.CompanyId);
+                await _cvsPosService.UpdateCustomer(data, Globals.CompanyId);
             }
 
             return Ok();
         }
 
         [HttpGet]
-        [Route("GetDepartmentsList")]
-        public async Task<IActionResult> GetDepartmentsList()
+        [Route("GetCustomersList")]
+        public async Task<IActionResult> GetCustomersList()
         {
-            List<IdNameModel> departments = await _cvsPosService.GetDepartmentsList(Globals.CompanyId);
-            return Ok(departments);
+            List<IdNameModel> customers = await _cvsPosService.GetCustomersList(Globals.CompanyId);
+            return Ok(customers);
         }
 
         [HttpDelete]
-        [Route("DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment(int id)
+        [Route("DeleteCustomer")]
+        public async Task<IActionResult> DeleteCustomer(int id)
         {
-            await _cvsPosService.DeleteDepartment(Globals.CompanyId, id);
+            await _cvsPosService.DeleteCustomer(Globals.CompanyId, id);
             return Ok();
         }
 
@@ -71,8 +71,8 @@ namespace CvUpAPI.Controllers
         [Route("GetHrCompaniesList")]
         public async Task<IActionResult> GetHrCompaniesList()
         {
-            List<IdNameModel> departments = await _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
-            return Ok(departments);
+            List<IdNameModel> customers = await _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
+            return Ok(customers);
         }
 
         [HttpDelete]

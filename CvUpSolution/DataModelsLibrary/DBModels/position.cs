@@ -18,13 +18,13 @@ namespace Database.models
         public string? descr { get; set; }
         public DateTime date_created { get; set; }
         public DateTime date_updated { get; set; }
-        public int? department_id { get; set; }
+        public int? customer_id { get; set; }
         public sbyte is_active { get; set; }
         public int? updater_id { get; set; }
         public int opener_id { get; set; }
 
         public virtual company company { get; set; } = null!;
-        public virtual department? department { get; set; }
+        public virtual customer? customer { get; set; }
         public virtual user opener { get; set; } = null!;
         public virtual user? updater { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }

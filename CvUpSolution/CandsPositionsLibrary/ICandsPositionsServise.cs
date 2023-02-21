@@ -15,10 +15,10 @@ namespace CandsPositionsLibrary
         public Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public Task IndexCompanyCvs(int companyId);
         public Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
-        public Task<department> AddDepartment(IdNameModel data, int companyId);
-        public Task<department?> UpdateDepartment(IdNameModel data, int companyId);
-        public Task<List<IdNameModel>> GetDepartmentsList(int companyId);
-        public Task DeleteDepartment(int companyId, int id);
+        public Task<customer> AddCustomer(IdNameModel data, int companyId);
+        public Task<customer?> UpdateCustomer(IdNameModel data, int companyId);
+        public Task<List<IdNameModel>> GetCustomersList(int companyId);
+        public Task DeleteCustomer(int companyId, int id);
         public Task<hr_company> AddHrCompany(IdNameModel data, int companyId);
         public Task<hr_company?> UpdateHrCompany(IdNameModel data, int companyId);
         public Task<List<IdNameModel>> GetHrCompaniesList(int companyId);

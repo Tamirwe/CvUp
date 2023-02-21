@@ -47,7 +47,7 @@ export interface IPosition {
   descr: string;
   updated: Date;
   isActive: boolean;
-  departmentId: number;
+  customerId: number;
   hrCompaniesIds: number[];
   interviewersIds: number[];
   candidates: number[];

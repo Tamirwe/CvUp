@@ -7,15 +7,15 @@ import { observer } from "mobx-react";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (department: IIdName, type: CrudTypesEnum) => void;
+  onAddEditDeleteclick: (customer: IIdName, type: CrudTypesEnum) => void;
 }
 
-export const DepartmentsList = observer((props: IProps) => {
+export const CustomersList = observer((props: IProps) => {
   const { generalStore } = useStore();
 
   useEffect(() => {
     (async () => {
-      await generalStore.getDepartmentsList(false);
+      await generalStore.getCustomersList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -29,7 +29,7 @@ export const DepartmentsList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {generalStore.departmentsList?.map((item, i) => {
+      {generalStore.customersList?.map((item, i) => {
         return (
           <ListItemButton
             onClick={() =>

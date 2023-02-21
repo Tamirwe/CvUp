@@ -2,17 +2,17 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
-import { DepartmentForm } from "./DepartmentForm";
+import { CustomerForm } from "./CustomerForm";
 
 interface IProps {
-  department: IIdName;
+  customer: IIdName;
   crudType?: CrudTypesEnum;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
 }
 
-export const DepartmentFormDialog = ({
-  department,
+export const CustomerFormDialog = ({
+  customer,
   crudType,
   isOpen,
   onClose,
@@ -49,8 +49,8 @@ export const DepartmentFormDialog = ({
     >
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
-        <DepartmentForm
-          department={department}
+        <CustomerForm
+          customer={customer}
           crudType={crudType}
           onSaved={() => onClose(true)}
           onCancel={() => onClose(false)}

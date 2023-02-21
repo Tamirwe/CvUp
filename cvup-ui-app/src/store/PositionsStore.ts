@@ -26,7 +26,7 @@ export class PositionsStore {
         descr: "",
         updated: new Date(),
         isActive: true,
-        departmentId: 0,
+        customerId: 0,
         hrCompaniesIds: [],
         interviewersIds: [],
         candidates: [],

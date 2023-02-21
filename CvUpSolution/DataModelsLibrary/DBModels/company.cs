@@ -11,7 +11,7 @@ namespace Database.models
             company_cvs_emails = new HashSet<company_cvs_email>();
             company_parsers = new HashSet<company_parser>();
             contacts = new HashSet<contact>();
-            departments = new HashSet<department>();
+            customers = new HashSet<customer>();
             emails_sents = new HashSet<emails_sent>();
             hr_companies = new HashSet<hr_company>();
             hr_contacts = new HashSet<hr_contact>();
@@ -34,7 +34,7 @@ namespace Database.models
         public virtual ICollection<company_cvs_email> company_cvs_emails { get; set; }
         public virtual ICollection<company_parser> company_parsers { get; set; }
         public virtual ICollection<contact> contacts { get; set; }
-        public virtual ICollection<department> departments { get; set; }
+        public virtual ICollection<customer> customers { get; set; }
         public virtual ICollection<emails_sent> emails_sents { get; set; }
         public virtual ICollection<hr_company> hr_companies { get; set; }
         public virtual ICollection<hr_contact> hr_contacts { get; set; }

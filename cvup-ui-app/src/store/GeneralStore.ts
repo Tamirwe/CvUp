@@ -1,17 +1,18 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
-import { EmailTypeEnum } from "../models/GeneralEnums";
+import { EmailTypeEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { IAppSettings } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 
 export class GeneralStore {
   private generalApi;
-  departmentsList: IIdName[] = [];
+  customersList: IIdName[] = [];
   hrCompaniesList: IIdName[] = [];
   isShowBackdrop: boolean = false;
   private isCvReviewDialogOpen: boolean = false;
   private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
+  currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
 
   set backdrop(val) {
     this.isShowBackdrop = val;
@@ -37,13 +38,21 @@ export class GeneralStore {
     return this.showEmailDialogType;
   }
 
+  set currentTab(val) {
+    this.currentTabSelectesd = val;
+  }
+
+  get currentTab() {
+    return this.currentTabSelectesd;
+  }
+
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.generalApi = new GeneralApi(appSettings);
   }
 
   reset() {
-    this.departmentsList = [];
+    this.customersList = [];
     this.hrCompaniesList = [];
     this.isShowBackdrop = false;
   }
@@ -58,27 +67,27 @@ export class GeneralStore {
     return aaa.data;
   }
 
-  async addUpdateDepartment(department: IIdName) {
+  async addUpdateCustomer(customer: IIdName) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.addUpdateDepartment(department);
+    const data = await this.generalApi.addUpdateCustomer(customer);
     this.rootStore.generalStore.backdrop = false;
     return data;
   }
 
-  async getDepartmentsList(loadAgain: boolean) {
+  async getCustomersList(loadAgain: boolean) {
     this.rootStore.generalStore.backdrop = true;
-    if (this.departmentsList.length === 0 || loadAgain) {
-      const res = await this.generalApi.getDepartmentsList();
+    if (this.customersList.length === 0 || loadAgain) {
+      const res = await this.generalApi.getCustomersList();
       runInAction(() => {
-        this.departmentsList = res.data;
+        this.customersList = res.data;
       });
     }
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async deleteDepartment(departmentId: number) {
+  async deleteCustomer(customerId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.deleteDepartment(departmentId);
+    const data = await this.generalApi.deleteCustomer(customerId);
     this.rootStore.generalStore.backdrop = false;
     return data;
   }

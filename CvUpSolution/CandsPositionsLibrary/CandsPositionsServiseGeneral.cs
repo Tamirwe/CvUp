@@ -5,27 +5,27 @@ namespace CandsPositionsLibrary
 {
     public partial class CandsPositionsServise
     {
-        public async Task<department> AddDepartment(IdNameModel data, int companyId)
+        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
         {
-            department newRec = await _cvsPositionsQueries.AddDepartment(data, companyId);
+            customer newRec = await _cvsPositionsQueries.AddCustomer(data, companyId);
             return newRec;
         }
 
-        public async Task<department?> UpdateDepartment(IdNameModel data, int companyId)
+        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
         {
-            department? updRec = await _cvsPositionsQueries.UpdateDepartment(data, companyId);
+            customer? updRec = await _cvsPositionsQueries.UpdateCustomer(data, companyId);
             return updRec;
         }
 
-        public async Task<List<IdNameModel>> GetDepartmentsList(int companyId)
+        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
         {
-            List<IdNameModel> depList = await _cvsPositionsQueries.GetDepartmentsList(companyId);
+            List<IdNameModel> depList = await _cvsPositionsQueries.GetCustomersList(companyId);
             return depList;
         }
 
-        public async Task DeleteDepartment(int companyId, int id)
+        public async Task DeleteCustomer(int companyId, int id)
         {
-            await _cvsPositionsQueries.DeleteDepartment(companyId, id);
+            await _cvsPositionsQueries.DeleteCustomer(companyId, id);
         }
 
         public async Task<hr_company> AddHrCompany(IdNameModel data, int companyId)

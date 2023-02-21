@@ -16,31 +16,29 @@ export default class GeneralApi extends BaseApi {
     });
   }
 
-  async addUpdateDepartment(department: IIdName) {
+  async addUpdateCustomer(customer: IIdName) {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.post("General/AddUpdateDepartment", department)
-      ).data;
+      const data = (await this.http.post("General/AddUpdateCustomer", customer))
+        .data;
       return data;
     });
 
     return response;
   }
 
-  async getDepartmentsList() {
+  async getCustomersList() {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.get<IIdName[]>("General/GetDepartmentsList")
-      ).data;
+      const data = (await this.http.get<IIdName[]>("General/GetCustomersList"))
+        .data;
       return data;
     });
 
     return response;
   }
 
-  async deleteDepartment(id: number) {
+  async deleteCustomer(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.delete(`General/DeleteDepartment?id=${id}`))
+      const data = (await this.http.delete(`General/DeleteCustomer?id=${id}`))
         .data;
       return data;
     });

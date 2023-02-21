@@ -22,3 +22,9 @@ export enum EmailTypeEnum {
   Candidate,
   Contact,
 }
+
+export enum TabsGeneralEnum {
+  Contacts,
+  Folders,
+  Positions,
+}

@@ -219,38 +219,38 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<department> AddDepartment(IdNameModel data, int companyId)
+        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var dep = new department
+                var dep = new customer
                 {
                     name = data.name,
                     company_id = companyId
                 };
 
-                var result = dbContext.departments.Add(dep);
+                var result = dbContext.customers.Add(dep);
                 await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public async Task<department?> UpdateDepartment(IdNameModel data, int companyId)
+        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                department dep = new department { id = data.id, name = data.name, company_id = companyId };
-                var result = dbContext.departments.Update(dep);
+                customer dep = new customer { id = data.id, name = data.name, company_id = companyId };
+                var result = dbContext.customers.Update(dep);
                 await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public async Task<List<IdNameModel>> GetDepartmentsList(int companyId)
+        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = from dep in dbContext.departments
+                var query = from dep in dbContext.customers
                             where dep.company_id == companyId
                             orderby dep.name
                             select new IdNameModel
@@ -263,17 +263,17 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task DeleteDepartment(int companyId, int id)
+        public async Task DeleteCustomer(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var dep = await (from d in dbContext.departments
+                var dep = await (from d in dbContext.customers
                                  where d.id == id && d.company_id == companyId
                                  select d).FirstOrDefaultAsync();
 
                 if (dep != null)
                 {
-                    var result = dbContext.departments.Remove(dep);
+                    var result = dbContext.customers.Remove(dep);
                     await dbContext.SaveChangesAsync();
                 }
             }
@@ -362,7 +362,7 @@ namespace DataModelsLibrary.Queries
                                 name = p.name,
                                 descr = p.descr ?? "",
                                 companyId = companyId,
-                                departmentId = p.department_id ?? 0,
+                                customerId = p.customer_id ?? 0,
                                 isActive = Convert.ToBoolean(p.is_active),
                                 hrCompaniesIds = hrs.ToArray(),
                                 interviewersIds = inter.ToArray()
@@ -390,16 +390,16 @@ namespace DataModelsLibrary.Queries
                     date_updated = DateTime.Now,
                 };
 
-                if (data.departmentId > 0)
+                if (data.customerId > 0)
                 {
-                    ent.department_id = data.departmentId;
+                    ent.customer_id = data.customerId;
                 }
 
                 var result = dbContext.positions.Add(ent);
                 await dbContext.SaveChangesAsync();
 
-                AddHrCompanies(companyId, result.Entity.id, data.hrCompaniesIds);
-                AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
+                await AddHrCompanies(companyId, result.Entity.id, data.hrCompaniesIds);
+                await AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
 
                 return result.Entity;
             }
@@ -415,7 +415,7 @@ namespace DataModelsLibrary.Queries
                     company_id = companyId,
                     name = data.name,
                     descr = data.descr,
-                    department_id = data.departmentId == 0 ? null : data.departmentId,
+                    customer_id = data.customerId == 0 ? null : data.customerId,
                     is_active = Convert.ToSByte(data.isActive),
                     updater_id = userId,
                     date_created = DateTime.Now,

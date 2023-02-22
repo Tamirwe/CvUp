@@ -24,8 +24,10 @@
   <ItemGroup>
     <ProjectReference Include="..\AuthLibrary\AuthLibrary.csproj" />
     <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
+    <ProjectReference Include="..\ContactsLibrary\ContactsLibrary.csproj" />
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
+    <ProjectReference Include="..\FoldersLibrary\FoldersLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
   </ItemGroup>

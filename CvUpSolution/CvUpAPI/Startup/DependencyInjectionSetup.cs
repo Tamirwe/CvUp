@@ -3,6 +3,8 @@ using LuceneLibrary;
 using DataModelsLibrary.Queries;
 using AuthLibrary;
 using CandsPositionsLibrary;
+using FoldersLibrary;
+using ContactsLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -15,6 +17,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IEmailQueries, EmailQueries>();
             services.AddTransient<IAuthQueries, AuthQueries>();
             services.AddTransient<IAuthServise, AuthServise>();
+            services.AddTransient<IFoldersService, FoldersService>();
+            services.AddTransient<IContactsService, ContactsService>();
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             return services;

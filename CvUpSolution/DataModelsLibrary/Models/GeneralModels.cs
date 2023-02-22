@@ -26,15 +26,6 @@ namespace DataModelsLibrary.Models
         public int[] interviewersIds { get; set; } = new int[] { };
     }
 
-    //public class PositionListItemModel
-    //{
-    //    public int id { get; set; } = 0;
-    //    public string name { get; set; } = string.Empty;
-    //    public bool isActive { get; set; }
-    //    public DateTime updated { get; set; }
-
-    //}
-
     public class PositionClientModel
     {
         public int id { get; set; } = 0;
@@ -45,5 +36,23 @@ namespace DataModelsLibrary.Models
         public int customerId { get; set; } = 0;
         public int[] hrCompaniesIds { get; set; } = new int[] { };
         public int[] interviewersIds { get; set; } = new int[] { };
+    }
+
+    public class FolderModel
+    {
+        public int id { get; set; } = 0;
+        public int companyId { get; set; } = 0;
+        public string name { get; set; } = string.Empty;
+        public int parentId { get; set; } = 0;
+    }
+
+    public class ContactModel
+    {
+        public int id { get; set; } = 0;
+        public int companyId { get; set; } = 0;
+        public int customerId { get; set; } = 0;
+        public string name { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string phone { get; set; } = string.Empty;
     }
 }

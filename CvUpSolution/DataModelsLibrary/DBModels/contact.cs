@@ -11,13 +11,14 @@ namespace Database.models
         }
 
         public int id { get; set; }
-        public string name { get; set; } = null!;
-        public string? email { get; set; }
-        public string? phone { get; set; }
-        public string? position { get; set; }
         public int company_id { get; set; }
+        public int? customer_id { get; set; }
+        public string name { get; set; } = null!;
+        public string email { get; set; } = null!;
+        public string? phone { get; set; }
 
         public virtual company company { get; set; } = null!;
+        public virtual customer? customer { get; set; }
         public virtual ICollection<hr_contact> hr_contacts { get; set; }
     }
 }

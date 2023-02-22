@@ -7,6 +7,7 @@ namespace Database.models
     {
         public customer()
         {
+            contacts = new HashSet<contact>();
             positions = new HashSet<position>();
         }
 
@@ -16,6 +17,7 @@ namespace Database.models
         public DateTime? date_created { get; set; }
 
         public virtual company company { get; set; } = null!;
+        public virtual ICollection<contact> contacts { get; set; }
         public virtual ICollection<position> positions { get; set; }
     }
 }

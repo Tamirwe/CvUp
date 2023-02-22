@@ -26,6 +26,8 @@ namespace Database.models
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
+        public virtual DbSet<folder> folders { get; set; } = null!;
+        public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
         public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
         public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
         public virtual DbSet<parser> parsers { get; set; } = null!;
@@ -146,7 +148,9 @@ namespace Database.models
 
             modelBuilder.Entity<contact>(entity =>
             {
-                entity.HasIndex(e => e.company_id, "fk_contacts_company_id_companies_id");
+                entity.HasIndex(e => e.company_id, "fk_contacts_customer_id_companies_id");
+
+                entity.HasIndex(e => e.customer_id, "fk_contacts_customer_id_customers_id");
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
@@ -154,12 +158,16 @@ namespace Database.models
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
-                entity.Property(e => e.position).HasMaxLength(100);
-
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.contacts)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_contacts_company_id_companies_id");
+
+                entity.HasOne(d => d.customer)
+                    .WithMany(p => p.contacts)
+                    .HasForeignKey(d => d.customer_id)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_contacts_customer_id_customers_id");
             });
 
             modelBuilder.Entity<customer>(entity =>
@@ -269,6 +277,43 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.subject).HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<folder>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_folders_company_id_companies_id");
+
+                entity.Property(e => e.name).HasMaxLength(200);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.folders)
+                    .HasForeignKey(d => d.company_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_folders_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<folders_cand>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_company_id_folders_cands_companies_id");
+
+                entity.HasIndex(e => e.folder_id, "fk_folder_id_folders_cands");
+
+                entity.HasIndex(e => e.candidate_id, "fk_folders_cands_candidate_id_candidates_id");
+
+                entity.HasOne(d => d.candidate)
+                    .WithMany(p => p.folders_cands)
+                    .HasForeignKey(d => d.candidate_id)
+                    .HasConstraintName("fk_folders_cands_candidate_id_candidates_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.folders_cands)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_company_id_folders_cands_companies_id");
+
+                entity.HasOne(d => d.folder)
+                    .WithMany(p => p.folders_cands)
+                    .HasForeignKey(d => d.folder_id)
+                    .HasConstraintName("fk_folder_id_folders_cands");
             });
 
             modelBuilder.Entity<hr_company>(entity =>

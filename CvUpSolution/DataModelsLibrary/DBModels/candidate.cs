@@ -8,6 +8,7 @@ namespace Database.models
         public candidate()
         {
             cvs = new HashSet<cv>();
+            folders_cands = new HashSet<folders_cand>();
             position_candidates = new HashSet<position_candidate>();
         }
 
@@ -28,6 +29,7 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual cv? last_cv { get; set; }
         public virtual ICollection<cv> cvs { get; set; }
+        public virtual ICollection<folders_cand> folders_cands { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
     }
 }

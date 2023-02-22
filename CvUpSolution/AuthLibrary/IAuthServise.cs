@@ -1,7 +1,5 @@
 ﻿using Database.models;
-using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using System.Security.Claims;
 
 namespace AuthLibrary
 {

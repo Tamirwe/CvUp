@@ -17,6 +17,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IEmailQueries, EmailQueries>();
             services.AddTransient<IAuthQueries, AuthQueries>();
             services.AddTransient<IAuthServise, AuthServise>();
+            services.AddTransient<IFoldersQueries, FoldersQueries>();
+            services.AddTransient<IContactsQueries, ContactsQueries>();
             services.AddTransient<IFoldersService, FoldersService>();
             services.AddTransient<IContactsService, ContactsService>();
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();

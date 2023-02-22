@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoldersLibrary", "FoldersLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactsLibrary", "ContactsLibrary\ContactsLibrary.csproj", "{E070B93E-25F2-4ADA-BC31-2961EF0A270F}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B38E22F6-B540-4C6E-AB39-16BC94A66CFB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,10 +87,6 @@ Global
 		{E070B93E-25F2-4ADA-BC31-2961EF0A270F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E070B93E-25F2-4ADA-BC31-2961EF0A270F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E070B93E-25F2-4ADA-BC31-2961EF0A270F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B38E22F6-B540-4C6E-AB39-16BC94A66CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B38E22F6-B540-4C6E-AB39-16BC94A66CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B38E22F6-B540-4C6E-AB39-16BC94A66CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B38E22F6-B540-4C6E-AB39-16BC94A66CFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

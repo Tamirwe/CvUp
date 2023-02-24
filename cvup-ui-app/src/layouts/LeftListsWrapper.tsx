@@ -40,8 +40,10 @@ export const LeftListsWrapper = observer(() => {
         navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
+        generalStore.showFolderFormDialog=true;
         break;
       case TabsGeneralEnum.Contacts:
+        generalStore.showFolderFormDialog=true
         break;
       default:
         break;

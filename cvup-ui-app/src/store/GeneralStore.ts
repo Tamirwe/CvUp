@@ -13,6 +13,8 @@ export class GeneralStore {
   private isCvReviewDialogOpen: boolean = false;
   private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
   currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
+  private isShowFolderFormDialog: boolean = false;
+  private isShowContactFormDialog: boolean = false;
 
   set backdrop(val) {
     this.isShowBackdrop = val;
@@ -44,6 +46,22 @@ export class GeneralStore {
 
   get currentTab() {
     return this.currentTabSelectesd;
+  }
+
+  set showFolderFormDialog(val) {
+    this.isShowFolderFormDialog = val;
+  }
+
+  get showFolderFormDialog() {
+    return this.isShowFolderFormDialog;
+  }
+
+  set showContactFormDialog(val) {
+    this.isShowContactFormDialog = val;
+  }
+
+  get showContactFormDialog() {
+    return this.isShowContactFormDialog;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

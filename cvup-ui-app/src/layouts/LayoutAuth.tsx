@@ -6,13 +6,15 @@ import { observer } from "mobx-react";
 import { CandsListsWrapper } from "./CandsListsWrapper";
 import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
-import { EmailTypeEnum } from "../models/GeneralEnums";
+import { CrudTypesEnum, EmailTypeEnum } from "../models/GeneralEnums";
 import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
 import { ContactEmailSender } from "../components/email/ContactEmailSender";
+import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
+import { FolderFormDialog } from "../components/folders/FolderFormDialog";
+import { useState } from "react";
 
 export const LayoutAuth = observer(() => {
   const { generalStore } = useStore();
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       {generalStore.cvReviewDialogOpen && <CandReview />}
@@ -26,6 +28,20 @@ export const LayoutAuth = observer(() => {
         <ContactEmailSender
           onClose={() => (generalStore.showEmailDialog = EmailTypeEnum.None)}
           open={generalStore.showEmailDialog === EmailTypeEnum.Contact}
+        />
+      )}
+      {generalStore.showFolderFormDialog && (
+        <FolderFormDialog
+          crudType={CrudTypesEnum.Insert}
+          isOpen={generalStore.showFolderFormDialog}
+          onClose={() => (generalStore.showFolderFormDialog = false)}
+        />
+      )}
+      {generalStore.showContactFormDialog && (
+        <ContactsFormDialog
+          crudType={CrudTypesEnum.Insert}
+          isOpen={generalStore.showContactFormDialog}
+          onClose={() => (generalStore.showContactFormDialog = false)}
         />
       )}
       <Grid container spacing={0} columns={18}>

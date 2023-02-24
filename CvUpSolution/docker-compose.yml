@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  cvupapi:
+    image: ${DOCKER_REGISTRY-}cvupapi
+    build:
+      context: .
+      dockerfile: CvUpAPI/Dockerfile
+    ports:
+        - "7216:80"
+        - "7217:443"

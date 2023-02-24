@@ -1,0 +1,25 @@
+import { makeAutoObservable, runInAction } from "mobx";
+import { IAppSettings, IFolder } from "../models/GeneralModels";
+import FoldersApi from "./api/FoldersApi";
+import { RootStore } from "./RootStore";
+
+export class FoldersStore {
+  private foldersApi;
+  foldersList: IFolder[] = [];
+
+  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+    makeAutoObservable(this);
+    this.foldersApi = new FoldersApi(appSettings);
+  }
+
+  reset() {}
+
+  async getFoldersList() {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.foldersApi.getFoldersList();
+    runInAction(() => {
+      this.foldersList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+}

@@ -64,3 +64,7 @@ export interface IMailsList {
   name: string;
   userTyped?: boolean;
 }
+
+export interface IContact {}
+
+export interface IFolder {}

@@ -1,17 +1,19 @@
 import { Box, Button, IconButton, Stack, Tab, Tabs } from "@mui/material";
-import { PositionsList } from "./PositionsList";
+import { PositionsList } from "../components/positions/PositionsList";
 import { GoPlus } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
-import { useStore } from "../../Hooks/useStore";
+import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
-import { MdAdd, MdOutlineAttachEmail } from "react-icons/md";
-import { TabsGeneralEnum } from "../../models/GeneralEnums";
+import { MdAdd } from "react-icons/md";
+import { TabsGeneralEnum } from "../models/GeneralEnums";
+import { ContactsList } from "../components/contacts/ContactsList";
+import { FoldersList } from "../components/folders/FoldersList";
 
-export const PositionsListWrapper = observer(() => {
+export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
   const { generalStore } = useStore();
 
@@ -35,6 +37,7 @@ export const PositionsListWrapper = observer(() => {
   const handleAddClick = () => {
     switch (generalStore.currentTab) {
       case TabsGeneralEnum.Positions:
+        navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
         break;
@@ -63,7 +66,6 @@ export const PositionsListWrapper = observer(() => {
           </IconButton>
         </Stack>
       </Box>
-
       <Box
         sx={{
           height: "83vh",
@@ -77,18 +79,17 @@ export const PositionsListWrapper = observer(() => {
       >
         <CacheProvider value={cacheRtl}>
           <ThemeProvider theme={themeRtl}>
-            <PositionsList />
+            {generalStore.currentTab === TabsGeneralEnum.Positions && (
+              <PositionsList />
+            )}
+            {generalStore.currentTab === TabsGeneralEnum.Folders && (
+              <ContactsList />
+            )}
+            {generalStore.currentTab === TabsGeneralEnum.Contacts && (
+              <FoldersList />
+            )}
           </ThemeProvider>
         </CacheProvider>
-      </Box>
-      <Box>
-        <Button
-          sx={{ width: "fit-content" }}
-          onClick={() => navigate("/position/0")}
-          startIcon={<GoPlus />}
-        >
-          Add Position
-        </Button>
       </Box>
     </Box>
   );

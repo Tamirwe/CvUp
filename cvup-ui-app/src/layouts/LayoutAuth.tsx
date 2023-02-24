@@ -1,9 +1,9 @@
 import { Box, Drawer, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
-import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
+import { LeftListsWrapper } from "./LeftListsWrapper";
 import { observer } from "mobx-react";
-import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
+import { CandsListsWrapper } from "./CandsListsWrapper";
 import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
 import { EmailTypeEnum } from "../models/GeneralEnums";
@@ -40,7 +40,7 @@ export const LayoutAuth = observer(() => {
               },
             }}
           >
-            <PositionsListWrapper />
+            <LeftListsWrapper />
           </Drawer>
         </Grid>
         <Grid

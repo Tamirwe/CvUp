@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { useEffect } from "react";
-import { useStore } from "../../Hooks/useStore";
-import { CandsList } from "./CandsList";
+import { useStore } from "../Hooks/useStore";
+import { CandsList } from "../components/cands/CandsList";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";

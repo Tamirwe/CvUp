@@ -1,6 +1,5 @@
-import { Box, Button, IconButton, Stack, Tab, Tabs } from "@mui/material";
+import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { PositionsList } from "../components/positions/PositionsList";
-import { GoPlus } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
@@ -10,8 +9,8 @@ import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
 import { MdAdd } from "react-icons/md";
 import { TabsGeneralEnum } from "../models/GeneralEnums";
-import { ContactsList } from "../components/contacts/ContactsList";
-import { FoldersList } from "../components/folders/FoldersList";
+import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
+import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -40,10 +39,10 @@ export const LeftListsWrapper = observer(() => {
         navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
-        generalStore.showFolderFormDialog=true;
+        generalStore.showFolderFormDialog = true;
         break;
       case TabsGeneralEnum.Contacts:
-        generalStore.showFolderFormDialog=true
+        generalStore.showFolderFormDialog = true;
         break;
       default:
         break;
@@ -85,10 +84,10 @@ export const LeftListsWrapper = observer(() => {
               <PositionsList />
             )}
             {generalStore.currentTab === TabsGeneralEnum.Folders && (
-              <ContactsList />
+              <FoldersListWrapper />
             )}
             {generalStore.currentTab === TabsGeneralEnum.Contacts && (
-              <FoldersList />
+              <ContactsListWrapper />
             )}
           </ThemeProvider>
         </CacheProvider>

@@ -14,6 +14,13 @@ export class FoldersStore {
 
   reset() {}
 
+  async addFolder(folderModel: IFolder) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.foldersApi.addFolder(folderModel);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
   async getFoldersList() {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.foldersApi.getFoldersList();

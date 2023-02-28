@@ -18,7 +18,7 @@ namespace FoldersLibrary
 
         public async Task<folder> AddFolder(int companyId, FolderModel data)
         {
-            return await _foldersQueries.AddFolder(data);
+            return await _foldersQueries.AddFolder(companyId,data);
         }
 
         public async Task DeleteFolder(int companyId, int id)
@@ -26,9 +26,9 @@ namespace FoldersLibrary
             await _foldersQueries.DeleteFolder(companyId, id);
         }
 
-        public async Task<List<FolderModel>> GetFolders(int companyId, int id)
+        public async Task<List<FolderModel>> GetFolders(int companyId)
         {
-            return await _foldersQueries.GetFolders(companyId, id);
+            return await _foldersQueries.GetFolders(companyId);
         }
     }
 }

@@ -7,6 +7,6 @@ namespace ContactsLibrary
     {
         Task<folder> AddContact( int companyId, FolderModel data);
         Task DeleteContact(int companyId, int id);
-        Task<List<FolderModel>> GetContacts(int companyId, int id);
+        Task<List<FolderModel>> GetContacts(int companyId);
     }
 }

@@ -67,4 +67,8 @@ export interface IMailsList {
 
 export interface IContact {}
 
-export interface IFolder {}
+export interface IFolder {
+  id: number;
+  name: string;
+  parentId: number;
+}

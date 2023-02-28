@@ -18,7 +18,7 @@ namespace ContactsLibrary
 
         public async Task<folder> AddContact( int companyId, FolderModel data)
         {
-            return await _contactsQueries.AddContact(data);
+            return await _contactsQueries.AddContact( companyId, data);
         }
 
         public async Task DeleteContact(int companyId, int id)
@@ -26,9 +26,9 @@ namespace ContactsLibrary
             await _contactsQueries.Deletecontact(companyId,id);
         }
 
-        public async Task<List<FolderModel>> GetContacts(int companyId, int id)
+        public async Task<List<FolderModel>> GetContacts(int companyId)
         {
-            return await _contactsQueries.GetContacts(companyId, id);
+            return await _contactsQueries.GetContacts(companyId);
         }
     }
 }

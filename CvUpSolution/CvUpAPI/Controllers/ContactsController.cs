@@ -22,9 +22,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetContacts")]
-        public async Task<IActionResult> GetContacts(int id)
+        public async Task<IActionResult> GetContacts()
         {
-            List<FolderModel> folders = await _contactsService.GetContacts(Globals.CompanyId, id);
+            List<FolderModel> folders = await _contactsService.GetContacts(Globals.CompanyId);
             return Ok(folders);
         }
 

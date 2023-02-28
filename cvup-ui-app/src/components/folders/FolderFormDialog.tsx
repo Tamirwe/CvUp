@@ -27,13 +27,13 @@ export const FolderFormDialog = ({
   useEffect(() => {
     switch (crudType) {
       case CrudTypesEnum.Insert:
-        setFormTitle("Add Team");
+        setFormTitle("Add Folder");
         break;
       case CrudTypesEnum.Update:
-        setFormTitle("Edit Team");
+        setFormTitle("Edit Folder");
         break;
       case CrudTypesEnum.Delete:
-        setFormTitle("Delete Team");
+        setFormTitle("Delete Folder");
         break;
       default:
         break;

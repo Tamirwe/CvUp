@@ -41,7 +41,6 @@ namespace DataModelsLibrary.Models
     public class FolderModel
     {
         public int id { get; set; } = 0;
-        public int companyId { get; set; } = 0;
         public string name { get; set; } = string.Empty;
         public int parentId { get; set; } = 0;
     }

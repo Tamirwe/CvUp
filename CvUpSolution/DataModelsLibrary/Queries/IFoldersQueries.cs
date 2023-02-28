@@ -10,8 +10,8 @@ namespace DataModelsLibrary.Queries
 {
     public interface IFoldersQueries
     {
-        Task<folder> AddFolder(FolderModel data);
+        Task<folder> AddFolder(int companyId, FolderModel data);
         Task DeleteFolder(int companyId, int id);
-        Task<List<FolderModel>> GetFolders(int companyId, int id);
+        Task<List<FolderModel>> GetFolders(int companyId);
     }
 }

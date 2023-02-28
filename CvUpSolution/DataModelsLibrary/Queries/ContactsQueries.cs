@@ -10,7 +10,7 @@ namespace DataModelsLibrary.Queries
 {
     public class ContactsQueries : IContactsQueries
     {
-        public async Task<folder> AddContact(FolderModel data)
+        public async Task<folder> AddContact(int companyId, FolderModel data)
         {
             throw new NotImplementedException();
         }
@@ -20,7 +20,7 @@ namespace DataModelsLibrary.Queries
             throw new NotImplementedException();
         }
 
-        public async Task<List<FolderModel>> GetContacts(int companyId, int id)
+        public async Task<List<FolderModel>> GetContacts(int companyId)
         {
             throw new NotImplementedException();
         }

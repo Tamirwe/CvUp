@@ -5,8 +5,8 @@ namespace DataModelsLibrary.Queries
 {
     public interface IContactsQueries
     {
-        Task<folder> AddContact(FolderModel data);
+        Task<folder> AddContact(int companyId, FolderModel data);
         Task Deletecontact(int companyId, int id);
-        Task<List<FolderModel>> GetContacts(int companyId, int id);
+        Task<List<FolderModel>> GetContacts(int companyId);
     }
 }

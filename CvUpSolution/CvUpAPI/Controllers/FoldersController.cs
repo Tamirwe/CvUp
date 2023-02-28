@@ -21,9 +21,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetFolders")]
-        public async Task<IActionResult> GetFolders(int id)
+        public async Task<IActionResult> GetFolders()
         {
-            List<FolderModel> folders = await _foldersService.GetFolders(Globals.CompanyId, id);
+            List<FolderModel> folders = await _foldersService.GetFolders(Globals.CompanyId);
             return Ok(folders);
         }
 
@@ -31,7 +31,7 @@ namespace CvUpAPI.Controllers
         [Route("AddFolder")]
         public async Task<IActionResult> AddFolder(FolderModel data)
         {
-            folder newFolder = await _foldersService.AddFolder( Globals.CompanyId, data);
+            folder newFolder = await _foldersService.AddFolder(Globals.CompanyId, data);
             return Ok(newFolder);
         }
 

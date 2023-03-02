@@ -6,6 +6,15 @@ import { RootStore } from "./RootStore";
 export class FoldersStore {
   private foldersApi;
   foldersList: IFolder[] = [];
+  folderSelected?: IFolder;
+
+  get selectedFolder() {
+    return this.folderSelected;
+  }
+
+  set selectedFolder(val: IFolder | undefined) {
+    this.folderSelected = val;
+  }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);

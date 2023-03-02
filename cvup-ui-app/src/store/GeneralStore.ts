@@ -1,6 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
-import { EmailTypeEnum, TabsGeneralEnum } from "../models/GeneralEnums";
+import {
+  CrudTypesEnum,
+  EmailTypeEnum,
+  TabsGeneralEnum,
+} from "../models/GeneralEnums";
 import { IAppSettings } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
@@ -13,7 +17,7 @@ export class GeneralStore {
   private isCvReviewDialogOpen: boolean = false;
   private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
   currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
-  private isShowFolderFormDialog: boolean = false;
+  private FolderFormDialogModeOpen: CrudTypesEnum = CrudTypesEnum.None;
   private isShowContactFormDialog: boolean = false;
 
   set backdrop(val) {
@@ -48,12 +52,12 @@ export class GeneralStore {
     return this.currentTabSelectesd;
   }
 
-  set showFolderFormDialog(val) {
-    this.isShowFolderFormDialog = val;
+  set openModeFolderFormDialog(val: CrudTypesEnum) {
+    this.FolderFormDialogModeOpen = val;
   }
 
-  get showFolderFormDialog() {
-    return this.isShowFolderFormDialog;
+  get openModeFolderFormDialog() {
+    return this.FolderFormDialogModeOpen;
   }
 
   set showContactFormDialog(val) {

@@ -7,7 +7,9 @@ export const FoldersListWrapper = observer(() => {
   const { foldersStore } = useStore();
 
   useEffect(() => {
-    foldersStore.getFoldersList();
+    if (!foldersStore.foldersList.length) {
+      foldersStore.getFoldersList();
+    }
   }, []);
 
   return <FoldersList />;

@@ -2,6 +2,7 @@ export enum CrudTypesEnum {
   Insert,
   Update,
   Delete,
+  None,
 }
 
 export enum PermissionTypeEnum {

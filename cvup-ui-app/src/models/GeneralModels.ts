@@ -72,3 +72,8 @@ export interface IFolder {
   name: string;
   parentId: number;
 }
+
+export interface IFolderNode {
+  folder: IFolder;
+  children: IFolder[];
+}

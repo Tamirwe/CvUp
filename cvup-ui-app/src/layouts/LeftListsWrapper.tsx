@@ -8,7 +8,7 @@ import rtlPlugin from "stylis-plugin-rtl";
 import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
 import { MdAdd } from "react-icons/md";
-import { TabsGeneralEnum } from "../models/GeneralEnums";
+import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
 import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
 
@@ -39,10 +39,10 @@ export const LeftListsWrapper = observer(() => {
         navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
-        generalStore.showFolderFormDialog = true;
+        generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert;
         break;
       case TabsGeneralEnum.Contacts:
-        generalStore.showFolderFormDialog = true;
+        generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert;
         break;
       default:
         break;

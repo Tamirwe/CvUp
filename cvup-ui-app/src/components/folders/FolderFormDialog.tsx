@@ -1,11 +1,12 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IIdName } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
+import { IFolder } from "../../models/GeneralModels";
 import { FolderForm } from "./FolderForm";
+import { UpdateDeleteFolderForm } from "./UpdateDeleteFolderForm";
 
 interface IProps {
-  // folder: IIdName;
+  folder?: IFolder;
   crudType?: CrudTypesEnum;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
@@ -32,9 +33,6 @@ export const FolderFormDialog = ({
       case CrudTypesEnum.Update:
         setFormTitle("Edit Folder");
         break;
-      case CrudTypesEnum.Delete:
-        setFormTitle("Delete Folder");
-        break;
       default:
         break;
     }
@@ -49,6 +47,11 @@ export const FolderFormDialog = ({
     >
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
+        <UpdateDeleteFolderForm
+          crudType={crudType}
+          onSaved={() => onClose(true)}
+          onCancel={() => onClose(false)}
+        />
         <FolderForm
           // folder={folder}
           crudType={crudType}

@@ -1,18 +1,82 @@
-import { List } from "@mui/material";
+import { IconButton, List } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import { MouseEventHandler } from "react";
+import { CiEdit } from "react-icons/ci";
+import { useStore } from "../../Hooks/useStore";
+import { CrudTypesEnum } from "../../models/GeneralEnums";
+import { IFolder, IFolderNode } from "../../models/GeneralModels";
+import styles from "./FoldersList.module.scss";
 
 export const FoldersList = observer(() => {
+  const { foldersStore, generalStore } = useStore();
+
+  const editFolder = (folder: IFolder) => {
+    return (
+      <IconButton
+        size="small"
+        onClick={() => {
+          foldersStore.selectedFolder = folder;
+          generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+        }}
+      >
+        <CiEdit />
+      </IconButton>
+    );
+  };
+
+  const renderChildren = (node: IFolderNode) => {
+    return (
+      <li
+        key={node.folder.id}
+        role="treeitem"
+        style={{ cursor: "pointer", lineHeight: 1 }}
+      >
+        <div className={styles.folderLine} onClick={(event) => {}}>
+          <div>{node.folder.name}</div>
+          <div className={styles.editFolder}>
+            {" "}
+            {node.folder.parentId > -1 && editFolder(node.folder)}
+          </div>
+        </div>
+        <ul style={{ listStyle: "none", paddingInlineStart: "25px" }}>
+          {Array.isArray(node.children)
+            ? node.children.map((node: IFolder) =>
+                renderChildren({
+                  folder: {
+                    id: node.id,
+                    parentId: node.parentId,
+                    name: node.name,
+                  },
+                  children: foldersStore.foldersList.filter(
+                    (x) => x.parentId === node.id
+                  ),
+                })
+              )
+            : null}
+        </ul>
+      </li>
+    );
+  };
+
   return (
-    <List
-      dense={true}
-      sx={{
-        backgroundColor: "#fff",
-        height: "calc(100vh - 81px)",
-        overflowY: "hidden",
-        "&:hover ": {
-          overflow: "overlay",
-        },
+    <ul
+      style={{
+        position: "relative",
+        display: "block",
+        listStyle: "none",
+        paddingInlineStart: "10px",
+        marginTop: "5px",
       }}
-    ></List>
+      role="tree"
+    >
+      {renderChildren({
+        folder: {
+          id: 0,
+          parentId: -1,
+          name: "Folders",
+        },
+        children: foldersStore.foldersList,
+      })}
+    </ul>
   );
 });

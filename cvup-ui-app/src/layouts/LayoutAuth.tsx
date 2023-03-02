@@ -30,11 +30,17 @@ export const LayoutAuth = observer(() => {
           open={generalStore.showEmailDialog === EmailTypeEnum.Contact}
         />
       )}
-      {generalStore.showFolderFormDialog && (
+      {(generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
+        CrudTypesEnum.None && (
         <FolderFormDialog
           crudType={CrudTypesEnum.Insert}
-          isOpen={generalStore.showFolderFormDialog}
-          onClose={() => (generalStore.showFolderFormDialog = false)}
+          isOpen={
+            (generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
+            CrudTypesEnum.None
+          }
+          onClose={() =>
+            (generalStore.openModeFolderFormDialog = CrudTypesEnum.None)
+          }
         />
       )}
       {generalStore.showContactFormDialog && (

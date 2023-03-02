@@ -1,0 +1,31 @@
+.folderLine {
+  background-color: inherit;
+  display: flex;
+  width: 100%;
+  height: 25px;
+  padding: 5px 10px;
+  align-items: center;
+  justify-content: space-between;
+
+  .editFolder {
+    display: none;
+  }
+}
+
+.folderLine:hover {
+  background-color: #f9f9f9;
+
+  .editFolder {
+    display: inline;
+    animation: fadeIn linear 0.5s 1 normal forwards !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -9,14 +9,31 @@ import styles from "./FoldersList.module.scss";
 
 export const FoldersList = observer(() => {
   const { foldersStore, generalStore } = useStore();
+  let vv = 1;
 
   const editFolder = (folder: IFolder) => {
     return (
       <IconButton
         size="small"
-        onClick={() => {
+        onClick={async () => {
           foldersStore.selectedFolder = folder;
-          generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+          // generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+          if (vv === 1) {
+            const conf = await generalStore.confirmDialog("gfhgf", "fghfgh")();
+
+            console.log(conf);
+          } else {
+            const conf = await (
+              await generalStore.confirmDialog(
+                "gfsdfsdfsdfsdfsdfsdfhgf",
+                "sdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"
+              )
+            )();
+
+            console.log(conf);
+          }
+
+          vv = 2;
         }}
       >
         <CiEdit />

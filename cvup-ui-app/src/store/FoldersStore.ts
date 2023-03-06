@@ -30,6 +30,13 @@ export class FoldersStore {
     return data;
   }
 
+  async updateFolder(folderModel: IFolder) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.foldersApi.updateFolder(folderModel);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
   async getFoldersList() {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.foldersApi.getFoldersList();

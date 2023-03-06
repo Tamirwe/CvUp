@@ -1,18 +1,16 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { IFolder } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
+import { FolderSettingsMenu } from "./FolderSettingsMenu";
 
 interface IProps {
-  folder?: IFolder;
-  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
+export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
   const { foldersStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -29,25 +27,10 @@ export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
   // });
 
   useEffect(() => {
-    if (folder) {
-      folder && setFolderModel({ ...folder });
+    if (foldersStore.selectedFolder) {
+      setFolderModel({ ...foldersStore.selectedFolder });
     }
-  }, [folder]);
-
-  const updateFieldError = (field: string, errTxt: string) => {
-    // const isValid = errTxt === "" ? true : false;
-    // setIsDirty(true);
-    // setSubmitError("");
-    // setFormValErrorTxt((currentProps) => ({
-    //   ...currentProps,
-    //   [field]: errTxt,
-    // }));
-    // setFormValError((currentProps) => ({
-    //   ...currentProps,
-    //   [field]: isValid === false,
-    // }));
-    // return isValid;
-  };
+  }, [foldersStore.selectedFolder]);
 
   const validateForm = () => {
     let isFormValid = true;
@@ -62,7 +45,7 @@ export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
   };
 
   const submitForm = async () => {
-    const response = await foldersStore.addFolder(folderModel);
+    const response = await foldersStore.updateFolder(folderModel);
     if (response.isSuccess) {
       onSaved();
     } else {
@@ -79,6 +62,18 @@ export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
     // }
   };
 
+  const handleMenuSelected = async (menuItem: string) => {
+    switch (menuItem) {
+      case "delete":
+        await deleteRecord();
+        break;
+      case "addChild":
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <form noValidate spellCheck="false">
       <Grid container>
@@ -86,7 +81,6 @@ export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="name"
@@ -111,49 +105,53 @@ export const FolderForm = ({ folder, crudType, onSaved, onCancel }: IProps) => {
         <Grid item xs={12}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
-        <Grid item xs={12} mt={2}>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => onCancel()}
-                >
-                  Cancel
-                </Button>
-                {crudType === CrudTypesEnum.Delete ? (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="warning"
-                    onClick={() => {
-                      deleteRecord();
-                    }}
-                  >
-                    Delete
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={!isDirty}
-                    fullWidth
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setIsDirty(false);
-                      if (validateForm()) {
-                        submitForm();
-                      }
-                    }}
-                  >
-                    Save
-                  </Button>
-                )}
-              </Stack>
-            </Grid>
-          </Grid>
-        </Grid>
+
+        <div
+          style={{
+            paddingTop: 30,
+            display: "flex",
+            justifyContent: "space-between",
+            width: "inherit",
+          }}
+        >
+          <div>
+            <FolderSettingsMenu onMenuSelected={handleMenuSelected} />
+            {/* <Button
+              fullWidth
+              variant="text"
+              color="warning"
+              onClick={() => {
+                deleteRecord();
+              }}
+            >
+              Delete
+            </Button> */}
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <Button
+              disabled={!isDirty}
+              fullWidth
+              variant="text"
+              color="secondary"
+              onClick={() => {
+                setIsDirty(false);
+                if (validateForm()) {
+                  submitForm();
+                }
+              }}
+            >
+              Save
+            </Button>
+            <Button
+              fullWidth
+              variant="text"
+              color="secondary"
+              onClick={() => onCancel()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
       </Grid>
     </form>
   );

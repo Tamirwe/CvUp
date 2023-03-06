@@ -12,6 +12,7 @@ import { ContactEmailSender } from "../components/email/ContactEmailSender";
 import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FolderFormDialog } from "../components/folders/FolderFormDialog";
 import { useState } from "react";
+import { AlertDialog } from "./AlertDialog";
 
 export const LayoutAuth = observer(() => {
   const { generalStore } = useStore();
@@ -33,7 +34,6 @@ export const LayoutAuth = observer(() => {
       {(generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
         CrudTypesEnum.None && (
         <FolderFormDialog
-          crudType={CrudTypesEnum.Insert}
           isOpen={
             (generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
             CrudTypesEnum.None
@@ -50,6 +50,7 @@ export const LayoutAuth = observer(() => {
           onClose={() => (generalStore.showContactFormDialog = false)}
         />
       )}
+      {generalStore.confirmDialogOpen && <AlertDialog />}
       <Grid container spacing={0} columns={18}>
         <Grid item xs={5}>
           <Drawer

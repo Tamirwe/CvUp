@@ -7,17 +7,11 @@ import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
   folder?: IFolder;
-  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const UpdateDeleteFolderForm = ({
-  folder,
-  crudType,
-  onSaved,
-  onCancel,
-}: IProps) => {
+export const FormFolderAdd = ({ folder, onSaved, onCancel }: IProps) => {
   const { foldersStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -91,7 +85,6 @@ export const UpdateDeleteFolderForm = ({
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="name"
@@ -116,51 +109,36 @@ export const UpdateDeleteFolderForm = ({
         <Grid item xs={12}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "inherit",
-          }}
-        >
-          <div>
-            <Button
-              fullWidth
-              variant="contained"
-              color="warning"
-              onClick={() => {
-                deleteRecord();
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <Button
-              disabled={!isDirty}
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                setIsDirty(false);
-                if (validateForm()) {
-                  submitForm();
-                }
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={() => onCancel()}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
+        <Grid item xs={12} mt={2}>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => onCancel()}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={!isDirty}
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    setIsDirty(false);
+                    if (validateForm()) {
+                      submitForm();
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </form>
   );

@@ -9,7 +9,7 @@ import styles from "./FoldersList.module.scss";
 
 export const FoldersList = observer(() => {
   const { foldersStore, generalStore } = useStore();
-  let vv = 1;
+  // let vv = 1;
 
   const editFolder = (folder: IFolder) => {
     return (
@@ -17,23 +17,23 @@ export const FoldersList = observer(() => {
         size="small"
         onClick={async () => {
           foldersStore.selectedFolder = folder;
-          // generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
-          if (vv === 1) {
-            const conf = await generalStore.confirmDialog("gfhgf", "fghfgh")();
+          generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+          // if (vv === 1) {
+          //   const conf = await generalStore.confirmDialog("gfhgf", "fghfgh")();
 
-            console.log(conf);
-          } else {
-            const conf = await (
-              await generalStore.confirmDialog(
-                "gfsdfsdfsdfsdfsdfsdfhgf",
-                "sdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"
-              )
-            )();
+          //   console.log(conf);
+          // } else {
+          //   const conf = await (
+          //     await generalStore.confirmDialog(
+          //       "gfsdfsdfsdfsdfsdfsdfhgf",
+          //       "sdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"
+          //     )
+          //   )();
 
-            console.log(conf);
-          }
+          //   console.log(conf);
+          // }
 
-          vv = 2;
+          // vv = 2;
         }}
       >
         <CiEdit />

@@ -14,7 +14,7 @@ export default class FoldersApi extends BaseApi {
 
   async updateFolder(folderModel: IFolder) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Folders/UpdateFolder", folderModel))
+      const data = (await this.http.put("Folders/UpdateFolder", folderModel))
         .data;
       return data;
     });

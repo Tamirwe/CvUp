@@ -30,6 +30,25 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<folder> UpdateFolder(int companyId, FolderModel data)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var fdr = new folder
+                {
+                    id= data.id,
+                    name = data.name,
+                    parent_id = data.parentId,
+                    company_id = companyId,
+                };
+
+                dbContext.folders.Update(fdr);
+                await dbContext.SaveChangesAsync();
+                return fdr;
+            }
+        }
+
+
         public async Task DeleteFolder(int companyId, List<int> ids)
         {
 

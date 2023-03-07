@@ -21,6 +21,11 @@ namespace FoldersLibrary
             return await _foldersQueries.AddFolder(companyId,data);
         }
 
+        public async Task<folder> UpdateFolder(int companyId, FolderModel data)
+        {
+            return await _foldersQueries.UpdateFolder(companyId, data);
+        }
+
         public async Task DeleteFolder(int companyId, int id)
         {
             List<FolderModel> allFolders = await _foldersQueries.GetFolders(companyId);

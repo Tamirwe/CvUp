@@ -8,5 +8,6 @@ namespace FoldersLibrary
         Task<folder> AddFolder( int companyId, FolderModel data);
         Task DeleteFolder(int companyId, int id);
         Task<List<FolderModel>> GetFolders(int companyId);
+        Task<folder> UpdateFolder(int companyId, FolderModel data);
     }
 }

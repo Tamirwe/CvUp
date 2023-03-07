@@ -13,5 +13,6 @@ namespace DataModelsLibrary.Queries
         Task<folder> AddFolder(int companyId, FolderModel data);
         Task DeleteFolder(int companyId, List<int> ids);
         Task<List<FolderModel>> GetFolders(int companyId);
+        Task<folder> UpdateFolder(int companyId, FolderModel data);
     }
 }

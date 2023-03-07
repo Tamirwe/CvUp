@@ -24,15 +24,23 @@ namespace CvUpAPI.Controllers
         [Route("GetContacts")]
         public async Task<IActionResult> GetContacts()
         {
-            List<FolderModel> folders = await _contactsService.GetContacts(Globals.CompanyId);
+            List<ContactModel> folders = await _contactsService.GetContacts(Globals.CompanyId);
             return Ok(folders);
         }
 
         [HttpPost]
         [Route("AddContact")]
-        public async Task<IActionResult> AddContact(FolderModel data)
+        public async Task<IActionResult> AddContact(ContactModel data)
         {
-            folder newFolder = await _contactsService.AddContact( Globals.CompanyId, data);
+            contact newFolder = await _contactsService.AddContact( Globals.CompanyId, data);
+            return Ok(newFolder);
+        }
+
+        [HttpPut]
+        [Route("UpdateFolder")]
+        public async Task<IActionResult> UpdateContact(ContactModel data)
+        {
+            contact newFolder = await _contactsService.UpdateContact(Globals.CompanyId, data);
             return Ok(newFolder);
         }
 

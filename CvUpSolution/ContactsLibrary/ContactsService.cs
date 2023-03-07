@@ -16,17 +16,23 @@ namespace ContactsLibrary
             _contactsQueries = contactsQueries;
         }
 
-        public async Task<folder> AddContact( int companyId, FolderModel data)
+        public async Task<contact> AddContact( int companyId, ContactModel data)
         {
             return await _contactsQueries.AddContact( companyId, data);
         }
+
+        public async Task<contact> UpdateContact(int companyId, ContactModel data)
+        {
+            return await _contactsQueries.UpdateContact(companyId, data);
+        }
+
 
         public async Task DeleteContact(int companyId, int id)
         {
             await _contactsQueries.Deletecontact(companyId,id);
         }
 
-        public async Task<List<FolderModel>> GetContacts(int companyId)
+        public async Task<List<ContactModel>> GetContacts(int companyId)
         {
             return await _contactsQueries.GetContacts(companyId);
         }

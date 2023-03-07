@@ -35,6 +35,14 @@ namespace CvUpAPI.Controllers
             return Ok(newFolder);
         }
 
+        [HttpPut]
+        [Route("UpdateFolder")]
+        public async Task<IActionResult> UpdateFolder(FolderModel data)
+        {
+            folder newFolder = await _foldersService.UpdateFolder(Globals.CompanyId, data);
+            return Ok(newFolder);
+        }
+
         [HttpDelete]
         [Route("DeleteFolder")]
         public async Task<IActionResult> DeleteFolder(int id)

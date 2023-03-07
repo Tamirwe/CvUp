@@ -23,7 +23,24 @@ namespace FoldersLibrary
 
         public async Task DeleteFolder(int companyId, int id)
         {
-            await _foldersQueries.DeleteFolder(companyId, id);
+            List<FolderModel> allFolders = await _foldersQueries.GetFolders(companyId);
+            List<int> foldersToDelete = new List<int>() { id };
+            getFolderChilds(allFolders, id, foldersToDelete);
+
+            await _foldersQueries.DeleteFolder(companyId, foldersToDelete);
+        }
+
+        private void getFolderChilds(List<FolderModel> allFolders, int parentId, List<int> foldersToDelete)
+        {
+            var childs = allFolders.Where(x => x.parentId == parentId).ToList();
+
+            childs.ForEach(x =>
+            {
+                foldersToDelete.Add(x.id);
+                getFolderChilds(allFolders, x.id, foldersToDelete);
+            });
+
+            return;
         }
 
         public async Task<List<FolderModel>> GetFolders(int companyId)

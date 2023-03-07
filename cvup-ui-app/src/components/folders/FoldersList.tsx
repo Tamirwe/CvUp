@@ -16,24 +16,8 @@ export const FoldersList = observer(() => {
       <IconButton
         size="small"
         onClick={async () => {
-          foldersStore.selectedFolder = folder;
+          foldersStore.editFolderSelected = folder;
           generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
-          // if (vv === 1) {
-          //   const conf = await generalStore.confirmDialog("gfhgf", "fghfgh")();
-
-          //   console.log(conf);
-          // } else {
-          //   const conf = await (
-          //     await generalStore.confirmDialog(
-          //       "gfsdfsdfsdfsdfsdfsdfhgf",
-          //       "sdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"
-          //     )
-          //   )();
-
-          //   console.log(conf);
-          // }
-
-          // vv = 2;
         }}
       >
         <CiEdit />
@@ -88,9 +72,7 @@ export const FoldersList = observer(() => {
     >
       {renderChildren({
         folder: {
-          id: 0,
-          parentId: -1,
-          name: "Folders",
+          ...foldersStore.rootFolder,
         },
         children: foldersStore.foldersList,
       })}

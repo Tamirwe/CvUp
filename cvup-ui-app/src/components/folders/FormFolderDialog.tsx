@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { IFolder } from "../../models/GeneralModels";
-import { FormFolderAdd } from "./FormFolderAdd";
-import { FormFolderUpdateDelete } from "./FormFolderUpdateDelete";
+import { FormAddChild } from "./FormAddChild";
+import { FormUpdateDelete } from "./FormUpdateDelete";
 
 interface IProps {
   folder?: IFolder;
@@ -12,7 +12,7 @@ interface IProps {
   onClose: (isSaved: boolean) => void;
 }
 
-export const FolderFormDialog = ({
+export const FormFolderDialog = ({
   // folder,
   isOpen,
   onClose,
@@ -48,12 +48,15 @@ export const FolderFormDialog = ({
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         {generalStore.openModeFolderFormDialog === CrudTypesEnum.Update ? (
-          <FormFolderUpdateDelete
+          <FormUpdateDelete
+            onAddChild={() =>
+              (generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert)
+            }
             onSaved={() => onClose(true)}
             onCancel={() => onClose(false)}
           />
         ) : (
-          <FormFolderAdd
+          <FormAddChild
             onSaved={() => onClose(true)}
             onCancel={() => onClose(false)}
           />

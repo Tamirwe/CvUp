@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
     public interface IFoldersQueries
     {
         Task<folder> AddFolder(int companyId, FolderModel data);
-        Task DeleteFolder(int companyId, int id);
+        Task DeleteFolder(int companyId, List<int> ids);
         Task<List<FolderModel>> GetFolders(int companyId);
     }
 }

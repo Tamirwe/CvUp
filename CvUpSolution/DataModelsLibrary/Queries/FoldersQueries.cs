@@ -30,19 +30,21 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task DeleteFolder(int companyId, int id)
+        public async Task DeleteFolder(int companyId, List<int> ids)
         {
+
             using (var dbContext = new cvup00001Context())
             {
                 var fdr = await (from f in dbContext.folders
-                                 where f.id == id && f.company_id == companyId
-                                 select f).FirstOrDefaultAsync();
+                                 where ids.Contains(f.id) && f.company_id == companyId
+                                 select f).ToListAsync();
 
-                if (fdr != null)
+                foreach (var item in fdr)
                 {
-                    var result = dbContext.folders.Remove(fdr);
-                    await dbContext.SaveChangesAsync();
+                    dbContext.folders.Remove(item);
                 }
+
+                await dbContext.SaveChangesAsync();
             }
         }
 

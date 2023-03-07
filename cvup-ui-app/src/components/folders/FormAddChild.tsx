@@ -11,42 +11,24 @@ interface IProps {
   onCancel: () => void;
 }
 
-export const FormFolderAdd = ({ folder, onSaved, onCancel }: IProps) => {
+export const FormAddChild = ({ folder, onSaved, onCancel }: IProps) => {
   const { foldersStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [folderModel, setFolderModel] = useState<IFolder>({
     id: 0,
     name: "",
-    parentId: 0,
+    parentId: foldersStore.editFolderSelected?.id || 0,
   });
   const [errModel, setErrModel] = useState({
     name: "",
   });
-  // const [formValErrorTxt, setFormValErrorTxt] = useState({
-  //   name: "",
-  // });
 
   useEffect(() => {
     if (folder) {
       folder && setFolderModel({ ...folder });
     }
   }, [folder]);
-
-  const updateFieldError = (field: string, errTxt: string) => {
-    // const isValid = errTxt === "" ? true : false;
-    // setIsDirty(true);
-    // setSubmitError("");
-    // setFormValErrorTxt((currentProps) => ({
-    //   ...currentProps,
-    //   [field]: errTxt,
-    // }));
-    // setFormValError((currentProps) => ({
-    //   ...currentProps,
-    //   [field]: isValid === false,
-    // }));
-    // return isValid;
-  };
 
   const validateForm = () => {
     let isFormValid = true;
@@ -69,19 +51,23 @@ export const FormFolderAdd = ({ folder, onSaved, onCancel }: IProps) => {
     }
   };
 
-  const deleteRecord = async () => {
-    // const response = await generalStore.deleteHrCompany(formModel.id);
-    // if (response.isSuccess) {
-    //   onSaved();
-    // } else {
-    //   return setSubmitError("An Error Occurred Please Try Again Later.");
-    // }
-  };
-
   return (
     <form noValidate spellCheck="false">
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item xs={12} mb={2}>
+          <TextField
+            disabled
+            sx={{ minWidth: 350 }}
+            fullWidth
+            margin="normal"
+            type="text"
+            id="name"
+            label="Parent Folder"
+            variant="standard"
+            value={foldersStore.editFolderSelected?.name}
+          />
+        </Grid>
+        <Grid item xs={12} mb={2}>
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth

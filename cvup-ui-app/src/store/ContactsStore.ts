@@ -14,8 +14,25 @@ export class ContactsStore {
 
   reset() {}
 
-  async newContact() {
-    runInAction(() => {});
+  async addContact(contactModel: IContact) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.contactsApi.addContact(contactModel);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async updateContact(contactModel: IContact) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.contactsApi.updateContact(contactModel);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async deleteContact(id: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.contactsApi.deleteContact(id);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
   }
 
   async getContactsList() {

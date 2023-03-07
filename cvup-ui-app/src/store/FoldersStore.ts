@@ -6,7 +6,13 @@ import { RootStore } from "./RootStore";
 export class FoldersStore {
   private foldersApi;
   foldersList: IFolder[] = [];
-  folderSelected?: IFolder;
+  private folderSelected?: IFolder;
+  private editFolder?: IFolder;
+  rootFolder: IFolder = {
+    id: 0,
+    name: "Folders",
+    parentId: -1,
+  };
 
   get selectedFolder() {
     return this.folderSelected;
@@ -14,6 +20,14 @@ export class FoldersStore {
 
   set selectedFolder(val: IFolder | undefined) {
     this.folderSelected = val;
+  }
+
+  get editFolderSelected() {
+    return this.editFolder;
+  }
+
+  set editFolderSelected(val: IFolder | undefined) {
+    this.editFolder = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -33,6 +47,13 @@ export class FoldersStore {
   async updateFolder(folderModel: IFolder) {
     this.rootStore.generalStore.backdrop = true;
     const data = await this.foldersApi.updateFolder(folderModel);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async deleteFolder(id: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.foldersApi.deleteFolder(id);
     this.rootStore.generalStore.backdrop = false;
     return data;
   }

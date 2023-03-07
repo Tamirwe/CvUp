@@ -14,7 +14,7 @@ import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper"
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
-  const { generalStore } = useStore();
+  const { generalStore, foldersStore } = useStore();
 
   const themeRtl = createTheme({
     direction: "rtl", // Both here and <body dir="rtl">
@@ -39,6 +39,7 @@ export const LeftListsWrapper = observer(() => {
         navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
+        foldersStore.editFolderSelected = foldersStore.rootFolder;
         generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert;
         break;
       case TabsGeneralEnum.Contacts:

@@ -6,12 +6,13 @@ import { textFieldValidte } from "../../utils/Validation";
 import { FolderSettingsMenu } from "./FolderSettingsMenu";
 
 interface IProps {
+  onAddChild: () => void;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
-  const { foldersStore } = useStore();
+export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
+  const { foldersStore, generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [folderModel, setFolderModel] = useState<IFolder>({
@@ -27,10 +28,10 @@ export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
   // });
 
   useEffect(() => {
-    if (foldersStore.selectedFolder) {
-      setFolderModel({ ...foldersStore.selectedFolder });
+    if (foldersStore.editFolderSelected) {
+      setFolderModel({ ...foldersStore.editFolderSelected });
     }
-  }, [foldersStore.selectedFolder]);
+  }, [foldersStore.editFolderSelected]);
 
   const validateForm = () => {
     let isFormValid = true;
@@ -54,6 +55,15 @@ export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
   };
 
   const deleteRecord = async () => {
+    const isDelete = await generalStore.confirmDialog(
+      "Delete Folder",
+      "Are you sure you want to delete this folder?"
+    )();
+
+    if (isDelete) {
+      const response = await foldersStore.deleteFolder(folderModel.id);
+    }
+
     // const response = await generalStore.deleteHrCompany(formModel.id);
     // if (response.isSuccess) {
     //   onSaved();
@@ -68,6 +78,7 @@ export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
         await deleteRecord();
         break;
       case "addChild":
+        onAddChild();
         break;
       default:
         break;
@@ -116,16 +127,6 @@ export const FormFolderUpdateDelete = ({ onSaved, onCancel }: IProps) => {
         >
           <div>
             <FolderSettingsMenu onMenuSelected={handleMenuSelected} />
-            {/* <Button
-              fullWidth
-              variant="text"
-              color="warning"
-              onClick={() => {
-                deleteRecord();
-              }}
-            >
-              Delete
-            </Button> */}
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <Button

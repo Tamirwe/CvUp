@@ -22,6 +22,16 @@ export default class FoldersApi extends BaseApi {
     return response;
   }
 
+  async deleteFolder(id: number) {
+    const response = await this.apiWrapper(async () => {
+      const data = (await this.http.delete("Folders/DeleteFolder?id=" + id))
+        .data;
+      return data;
+    });
+
+    return response;
+  }
+
   async getFoldersList() {
     const response = await this.apiWrapper(async () => {
       const data = (await this.http.get<IFolder[]>("Folders/GetFolders")).data;

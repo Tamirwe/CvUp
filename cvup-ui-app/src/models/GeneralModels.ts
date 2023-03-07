@@ -65,7 +65,13 @@ export interface IMailsList {
   userTyped?: boolean;
 }
 
-export interface IContact {}
+export interface IContact {
+  id: number;
+  name: string;
+  customerId: number;
+  email: string;
+  phone: string;
+}
 
 export interface IFolder {
   id: number;

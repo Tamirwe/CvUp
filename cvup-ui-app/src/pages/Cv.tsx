@@ -13,7 +13,7 @@ export const Cv = observer(() => {
         <div
           className="ql-editor"
           dangerouslySetInnerHTML={{
-            __html: candsStore.candSelected?.review || "",
+            __html: candsStore.candAllSelected?.review || "",
           }}
         ></div>
       </div>

@@ -27,8 +27,8 @@ export const CandsList = observer(({ candsListData }: IProps) => {
   let location = useLocation();
   const navigate = useNavigate();
 
-  const handleDetachPosCand = (cand: ICand, index: number) => {
-    candsStore.detachPosCandidate(cand, index);
+  const handleDetachCand = (cand: ICand, index: number) => {
+    candsStore.detachCand(cand, index);
   };
 
   return (
@@ -112,12 +112,11 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                 primary={cand.candidateName}
                 secondary={cand.emailSubject}
               />
-              {candsStore.currentTabCandsLists ===
-              TabsCandsEnum.PositionCands ? (
+              {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands ? (
                 <ListItemIcon
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleDetachPosCand(cand, i);
+                    handleDetachCand(cand, i);
                   }}
                 >
                   <IconButton

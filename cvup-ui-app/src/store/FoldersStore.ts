@@ -72,7 +72,7 @@ export class FoldersStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.foldersApi.attachCandidate(
       folderId,
-      this.rootStore.candsStore.candSelected?.candidateId
+      this.rootStore.candsStore.candAllSelected?.candidateId
     );
     this.rootStore.generalStore.backdrop = false;
   }

@@ -64,10 +64,14 @@ export const CandsListsWrapper = observer(() => {
       </Box>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
-          {candsStore.currentTabCandsLists === TabsCandsEnum.AllCands ? (
-            <CandsList candsListData={candsStore.candsList} />
-          ) : (
+          {candsStore.currentTabCandsLists === TabsCandsEnum.AllCands && (
+            <CandsList candsListData={candsStore.candsAllList} />
+          )}
+          {candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands && (
             <CandsList candsListData={candsStore.posCandsList} />
+          )}
+          {candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands && (
+            <CandsList candsListData={candsStore.folderCandsList} />
           )}
         </ThemeProvider>
       </CacheProvider>

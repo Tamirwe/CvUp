@@ -17,11 +17,11 @@ export const ContactEmailSender = (props: IProps) => {
   const [listDefaultEmails, setListDefaultEmails] = useState<IMailsList[]>([]);
 
   useEffect(() => {
-    if (candsStore.candSelected) {
+    if (candsStore.candAllSelected) {
       const emailsList = [
         {
-          email: candsStore.candSelected?.email || "",
-          name: candsStore.candSelected?.candidateName || "",
+          email: candsStore.candAllSelected?.email || "",
+          name: candsStore.candAllSelected?.candidateName || "",
         },
       ];
 
@@ -44,7 +44,7 @@ export const ContactEmailSender = (props: IProps) => {
         />
         <QuillRte
           onInit={handleRteInit}
-          quillHtml={candsStore.candSelected?.review}
+          quillHtml={candsStore.candAllSelected?.review}
         />
       </DialogContent>
     </Dialog>

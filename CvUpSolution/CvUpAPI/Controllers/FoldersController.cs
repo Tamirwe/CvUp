@@ -50,5 +50,13 @@ namespace CvUpAPI.Controllers
             await _foldersService.DeleteFolder(Globals.CompanyId, id);
             return Ok();
         }
+
+        [HttpPost]
+        [Route("AttachCandidate")]
+        public async Task<IActionResult> AttachCandidate(FolderCandidateModel data)
+        {
+            await _foldersService.AttachCandidate(Globals.CompanyId, data);
+            return Ok();
+        }
     }
 }

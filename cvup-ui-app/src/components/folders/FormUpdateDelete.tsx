@@ -58,10 +58,16 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
     const isDelete = await generalStore.confirmDialog(
       "Delete Folder",
       "Are you sure you want to delete this folder?"
-    )();
+    );
 
     if (isDelete) {
       const response = await foldersStore.deleteFolder(folderModel.id);
+
+      if (response.isSuccess) {
+        onSaved();
+      } else {
+        return setSubmitError("An Error Occurred Please Try Again Later.");
+      }
     }
 
     // const response = await generalStore.deleteHrCompany(formModel.id);

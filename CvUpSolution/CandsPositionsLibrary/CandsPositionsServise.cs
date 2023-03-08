@@ -127,9 +127,9 @@ namespace CandsPositionsLibrary
             return result;
         }
 
-        public async Task<List<CandModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
+        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
         {
-            List<CandModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
             cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
@@ -219,6 +219,11 @@ namespace CandsPositionsLibrary
             var results = await _luceneService.Search(companyId, searchKeyWords);
             var distinctCandsList = results.Select(e => e.CandId).Distinct().ToList();
             return distinctCandsList;
+        }
+
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
+        {
+            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId);
         }
     }
 }

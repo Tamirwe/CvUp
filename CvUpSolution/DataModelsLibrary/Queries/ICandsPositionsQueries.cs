@@ -34,10 +34,11 @@ namespace DataModelsLibrary.Queries
         public Task UpdateCandidateLastCv(ImportCvModel importCv);
         public Task UpdateSameCv(ImportCvModel importCv);
         public Task<candidate?> GetCandidateByPhone(string phone);
-        public Task<List<CandModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
+        public Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
         public Task<List<CandModel>> GetPosCandsList(int companyId, int positionId, string encriptKey);
         public Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
         public Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
         public Task<List<company_cvs_email>> GetCompaniesEmails();
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
     }
 }

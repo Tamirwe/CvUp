@@ -43,6 +43,16 @@ namespace DataModelsLibrary.Models
         public string? reviewText { get; set; } = "";
     }
 
+    public class CandCvModel
+    {
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public string? keyId { get; set; } = "";
+        public string? emailSubject { get; set; } = "";
+        public DateTime cvSent { get; set; }
+
+    }
+
     public class CandModel
     {
         public int candidateId { get; set; }

@@ -9,7 +9,7 @@ import { FormUpdateDelete } from "./FormUpdateDelete";
 interface IProps {
   folder?: IFolder;
   isOpen: boolean;
-  onClose: (isSaved: boolean) => void;
+  onClose: () => void;
 }
 
 export const FormFolderDialog = ({
@@ -17,7 +17,7 @@ export const FormFolderDialog = ({
   isOpen,
   onClose,
 }: IProps) => {
-  const { generalStore } = useStore();
+  const { foldersStore, generalStore } = useStore();
   const [open, setOpen] = useState(false);
   const [formTitle, setFormTitle] = useState("");
 
@@ -38,13 +38,13 @@ export const FormFolderDialog = ({
     }
   }, [generalStore.openModeFolderFormDialog]);
 
+  const handleSaved = () => {
+    onClose();
+    foldersStore.getFoldersList();
+  };
+
   return (
-    <Dialog
-      open={open}
-      onClose={() => onClose(false)}
-      fullWidth
-      maxWidth={"xs"}
-    >
+    <Dialog open={open} onClose={() => onClose()} fullWidth maxWidth={"xs"}>
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         {generalStore.openModeFolderFormDialog === CrudTypesEnum.Update ? (
@@ -52,14 +52,11 @@ export const FormFolderDialog = ({
             onAddChild={() =>
               (generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert)
             }
-            onSaved={() => onClose(true)}
-            onCancel={() => onClose(false)}
+            onSaved={handleSaved}
+            onCancel={() => onClose()}
           />
         ) : (
-          <FormAddChild
-            onSaved={() => onClose(true)}
-            onCancel={() => onClose(false)}
-          />
+          <FormAddChild onSaved={handleSaved} onCancel={() => onClose()} />
         )}
       </DialogContent>
     </Dialog>

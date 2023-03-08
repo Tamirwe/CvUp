@@ -10,12 +10,11 @@ export enum PermissionTypeEnum {
   User,
 }
 
-export enum DisplayedCvsListEnum {
+export enum CvDisplayedListEnum {
   None,
-  SearchCvsList,
-  DuplicateCvsList,
-  PositionCvsList,
-  CategoriesCvsList,
+  CandsList,
+  PositionCandsList,
+  FolderCandsList,
 }
 
 export enum EmailTypeEnum {
@@ -28,6 +27,12 @@ export enum TabsGeneralEnum {
   Contacts,
   Folders,
   Positions,
+}
+
+export enum TabsCandsEnum {
+  AllCands,
+  PositionCands,
+  FolderCands,
 }
 
 

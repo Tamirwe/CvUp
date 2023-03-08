@@ -11,6 +11,7 @@ import { useStore } from "../../Hooks/useStore";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
+import { TabsCandsEnum } from "../../models/GeneralEnums";
 
 export const PositionsList = observer(() => {
   const { positionsStore, candsStore } = useStore();
@@ -57,11 +58,11 @@ export const PositionsList = observer(() => {
           >
             <ListItemButton
               sx={{ pl: "4px" }}
-              selected={pos.id === positionsStore.posSelected?.id}
+              selected={pos.id === positionsStore.selectedPosition?.id}
               onClick={() => {
-                // navigate(`/position/${pos.id}`);
                 positionsStore.setPosSelected(pos.id);
                 candsStore.getPositionCands(pos.id);
+                candsStore.currentTabCandsList = TabsCandsEnum.PositionCands;
               }}
             >
               <ListItemText

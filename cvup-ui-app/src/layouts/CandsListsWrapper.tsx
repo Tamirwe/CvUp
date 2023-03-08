@@ -7,9 +7,10 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
+import { TabsCandsEnum } from "../models/GeneralEnums";
 
 export const CandsListsWrapper = observer(() => {
-  const { candsStore, positionsStore } = useStore();
+  const { candsStore, positionsStore, foldersStore } = useStore();
 
   useEffect(() => {
     candsStore.getCandsList();
@@ -25,7 +26,10 @@ export const CandsListsWrapper = observer(() => {
     stylisPlugins: [rtlPlugin],
   });
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: TabsCandsEnum
+  ) => {
     candsStore.currentTabCandsList = newValue;
   };
 
@@ -39,8 +43,17 @@ export const CandsListsWrapper = observer(() => {
         >
           <Tab label="Candidates" value="candList" />
           <Tab
-            label={positionsStore.posSelected?.name}
+            label={positionsStore.selectedPosition?.name}
             value="positionCandsList"
+            sx={{
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          />
+          <Tab
+            label={foldersStore.selectedFolder?.name}
+            value="folderCandsList"
             sx={{
               overflow: "hidden",
               whiteSpace: "nowrap",
@@ -51,10 +64,10 @@ export const CandsListsWrapper = observer(() => {
       </Box>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
-          {candsStore.currentTabCandsList === "candList" ? (
-            <CandsList candsList={candsStore.candsList} />
+          {candsStore.currentTabCandsList === TabsCandsEnum.AllCands ? (
+            <CandsList candsListData={candsStore.candsList} />
           ) : (
-            <CandsList candsList={candsStore.posCandsList} />
+            <CandsList candsListData={candsStore.posCandsList} />
           )}
         </ThemeProvider>
       </CacheProvider>

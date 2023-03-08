@@ -40,4 +40,18 @@ export default class FoldersApi extends BaseApi {
 
     return response;
   }
+
+  async attachCandidate(folderId: number, candidateId: number | undefined) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post("Folders/AttachCandidate", {
+          folderId,
+          candidateId,
+        })
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
 }

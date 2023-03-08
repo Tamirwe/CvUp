@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, IFolder } from "../models/GeneralModels";
+import { IAppSettings, IFolder, IFolderNode } from "../models/GeneralModels";
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
 
@@ -55,6 +55,7 @@ export class FoldersStore {
     this.rootStore.generalStore.backdrop = true;
     const data = await this.foldersApi.deleteFolder(id);
     this.rootStore.generalStore.backdrop = false;
+    this.selectedFolder = undefined;
     return data;
   }
 
@@ -64,6 +65,15 @@ export class FoldersStore {
     runInAction(() => {
       this.foldersList = res.data;
     });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async attachCandidate(folderId: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.foldersApi.attachCandidate(
+      folderId,
+      this.rootStore.candsStore.candSelected?.candidateId
+    );
     this.rootStore.generalStore.backdrop = false;
   }
 }

@@ -134,9 +134,7 @@ namespace DataModelsLibrary.Queries
                              {
                                  cvId = cvs.id,
                                  review = cand.review_html,
-                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId = cvs.key_id,
-                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
@@ -153,31 +151,21 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey)
+        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = (from cand in dbContext.candidates
-                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                             where cand.company_id == companyId
-                             && cand.id == candidateId
-                             orderby cand.last_cv_sent descending
-                             select new CandModel
+                var query = (from  cvs in dbContext.cvs
+                             where cvs.company_id == companyId
+                             && cvs.candidate_id == candidateId
+                             orderby cvs.date_created descending
+                             select new CandCvModel
                              {
+                                 candidateId = cvs.candidate_id,
                                  cvId = cvs.id,
-                                 review = cand.review_html,
-                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
-                                 keyId = cvs.key_id,
-                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
-                                 candidateId = cand.id,
-                                 email = cand.email,
-                                 emailSubject = cvs.subject,
-                                 candidateName = cand.name,
-                                 phone = cand.phone,
-                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
-                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
-                                 cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
+                                 keyId = cvs.key_id,
+                                 emailSubject = cvs.subject,
                              });
 
                 return await query.ToListAsync();
@@ -188,8 +176,8 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = (from pcv in dbContext.position_candidates
-                             join cand in dbContext.candidates on pcv.candidate_id equals cand.id
+                var query = (from cand in dbContext.candidates
+                             join pcv in dbContext.position_candidates on   cand.id equals pcv.candidate_id
                              join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
                              where pcv.company_id == companyId
                                     && pcv.position_id == positionId
@@ -197,9 +185,7 @@ namespace DataModelsLibrary.Queries
                              {
                                  cvId = cvs.id,
                                  review = cand.review_html,
-                                 //keyId = Encriptor.Encrypt($"{cvs.key_id}~{DateTime.Now.ToString("yyyy-MM-dd")}", encriptKey),
                                  keyId = cvs.key_id,
-                                 //fileType = cvs.key_id != null ? cvs.key_id.Substring(cvs.key_id.LastIndexOf('_')) : "",
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
@@ -212,7 +198,35 @@ namespace DataModelsLibrary.Queries
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
                                  candCvs = pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
+                             });
 
+                return await query.ToListAsync();
+            }
+        }
+
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from cand in dbContext.candidates
+                             join fc in dbContext.folders_cands on cand.id equals fc.candidate_id
+                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                             where fc.company_id == companyId
+                                    && fc.folder_id == folderId
+                             select new CandModel
+                             {
+                                 cvId = cvs.id,
+                                 review = cand.review_html,
+                                 keyId = cvs.key_id,
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 candidateName = cand.name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent = cvs.date_created,
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                              });
 
                 return await query.ToListAsync();

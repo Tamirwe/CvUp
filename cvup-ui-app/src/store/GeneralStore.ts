@@ -101,7 +101,7 @@ export class GeneralStore {
         });
       });
 
-    return confirmPromise;
+    return confirmPromise();
   }
 
   async confirmResponse(isOk: boolean) {

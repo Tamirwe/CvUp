@@ -6,7 +6,7 @@ import { RootStore } from "./RootStore";
 export class PositionsStore {
   private positionApi;
   positionsList: IPosition[] = [];
-  posSelected?: IPosition;
+  private positionSelected?: IPosition;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -15,12 +15,11 @@ export class PositionsStore {
 
   reset() {
     this.positionsList = [];
-    this.posSelected = undefined;
   }
 
   async newPosition() {
     runInAction(() => {
-      this.posSelected = {
+      this.selectedPosition = {
         id: 0,
         name: "",
         descr: "",
@@ -34,9 +33,16 @@ export class PositionsStore {
     });
   }
 
+  get selectedPosition() {
+    return this.positionSelected;
+  }
+
+  set selectedPosition(val: IPosition | undefined) {
+    this.positionSelected = val;
+  }
+
   setPosSelected(posId: number) {
-    this.posSelected = this.positionsList.find((x) => x.id === posId);
-    this.rootStore.candsStore.currentTabCandsList = "positionCandsList";
+    this.selectedPosition = this.positionsList.find((x) => x.id === posId);
   }
 
   async getPosition(posId: number) {
@@ -44,7 +50,7 @@ export class PositionsStore {
 
     const res = await this.positionApi.getPosition(posId);
     runInAction(() => {
-      this.posSelected = res.data;
+      this.selectedPosition = res.data;
     });
 
     this.rootStore.generalStore.backdrop = false;

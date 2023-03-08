@@ -45,6 +45,12 @@ namespace DataModelsLibrary.Models
         public int parentId { get; set; } = 0;
     }
 
+    public class FolderCandidateModel
+    {
+        public int folderId { get; set; } = 0;
+        public int candidateId { get; set; } = 0;
+    }
+
     public class ContactModel
     {
         public int id { get; set; } = 0;

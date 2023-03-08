@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +21,8 @@ namespace DataModelsLibrary.Queries
                 var fdr = new folder
                 {
                     name = data.name,
-                    parent_id=data.parentId,
-                    company_id=companyId,
+                    parent_id = data.parentId,
+                    company_id = companyId,
                 };
 
                 dbContext.folders.Add(fdr);
@@ -36,7 +37,7 @@ namespace DataModelsLibrary.Queries
             {
                 var fdr = new folder
                 {
-                    id= data.id,
+                    id = data.id,
                     name = data.name,
                     parent_id = data.parentId,
                     company_id = companyId,
@@ -78,11 +79,29 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = f.id,
                                 name = f.name,
-                                parentId=f.parent_id
+                                parentId = f.parent_id
                             };
 
                 return await query.ToListAsync();
             }
         }
+
+        public async Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var fdr = new folders_cand
+                {
+                    company_id = companyId,
+                    candidate_id = data.candidateId,
+                    folder_id = data.folderId,
+                };
+
+                dbContext.folders_cands.Add(fdr);
+                await dbContext.SaveChangesAsync();
+                return fdr;
+            }
+        }
+
     }
 }

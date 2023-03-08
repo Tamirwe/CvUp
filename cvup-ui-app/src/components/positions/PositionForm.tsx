@@ -54,7 +54,7 @@ export const PositionForm = observer(() => {
     setIsDirty,
     isDirty,
   ] = useStateForm<IPosition, any, any>(
-    positionsStore.posSelected as IPosition,
+    positionsStore.selectedPosition as IPosition,
     {
       name: false,
       descr: false,
@@ -75,7 +75,7 @@ export const PositionForm = observer(() => {
 
       setFrmState((currentProps) => ({
         ...currentProps,
-        ...positionsStore.posSelected,
+        ...positionsStore.selectedPosition,
       }));
       setFrmMsg("");
       setIsDirty(false);

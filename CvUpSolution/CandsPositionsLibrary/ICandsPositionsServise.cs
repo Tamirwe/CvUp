@@ -26,7 +26,7 @@ namespace CandsPositionsLibrary
         public Task<position?> AddPosition(PositionClientModel data, int companyId, int userId);
         public Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId);
         public Task<List<PositionModel>> GetPositionsList(int companyId);
-        public Task<List<CandModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
+        public Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
         public Task<List<CandModel>> GetPosCandsList(int companyId, int positionId);
         public Task DeletePosition(int companyId, int id);
         public Task<PositionClientModel> GetPosition(int companyId, int positionId);
@@ -41,5 +41,6 @@ namespace CandsPositionsLibrary
         public Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
         public Task<List<company_cvs_email>> GetCompaniesEmails();
         public Task<List<int>> SearchCands(int companyId, string searchKeyWords);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
     }
 }

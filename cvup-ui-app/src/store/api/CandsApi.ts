@@ -47,6 +47,17 @@ export default class CandsApi extends BaseApi {
     });
   }
 
+  async getFolderCandsList(folderId: number) {
+    return await this.apiWrapper(async () => {
+      const data = (
+        await this.http.get<ICand[]>(
+          `Cand/GetFolderCandsList?folderId=${folderId}`
+        )
+      ).data;
+      return data;
+    });
+  }
+
   async attachPosCandCv(
     candidateId: number,
     cvId: number,

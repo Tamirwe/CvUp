@@ -1,27 +1,37 @@
-import { IconButton, List } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { MouseEventHandler } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useStore } from "../../Hooks/useStore";
-import { CrudTypesEnum } from "../../models/GeneralEnums";
+import { CrudTypesEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
+import { MdPersonAddAlt1 } from "react-icons/md";
 
 export const FoldersList = observer(() => {
-  const { foldersStore, generalStore } = useStore();
+  const { foldersStore, candsStore, generalStore } = useStore();
   // let vv = 1;
 
   const editFolder = (folder: IFolder) => {
     return (
-      <IconButton
-        size="small"
-        onClick={async () => {
-          foldersStore.editFolderSelected = folder;
-          generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
-        }}
-      >
-        <CiEdit />
-      </IconButton>
+      <div className={styles.iconsDiv}>
+        <IconButton
+          size="small"
+          onClick={async () => {
+            foldersStore.editFolderSelected = folder;
+            generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+          }}
+        >
+          <CiEdit />
+        </IconButton>
+        <IconButton
+          size="small"
+          onClick={async () => {
+            await foldersStore.attachCandidate(folder.id);
+          }}
+        >
+          <MdPersonAddAlt1 />
+        </IconButton>
+      </div>
     );
   };
 
@@ -32,7 +42,14 @@ export const FoldersList = observer(() => {
         role="treeitem"
         style={{ cursor: "pointer", lineHeight: 1 }}
       >
-        <div className={styles.folderLine} onClick={(event) => {}}>
+        <div
+          className={styles.folderLine}
+          onClick={() => {
+            foldersStore.selectedFolder = node.folder;
+            candsStore.getFolderCandsList(node.folder.id);
+            candsStore.currentTabCandsList = TabsCandsEnum.FolderCands;
+          }}
+        >
           <div>{node.folder.name}</div>
           <div className={styles.editFolder}>
             {" "}
@@ -40,16 +57,16 @@ export const FoldersList = observer(() => {
           </div>
         </div>
         <ul style={{ listStyle: "none", paddingInlineStart: "25px" }}>
-          {Array.isArray(node.children)
-            ? node.children.map((node: IFolder) =>
+          {node.children && node.children.length
+            ? node.children.map((child: IFolder) =>
                 renderChildren({
                   folder: {
-                    id: node.id,
-                    parentId: node.parentId,
-                    name: node.name,
+                    id: child.id,
+                    parentId: child.parentId,
+                    name: child.name,
                   },
                   children: foldersStore.foldersList.filter(
-                    (x) => x.parentId === node.id
+                    (x) => x.parentId === child.id
                   ),
                 })
               )
@@ -60,21 +77,12 @@ export const FoldersList = observer(() => {
   };
 
   return (
-    <ul
-      style={{
-        position: "relative",
-        display: "block",
-        listStyle: "none",
-        paddingInlineStart: "10px",
-        marginTop: "5px",
-      }}
-      role="tree"
-    >
+    <ul className={styles.ulRoot} style={{}} role="tree">
       {renderChildren({
         folder: {
           ...foldersStore.rootFolder,
         },
-        children: foldersStore.foldersList,
+        children: foldersStore.foldersList.filter((x) => x.parentId === 0),
       })}
     </ul>
   );

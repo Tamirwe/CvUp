@@ -35,6 +35,15 @@ export interface ICand {
   hasDuplicates: boolean;
 }
 
+export interface ICandCv {
+  cvId: number;
+  candidateId: number;
+  keyId: string;
+  emailSubject: string;
+  fileType: string;
+  cvSent: Date;
+}
+
 export interface IPosCandCvs {
   cvId: number;
   keyId: string;

@@ -30,6 +30,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetFolderCandsList")]
+        public async Task<List<CandModel?>> GetFolderCandsList(int folderId)
+        {
+            return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId);
+        }
+
+        [HttpGet]
         [Route("SearchCands")]
         public async Task<List<CandModel?>> SearchCands(string searchKeyWords = "")
         {
@@ -39,7 +46,7 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCandCvsList")]
-        public async Task<List<CandModel>> GetCandCvsList(int cvId, int candidateId)
+        public async Task<List<CandCvModel>> GetCandCvsList(int cvId, int candidateId)
         {
             return await _candPosService.GetCandCvsList(Globals.CompanyId, cvId, candidateId);
         }

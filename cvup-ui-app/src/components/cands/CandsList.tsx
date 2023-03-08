@@ -13,14 +13,15 @@ import { useState } from "react";
 import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
+import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 
 interface IProps {
-  candsList: ICand[];
+  candsListData: ICand[];
 }
 
-export const CandsList = observer(({ candsList }: IProps) => {
+export const CandsList = observer(({ candsListData }: IProps) => {
   const { candsStore } = useStore();
   const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
@@ -42,7 +43,7 @@ export const CandsList = observer(({ candsList }: IProps) => {
         },
       }}
     >
-      {candsList.map((cand, i) => {
+      {candsListData.map((cand, i) => {
         return (
           <ListItem
             key={cand.cvId}
@@ -111,7 +112,8 @@ export const CandsList = observer(({ candsList }: IProps) => {
                 primary={cand.candidateName}
                 secondary={cand.emailSubject}
               />
-              {candsStore.currentTabCandsList === "positionCandsList" ? (
+              {candsStore.currentTabCandsList ===
+              TabsCandsEnum.PositionCands ? (
                 <ListItemIcon
                   onClick={(event) => {
                     event.stopPropagation();

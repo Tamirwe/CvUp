@@ -2,6 +2,7 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.Design;
 
 namespace FoldersLibrary
 {
@@ -18,7 +19,7 @@ namespace FoldersLibrary
 
         public async Task<folder> AddFolder(int companyId, FolderModel data)
         {
-            return await _foldersQueries.AddFolder(companyId,data);
+            return await _foldersQueries.AddFolder(companyId, data);
         }
 
         public async Task<folder> UpdateFolder(int companyId, FolderModel data)
@@ -52,5 +53,11 @@ namespace FoldersLibrary
         {
             return await _foldersQueries.GetFolders(companyId);
         }
+
+        public async Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data)
+        {
+            return await _foldersQueries.AttachCandidate(companyId, data);
+        }
+
     }
 }

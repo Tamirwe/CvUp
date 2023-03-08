@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
+import { CvDisplayedListEnum } from "../../models/GeneralEnums";
 
 export const CandDupCvsList = observer(() => {
   const { candsStore } = useStore();
@@ -34,7 +35,10 @@ export const CandDupCvsList = observer(() => {
               if (location.pathname !== "/cv") {
                 navigate(`/cv`);
               }
-              candsStore.displayCvDuplicate(dupCv);
+              candsStore.displayCvDuplicate(
+                dupCv,
+                CvDisplayedListEnum.CandsList
+              );
             }}
           >
             <ListItemText
@@ -49,8 +53,8 @@ export const CandDupCvsList = observer(() => {
             />
             <ListItemText
               sx={{ "& span, p": { fontSize: "0.75rem" } }}
-              primary={dupCv.candidateName}
-              secondary={dupCv.emailSubject}
+              primary={dupCv.emailSubject}
+              // secondary={dupCv.emailSubject}
             />
           </ListItemButton>
         );

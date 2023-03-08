@@ -103,5 +103,21 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<folders_cand> DetachCandidate(int companyId,int id)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var fdr = new folders_cand
+                {
+                    id= id,
+                    company_id = companyId,
+                };
+
+                dbContext.folders_cands.Remove(fdr);
+                await dbContext.SaveChangesAsync();
+                return fdr;
+            }
+        }
+
     }
 }

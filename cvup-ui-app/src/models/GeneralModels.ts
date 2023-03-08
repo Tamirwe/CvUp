@@ -33,6 +33,7 @@ export interface ICand {
   dateAttached: Date;
   candCvs: IPosCandCvs[];
   hasDuplicates: boolean;
+  folderCandId: number;
 }
 
 export interface ICandCv {

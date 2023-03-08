@@ -227,6 +227,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
+                                 folderCandId = fc.id
                              });
 
                 return await query.ToListAsync();

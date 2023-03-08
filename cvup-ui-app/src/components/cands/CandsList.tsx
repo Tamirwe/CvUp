@@ -13,7 +13,7 @@ import { useState } from "react";
 import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { TabsCandsEnum } from "../../models/GeneralEnums";
+import { CvDisplayedListEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 
@@ -28,7 +28,13 @@ export const CandsList = observer(({ candsListData }: IProps) => {
   const navigate = useNavigate();
 
   const handleDetachCand = (cand: ICand, index: number) => {
-    candsStore.detachCand(cand, index);
+    if (
+      candsStore.candsListTypeDisplay === CvDisplayedListEnum.PositionCandsList
+    ) {
+      candsStore.detachPosCand(cand, index);
+    } else {
+      candsStore.detachFolderCand(cand, index);
+    }
   };
 
   return (

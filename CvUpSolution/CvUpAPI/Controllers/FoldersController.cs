@@ -58,5 +58,13 @@ namespace CvUpAPI.Controllers
             await _foldersService.AttachCandidate(Globals.CompanyId, data);
             return Ok();
         }
+
+        [HttpDelete]
+        [Route("DetachCandidate")]
+        public async Task<IActionResult> DetachCandidate(int id)
+        {
+            await _foldersService.DetachCandidate(Globals.CompanyId, id);
+            return Ok();
+        }
     }
 }

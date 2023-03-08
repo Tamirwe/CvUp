@@ -59,5 +59,10 @@ namespace FoldersLibrary
             return await _foldersQueries.AttachCandidate(companyId, data);
         }
 
+        public async Task<folders_cand> DetachCandidate(int companyId,int id)
+        {
+            return await _foldersQueries.DetachCandidate(companyId, id);
+        }
+
     }
 }

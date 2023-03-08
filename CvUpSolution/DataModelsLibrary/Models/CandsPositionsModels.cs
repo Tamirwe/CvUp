@@ -71,7 +71,7 @@ namespace DataModelsLibrary.Models
         public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
         public List<PosCandCvsModel>? candCvs { get; set; }
-
+        public int folderCandId { get; set; }
     }
 
     public class PosCandCvsModel

@@ -218,41 +218,47 @@ export class CandsStore {
     }
   }
 
-  async detachCand(posCand: ICand, index: number) {
+  async detachPosCand(detachCand: ICand, index: number) {
     const positionId = this.rootStore.positionsStore.selectedPosition?.id;
 
     if (positionId) {
       await this.cvsApi.detachPosCand(
-        posCand.candidateId,
-        posCand.cvId,
+        detachCand.candidateId,
+        detachCand.cvId,
         positionId
       );
 
-      this.unPushNumArr(positionId, posCand.candPosIds);
-      this.unPushNumArr(positionId, posCand.cvPosIds);
+      this.unPushNumArr(positionId, detachCand.candPosIds);
+      this.unPushNumArr(positionId, detachCand.cvPosIds);
 
-      if (this.candDisplay?.candidateId === posCand.candidateId) {
-        this.updateCandPosArrays(this.candDisplay, posCand);
+      if (this.candDisplay?.candidateId === detachCand.candidateId) {
+        this.updateCandPosArrays(this.candDisplay, detachCand);
       }
 
       let cand = this.candsAllList.find(
-        (x) => x.candidateId === posCand.candidateId
+        (x) => x.candidateId === detachCand.candidateId
       );
 
       if (cand) {
-        this.updateCandPosArrays(cand, posCand);
+        this.updateCandPosArrays(cand, detachCand);
       }
 
       cand = this.folderCandsList.find(
-        (x) => x.candidateId === posCand.candidateId
+        (x) => x.candidateId === detachCand.candidateId
       );
 
       if (cand) {
-        this.updateCandPosArrays(cand, posCand);
+        this.updateCandPosArrays(cand, detachCand);
       }
 
       this.posCandsList.splice(index, 1);
     }
+  }
+
+  async detachFolderCand(detachCand: ICand, index: number) {
+    await this.cvsApi.detachFolderCand(detachCand.folderCandId);
+
+    this.folderCandsList.splice(index, 1);
   }
 
   updateCandPosArrays(candTarget: ICand, candSource: ICand) {

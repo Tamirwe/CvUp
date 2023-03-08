@@ -47,7 +47,7 @@ export const FoldersList = observer(() => {
           onClick={() => {
             foldersStore.selectedFolder = node.folder;
             candsStore.getFolderCandsList(node.folder.id);
-            candsStore.currentTabCandsList = TabsCandsEnum.FolderCands;
+            candsStore.currentTabCandsLists = TabsCandsEnum.FolderCands;
           }}
         >
           <div>{node.folder.name}</div>

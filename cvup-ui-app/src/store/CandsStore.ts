@@ -21,7 +21,7 @@ export class CandsStore {
   candPosSelected?: ICand;
   candDisplay?: ICand;
   candsListTypeDisplay: CvDisplayedListEnum = CvDisplayedListEnum.None;
-  tabDisplayCandsList: TabsCandsEnum = TabsCandsEnum.AllCands;
+  private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -33,12 +33,12 @@ export class CandsStore {
     this.candSelected = undefined;
   }
 
-  set currentTabCandsList(val) {
-    this.tabDisplayCandsList = val;
+  set currentTabCandsLists(val) {
+    this.tabDisplayCandsLists = val;
   }
 
-  get currentTabCandsList() {
-    return this.tabDisplayCandsList;
+  get currentTabCandsLists() {
+    return this.tabDisplayCandsLists;
   }
 
   async displayCvMain(cand: ICand) {

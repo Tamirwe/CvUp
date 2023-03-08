@@ -30,21 +30,21 @@ export const CandsListsWrapper = observer(() => {
     event: React.SyntheticEvent,
     newValue: TabsCandsEnum
   ) => {
-    candsStore.currentTabCandsList = newValue;
+    candsStore.currentTabCandsLists = newValue;
   };
 
   return (
     <Box sx={{ marginTop: "0" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={candsStore.currentTabCandsList}
+          value={candsStore.currentTabCandsLists}
           onChange={handleTabChange}
           sx={{ direction: "rtl" }}
         >
-          <Tab label="Candidates" value="candList" />
+          <Tab label="Candidates" value={TabsCandsEnum.AllCands} />
           <Tab
             label={positionsStore.selectedPosition?.name}
-            value="positionCandsList"
+            value={TabsCandsEnum.PositionCands}
             sx={{
               overflow: "hidden",
               whiteSpace: "nowrap",
@@ -53,7 +53,7 @@ export const CandsListsWrapper = observer(() => {
           />
           <Tab
             label={foldersStore.selectedFolder?.name}
-            value="folderCandsList"
+            value={TabsCandsEnum.FolderCands}
             sx={{
               overflow: "hidden",
               whiteSpace: "nowrap",
@@ -64,7 +64,7 @@ export const CandsListsWrapper = observer(() => {
       </Box>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
-          {candsStore.currentTabCandsList === TabsCandsEnum.AllCands ? (
+          {candsStore.currentTabCandsLists === TabsCandsEnum.AllCands ? (
             <CandsList candsListData={candsStore.candsList} />
           ) : (
             <CandsList candsListData={candsStore.posCandsList} />

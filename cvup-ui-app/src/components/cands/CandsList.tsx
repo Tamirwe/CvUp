@@ -112,7 +112,7 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                 primary={cand.candidateName}
                 secondary={cand.emailSubject}
               />
-              {candsStore.currentTabCandsList ===
+              {candsStore.currentTabCandsLists ===
               TabsCandsEnum.PositionCands ? (
                 <ListItemIcon
                   onClick={(event) => {

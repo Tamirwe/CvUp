@@ -62,7 +62,7 @@ export const PositionsList = observer(() => {
               onClick={() => {
                 positionsStore.setPosSelected(pos.id);
                 candsStore.getPositionCands(pos.id);
-                candsStore.currentTabCandsList = TabsCandsEnum.PositionCands;
+                candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
               }}
             >
               <ListItemText

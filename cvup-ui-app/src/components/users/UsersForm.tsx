@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
-import { IContact } from "../../models/GeneralModels";
+import { IUser } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
@@ -13,24 +13,21 @@ interface IProps {
   onCancel: () => void;
 }
 
-export const ContactsForm = ({
-  contact,
-  crudType,
-  onSaved,
-  onCancel,
-}: IProps) => {
+export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
   const { generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [contactModel, setContactModel] = useState<IContact>({
+  const [contactModel, setContactModel] = useState<IUser>({
     id: 0,
-    name: "",
-    customerId: 0,
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
+    teamId: 0,
   });
   const [errModel, setErrModel] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
   });
@@ -93,17 +90,17 @@ export const ContactsForm = ({
             onChange={(e) => {
               setContactModel((currentProps) => ({
                 ...currentProps,
-                name: e.target.value,
+                firstName: e.target.value,
               }));
               setErrModel((value) => ({
                 ...value,
-                name: "",
+                firstName: "",
               }));
               setIsDirty(true);
             }}
-            error={errModel.name !== ""}
-            helperText={errModel.name}
-            value={contactModel.name}
+            error={errModel.firstName !== ""}
+            helperText={errModel.firstName}
+            value={contactModel.firstName}
           />
         </Grid>
 

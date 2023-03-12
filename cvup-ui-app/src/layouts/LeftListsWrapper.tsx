@@ -11,6 +11,7 @@ import { MdAdd } from "react-icons/md";
 import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
 import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
+import { UsersListWrapper } from "../components/users/UsersListWrapper";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -43,7 +44,10 @@ export const LeftListsWrapper = observer(() => {
         generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert;
         break;
       case TabsGeneralEnum.Contacts:
-        generalStore.openModeFolderFormDialog = CrudTypesEnum.Insert;
+        generalStore.showContactFormDialog = true;
+        break;
+      case TabsGeneralEnum.Users:
+        generalStore.showUserFormDialog = true;
         break;
       default:
         break;
@@ -55,6 +59,7 @@ export const LeftListsWrapper = observer(() => {
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Stack direction="row" justifyContent="space-between">
           <Tabs value={generalStore.currentTab} onChange={handleTabChange}>
+            <Tab label="Users" value={TabsGeneralEnum.Users} />
             <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />
@@ -89,6 +94,9 @@ export const LeftListsWrapper = observer(() => {
             )}
             {generalStore.currentTab === TabsGeneralEnum.Contacts && (
               <ContactsListWrapper />
+            )}
+            {generalStore.currentTab === TabsGeneralEnum.Users && (
+              <UsersListWrapper />
             )}
           </ThemeProvider>
         </CacheProvider>

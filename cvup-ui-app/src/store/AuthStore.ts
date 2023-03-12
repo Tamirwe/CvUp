@@ -3,6 +3,7 @@ import { LOGIN_TYPE } from "../constants/AuthConsts";
 import {
   IForgotPassword,
   IInterviewer,
+  IUser,
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
@@ -18,6 +19,7 @@ export class AuthStore {
   isLoggedIn = false;
   claims: IUserClaims = {};
   interviewersList: IInterviewer[] = [];
+  usersList: IUser[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);

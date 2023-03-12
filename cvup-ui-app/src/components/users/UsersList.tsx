@@ -9,8 +9,8 @@ import {
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../Hooks/useStore";
 
-export const ContactsList = observer(() => {
-  const { contactsStore, generalStore } = useStore();
+export const UsersList = observer(() => {
+  const { authStore, generalStore } = useStore();
 
   return (
     <List
@@ -24,10 +24,10 @@ export const ContactsList = observer(() => {
         },
       }}
     >
-      {contactsStore.contactsList.map((cont, i) => {
+      {authStore.usersList.map((usr, i) => {
         return (
           <ListItem
-            key={cont.id}
+            key={usr.id}
             dense
             disablePadding
             component="nav"

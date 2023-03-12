@@ -23,10 +23,7 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
   const [errModel, setErrModel] = useState({
     name: "",
   });
-  // const [formValErrorTxt, setFormValErrorTxt] = useState({
-  //   name: "",
-  // });
-
+ 
   useEffect(() => {
     if (foldersStore.editFolderSelected) {
       setFolderModel({ ...foldersStore.editFolderSelected });

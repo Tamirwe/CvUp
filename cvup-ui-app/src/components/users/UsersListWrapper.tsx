@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { ContactsList } from "./ContactsList";
+import { UsersList } from "./UsersList";
 
-export const ContactsListWrapper = observer(() => {
+export const UsersListWrapper = observer(() => {
   const { contactsStore } = useStore();
 
   useEffect(() => {
@@ -12,5 +12,5 @@ export const ContactsListWrapper = observer(() => {
     }
   }, []);
 
-  return <ContactsList />;
+  return <UsersList />;
 });

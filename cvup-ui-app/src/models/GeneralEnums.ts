@@ -24,6 +24,7 @@ export enum EmailTypeEnum {
 }
 
 export enum TabsGeneralEnum {
+  Users,
   Contacts,
   Folders,
   Positions,

@@ -35,7 +35,7 @@ export default class ContactsApi extends BaseApi {
 
   async getContactsList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IContact[]>("Contacts/GetContactsList"))
+      const data = (await this.http.get<IContact[]>("Contacts/GetContacts"))
         .data;
       return data;
     });

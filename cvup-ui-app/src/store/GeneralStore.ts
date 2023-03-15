@@ -11,7 +11,6 @@ import { RootStore } from "./RootStore";
 
 export class GeneralStore {
   private generalApi;
-  customersList: IIdName[] = [];
   hrCompaniesList: IIdName[] = [];
   isShowBackdrop: boolean = false;
   private isCvReviewDialogOpen: boolean = false;
@@ -93,7 +92,6 @@ export class GeneralStore {
   }
 
   reset() {
-    this.customersList = [];
     this.hrCompaniesList = [];
     this.isShowBackdrop = false;
   }
@@ -131,30 +129,30 @@ export class GeneralStore {
     return aaa.data;
   }
 
-  async addUpdateCustomer(customer: IIdName) {
-    this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.addUpdateCustomer(customer);
-    this.rootStore.generalStore.backdrop = false;
-    return data;
-  }
+  // async addUpdateCustomer(customer: IIdName) {
+  //   this.rootStore.generalStore.backdrop = true;
+  //   const data = await this.generalApi.addUpdateCustomer(customer);
+  //   this.rootStore.generalStore.backdrop = false;
+  //   return data;
+  // }
 
-  async getCustomersList(loadAgain: boolean) {
-    this.rootStore.generalStore.backdrop = true;
-    if (this.customersList.length === 0 || loadAgain) {
-      const res = await this.generalApi.getCustomersList();
-      runInAction(() => {
-        this.customersList = res.data;
-      });
-    }
-    this.rootStore.generalStore.backdrop = false;
-  }
+  // async getCustomersList(loadAgain: boolean) {
+  //   this.rootStore.generalStore.backdrop = true;
+  //   if (this.customersList.length === 0 || loadAgain) {
+  //     const res = await this.generalApi.getCustomersList();
+  //     runInAction(() => {
+  //       this.customersList = res.data;
+  //     });
+  //   }
+  //   this.rootStore.generalStore.backdrop = false;
+  // }
 
-  async deleteCustomer(customerId: number) {
-    this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.deleteCustomer(customerId);
-    this.rootStore.generalStore.backdrop = false;
-    return data;
-  }
+  // async deleteCustomer(customerId: number) {
+  //   this.rootStore.generalStore.backdrop = true;
+  //   const data = await this.generalApi.deleteCustomer(customerId);
+  //   this.rootStore.generalStore.backdrop = false;
+  //   return data;
+  // }
 
   async addUpdateHrCompany(hrCompany: IIdName) {
     this.rootStore.generalStore.backdrop = true;

@@ -36,4 +36,12 @@ export enum TabsCandsEnum {
   FolderCands,
 }
 
-
+export enum TextValidateTypeEnum {
+  notEmpty,
+  twoCharsMin,
+  startWithTwoLetters,
+  onlyLetters,
+  emailValid,
+  phoneValid,
+  notSelected,
+}

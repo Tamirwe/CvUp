@@ -13,6 +13,7 @@ import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FormFolderDialog } from "../components/folders/FormFolderDialog";
 import { useState } from "react";
 import { AlertDialog } from "./AlertDialog";
+import { UsersFormDialog } from "../components/users/UsersFormDialog";
 
 export const LayoutAuth = observer(() => {
   const { generalStore } = useStore();
@@ -48,6 +49,13 @@ export const LayoutAuth = observer(() => {
           crudType={CrudTypesEnum.Insert}
           isOpen={generalStore.showContactFormDialog}
           onClose={() => (generalStore.showContactFormDialog = false)}
+        />
+      )}
+      {generalStore.showUserFormDialog && (
+        <UsersFormDialog
+          crudType={CrudTypesEnum.Insert}
+          isOpen={generalStore.showUserFormDialog}
+          onClose={() => (generalStore.showUserFormDialog = false)}
         />
       )}
       {generalStore.confirmDialogOpen && <AlertDialog />}

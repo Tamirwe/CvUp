@@ -18,7 +18,7 @@ export const CustomerForm = ({
   onSaved,
   onCancel,
 }: IProps) => {
-  const { generalStore } = useStore();
+  const { contactsStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IIdName>(customer);
@@ -58,7 +58,7 @@ export const CustomerForm = ({
   };
 
   const submitForm = async () => {
-    const response = await generalStore.addUpdateCustomer(formModel);
+    const response = await contactsStore.addUpdateCustomer(formModel);
 
     if (response.isSuccess) {
       onSaved();
@@ -68,7 +68,7 @@ export const CustomerForm = ({
   };
 
   const deleteRecord = async () => {
-    const response = await generalStore.deleteCustomer(formModel.id);
+    const response = await contactsStore.deleteCustomer(formModel.id);
 
     if (response.isSuccess) {
       onSaved();

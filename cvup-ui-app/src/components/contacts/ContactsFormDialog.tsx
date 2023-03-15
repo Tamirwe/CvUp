@@ -1,11 +1,11 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IIdName } from "../../models/AuthModels";
+import { IContact } from "../../models/GeneralModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { ContactsForm } from "./ContactsForm";
 
 interface IProps {
-  contact?: IIdName;
+  contact?: IContact;
   crudType?: CrudTypesEnum;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;

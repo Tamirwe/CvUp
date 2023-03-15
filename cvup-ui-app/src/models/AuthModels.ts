@@ -39,22 +39,6 @@ export interface TokensModel {
   refreshToken: string;
 }
 
-export interface IContact {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  position: string;
-  companyId: number;
-}
-
-export interface IHrCompany {
-  id: number;
-  name: string;
-  companyId: number;
-  contacts: IContact[];
-}
-
 export interface IIdName {
   id: number;
   name: string;
@@ -67,3 +51,5 @@ export interface IInterviewer {
   email: string;
   permissionType: PermissionTypeEnum;
 }
+
+

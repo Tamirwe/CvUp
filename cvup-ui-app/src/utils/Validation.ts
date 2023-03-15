@@ -1,5 +1,110 @@
-/* eslint-disable no-useless-escape */
+import { TextValidateTypeEnum } from "../models/GeneralEnums";
 
+/* eslint-disable no-useless-escape */
+export const validateTxt = (
+  txt: string,
+  typeValidation: TextValidateTypeEnum[]
+) => {
+  for (let i = 0; i < typeValidation.length; i++) {
+    switch (typeValidation[i]) {
+      case TextValidateTypeEnum.notEmpty:
+        if (txt.trim().length < 1) {
+          return "Required Field";
+        }
+
+        break;
+      case TextValidateTypeEnum.onlyLetters:
+        if (!/^[\p{L}\s'`-]*$/u.test(txt.trim())) {
+          return "Please use letters only";
+        }
+        break;
+      case TextValidateTypeEnum.startWithTwoLetters:
+        if (!/^.*[\p{L}\s]{2,}.*$/u.test(txt.trim())) {
+          return "Must start with at least two letter.";
+        }
+        break;
+      case TextValidateTypeEnum.twoCharsMin:
+        if (txt.trim().length < 2) {
+          return "Field is too short";
+        }
+        break;
+      default:
+        return "";
+    }
+  }
+
+  return "";
+};
+
+export const validteEmail = (
+  email: string,
+  typeValidation: TextValidateTypeEnum[]
+) => {
+  for (let i = 0; i < typeValidation.length; i++) {
+    switch (typeValidation[i]) {
+      case TextValidateTypeEnum.notEmpty:
+        if (email.trim().length < 1) {
+          return "Required Field";
+        }
+
+        break;
+      case TextValidateTypeEnum.emailValid:
+        if (!isEmailValid(email)) {
+          return "Must be a valid email";
+        }
+        break;
+      default:
+        return "";
+    }
+  }
+
+  return "";
+};
+
+export const validtePhone = (
+  phone: string,
+  typeValidation: TextValidateTypeEnum[]
+) => {
+  for (let i = 0; i < typeValidation.length; i++) {
+    switch (typeValidation[i]) {
+      case TextValidateTypeEnum.notEmpty:
+        if (phone.trim().length < 1) {
+          return "Required Field";
+        }
+
+        break;
+      case TextValidateTypeEnum.phoneValid:
+        if (!isPhoneValid(phone)) {
+          return "Must be a valid phone";
+        }
+        break;
+      default:
+        return "";
+    }
+  }
+
+  return "";
+};
+
+export const validateSelect = (
+  num: number,
+  typeValidation: TextValidateTypeEnum[]
+) => {
+  for (let i = 0; i < typeValidation.length; i++) {
+    switch (typeValidation[i]) {
+      case TextValidateTypeEnum.notSelected:
+        if (num === 0) {
+          return " Value must be selected";
+        }
+        break;
+      default:
+        return "";
+    }
+  }
+
+  return "";
+};
+/***************************************************** */
 export const textFieldValidte = (
   txt: string,
   notEmpty: boolean = true,
@@ -28,7 +133,7 @@ export const textFieldValidte = (
 
 export const emailValidte = (email: string) => {
   if (email.trim().length < 1) {
-    return "Password is required";
+    return "Email is required";
   }
 
   if (!isEmailValid(email)) {
@@ -46,6 +151,11 @@ export const isEmailValid = (email: string) => {
   return isMatch;
 };
 
+export const isPhoneValid = (phone: string) => {
+  const isMatch = phone.match(/^[0-9 ().+-]+$/);
+
+  return isMatch && phone.length > 8;
+};
 
 export const passwordValidate = (p: string) => {
   if (p.length === 0) {

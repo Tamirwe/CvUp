@@ -11,11 +11,11 @@ interface IProps {
 }
 
 export const CustomersList = observer((props: IProps) => {
-  const { generalStore } = useStore();
+  const { contactsStore } = useStore();
 
   useEffect(() => {
     (async () => {
-      await generalStore.getCustomersList(false);
+      await contactsStore.getCustomersList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -29,7 +29,7 @@ export const CustomersList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {generalStore.customersList?.map((item, i) => {
+      {contactsStore.customersList?.map((item, i) => {
         return (
           <ListItemButton
             onClick={() =>

@@ -27,13 +27,13 @@ export const UsersFormDialog = ({
   useEffect(() => {
     switch (crudType) {
       case CrudTypesEnum.Insert:
-        setFormTitle("Add Contact");
+        setFormTitle("Add User");
         break;
       case CrudTypesEnum.Update:
-        setFormTitle("Edit Contact");
+        setFormTitle("Edit User");
         break;
       case CrudTypesEnum.Delete:
-        setFormTitle("Delete Contact");
+        setFormTitle("Delete User");
         break;
       default:
         break;

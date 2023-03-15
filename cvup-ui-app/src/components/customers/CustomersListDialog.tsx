@@ -20,7 +20,7 @@ interface IProps {
 }
 
 export const CustomersListDialog = ({ isOpen, close }: IProps) => {
-  const { generalStore } = useStore();
+  const { contactsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openCustomerForm, setOpenCustomerForm] = useState(false);
   const [editCustomer, setEditCustomer] = useState<IIdName>();
@@ -40,7 +40,7 @@ export const CustomersListDialog = ({ isOpen, close }: IProps) => {
     setOpenCustomerForm(false);
 
     if (isSaved) {
-      generalStore.getCustomersList(true);
+      contactsStore.getCustomersList(true);
     }
   };
 

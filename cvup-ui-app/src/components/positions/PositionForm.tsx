@@ -36,7 +36,7 @@ import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 export const PositionForm = observer(() => {
   let { pid } = useParams();
   const navigate = useNavigate();
-  const { positionsStore, generalStore, authStore } = useStore();
+  const { positionsStore, generalStore, authStore, contactsStore } = useStore();
   const [openCustomersList, setOpenCustomersList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
   const [openInterviewersList, setOpenInterviewersList] = useState(false);
@@ -85,7 +85,7 @@ export const PositionForm = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
-        generalStore.getCustomersList(false),
+        contactsStore.getCustomersList(false),
         generalStore.getHrCompaniesList(false),
         authStore.getInterviewersList(false),
       ]);
@@ -414,7 +414,7 @@ export const PositionForm = observer(() => {
                         </IconButton>
                       }
                     >
-                      {generalStore.customersList?.map((item, i) => {
+                      {contactsStore.customersList?.map((item, i) => {
                         return (
                           <MenuItem key={item.id} value={item.id}>
                             {item.name}

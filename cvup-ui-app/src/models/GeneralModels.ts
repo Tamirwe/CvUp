@@ -77,7 +77,8 @@ export interface IMailsList {
 
 export interface IContact {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   customerId: number;
   email: string;
   phone: string;

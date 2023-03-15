@@ -67,12 +67,6 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
       }
     }
 
-    // const response = await generalStore.deleteHrCompany(formModel.id);
-    // if (response.isSuccess) {
-    //   onSaved();
-    // } else {
-    //   return setSubmitError("An Error Occurred Please Try Again Later.");
-    // }
   };
 
   const handleMenuSelected = async (menuItem: string) => {

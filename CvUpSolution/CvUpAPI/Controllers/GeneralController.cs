@@ -51,36 +51,5 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("AddUpdateHrCompany")]
-        public async Task<IActionResult> AddUpdateHrCompany(IdNameModel data)
-        {
-            if (data.id == 0)
-            {
-                await _cvsPosService.AddHrCompany(data, Globals.CompanyId);
-            }
-            else
-            {
-                await _cvsPosService.UpdateHrCompany(data, Globals.CompanyId);
-            }
-
-            return Ok();
-        }
-
-        [HttpGet]
-        [Route("GetHrCompaniesList")]
-        public async Task<IActionResult> GetHrCompaniesList()
-        {
-            List<IdNameModel> customers = await _cvsPosService.GetHrCompaniesList(Globals.CompanyId);
-            return Ok(customers);
-        }
-
-        [HttpDelete]
-        [Route("DeleteHrCompany")]
-        public async Task<IActionResult> DeleteHrCompany(int id)
-        {
-            await _cvsPosService.DeleteHrCompany(Globals.CompanyId, id);
-            return Ok();
-        }
     }
 }

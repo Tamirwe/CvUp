@@ -20,8 +20,9 @@ namespace DataModelsLibrary.Queries
                 {
                     customer_id= data.customerId,
                     company_id = companyId,
-                    name= data.name,
-                    email= data.email,
+                    first_name = data.firstName,
+                    last_name = data.lastName,
+                    email = data.email,
                     phone= data.phone,
                 };
 
@@ -38,8 +39,9 @@ namespace DataModelsLibrary.Queries
                 var fdr = new contact
                 {
                     id = data.id,
-                    name = data.name,
-                    email= data.email,
+                    first_name = data.firstName,
+                    last_name = data.lastName,
+                    email = data.email,
                     phone= data.phone,
                 };
 
@@ -73,11 +75,12 @@ namespace DataModelsLibrary.Queries
             {
                 var query = from c in dbContext.contacts
                             where c.company_id == companyId
-                            orderby c.name
+                            orderby c.first_name, c.last_name
                             select new ContactModel
                             {
                                 id = c.id,
-                                name = c.name,
+                                firstName = c.first_name,
+                                lastName = c.last_name,
                                 email = c.email,
                                 phone = c.phone,
                                 customerId = c.customer_id

@@ -28,27 +28,7 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeleteCustomer(companyId, id);
         }
 
-        public async Task<hr_company> AddHrCompany(IdNameModel data, int companyId)
-        {
-            hr_company newRec = await _cvsPositionsQueries.AddHrCompany(data, companyId);
-            return newRec;
-        }
+       
 
-        public async Task<hr_company?> UpdateHrCompany(IdNameModel data, int companyId)
-        {
-            hr_company? updRec = await _cvsPositionsQueries.UpdateHrCompany(data, companyId);
-            return updRec;
-        }
-
-        public async Task<List<IdNameModel>> GetHrCompaniesList(int companyId)
-        {
-            List<IdNameModel> depList = await _cvsPositionsQueries.GetHrCompaniesList(companyId);
-            return depList;
-        }
-
-        public async Task DeleteHrCompany(int companyId, int id)
-        {
-            await _cvsPositionsQueries.DeleteHrCompany(companyId, id);
-        }
     }
 }

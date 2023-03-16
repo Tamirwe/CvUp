@@ -294,75 +294,13 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<hr_company> AddHrCompany(IdNameModel data, int companyId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var hr = new hr_company
-                {
-                    name = data.name,
-                    company_id = companyId
-                };
+     
 
-                var result = dbContext.hr_companies.Add(hr);
-                await dbContext.SaveChangesAsync();
-                return result.Entity;
-            }
-        }
-
-        public async Task<hr_company?> UpdateHrCompany(IdNameModel data, int companyId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                hr_company hr = new hr_company { id = data.id, name = data.name, company_id = companyId };
-                var result = dbContext.hr_companies.Update(hr);
-                await dbContext.SaveChangesAsync();
-                return result.Entity;
-            }
-        }
-
-        public async Task<List<IdNameModel>> GetHrCompaniesList(int companyId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var query = from hr in dbContext.hr_companies
-                            where hr.company_id == companyId
-                            orderby hr.name
-                            select new IdNameModel
-                            {
-                                id = hr.id,
-                                name = hr.name,
-                            };
-
-                return await query.ToListAsync();
-            }
-        }
-
-        public async Task DeleteHrCompany(int companyId, int id)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var hr = await (from h in dbContext.hr_companies
-                                where h.id == id && h.company_id == companyId
-                                select h).FirstOrDefaultAsync();
-
-                if (hr != null)
-                {
-                    var result = dbContext.hr_companies.Remove(hr);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
 
         public async Task<PositionClientModel> GetPosition(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var hrs = await dbContext.position_hr_companies
-                            .Where(p => p.company_id == companyId && p.position_id == positionId)
-                            .Select(p => p.hr_company_id)
-                            .ToArrayAsync();
-
                 var inter = await dbContext.position_interviewers
                           .Where(p => p.company_id == companyId && p.position_id == positionId)
                           .Select(p => p.user_id)
@@ -379,7 +317,6 @@ namespace DataModelsLibrary.Queries
                                 companyId = companyId,
                                 customerId = p.customer_id ?? 0,
                                 isActive = Convert.ToBoolean(p.is_active),
-                                hrCompaniesIds = hrs.ToArray(),
                                 interviewersIds = inter.ToArray()
                             };
 
@@ -413,7 +350,6 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.positions.Add(ent);
                 await dbContext.SaveChangesAsync();
 
-                await AddHrCompanies(companyId, result.Entity.id, data.hrCompaniesIds);
                 await AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
 
                 return result.Entity;
@@ -440,7 +376,6 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.positions.Update(ent);
                 await dbContext.SaveChangesAsync();
 
-                UpdateHrCompanies(companyId, data.id, data.hrCompaniesIds);
                 UpdateInterviewers(companyId, data.id, data.interviewersIds);
 
                 return result.Entity;
@@ -482,38 +417,6 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        private async Task UpdateHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var dbHrs = await (from h in dbContext.position_hr_companies
-                                   where h.company_id == companyId && h.position_id == positionId
-                                   select h).ToListAsync();
-
-                foreach (var id in hrCompaniesIds)
-                {
-                    if (dbHrs.Find(x => x.hr_company_id == id) == null)
-                    {
-                        dbContext.position_hr_companies.Add(new position_hr_company
-                        {
-                            company_id = companyId,
-                            position_id = positionId,
-                            hr_company_id = id
-                        });
-                    }
-                }
-
-                foreach (var item in dbHrs)
-                {
-                    if (Array.IndexOf(hrCompaniesIds, item.hr_company_id) == -1)
-                    {
-                        dbContext.position_hr_companies.Remove(item);
-                    }
-                }
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
 
         private async Task UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
         {
@@ -542,26 +445,6 @@ namespace DataModelsLibrary.Queries
                     {
                         dbContext.position_interviewers.Remove(item);
                     }
-                }
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        private async Task AddHrCompanies(int companyId, int positionId, int[] hrCompaniesIds)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                foreach (var item in hrCompaniesIds)
-                {
-                    var hr = new position_hr_company
-                    {
-                        company_id = companyId,
-                        hr_company_id = item,
-                        position_id = positionId
-                    };
-
-                    dbContext.position_hr_companies.Add(hr);
                 }
 
                 await dbContext.SaveChangesAsync();

@@ -15,10 +15,6 @@ namespace DataModelsLibrary.Queries
         public Task<customer?> UpdateCustomer(IdNameModel data, int companyId);
         public Task<List<IdNameModel>> GetCustomersList(int companyId);
         public Task DeleteCustomer(int companyId, int id);
-        public Task<hr_company> AddHrCompany(IdNameModel data, int companyId);
-        public Task<hr_company?> UpdateHrCompany(IdNameModel data, int companyId);
-        public Task<List<IdNameModel>> GetHrCompaniesList(int companyId);
-        public Task DeleteHrCompany(int companyId, int id);
         public Task<position> AddPosition(PositionClientModel data, int companyId, int userId);
         public Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId);
         public Task<List<PositionModel>> GetPositionsList(int companyId);

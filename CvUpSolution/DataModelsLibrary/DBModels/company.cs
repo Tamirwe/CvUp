@@ -15,11 +15,8 @@ namespace Database.models
             emails_sents = new HashSet<emails_sent>();
             folders = new HashSet<folder>();
             folders_cands = new HashSet<folders_cand>();
-            hr_companies = new HashSet<hr_company>();
-            hr_contacts = new HashSet<hr_contact>();
             position_candidate_stages = new HashSet<position_candidate_stage>();
             position_candidates = new HashSet<position_candidate>();
-            position_hr_companies = new HashSet<position_hr_company>();
             position_interviewers = new HashSet<position_interviewer>();
             positions = new HashSet<position>();
             users = new HashSet<user>();
@@ -40,11 +37,8 @@ namespace Database.models
         public virtual ICollection<emails_sent> emails_sents { get; set; }
         public virtual ICollection<folder> folders { get; set; }
         public virtual ICollection<folders_cand> folders_cands { get; set; }
-        public virtual ICollection<hr_company> hr_companies { get; set; }
-        public virtual ICollection<hr_contact> hr_contacts { get; set; }
         public virtual ICollection<position_candidate_stage> position_candidate_stages { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
-        public virtual ICollection<position_hr_company> position_hr_companies { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<position> positions { get; set; }
         public virtual ICollection<user> users { get; set; }

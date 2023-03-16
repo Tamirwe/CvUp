@@ -28,14 +28,11 @@ namespace Database.models
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
         public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
-        public virtual DbSet<hr_company> hr_companies { get; set; } = null!;
-        public virtual DbSet<hr_contact> hr_contacts { get; set; } = null!;
         public virtual DbSet<parser> parsers { get; set; } = null!;
         public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
         public virtual DbSet<position_candidate_stage> position_candidate_stages { get; set; } = null!;
-        public virtual DbSet<position_hr_company> position_hr_companies { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -154,7 +151,9 @@ namespace Database.models
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
-                entity.Property(e => e.name).HasMaxLength(100);
+                entity.Property(e => e.first_name).HasMaxLength(30);
+
+                entity.Property(e => e.last_name).HasMaxLength(30);
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
@@ -316,46 +315,6 @@ namespace Database.models
                     .HasConstraintName("fk_folder_id_folders_cands");
             });
 
-            modelBuilder.Entity<hr_company>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_hr_companies_company_id_companies_id");
-
-                entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.name).HasMaxLength(100);
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.hr_companies)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_hr_companies_company_id_companies_id");
-            });
-
-            modelBuilder.Entity<hr_contact>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_hr_contacts_company_id_companies_id");
-
-                entity.HasIndex(e => e.contact_id, "fk_hr_contacts_contact_id_contacts_id");
-
-                entity.HasIndex(e => e.hr_company_id, "fk_hr_contacts_hr_company_id_hr_companies_id");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.hr_contacts)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_hr_contacts_company_id_companies_id");
-
-                entity.HasOne(d => d.contact)
-                    .WithMany(p => p.hr_contacts)
-                    .HasForeignKey(d => d.contact_id)
-                    .HasConstraintName("fk_hr_contacts_contact_id_contacts_id");
-
-                entity.HasOne(d => d.hr_company)
-                    .WithMany(p => p.hr_contacts)
-                    .HasForeignKey(d => d.hr_company_id)
-                    .HasConstraintName("fk_hr_contacts_hr_company_id_hr_companies_id");
-            });
-
             modelBuilder.Entity<parser>(entity =>
             {
                 entity.Property(e => e.name).HasMaxLength(250);
@@ -475,35 +434,6 @@ namespace Database.models
                     .WithMany(p => p.position_candidate_stages)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_position_candidate_stages_company_id_companies_id");
-            });
-
-            modelBuilder.Entity<position_hr_company>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_position_hr_companies_company_id_companies_id");
-
-                entity.HasIndex(e => e.hr_company_id, "fk_position_hr_companies_hr_company_id_hr_companies_id");
-
-                entity.HasIndex(e => new { e.position_id, e.hr_company_id, e.company_id }, "uq_position_hr_companies_position_id_hr_company_id_company_id")
-                    .IsUnique();
-
-                entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.position_hr_companies)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_position_hr_companies_company_id_companies_id");
-
-                entity.HasOne(d => d.hr_company)
-                    .WithMany(p => p.position_hr_companies)
-                    .HasForeignKey(d => d.hr_company_id)
-                    .HasConstraintName("fk_position_hr_companies_hr_company_id_hr_companies_id");
-
-                entity.HasOne(d => d.position)
-                    .WithMany(p => p.position_hr_companies)
-                    .HasForeignKey(d => d.position_id)
-                    .HasConstraintName("fk_position_hr_companies_position_id_positions_id");
             });
 
             modelBuilder.Entity<position_interviewer>(entity =>

@@ -12,7 +12,6 @@ namespace Database.models
     {
 
         public virtual DbSet<IdNameModel> idNameModelDB { get; set; } = null!;
-        public virtual DbSet<HrCompanyModel> HrCompanyDB { get; set; } = null!;
 
     }
 }

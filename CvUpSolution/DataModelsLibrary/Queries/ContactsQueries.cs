@@ -74,6 +74,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = from c in dbContext.contacts
+                            join r in dbContext.customers on c.customer_id equals r.id
                             where c.company_id == companyId
                             orderby c.first_name, c.last_name
                             select new ContactModel
@@ -83,7 +84,8 @@ namespace DataModelsLibrary.Queries
                                 lastName = c.last_name,
                                 email = c.email,
                                 phone = c.phone,
-                                customerId = c.customer_id
+                                customerId = c.customer_id,
+                                customerName = r.name
                             };
 
                 return await query.ToListAsync();

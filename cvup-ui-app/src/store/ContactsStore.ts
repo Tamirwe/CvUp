@@ -6,6 +6,7 @@ import { RootStore } from "./RootStore";
 
 export class ContactsStore {
   private contactsApi;
+  private contactSelected?: IContact;
   contactsList: IContact[] = [];
   customersList: IIdName[] = [];
 
@@ -15,6 +16,14 @@ export class ContactsStore {
   }
 
   reset() {}
+
+  get selectedContact() {
+    return this.contactSelected;
+  }
+
+  set selectedContact(val: IContact | undefined) {
+    this.contactSelected = val;
+  }
 
   async addContact(contactModel: IContact) {
     this.rootStore.generalStore.backdrop = true;

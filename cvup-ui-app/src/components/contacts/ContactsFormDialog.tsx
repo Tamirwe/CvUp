@@ -13,7 +13,6 @@ interface IProps {
 
 export const ContactsFormDialog = ({
   contact,
-  crudType,
   isOpen,
   onClose,
 }: IProps) => {
@@ -23,22 +22,6 @@ export const ContactsFormDialog = ({
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
-
-  useEffect(() => {
-    switch (crudType) {
-      case CrudTypesEnum.Insert:
-        setFormTitle("Add Contact");
-        break;
-      case CrudTypesEnum.Update:
-        setFormTitle("Edit Contact");
-        break;
-      case CrudTypesEnum.Delete:
-        setFormTitle("Delete Contact");
-        break;
-      default:
-        break;
-    }
-  }, [crudType]);
 
   return (
     <Dialog
@@ -51,7 +34,6 @@ export const ContactsFormDialog = ({
       <DialogContent>
         <ContactsForm
           contact={contact}
-          crudType={crudType}
           onSaved={() => onClose(true)}
           onCancel={() => onClose(false)}
         />

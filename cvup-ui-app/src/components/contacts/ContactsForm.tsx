@@ -24,19 +24,22 @@ import {
 
 interface IProps {
   contact?: IContact;
-  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
 export const ContactsForm = observer(
-  ({ contact, crudType, onSaved, onCancel }: IProps) => {
+  ({ contact, onSaved, onCancel }: IProps) => {
     const { contactsStore, generalStore } = useStore();
     const [isDirty, setIsDirty] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const [crudType, setCrudType] = useState<CrudTypesEnum>(
+      CrudTypesEnum.Insert
+    );
     const [formModel, setFormModel] = useState<IContact>({
       id: 0,
       customerId: 0,
+      customerName: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -51,6 +54,11 @@ export const ContactsForm = observer(
     });
 
     useEffect(() => {
+      if (contactsStore.selectedContact) {
+        setCrudType(CrudTypesEnum.Update);
+        setFormModel({ ...contactsStore.selectedContact });
+      }
+
       (async () => {
         await Promise.all([contactsStore.getCustomersList(false)]);
       })();
@@ -132,11 +140,27 @@ export const ContactsForm = observer(
         <Grid item xs={12} lg={12} pt={2}>
           <Stack direction="row">
             <Autocomplete
+              value={
+                formModel.customerId > 0
+                  ? {
+                      id: formModel.customerId,
+                      label: formModel.customerName,
+                    }
+                  : null
+              }
+              inputValue={formModel.customerName}
+              onInputChange={(event, newInputValue) => {
+                setFormModel((currentProps) => ({
+                  ...currentProps,
+                  customerName: newInputValue,
+                }));
+              }}
               disabled={crudType === CrudTypesEnum.Delete}
               onChange={(event, newValue) => {
                 setFormModel((currentProps) => ({
                   ...currentProps,
                   customerId: newValue?.id || 0,
+                  customerName: newValue?.label || "",
                 }));
                 clearError("customerId");
                 setIsDirty(true);

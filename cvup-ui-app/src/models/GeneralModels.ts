@@ -80,6 +80,7 @@ export interface IContact {
   firstName: string;
   lastName: string;
   customerId: number;
+  customerName?: string;
   email: string;
   phone: string;
 }

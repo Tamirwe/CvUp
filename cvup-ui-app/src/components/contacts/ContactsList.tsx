@@ -43,6 +43,7 @@ export const ContactsList = observer(() => {
               //   cand.candidateId === candsStore.candDisplay?.candidateId
               // }
               onClick={() => {
+                contactsStore.selectedContact = cont;
                 generalStore.showContactFormDialog = true;
                 // if (location.pathname !== "/cv") {
                 //   navigate(`/cv`);
@@ -50,16 +51,16 @@ export const ContactsList = observer(() => {
                 // candsStore.displayCvMain(cand);
               }}
             >
-              {/* <ListItemText
-                primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
+              <ListItemText
+                primary={`${cont.firstName} ${cont.lastName} - ${cont.customerName}`}
+                secondary={`${cont.email}, ${cont.phone}`}
                 sx={{
                   textAlign: "right",
-                  color: "#bcc9d5",
                   fontSize: "0.775rem",
                   alignSelf: "start",
                   whiteSpace: "nowrap",
                 }}
-              /> */}
+              />
             </ListItemButton>
           </ListItem>
         );

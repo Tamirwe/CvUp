@@ -1,12 +1,13 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
 import { IAppSettings, IContact } from "../models/GeneralModels";
-import ContactsApi from "./api/ContactsApi";
+import ContactsApi from "./api/CustomersContactsApi";
 import { RootStore } from "./RootStore";
 
-export class ContactsStore {
+export class CustomersContactsStore {
   private contactsApi;
   private contactSelected?: IContact;
+  private customerSelected?: IIdName;
   contactsList: IContact[] = [];
   customersList: IIdName[] = [];
 
@@ -23,6 +24,14 @@ export class ContactsStore {
 
   set selectedContact(val: IContact | undefined) {
     this.contactSelected = val;
+  }
+
+  get selectedCustomer() {
+    return this.customerSelected;
+  }
+
+  set selectedCustomer(val: IIdName | undefined) {
+    this.customerSelected = val;
   }
 
   async addContact(contactModel: IContact) {
@@ -66,9 +75,16 @@ export class ContactsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async addUpdateCustomer(customer: IIdName) {
+  async addCustomer(customer: IIdName) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.addUpdateCustomer(customer);
+    const data = await this.contactsApi.addCustomer(customer);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async updateCustomer(customer: IIdName) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.contactsApi.updateCustomer(customer);
     this.rootStore.generalStore.backdrop = false;
     return data;
   }

@@ -16,23 +16,19 @@ import { CustomersList } from "./CustomersList";
 
 interface IProps {
   isOpen: boolean;
-  close: () => void;
+  close?: () => void;
 }
 
 export const CustomersListDialog = ({ isOpen, close }: IProps) => {
-  const { contactsStore } = useStore();
+  const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openCustomerForm, setOpenCustomerForm] = useState(false);
-  const [editCustomer, setEditCustomer] = useState<IIdName>();
-  const [crudType, setCrudType] = useState<CrudTypesEnum>();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleAddEditDelete = (customer: IIdName, type: CrudTypesEnum) => {
-    setEditCustomer(customer);
-    setCrudType(type);
+  const handleCustomerClick = () => {
     setOpenCustomerForm(true);
   };
 
@@ -40,7 +36,7 @@ export const CustomersListDialog = ({ isOpen, close }: IProps) => {
     setOpenCustomerForm(false);
 
     if (isSaved) {
-      contactsStore.getCustomersList(true);
+      customersContactsStore.getCustomersList(true);
     }
   };
 
@@ -62,20 +58,19 @@ export const CustomersListDialog = ({ isOpen, close }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <CustomersList onAddEditDeleteclick={handleAddEditDelete} />
+        <CustomersList onCustomerClick={handleCustomerClick} />
         <Button
-          onClick={() =>
-            handleAddEditDelete({ id: 0, name: "" }, CrudTypesEnum.Insert)
-          }
+          onClick={() => {
+            customersContactsStore.selectedCustomer = undefined;
+            handleCustomerClick();
+          }}
           sx={{ padding: "30px 0 10px 0" }}
           startIcon={<GoPlus />}
         >
           Add
         </Button>
-        {openCustomerForm && editCustomer && (
+        {openCustomerForm && (
           <CustomerFormDialog
-            customer={editCustomer}
-            crudType={crudType}
             isOpen={openCustomerForm}
             onClose={(isSaved) => handleFormClose(isSaved)}
           />

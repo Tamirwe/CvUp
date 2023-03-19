@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace ContactsLibrary
 {
-    public class ContactsService : IContactsService
+    public class CustomersContactsServiceService : ICustomersContactsServiceService
     {
         private IConfiguration _configuration;
         private IContactsQueries _contactsQueries;
 
-        public ContactsService(IConfiguration config, IContactsQueries contactsQueries)
+        public CustomersContactsServiceService(IConfiguration config, IContactsQueries contactsQueries)
         {
             _configuration = config;
             _contactsQueries = contactsQueries;
@@ -35,6 +35,29 @@ namespace ContactsLibrary
         public async Task<List<ContactModel>> GetContacts(int companyId)
         {
             return await _contactsQueries.GetContacts(companyId);
+        }
+
+        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
+        {
+            customer newRec = await _contactsQueries.AddCustomer(data, companyId);
+            return newRec;
+        }
+
+        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
+        {
+            customer? updRec = await _contactsQueries.UpdateCustomer(data, companyId);
+            return updRec;
+        }
+
+        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
+        {
+            List<IdNameModel> depList = await _contactsQueries.GetCustomersList(companyId);
+            return depList;
+        }
+
+        public async Task DeleteCustomer(int companyId, int id)
+        {
+            await _contactsQueries.DeleteCustomer(companyId, id);
         }
     }
 }

@@ -3,25 +3,33 @@ import { useEffect, useState } from "react";
 import { IContact } from "../../models/GeneralModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { ContactsForm } from "./ContactsForm";
+import { useStore } from "../../Hooks/useStore";
 
 interface IProps {
-  contact?: IContact;
   crudType?: CrudTypesEnum;
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
 }
 
 export const ContactsFormDialog = ({
-  contact,
   isOpen,
   onClose,
 }: IProps) => {
+  const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
-  const [formTitle, setFormTitle] = useState("");
+  const [formTitle, setFormTitle] = useState("Add Contact");
 
   useEffect(() => {
+    if (customersContactsStore.selectedContact) {
+      setFormTitle("Edit Contact");
+    }
     setOpen(isOpen);
   }, [isOpen]);
+
+  const handleSave=()=>{
+    customersContactsStore.getContactsList();
+    onClose(false);
+  }
 
   return (
     <Dialog
@@ -33,8 +41,7 @@ export const ContactsFormDialog = ({
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         <ContactsForm
-          contact={contact}
-          onSaved={() => onClose(true)}
+          onSaved={handleSave}
           onCancel={() => onClose(false)}
         />
       </DialogContent>

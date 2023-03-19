@@ -11,10 +11,6 @@ namespace DataModelsLibrary.Queries
         public Task<candidate?> GetCandidateByEmail(string email);
         public Task<List<CvPropsToIndexModel>> GetCompanyCvsToIndex(int companyId);
         public Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
-        public Task<customer> AddCustomer(IdNameModel data, int companyId);
-        public Task<customer?> UpdateCustomer(IdNameModel data, int companyId);
-        public Task<List<IdNameModel>> GetCustomersList(int companyId);
-        public Task DeleteCustomer(int companyId, int id);
         public Task<position> AddPosition(PositionClientModel data, int companyId, int userId);
         public Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId);
         public Task<List<PositionModel>> GetPositionsList(int companyId);

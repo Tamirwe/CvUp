@@ -2,11 +2,12 @@ import { IIdName } from "../../models/AuthModels";
 import { IContact } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
-export default class ContactsApi extends BaseApi {
+export default class CustomersContactsApi extends BaseApi {
   async addContact(contactModel: IContact) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Contacts/AddContact", contactModel))
-        .data;
+      const data = (
+        await this.http.post("CustomersContacts/AddContact", contactModel)
+      ).data;
       return data;
     });
 
@@ -16,7 +17,7 @@ export default class ContactsApi extends BaseApi {
   async updateContact(contactModel: IContact) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.post("Contacts/UpdateContact", contactModel)
+        await this.http.put("CustomersContacts/UpdateContact", contactModel)
       ).data;
       return data;
     });
@@ -26,8 +27,9 @@ export default class ContactsApi extends BaseApi {
 
   async deleteContact(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.delete("Contacts/DeleteContact?id=" + id))
-        .data;
+      const data = (
+        await this.http.delete("CustomersContacts/DeleteContact?id=" + id)
+      ).data;
       return data;
     });
 
@@ -36,18 +38,31 @@ export default class ContactsApi extends BaseApi {
 
   async getContactsList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IContact[]>("Contacts/GetContacts"))
-        .data;
+      const data = (
+        await this.http.get<IContact[]>("CustomersContacts/GetContacts")
+      ).data;
       return data;
     });
 
     return response;
   }
 
-  async addUpdateCustomer(customer: IIdName) {
+  async addCustomer(customer: IIdName) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("General/AddUpdateCustomer", customer))
-        .data;
+      const data = (
+        await this.http.post("CustomersContacts/AddCustomer", customer)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async updateCustomer(customer: IIdName) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.put("CustomersContacts/UpdateCustomer", customer)
+      ).data;
       return data;
     });
 
@@ -56,8 +71,9 @@ export default class ContactsApi extends BaseApi {
 
   async getCustomersList() {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IIdName[]>("General/GetCustomersList"))
-        .data;
+      const data = (
+        await this.http.get<IIdName[]>("CustomersContacts/GetCustomersList")
+      ).data;
       return data;
     });
 
@@ -66,8 +82,9 @@ export default class ContactsApi extends BaseApi {
 
   async deleteCustomer(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (await this.http.delete(`General/DeleteCustomer?id=${id}`))
-        .data;
+      const data = (
+        await this.http.delete(`CustomersContacts/DeleteCustomer?id=${id}`)
+      ).data;
       return data;
     });
 

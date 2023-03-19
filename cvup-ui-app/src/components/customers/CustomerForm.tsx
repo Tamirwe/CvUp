@@ -1,74 +1,74 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
-import { CrudTypesEnum } from "../../models/GeneralEnums";
-import { textFieldValidte } from "../../utils/Validation";
+import { CrudTypesEnum, TextValidateTypeEnum } from "../../models/GeneralEnums";
+import { textFieldValidte, validateTxt } from "../../utils/Validation";
 
 interface IProps {
-  customer: IIdName;
-  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const CustomerForm = ({
-  customer,
-  crudType,
-  onSaved,
-  onCancel,
-}: IProps) => {
-  const { contactsStore } = useStore();
+export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
+  const { customersContactsStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [formModel, setFormModel] = useState<IIdName>(customer);
+  const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
+  const [formModel, setFormModel] = useState<IIdName>({
+    id: 0,
+    name: "",
+  });
   const [formValError, setFormValError] = useState({
     name: false,
   });
-  const [formValErrorTxt, setFormValErrorTxt] = useState({
+  const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
   });
 
   useEffect(() => {
-    customer && setFormModel({ ...customer });
-  }, [customer]);
-
-  const updateFieldError = (field: string, errTxt: string) => {
-    const isValid = errTxt === "" ? true : false;
-    setIsDirty(true);
-    setSubmitError("");
-
-    setFormValErrorTxt((currentProps) => ({
-      ...currentProps,
-      [field]: errTxt,
-    }));
-    setFormValError((currentProps) => ({
-      ...currentProps,
-      [field]: isValid === false,
-    }));
-
-    return isValid;
-  };
+    if (customersContactsStore.selectedCustomer) {
+      setCrudType(CrudTypesEnum.Update);
+      setFormModel({ ...customersContactsStore.selectedCustomer });
+    }
+  }, []);
 
   const validateForm = () => {
-    let isFormValid = true;
-    let errTxt = textFieldValidte(formModel.name, true, true, true);
-    isFormValid = updateFieldError("name", errTxt) && isFormValid;
+    let isFormValid = true,
+      err = "";
+
+    err = validateTxt(formModel.name, [
+      TextValidateTypeEnum.notEmpty,
+      TextValidateTypeEnum.twoCharsMin,
+      TextValidateTypeEnum.startWithTwoLetters,
+    ]);
+    isFormValid = updateFieldError("name", err) && isFormValid;
+
     return isFormValid;
   };
 
-  const submitForm = async () => {
-    const response = await contactsStore.addUpdateCustomer(formModel);
+  const handleSubmit = async () => {
+    setIsDirty(false);
+    if (validateForm()) {
+      let response;
 
-    if (response.isSuccess) {
-      onSaved();
-    } else {
-      return setSubmitError("An Error Occurred Please Try Again Later.");
+      if (crudType === CrudTypesEnum.Insert) {
+        response = await customersContactsStore.addCustomer(formModel);
+      } else {
+        response = await customersContactsStore.updateCustomer(formModel);
+      }
+
+      if (response.isSuccess) {
+        onSaved();
+      } else {
+        return setSubmitError("An Error Occurred Please Try Again Later.");
+      }
     }
   };
 
   const deleteRecord = async () => {
-    const response = await contactsStore.deleteCustomer(formModel.id);
+    const response = await customersContactsStore.deleteCustomer(formModel.id);
 
     if (response.isSuccess) {
       onSaved();
@@ -95,10 +95,11 @@ export const CustomerForm = ({
                 ...currentProps,
                 name: e.target.value,
               }));
-              updateFieldError("name", "");
+              clearError("name");
+              setIsDirty(true);
             }}
-            error={formValError.name}
-            helperText={formValErrorTxt.name}
+            error={errModel.name !== ""}
+            helperText={errModel.name}
             value={formModel.name}
           />
         </Grid>
@@ -109,18 +110,12 @@ export const CustomerForm = ({
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Stack direction="row" alignItems="center" gap={1}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => onCancel()}
-                >
+                <Button fullWidth color="secondary" onClick={() => onCancel()}>
                   Cancel
                 </Button>
                 {crudType === CrudTypesEnum.Delete ? (
                   <Button
                     fullWidth
-                    variant="contained"
                     color="warning"
                     onClick={() => {
                       deleteRecord();
@@ -132,14 +127,8 @@ export const CustomerForm = ({
                   <Button
                     disabled={!isDirty}
                     fullWidth
-                    variant="contained"
                     color="secondary"
-                    onClick={() => {
-                      setIsDirty(false);
-                      if (validateForm()) {
-                        submitForm();
-                      }
-                    }}
+                    onClick={handleSubmit}
                   >
                     Save
                   </Button>

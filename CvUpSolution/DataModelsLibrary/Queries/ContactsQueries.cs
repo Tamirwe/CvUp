@@ -39,6 +39,8 @@ namespace DataModelsLibrary.Queries
                 var fdr = new contact
                 {
                     id = data.id,
+                    customer_id= data.customerId,
+                    company_id = companyId,
                     first_name = data.firstName,
                     last_name = data.lastName,
                     email = data.email,
@@ -89,6 +91,66 @@ namespace DataModelsLibrary.Queries
                             };
 
                 return await query.ToListAsync();
+            }
+        }
+
+        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var dep = new customer
+                {
+                    name = data.name,
+                    company_id = companyId
+                };
+
+                var result = dbContext.customers.Add(dep);
+                await dbContext.SaveChangesAsync();
+                return result.Entity;
+            }
+        }
+
+        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                customer dep = new customer { id = data.id, name = data.name, company_id = companyId };
+                var result = dbContext.customers.Update(dep);
+                await dbContext.SaveChangesAsync();
+                return result.Entity;
+            }
+        }
+
+        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from dep in dbContext.customers
+                            where dep.company_id == companyId
+                            orderby dep.name
+                            select new IdNameModel
+                            {
+                                id = dep.id,
+                                name = dep.name,
+                            };
+
+                return await query.ToListAsync();
+            }
+        }
+
+        public async Task DeleteCustomer(int companyId, int id)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var dep = await (from d in dbContext.customers
+                                 where d.id == id && d.company_id == companyId
+                                 select d).FirstOrDefaultAsync();
+
+                if (dep != null)
+                {
+                    var result = dbContext.customers.Remove(dep);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
     }

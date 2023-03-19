@@ -1,21 +1,20 @@
-import { List, ListItemText, IconButton, ListItemButton } from "@mui/material";
+import { List, ListItemText, ListItemButton } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { MdOutlineDelete } from "react-icons/md";
 import { IIdName } from "../../models/AuthModels";
 import { observer } from "mobx-react";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
-  onAddEditDeleteclick: (customer: IIdName, type: CrudTypesEnum) => void;
+  onCustomerClick: () => void;
 }
 
 export const CustomersList = observer((props: IProps) => {
-  const { contactsStore } = useStore();
+  const { customersContactsStore } = useStore();
 
   useEffect(() => {
     (async () => {
-      await contactsStore.getCustomersList(false);
+      await customersContactsStore.getCustomersList(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -29,26 +28,17 @@ export const CustomersList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {contactsStore.customersList?.map((item, i) => {
+      {customersContactsStore.customersList?.map((item, i) => {
         return (
           <ListItemButton
-            onClick={() =>
-              props.onAddEditDeleteclick(item, CrudTypesEnum.Update)
-            }
+            onClick={() => {
+              customersContactsStore.selectedCustomer = item;
+              props.onCustomerClick();
+            }}
             key={item.id}
             sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
             <ListItemText>{item.name}</ListItemText>
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                props.onAddEditDeleteclick(item, CrudTypesEnum.Delete);
-              }}
-              sx={{ color: "#d7d2d2" }}
-            >
-              <MdOutlineDelete />
-            </IconButton>
           </ListItemButton>
         );
       })}

@@ -4,7 +4,7 @@ using DataModelsLibrary.Queries;
 using AuthLibrary;
 using CandsPositionsLibrary;
 using FoldersLibrary;
-using ContactsLibrary;
+using CustomersContactsServiceLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -20,7 +20,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<IFoldersQueries, FoldersQueries>();
             services.AddTransient<IContactsQueries, ContactsQueries>();
             services.AddTransient<IFoldersService, FoldersService>();
-            services.AddTransient<IContactsService, ContactsService>();
+            services.AddTransient<ICustomersContactsServiceService, CustomersContactsServiceService>();
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             return services;

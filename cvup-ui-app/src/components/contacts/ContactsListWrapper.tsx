@@ -4,11 +4,11 @@ import { useStore } from "../../Hooks/useStore";
 import { ContactsList } from "./ContactsList";
 
 export const ContactsListWrapper = observer(() => {
-  const { contactsStore } = useStore();
+  const { customersContactsStore } = useStore();
 
   useEffect(() => {
-    if (!contactsStore.contactsList.length) {
-      contactsStore.getContactsList();
+    if (!customersContactsStore.contactsList.length) {
+      customersContactsStore.getContactsList();
     }
   }, []);
 

@@ -1,4 +1,4 @@
-﻿using CustomersContactsServiceLibrary;
+﻿using CustomersContactsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +11,9 @@ namespace CvUpAPI.Controllers
     public class CustomersContactsController : ControllerBase
     {
         private IConfiguration _configuration;
-        private ICustomersContactsServiceService _customersContactsService;
+        private ICustomersContactsService _customersContactsService;
 
-        public CustomersContactsController(IConfiguration config, ICustomersContactsServiceService customersContactsService)
+        public CustomersContactsController(IConfiguration config, ICustomersContactsService customersContactsService)
         {
             _configuration = config;
             _customersContactsService = customersContactsService;

@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
-    <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\ImportCvsLibrary\ImportCvsLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
   </ItemGroup>

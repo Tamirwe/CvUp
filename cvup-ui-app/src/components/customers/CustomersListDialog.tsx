@@ -16,10 +16,10 @@ import { CustomersList } from "./CustomersList";
 
 interface IProps {
   isOpen: boolean;
-  close?: () => void;
+  onClose: () => void;
 }
 
-export const CustomersListDialog = ({ isOpen, close }: IProps) => {
+export const CustomersListDialog = ({ isOpen, onClose }: IProps) => {
   const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openCustomerForm, setOpenCustomerForm] = useState(false);
@@ -36,17 +36,19 @@ export const CustomersListDialog = ({ isOpen, close }: IProps) => {
     setOpenCustomerForm(false);
 
     if (isSaved) {
-      customersContactsStore.getCustomersList(true);
+      customersContactsStore.getCustomersList();
     }
+
+    onClose();
   };
 
   return (
-    <Dialog open={open} onClose={close} fullWidth maxWidth={"xs"}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth={"xs"}>
       <DialogTitle>
-        Company Teams{" "}
+        Customers{" "}
         <IconButton
           aria-label="close"
-          onClick={close}
+          onClick={onClose}
           sx={{
             position: "absolute",
             right: 8,

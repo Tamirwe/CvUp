@@ -14,6 +14,7 @@ import { FormFolderDialog } from "../components/folders/FormFolderDialog";
 import { useState } from "react";
 import { AlertDialog } from "./AlertDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
+import { CustomersListDialog } from "../components/customers/CustomersListDialog";
 
 export const LayoutAuth = observer(() => {
   const { generalStore } = useStore();
@@ -48,6 +49,12 @@ export const LayoutAuth = observer(() => {
         <ContactsFormDialog
           isOpen={generalStore.showContactFormDialog}
           onClose={() => (generalStore.showContactFormDialog = false)}
+        />
+      )}
+      {generalStore.showCustomersListDialog && (
+        <CustomersListDialog
+          isOpen={generalStore.showCustomersListDialog}
+          onClose={() => (generalStore.showCustomersListDialog = false)}
         />
       )}
       {generalStore.showUserFormDialog && (

@@ -14,7 +14,7 @@ export const CustomersList = observer((props: IProps) => {
 
   useEffect(() => {
     (async () => {
-      await customersContactsStore.getCustomersList(false);
+      await customersContactsStore.getCustomersList();
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

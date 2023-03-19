@@ -86,7 +86,7 @@ export const PositionForm = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
-        customersContactsStore.getCustomersList(false),
+        customersContactsStore.getCustomersList(),
         generalStore.getHrCompaniesList(false),
         authStore.getInterviewersList(false),
       ]);
@@ -522,7 +522,7 @@ export const PositionForm = observer(() => {
           {openCustomersList && (
             <CustomersListDialog
               isOpen={openCustomersList}
-              close={handleCustomersListClose}
+              onClose={handleCustomersListClose}
             />
           )}
           {openHrCompaniesList && (

@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailsLibrary", "EmailsLibr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneLibrary", "LuceneLibrary\LuceneLibrary.csproj", "{7417B6B6-9857-4B17-B731-45480F433D0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthLibrary", "AuthLibrary\AuthLibrary.csproj", "{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsWorkerService", "CvsWorkerService\CvsWorkerService.csproj", "{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}"
@@ -29,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoldersLibrary", "FoldersLi
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{97AFB2EE-87B4-44EE-81C2-08600E8F427C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomersContactsLibrary", "..\CustomersContactsLibrary\CustomersContactsLibrary.csproj", "{C35655F4-4420-41F4-8A38-B632C5B11A59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomersContactsLibrary", "CustomersContactsLibrary\CustomersContactsLibrary.csproj", "{97884993-9776-4214-AD90-11058C58D457}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +49,6 @@ Global
 		{7417B6B6-9857-4B17-B731-45480F433D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7417B6B6-9857-4B17-B731-45480F433D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7417B6B6-9857-4B17-B731-45480F433D0B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C2AE2F0-6FC3-495B-A96F-9AD2A0C8DCDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,10 +85,14 @@ Global
 		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{C35655F4-4420-41F4-8A38-B632C5B11A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C35655F4-4420-41F4-8A38-B632C5B11A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C35655F4-4420-41F4-8A38-B632C5B11A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C35655F4-4420-41F4-8A38-B632C5B11A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97884993-9776-4214-AD90-11058C58D457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97884993-9776-4214-AD90-11058C58D457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97884993-9776-4214-AD90-11058C58D457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97884993-9776-4214-AD90-11058C58D457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

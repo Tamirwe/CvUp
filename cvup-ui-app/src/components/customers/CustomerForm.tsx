@@ -12,16 +12,13 @@ interface IProps {
 }
 
 export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
-  const { customersContactsStore } = useStore();
+  const { customersContactsStore, generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
   const [formModel, setFormModel] = useState<IIdName>({
     id: 0,
     name: "",
-  });
-  const [formValError, setFormValError] = useState({
-    name: false,
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
@@ -68,12 +65,28 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
   };
 
   const deleteRecord = async () => {
-    const response = await customersContactsStore.deleteCustomer(formModel.id);
+    const isDelete = await generalStore.confirmDialog(
+      "Delete Customer",
+      "Are you sure you want to delete this customer?"
+    );
 
-    if (response.isSuccess) {
-      onSaved();
-    } else {
-      return setSubmitError("An Error Occurred Please Try Again Later.");
+    if (isDelete) {
+      const response = await customersContactsStore.deleteCustomer(
+        formModel.id
+      );
+
+      if (response.isSuccess) {
+        onSaved();
+
+        if (
+          formModel.id === customersContactsStore.selectedContact?.customerId
+        ) {
+          generalStore.showContactFormDialog = false;
+          customersContactsStore.getContactsList();
+        }
+      } else {
+        return setSubmitError("An Error Occurred Please Try Again Later.");
+      }
     }
   };
 
@@ -107,32 +120,34 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
         <Grid item xs={12} mt={2}>
-          <Grid container justifyContent="flex-end">
+          <Grid container justifyContent="space-between">
+            <Grid item>
+              {crudType === CrudTypesEnum.Update && (
+                <Button
+                  fullWidth
+                  color="warning"
+                  onClick={() => {
+                    deleteRecord();
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
+            </Grid>
             <Grid item>
               <Stack direction="row" alignItems="center" gap={1}>
                 <Button fullWidth color="secondary" onClick={() => onCancel()}>
                   Cancel
                 </Button>
-                {crudType === CrudTypesEnum.Delete ? (
-                  <Button
-                    fullWidth
-                    color="warning"
-                    onClick={() => {
-                      deleteRecord();
-                    }}
-                  >
-                    Delete
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={!isDirty}
-                    fullWidth
-                    color="secondary"
-                    onClick={handleSubmit}
-                  >
-                    Save
-                  </Button>
-                )}
+
+                <Button
+                  disabled={!isDirty}
+                  fullWidth
+                  color="secondary"
+                  onClick={handleSubmit}
+                >
+                  Save
+                </Button>
               </Stack>
             </Grid>
           </Grid>

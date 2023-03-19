@@ -18,6 +18,7 @@ export class GeneralStore {
   currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
   private FolderFormDialogModeOpen: CrudTypesEnum = CrudTypesEnum.None;
   private isShowContactFormDialog: boolean = false;
+  private isShowCustomersListDialog: boolean = false;
   private isShowUserFormDialog: boolean = false;
   private isConfirmDialogOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
@@ -76,6 +77,14 @@ export class GeneralStore {
 
   set showContactFormDialog(val) {
     this.isShowContactFormDialog = val;
+  }
+
+  get showCustomersListDialog() {
+    return this.isShowCustomersListDialog;
+  }
+
+  set showCustomersListDialog(val) {
+    this.isShowCustomersListDialog = val;
   }
 
   get showUserFormDialog() {

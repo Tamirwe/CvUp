@@ -64,14 +64,12 @@ export class CustomersContactsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getCustomersList(loadAgain: boolean) {
+  async getCustomersList() {
     this.rootStore.generalStore.backdrop = true;
-    if (this.customersList.length === 0 || loadAgain) {
-      const res = await this.contactsApi.getCustomersList();
-      runInAction(() => {
-        this.customersList = res.data;
-      });
-    }
+    const res = await this.contactsApi.getCustomersList();
+    runInAction(() => {
+      this.customersList = res.data;
+    });
     this.rootStore.generalStore.backdrop = false;
   }
 

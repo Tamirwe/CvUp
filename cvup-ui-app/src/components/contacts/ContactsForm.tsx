@@ -58,7 +58,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
     }
 
     (async () => {
-      await Promise.all([customersContactsStore.getCustomersList(false)]);
+      await Promise.all([customersContactsStore.getCustomersList()]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -135,7 +135,6 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
 
   return (
     <form noValidate spellCheck="false">
-      {openCustomersList && <CustomersListDialog isOpen={openCustomersList} />}
       <Grid item xs={12} lg={12} pt={2}>
         <Stack direction="row">
           <Autocomplete
@@ -183,7 +182,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
           <IconButton
             size="medium"
             aria-label="toggle password visibility"
-            onClick={() => setOpenCustomersList(true)}
+            onClick={() => (generalStore.showCustomersListDialog = true)}
             edge="end"
             sx={{
               marginTop: 1,
@@ -295,15 +294,17 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
         <Grid item xs={12} mt={2}>
           <Grid container justifyContent="space-between">
             <Grid item>
-              <Button
-                fullWidth
-                color="warning"
-                onClick={() => {
-                  deleteRecord();
-                }}
-              >
-                Delete
-              </Button>
+              {crudType === CrudTypesEnum.Update && (
+                <Button
+                  fullWidth
+                  color="warning"
+                  onClick={() => {
+                    deleteRecord();
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
             </Grid>
             <Grid item>
               <Stack direction="row" alignItems="center" gap={1}>

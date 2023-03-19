@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
-    <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

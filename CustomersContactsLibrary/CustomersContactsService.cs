@@ -2,15 +2,10 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomersContactsLibrary
 {
-    public class CustomersContactsService
+    public class CustomersContactsService:ICustomersContactsService
     {
         private IConfiguration _configuration;
         private IContactsQueries _contactsQueries;

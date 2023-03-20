@@ -4,9 +4,11 @@ export interface IUser {
   id: number;
   firstName: string;
   lastName: string;
+  companyName: string;
+  companyId: number;
   email: string;
   phone: string;
-  teamId: number;
+  password: string;
 }
 export interface IUserRegistration {
   firstName: string;

@@ -144,9 +144,6 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                FormattableString sql = $@"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                int rowsUpdated = dbContext.Database.ExecuteSqlRaw(sql.ToString());
-
                 var pr = new registeration_key
                 {
                     email = user.email,
@@ -156,6 +153,15 @@ namespace DataModelsLibrary.Queries
 
                 dbContext.registeration_keys.Add(pr);
                 await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteOldRegistrationsKeys()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                string sql = @"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                int rowsUpdated = await dbContext.Database.ExecuteSqlRawAsync(sql);
             }
         }
 

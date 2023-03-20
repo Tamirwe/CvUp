@@ -16,6 +16,8 @@ export const REFRESH_TOKEN = "refreshToken";
 
 export class AuthStore {
   private authApi;
+  private userSelected?: IUser;
+
   isLoggedIn = false;
   claims: IUserClaims = {};
   interviewersList: IInterviewer[] = [];
@@ -38,6 +40,14 @@ export class AuthStore {
     this.isLoggedIn = false;
     this.claims = {};
     this.interviewersList = [];
+  }
+
+  get selectedUser() {
+    return this.userSelected;
+  }
+
+  set selectedUser(val: IUser | undefined) {
+    this.userSelected = val;
   }
 
   async registerUser(registrationInfo: IUserRegistration) {

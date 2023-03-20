@@ -95,6 +95,7 @@ export const ForgotPasswordForm = (props: props) => {
         <TextField
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           margin="normal"
           type="text"
           id="emailTxt"

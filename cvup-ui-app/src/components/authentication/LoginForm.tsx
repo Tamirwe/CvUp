@@ -101,6 +101,7 @@ export const LoginForm = ({ loginType }: IProps) => {
             fullWidth
             autoFocus
             required
+            InputLabelProps={{ shrink: true }}
             margin="normal"
             type="text"
             id="emailTxt"
@@ -113,7 +114,6 @@ export const LoginForm = ({ loginType }: IProps) => {
               }));
               updateFieldError("email", "");
             }}
-            InputLabelProps={{ shrink: true }}
             value={formModel.email}
             error={formValError.email}
             helperText={formValErrorTxt.email}

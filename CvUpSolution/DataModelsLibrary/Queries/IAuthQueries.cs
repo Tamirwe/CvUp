@@ -15,6 +15,7 @@ namespace DataModelsLibrary.Queries
         public Task<user> AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log);
         public Task<company> UpdateCompany(company newCompany);
         Task AddUserPasswordReset(string key, user user);
+        Task DeleteOldRegistrationsKeys();
         public Task<registeration_key?> GetRegistrationKey(string key);
         Task ActivateUser(user user);
         Task SaveRefreshToken(string refreshToken, user authenticateUser);

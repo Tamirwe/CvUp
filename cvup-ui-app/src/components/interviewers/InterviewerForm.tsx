@@ -153,6 +153,7 @@ export const InterviewerForm = ({
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
+            InputLabelProps={{ shrink: true }}
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"

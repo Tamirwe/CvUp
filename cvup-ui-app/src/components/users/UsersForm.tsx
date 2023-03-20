@@ -21,9 +21,11 @@ export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
     id: 0,
     firstName: "",
     lastName: "",
+    companyName: "",
+    companyId: 0,
     email: "",
     phone: "",
-    teamId: 0,
+    password: "",
   });
   const [errModel, setErrModel] = useState({
     firstName: "",

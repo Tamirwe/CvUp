@@ -200,6 +200,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
         <Grid item xs={6}>
           <TextField
             fullWidth
+            required
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
@@ -222,6 +223,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
         <Grid item xs={6}>
           <TextField
             fullWidth
+            required
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
@@ -245,6 +247,8 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
+            required
+            InputLabelProps={{ shrink: true }}
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"

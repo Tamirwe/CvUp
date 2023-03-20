@@ -11,8 +11,10 @@ namespace AuthLibrary
     {
         public async Task Register(string? origin, CompanyAndUserRegisetModel data)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.Required))
-            {
+            await _authQueries.DeleteOldRegistrationsKeys();
+
+            //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //{
                 company newCompany = await AddNewCompany(data.companyName, data.companyDescr);
                 string hashPassword = SecretHasher.Hash(data.password);
                 user newUser = await AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
@@ -22,9 +24,10 @@ namespace AuthLibrary
                 string key = generateSecretKey();
                 await _authQueries.AddUserPasswordReset(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
-                AddEmailSent(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
-                scope.Complete();
-            }
+                await AddEmailSent(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
+                //scope.Complete();
+            //}
+
         }
 
         private void AddCompanySatrterData(int companyId)
@@ -66,9 +69,9 @@ namespace AuthLibrary
             return finalString;
         }
 
-        private void AddEmailSent(EmailType emailType, int companyId, user user, EmailModel sentEmail)
+        private async Task<emails_sent> AddEmailSent(EmailType emailType, int companyId, user user, EmailModel sentEmail)
         {
-            _emailQueries.AddNewEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
+            return await _emailQueries.AddNewEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
         private async Task<user> AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)

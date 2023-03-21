@@ -7,13 +7,11 @@ import { IUser } from "../../models/AuthModels";
 import { textFieldValidte } from "../../utils/Validation";
 
 interface IProps {
-  contact?: IIdName;
-  crudType?: CrudTypesEnum;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
+export const UserForm = ({ onSaved, onCancel }: IProps) => {
   const { generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -83,7 +81,6 @@ export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="title"
@@ -110,7 +107,6 @@ export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="title"
@@ -136,7 +132,6 @@ export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
             id="title"
@@ -174,33 +169,30 @@ export const UsersForm = ({ contact, crudType, onSaved, onCancel }: IProps) => {
                 >
                   Cancel
                 </Button>
-                {crudType === CrudTypesEnum.Delete ? (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="warning"
-                    onClick={() => {
-                      deleteRecord();
-                    }}
-                  >
-                    Delete
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={!isDirty}
-                    fullWidth
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setIsDirty(false);
-                      if (validateForm()) {
-                        submitForm();
-                      }
-                    }}
-                  >
-                    Save
-                  </Button>
-                )}
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="warning"
+                  onClick={() => {
+                    deleteRecord();
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button
+                  disabled={!isDirty}
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    setIsDirty(false);
+                    if (validateForm()) {
+                      submitForm();
+                    }
+                  }}
+                >
+                  Save
+                </Button>
               </Stack>
             </Grid>
           </Grid>

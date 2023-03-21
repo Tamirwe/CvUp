@@ -59,7 +59,6 @@ export const LayoutAuth = observer(() => {
       )}
       {generalStore.showUserFormDialog && (
         <UsersFormDialog
-          crudType={CrudTypesEnum.Insert}
           isOpen={generalStore.showUserFormDialog}
           onClose={() => (generalStore.showUserFormDialog = false)}
         />

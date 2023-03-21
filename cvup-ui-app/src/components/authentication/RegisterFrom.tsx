@@ -109,7 +109,8 @@ export const RegisterForm = (props: IProps) => {
     let response;
 
     setIsDirty(false);
-
+    setSubmitError("");
+    
     if (validateForm()) {
       if (crudType === CrudTypesEnum.Insert) {
         response = await authStore.registerUser(formModel);

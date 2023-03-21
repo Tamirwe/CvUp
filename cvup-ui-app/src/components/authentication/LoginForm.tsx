@@ -15,9 +15,11 @@ import { useEffect, useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import { IUserLogin } from "../../models/AuthModels";
-import { emailValidte, passwordValidate } from "../../utils/Validation";
+import { TextValidateTypeEnum } from "../../models/GeneralEnums";
+import { passwordValidate, validteEmail } from "../../utils/Validation";
 
 interface IProps {
   loginType: string;
@@ -27,7 +29,7 @@ export const LoginForm = ({ loginType }: IProps) => {
   const navigate = useNavigate();
   const { authStore, candsStore, generalStore, positionsStore } = useStore();
   const params = new URLSearchParams(window.location.search);
-  const [isDirty, setIsDirty] = useState(false);
+  const [isDirty, setIsDirty] = useState(true);
   const [submitError, setSubmitError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
 
@@ -37,13 +39,10 @@ export const LoginForm = ({ loginType }: IProps) => {
     rememberMe: false,
     key: params.get("sk") || "",
   });
-  const [formValError, setFormValError] = useState({
-    email: false,
-    password: false,
-  });
-  const [formValErrorTxt, setFormValErrorTxt] = useState({
+  const [updateFieldError, clearError, errModel] = useFormErrors({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   useEffect(() => {
@@ -53,43 +52,36 @@ export const LoginForm = ({ loginType }: IProps) => {
     positionsStore.reset();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const updateFieldError = (field: string, errTxt: string) => {
-    const isValid = errTxt === "" ? true : false;
-    setIsDirty(true);
-    setSubmitError("");
-
-    setFormValErrorTxt((currentProps) => ({
-      ...currentProps,
-      [field]: errTxt,
-    }));
-    setFormValError((currentProps) => ({
-      ...currentProps,
-      [field]: isValid === false,
-    }));
-
-    return isValid;
-  };
-
   const validateForm = () => {
-    setSubmitError("");
+    let isFormValid = true,
+      err = "";
 
-    let isFormValid = true;
-    let errTxt = emailValidte(formModel.email);
-    isFormValid = updateFieldError("email", errTxt) && isFormValid;
+    err = validteEmail(formModel.email, [
+      TextValidateTypeEnum.notEmpty,
+      TextValidateTypeEnum.emailValid,
+    ]);
+    isFormValid = updateFieldError("email", err) && isFormValid;
 
-    errTxt = passwordValidate(formModel.password);
-    isFormValid = updateFieldError("password", errTxt) && isFormValid;
+    err = passwordValidate(formModel.password);
+    isFormValid = updateFieldError("password", err) && isFormValid;
 
     return isFormValid;
   };
 
-  const submitForm = async () => {
-    const isSuccess = await authStore.login(formModel, loginType);
+  const handleSubmit = async () => {
+    let response;
 
-    if (isSuccess) {
-      navigate("/");
-    } else {
-      setSubmitError("Incorrect email address or password.");
+    setIsDirty(false);
+    setSubmitError("");
+
+    if (validateForm()) {
+      const isSuccess = await authStore.login(formModel, loginType);
+
+      if (isSuccess) {
+        navigate("/");
+      } else {
+        setSubmitError("Incorrect email address or password.");
+      }
     }
   };
 
@@ -112,11 +104,12 @@ export const LoginForm = ({ loginType }: IProps) => {
                 ...currentProps,
                 email: e.target.value,
               }));
-              updateFieldError("email", "");
+              clearError("email");
+              setIsDirty(true);
             }}
+            error={errModel.email !== ""}
+            helperText={errModel.email}
             value={formModel.email}
-            error={formValError.email}
-            helperText={formValErrorTxt.email}
           />
         </Grid>
         <Grid item xs={12}>
@@ -150,12 +143,13 @@ export const LoginForm = ({ loginType }: IProps) => {
                 ...currentProps,
                 password: e.target.value,
               }));
-              updateFieldError("password", "");
+              clearError("password");
+              setIsDirty(true);
             }}
             InputLabelProps={{ shrink: true }}
+            error={errModel.password !== ""}
+            helperText={errModel.password}
             value={formModel.password}
-            error={formValError.password}
-            helperText={formValErrorTxt.password}
           />
         </Grid>
         {loginType === "login" && (
@@ -208,16 +202,7 @@ export const LoginForm = ({ loginType }: IProps) => {
               type="submit"
               variant="contained"
               color="secondary"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-
-                setIsDirty(false);
-
-                if (validateForm()) {
-                  submitForm();
-                }
-              }}
+              onClick={handleSubmit}
             >
               Sign in
             </Button>

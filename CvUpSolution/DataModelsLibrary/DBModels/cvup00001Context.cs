@@ -503,6 +503,8 @@ namespace Database.models
 
                 entity.Property(e => e.permission_type).HasColumnType("enum('Admin','User')");
 
+                entity.Property(e => e.phone).HasMaxLength(20);
+
                 entity.Property(e => e.refresh_token).HasMaxLength(100);
 
                 entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");

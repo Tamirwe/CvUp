@@ -25,6 +25,7 @@ namespace Database.models
         public DateTime? refresh_token_expiry { get; set; }
         public string permission_type { get; set; } = null!;
         public string? active_status { get; set; }
+        public string? phone { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }

@@ -10,6 +10,12 @@ export enum PermissionTypeEnum {
   User,
 }
 
+export enum UserActiveEnum {
+  Active,
+  Not_Active,
+  Wait_Complete_Registration,
+}
+
 export enum CvDisplayedListEnum {
   None,
   CandsList,

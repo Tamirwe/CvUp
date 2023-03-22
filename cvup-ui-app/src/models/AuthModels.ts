@@ -1,14 +1,13 @@
-import { PermissionTypeEnum } from "./GeneralEnums";
+import { PermissionTypeEnum, UserActiveEnum } from "./GeneralEnums";
 
 export interface IUser {
   id: number;
   firstName: string;
   lastName: string;
-  companyName: string;
-  companyId: number;
   email: string;
   phone: string;
-  password: string;
+  permissionType: PermissionTypeEnum;
+  activeStatus: UserActiveEnum;
 }
 export interface IUserRegistration {
   firstName: string;
@@ -53,5 +52,3 @@ export interface IInterviewer {
   email: string;
   permissionType: PermissionTypeEnum;
 }
-
-

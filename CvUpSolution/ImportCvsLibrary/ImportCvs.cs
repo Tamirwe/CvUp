@@ -295,7 +295,7 @@ namespace ImportCvsLibrary
         {
             if (!importCv.isDuplicate && !importCv.isSameCv)
             {
-                _cvsPositionsServise.AddNewCvToIndex(importCv);
+                _cvsPositionsServise.AddCvToIndex(importCv);
             }
         }
 

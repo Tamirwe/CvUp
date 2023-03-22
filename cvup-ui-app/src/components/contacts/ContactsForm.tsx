@@ -30,7 +30,6 @@ interface IProps {
 
 export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
   const { customersContactsStore, generalStore } = useStore();
-  const [openCustomersList, setOpenCustomersList] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);

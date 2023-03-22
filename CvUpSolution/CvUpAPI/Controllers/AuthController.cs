@@ -165,7 +165,39 @@ namespace CvUpAPI.Controllers
         [Route("DeleteInterviewer")]
         public async Task<IActionResult> DeleteInterviewer(int id)
         {
-            await _authServise.DeleteInterviewer(Globals.CompanyId, id);
+            await _authServise.DeleteUser(Globals.CompanyId, id);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("GetUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            List<UserModel> users = await _authServise.GetUsers(Globals.CompanyId);
+            return Ok(users);
+        }
+
+        [HttpPost]
+        [Route("AddUserByUser")]
+        public async Task<IActionResult> AddUserByUser(UserModel data)
+        {
+            await _authServise.AddUserByUser(data, Globals.CompanyId);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("UpdateUserByUser")]
+        public async Task<IActionResult> UpdateUserByUser(UserModel data)
+        {
+            await _authServise.UpdateUserByUser(data, Globals.CompanyId);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("DeleteUserByUser")]
+        public async Task<IActionResult> DeleteUserByUser(int id)
+        {
+            await _authServise.DeleteUser(Globals.CompanyId, id);
             return Ok();
         }
     }

@@ -34,7 +34,7 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateCvKeyId(importCv);
         }
 
-        public async Task AddNewCvToIndex(ImportCvModel importCv)
+        public async Task AddCvToIndex(ImportCvModel importCv)
         {
             CvPropsToIndexModel cvPropsToIndex = new CvPropsToIndexModel
             {

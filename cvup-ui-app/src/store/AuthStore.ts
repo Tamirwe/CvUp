@@ -108,4 +108,34 @@ export class AuthStore {
   async deleteInterviewer(interviewer: IInterviewer) {
     return await this.authApi.deleteInterviewer(interviewer);
   }
+
+  async getUsersList() {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.authApi.getUsersList();
+    runInAction(() => {
+      this.usersList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async addUser(user: IUser) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.authApi.addUser(user);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async updateUser(user: IUser) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.authApi.updateUser(user);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
+
+  async deleteUser(id: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const data = await this.authApi.deleteUser(id);
+    this.rootStore.generalStore.backdrop = false;
+    return data;
+  }
 }

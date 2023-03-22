@@ -4,6 +4,7 @@ import {
   IUserLogin,
   IUserRegistration,
   IInterviewer,
+  IUser,
 } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
@@ -89,6 +90,48 @@ export default class AuthApi extends BaseApi {
     const response = await this.apiWrapper(async () => {
       const data = (
         await this.http.delete(`Auth/DeleteInterviewer?id=${interviewer.id}`)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async getUsersList() {
+    const response = await this.apiWrapper(async () => {
+      const data = (await this.http.get<IUser[]>("Auth/GetUsers")).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async addUser(contactModel: IUser) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.post("Auth/AddUserByUser", contactModel)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async updateUser(contactModel: IUser) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.put("Auth/UpdateUserByUser", contactModel)
+      ).data;
+      return data;
+    });
+
+    return response;
+  }
+
+  async deleteUser(id: number) {
+    const response = await this.apiWrapper(async () => {
+      const data = (
+        await this.http.delete("Auth/DeleteUserByUser?id=" + id)
       ).data;
       return data;
     });

@@ -13,7 +13,7 @@ import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FormFolderDialog } from "../components/folders/FormFolderDialog";
 import { useState } from "react";
 import { AlertDialog } from "./AlertDialog";
-import { UsersFormDialog } from "../components/users/UsersFormDialog";
+import { UsersDialog } from "../components/users/UsersDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
 
 export const LayoutAuth = observer(() => {
@@ -58,7 +58,7 @@ export const LayoutAuth = observer(() => {
         />
       )}
       {generalStore.showUserFormDialog && (
-        <UsersFormDialog
+        <UsersDialog
           isOpen={generalStore.showUserFormDialog}
           onClose={() => (generalStore.showUserFormDialog = false)}
         />

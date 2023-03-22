@@ -11,7 +11,7 @@ namespace CandsPositionsLibrary
     public interface ICandsPositionsServise
     {
         public Task<int> AddCv(ImportCvModel importCv);
-        public Task AddNewCvToIndex(ImportCvModel item);
+        public Task AddCvToIndex(ImportCvModel item);
         public Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         public Task IndexCompanyCvs(int companyId);
         public Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);

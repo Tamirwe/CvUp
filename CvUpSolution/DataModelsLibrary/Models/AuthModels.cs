@@ -52,4 +52,15 @@ namespace DataModelsLibrary.Models
         public string email { get; set; } = string.Empty;
         public UserPermission permissionType { get; set; } = UserPermission.User;
     }
+
+    public class UserModel
+    {
+        public int id { get; set; } = 0;
+        public string firstName { get; set; } = string.Empty;
+        public string lastName { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string phone { get; set; } = string.Empty;
+        public UserPermission permissionType { get; set; } = UserPermission.User;
+        public UserActiveStatus activeStatus { get; set; } = UserActiveStatus.Not_Active;
+    }
 }

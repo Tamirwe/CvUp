@@ -9,7 +9,7 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public async Task<emails_sent> AddNewEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
+        public async Task<emails_sent> AddEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
         {
             using (var dbContext = new cvup00001Context())
             {

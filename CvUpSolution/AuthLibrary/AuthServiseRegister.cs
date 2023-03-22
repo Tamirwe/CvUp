@@ -15,9 +15,9 @@ namespace AuthLibrary
 
             //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             //{
-                company newCompany = await AddNewCompany(data.companyName, data.companyDescr);
+                company newCompany = await AddCompany(data.companyName, data.companyDescr);
                 string hashPassword = SecretHasher.Hash(data.password);
-                user newUser = await AddNewUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
+                user newUser = await RegisterUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
 
                 await GenerateCompanyEmail(newCompany.id);
                 AddCompanySatrterData(newCompany.id);
@@ -71,12 +71,12 @@ namespace AuthLibrary
 
         private async Task<emails_sent> AddEmailSent(EmailType emailType, int companyId, user user, EmailModel sentEmail)
         {
-            return await _emailQueries.AddNewEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
+            return await _emailQueries.AddEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
-        private async Task<user> AddNewUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)
+        private async Task<user> RegisterUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)
         {
-            user user = await _authQueries.AddNewUser(companyId, email, password, firstName, lastName, UserActiveStatus.Waite_Complete_Registration, permission, log);
+            user user = await _authQueries.RegisterUser(companyId, email, password, firstName, lastName, UserActiveStatus.Waite_Complete_Registration, permission, log);
             return user;
         }
 
@@ -93,9 +93,9 @@ namespace AuthLibrary
             return email;
         }
 
-        private async Task<company> AddNewCompany(string companyName, string? companyDescr)
+        private async Task<company> AddCompany(string companyName, string? companyDescr)
         {
-            var company = await _authQueries.AddNewCompany(companyName, companyDescr, CompanyActiveStatus.Waite_Complete_Registration);
+            var company = await _authQueries.AddCompany(companyName, companyDescr, CompanyActiveStatus.Waite_Complete_Registration);
             return company;
         }
     }

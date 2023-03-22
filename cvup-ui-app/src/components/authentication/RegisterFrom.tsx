@@ -13,13 +13,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
-import { IUser, IUserRegistration } from "../../models/AuthModels";
+import { IUserRegistration } from "../../models/AuthModels";
 import { CrudTypesEnum, TextValidateTypeEnum } from "../../models/GeneralEnums";
 import {
   passwordValidate,
@@ -35,7 +35,7 @@ export const RegisterForm = (props: IProps) => {
   const { authStore } = useStore();
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
-  
+
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isTerms, setIsTerms] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -55,14 +55,6 @@ export const RegisterForm = (props: IProps) => {
     email: "",
     password: "",
   });
-
-  
-  useEffect(() => {
-    if (authStore.selectedUser) {
-      setCrudType(CrudTypesEnum.Update);
-      setFormModel({ ...authStore.selectedUser });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
     let isFormValid = true,
@@ -110,7 +102,7 @@ export const RegisterForm = (props: IProps) => {
 
     setIsDirty(false);
     setSubmitError("");
-    
+
     if (validateForm()) {
       if (crudType === CrudTypesEnum.Insert) {
         response = await authStore.registerUser(formModel);
@@ -132,8 +124,7 @@ export const RegisterForm = (props: IProps) => {
 
   return (
     <form noValidate spellCheck="false">
-           
-      <Grid container >
+      <Grid container>
         <Grid item>
           <Grid container spacing={matchDownMd ? 0 : 2}>
             <Grid item xs={6}>
@@ -228,7 +219,7 @@ export const RegisterForm = (props: IProps) => {
             }}
             error={errModel.email !== ""}
             helperText={errModel.email}
-            value={formModel.email }
+            value={formModel.email}
           />
         </Grid>
         <Grid item xs={12}>

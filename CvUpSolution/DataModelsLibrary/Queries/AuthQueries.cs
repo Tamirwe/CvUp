@@ -91,7 +91,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<company> AddNewCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
+        public async Task<company> AddCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -108,7 +108,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> AddNewUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> RegisterUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -211,6 +211,27 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<InterviewerModel>> GetInterviewersList(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from u in dbContext.users
+                            where u.company_id == companyId
+                            orderby u.first_name, u.last_name
+                            select new InterviewerModel
+                            {
+                                id = u.id,
+                                firstName = u.first_name,
+                                lastName = u.last_name,
+                                email = u.email,
+                                permissionType = Enum.Parse<UserPermission>(u.permission_type)
+                            };
+
+                return await query.ToListAsync();
+
+            }
+        }
+
         public async Task AddInterviewer(InterviewerModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
@@ -244,43 +265,6 @@ namespace DataModelsLibrary.Queries
                     user.permission_type = data.permissionType.ToString();
 
                     var result = dbContext.users.Update(user);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
-
-        public async Task<List<InterviewerModel>> GetInterviewersList(int companyId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var query = from u in dbContext.users
-                            where u.company_id == companyId
-                            orderby u.first_name, u.last_name
-                            select new InterviewerModel
-                            {
-                                id = u.id,
-                                firstName = u.first_name,
-                                lastName = u.last_name,
-                                email = u.email,
-                                permissionType = Enum.Parse<UserPermission>(u.permission_type)
-                            };
-
-                return await query.ToListAsync();
-
-            }
-        }
-
-        public async Task DeleteInterviewer(int companyId, int id)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var usr = await (from u in dbContext.users
-                           where u.id == id && u.company_id == companyId
-                           select u).FirstOrDefaultAsync();
-
-                if (usr != null)
-                {
-                    var result = dbContext.users.Remove(usr);
                     await dbContext.SaveChangesAsync();
                 }
             }
@@ -336,6 +320,79 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<UserModel>> GetUsers(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from u in dbContext.users
+                            where u.company_id == companyId
+                            orderby u.first_name, u.last_name
+                            select new UserModel
+                            {
+                                id = u.id,
+                                firstName = u.first_name,
+                                lastName = u.last_name,
+                                email = u.email,
+                                permissionType = Enum.Parse<UserPermission>(u.permission_type),
+                                activeStatus = Enum.Parse<UserActiveStatus>(u.active_status)
+                            };
 
+                return await query.ToListAsync();
+            }
+        }
+
+        public async Task AddUserByUser(UserModel data, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var user = new user
+                {
+                    company_id = companyId,
+                    email = data.email,
+                    first_name = data.firstName,
+                    last_name = data.lastName,
+                    active_status = UserActiveStatus.Waite_Complete_Registration.ToString(),
+                    permission_type = UserPermission.User.ToString(),
+                };
+
+                dbContext.users.Add(user);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateUserByUser(UserModel data, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                user? user = await dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefaultAsync();
+
+                if (user != null)
+                {
+                    user.email = data.email;
+                    user.first_name = data.firstName;
+                    user.last_name = data.lastName;
+                    user.permission_type = data.permissionType.ToString();
+
+                    var result = dbContext.users.Update(user);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task DeleteUser(int companyId, int id)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var usr = await (from u in dbContext.users
+                                 where u.id == id && u.company_id == companyId
+                                 select u).FirstOrDefaultAsync();
+
+                if (usr != null)
+                {
+                    var result = dbContext.users.Remove(usr);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
     }
 }

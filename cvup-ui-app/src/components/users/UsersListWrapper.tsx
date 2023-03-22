@@ -4,11 +4,11 @@ import { useStore } from "../../Hooks/useStore";
 import { UsersList } from "./UsersList";
 
 export const UsersListWrapper = observer(() => {
-  const { customersContactsStore } = useStore();
+  const { authStore } = useStore();
 
   useEffect(() => {
-    if (!customersContactsStore.contactsList.length) {
-      customersContactsStore.getContactsList();
+    if (!authStore.usersList.length) {
+      authStore.getUsersList();
     }
   }, []);
 

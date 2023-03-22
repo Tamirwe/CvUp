@@ -1,15 +1,16 @@
-import { Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { IIdName } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { UserForm } from "./UserForm";
+import { UsersListWrapper } from "./UsersListWrapper";
 
 interface IProps {
   isOpen: boolean;
   onClose: (isSaved: boolean) => void;
 }
 
-export const UsersFormDialog = ({ isOpen, onClose }: IProps) => {
+export const UsersDialog = ({ isOpen, onClose }: IProps) => {
   const [open, setOpen] = useState(false);
   const [formTitle, setFormTitle] = useState("");
 
@@ -22,14 +23,21 @@ export const UsersFormDialog = ({ isOpen, onClose }: IProps) => {
       open={open}
       onClose={() => onClose(false)}
       fullWidth
-      maxWidth={"xs"}
+      maxWidth={"md"}
     >
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
-        <UserForm
-          onSaved={() => onClose(true)}
-          onCancel={() => onClose(false)}
-        />
+        <Grid container>
+          <Grid item xs={4}>
+            <UsersListWrapper />
+          </Grid>
+          <Grid item xs={8}>
+            <UserForm
+              onSaved={() => onClose(true)}
+              onCancel={() => onClose(false)}
+            />
+          </Grid>
+        </Grid>
       </DialogContent>
     </Dialog>
   );

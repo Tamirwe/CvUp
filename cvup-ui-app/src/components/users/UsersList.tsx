@@ -17,7 +17,7 @@ export const UsersList = observer(() => {
       dense={true}
       sx={{
         backgroundColor: "#fff",
-        height: "calc(100vh - 81px)",
+        // height: "calc(100vh - 81px)",
         overflowY: "hidden",
         "&:hover ": {
           overflow: "overlay",
@@ -50,8 +50,8 @@ export const UsersList = observer(() => {
                 // candsStore.displayCvMain(cand);
               }}
             >
-              {/* <ListItemText
-                primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
+              <ListItemText
+                primary={usr.firstName}
                 sx={{
                   textAlign: "right",
                   color: "#bcc9d5",
@@ -59,7 +59,7 @@ export const UsersList = observer(() => {
                   alignSelf: "start",
                   whiteSpace: "nowrap",
                 }}
-              /> */}
+              />
             </ListItemButton>
           </ListItem>
         );

@@ -37,6 +37,7 @@ namespace DataModelsLibrary.Enums
         Admin,
         User,
     }
+
     public enum EmailType
     {
         Registration_Approved,

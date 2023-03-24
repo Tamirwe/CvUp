@@ -24,7 +24,7 @@ namespace Database.models
         public string? refresh_token { get; set; }
         public DateTime? refresh_token_expiry { get; set; }
         public string permission_type { get; set; } = null!;
-        public string? active_status { get; set; }
+        public string active_status { get; set; } = null!;
         public string? phone { get; set; }
 
         public virtual company company { get; set; } = null!;

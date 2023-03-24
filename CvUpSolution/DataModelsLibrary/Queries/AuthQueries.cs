@@ -333,6 +333,7 @@ namespace DataModelsLibrary.Queries
                                 firstName = u.first_name,
                                 lastName = u.last_name,
                                 email = u.email,
+                                phone = u.phone,
                                 permissionType = Enum.Parse<UserPermission>(u.permission_type),
                                 activeStatus = Enum.Parse<UserActiveStatus>(u.active_status)
                             };
@@ -349,6 +350,7 @@ namespace DataModelsLibrary.Queries
                 {
                     company_id = companyId,
                     email = data.email,
+                    phone = data.phone,
                     first_name = data.firstName,
                     last_name = data.lastName,
                     active_status = UserActiveStatus.Waite_Complete_Registration.ToString(),
@@ -369,6 +371,7 @@ namespace DataModelsLibrary.Queries
                 if (user != null)
                 {
                     user.email = data.email;
+                    user.phone = data.phone;
                     user.first_name = data.firstName;
                     user.last_name = data.lastName;
                     user.permission_type = data.permissionType.ToString();

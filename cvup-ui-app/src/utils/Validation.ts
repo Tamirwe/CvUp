@@ -74,7 +74,7 @@ export const validtePhone = (
 
         break;
       case TextValidateTypeEnum.phoneValid:
-        if (!isPhoneValid(phone)) {
+        if (phone && !isPhoneValid(phone)) {
           return "Must be a valid phone";
         }
         break;

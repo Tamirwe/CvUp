@@ -37,7 +37,6 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
   const { generalStore, authStore } = useStore();
   const [permissionsList, setPermissionsList] = useState<IIdName[]>([]);
   const [activationList, setActivationList] = useState<IIdName[]>([]);
-
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
@@ -290,7 +289,7 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
         <Grid item xs={12}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
-        <Grid item xs={12} mt={2}>
+        <Grid item xs={12} mt={3}>
           <Grid container justifyContent="space-between">
             <Grid item>
               {crudType === CrudTypesEnum.Update && (

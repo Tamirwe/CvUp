@@ -11,7 +11,6 @@ import { MdAdd } from "react-icons/md";
 import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
 import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
-import { UsersListWrapper } from "../components/users/UsersListWrapper";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -48,7 +47,7 @@ export const LeftListsWrapper = observer(() => {
         generalStore.showContactFormDialog = true;
         break;
       case TabsGeneralEnum.Users:
-        generalStore.showUserFormDialog = true;
+        generalStore.showUserListDialog = true;
         break;
       default:
         break;
@@ -95,9 +94,6 @@ export const LeftListsWrapper = observer(() => {
             )}
             {generalStore.currentTab === TabsGeneralEnum.Contacts && (
               <ContactsListWrapper />
-            )}
-            {generalStore.currentTab === TabsGeneralEnum.Users && (
-              <UsersListWrapper />
             )}
           </ThemeProvider>
         </CacheProvider>

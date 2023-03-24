@@ -42,6 +42,7 @@ namespace DataModelsLibrary.Models
     {
         public string token { get; set; } = string.Empty;
         public string refreshToken { get; set; } = string.Empty;
+        public string perm { get; set; } = string.Empty;
     }
 
     public class InterviewerModel
@@ -59,7 +60,7 @@ namespace DataModelsLibrary.Models
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
         public string email { get; set; } = string.Empty;
-        public string phone { get; set; } = string.Empty;
+        public string? phone { get; set; } = string.Empty;
         public UserPermission permissionType { get; set; } = UserPermission.User;
         public UserActiveStatus activeStatus { get; set; } = UserActiveStatus.Not_Active;
     }

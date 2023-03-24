@@ -2,6 +2,7 @@ import {
   Avatar,
   Divider,
   IconButton,
+  ListItemAvatar,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -9,8 +10,11 @@ import {
 import { useState } from "react";
 
 import { CiLogout, CiSettings } from "react-icons/ci";
+import { MdGroup } from "react-icons/md";
+import { useStore } from "../../Hooks/useStore";
 
 export const SettingsMenu = () => {
+  const { generalStore } = useStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -36,6 +40,7 @@ export const SettingsMenu = () => {
         PaperProps={{
           elevation: 0,
           sx: {
+            minWidth: "13rem",
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
             mt: 1.5,
@@ -69,17 +74,16 @@ export const SettingsMenu = () => {
           <Avatar /> My account
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <CiLogout />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <CiLogout />
-          </ListItemIcon>
-          Settings
+
+        <MenuItem
+          onClick={() => {
+            generalStore.showUserListDialog = true;
+          }}
+        >
+          <Avatar>
+            <MdGroup />
+          </Avatar>
+          Users
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>

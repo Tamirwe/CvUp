@@ -1,67 +1,41 @@
-import {
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { List, ListItemButton, ListItemText } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
+import { IUser } from "../../models/AuthModels";
 
 export const UsersList = observer(() => {
   const { authStore, generalStore } = useStore();
 
+  useEffect(() => {
+    (async () => {
+      await authStore.getUsersList();
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleEditClick = (user: IUser) => {
+    authStore.selectedUser = user;
+    generalStore.showUserFormDialog = true;
+  };
   return (
     <List
-      dense={true}
       sx={{
-        backgroundColor: "#fff",
-        // height: "calc(100vh - 81px)",
-        overflowY: "hidden",
-        "&:hover ": {
-          overflow: "overlay",
-        },
+        width: "100%",
+        bgcolor: "background.paper",
+        position: "relative",
+        overflow: "auto",
+        maxHeight: 300,
       }}
     >
-      {authStore.usersList.map((usr, i) => {
+      {authStore.usersList.map((item, i) => {
         return (
-          <ListItem
-            key={usr.id}
-            dense
-            disablePadding
-            component="nav"
-            sx={{
-              flexDirection: "column",
-              alignItems: "normal",
-              pl: "10px",
-            }}
+          <ListItemButton
+            onClick={() => handleEditClick(item)}
+            key={item.id}
+            sx={{ borderBottom: "1px solid #f1f1f1" }}
           >
-            <ListItemButton
-              sx={{ pr: "4px", pl: "4px" }}
-              // selected={
-              //   cand.candidateId === candsStore.candDisplay?.candidateId
-              // }
-              onClick={() => {
-                generalStore.showContactFormDialog = true;
-                // if (location.pathname !== "/cv") {
-                //   navigate(`/cv`);
-                // }
-                // candsStore.displayCvMain(cand);
-              }}
-            >
-              <ListItemText
-                primary={usr.firstName}
-                sx={{
-                  textAlign: "right",
-                  color: "#bcc9d5",
-                  fontSize: "0.775rem",
-                  alignSelf: "start",
-                  whiteSpace: "nowrap",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
+            <ListItemText>{`${item.firstName} ${item.lastName}`}</ListItemText>
+          </ListItemButton>
         );
       })}
     </List>

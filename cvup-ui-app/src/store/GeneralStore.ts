@@ -20,6 +20,7 @@ export class GeneralStore {
   private isShowContactFormDialog: boolean = false;
   private isShowCustomersListDialog: boolean = false;
   private isShowUserFormDialog: boolean = false;
+  private isShowUserListDialog: boolean = false;
   private isConfirmDialogOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
   confirmDialogTitle: string = "";
@@ -93,6 +94,14 @@ export class GeneralStore {
 
   set showUserFormDialog(val) {
     this.isShowUserFormDialog = val;
+  }
+
+  get showUserListDialog() {
+    return this.isShowUserListDialog;
+  }
+
+  set showUserListDialog(val) {
+    this.isShowUserListDialog = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

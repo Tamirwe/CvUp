@@ -29,6 +29,7 @@ namespace CvUpAPI.Controllers
             if (authenticateUser != null)
             {
                 TokenModel tokens = await _authServise.GenerateAccessToken(authenticateUser, data.rememberMe);
+                tokens.perm = authenticateUser.permission_type;
                 return Ok(tokens);
             }
 

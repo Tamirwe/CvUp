@@ -7,6 +7,7 @@ import {
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
+import { UserRoleEnum } from "../models/GeneralEnums";
 import { IAppSettings, IUserClaims } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
@@ -20,6 +21,7 @@ export class AuthStore {
 
   isLoggedIn = false;
   claims: IUserClaims = {};
+  userRole: UserRoleEnum = UserRoleEnum.User;
   interviewersList: IInterviewer[] = [];
   usersList: IUser[] = [];
 
@@ -31,6 +33,8 @@ export class AuthStore {
     if (jwt) {
       this.isLoggedIn = true;
       this.claims = JSON.parse(window.atob(jwt.split(".")[1]));
+      this.userRole =
+        UserRoleEnum[this.claims.role as unknown as keyof typeof UserRoleEnum];
     }
   }
 
@@ -74,6 +78,13 @@ export class AuthStore {
         this.isLoggedIn = true;
         localStorage.setItem(TOKEN, response.data.token);
         localStorage.setItem(REFRESH_TOKEN, response.data.refreshToken);
+        this.claims = JSON.parse(
+          window.atob(response.data.token.split(".")[1])
+        );
+        this.userRole =
+          UserRoleEnum[
+            this.claims.role as unknown as keyof typeof UserRoleEnum
+          ];
       }
 
       return response.isSuccess;

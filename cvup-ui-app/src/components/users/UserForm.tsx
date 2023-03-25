@@ -17,6 +17,7 @@ import {
   PermissionTypeEnum,
   TextValidateTypeEnum,
   UserActiveEnum,
+  UserRoleEnum,
 } from "../../models/GeneralEnums";
 import { IUser } from "../../models/AuthModels";
 import {
@@ -229,7 +230,6 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             value={formModel.phone}
           />
         </Grid>
-
         <Grid item xs={6}>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel id="permissionlabel">Permission Type</InputLabel>

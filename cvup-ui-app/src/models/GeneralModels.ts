@@ -1,3 +1,5 @@
+import { UserRoleEnum } from "./GeneralEnums";
+
 export interface IAppSettings {
   appServerUrl: string;
 }
@@ -11,9 +13,8 @@ export interface IUserClaims {
   UserId?: string;
   DisplayName?: string;
   email?: string;
-  role?: string;
+  role?: UserRoleEnum;
 }
-
 export interface ICand {
   cvId: number;
   review?: string;

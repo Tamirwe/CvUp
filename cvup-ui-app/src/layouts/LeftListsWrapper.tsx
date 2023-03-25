@@ -46,9 +46,6 @@ export const LeftListsWrapper = observer(() => {
         customersContactsStore.selectedContact = undefined;
         generalStore.showContactFormDialog = true;
         break;
-      case TabsGeneralEnum.Users:
-        generalStore.showUserListDialog = true;
-        break;
       default:
         break;
     }
@@ -59,7 +56,6 @@ export const LeftListsWrapper = observer(() => {
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Stack direction="row" justifyContent="space-between">
           <Tabs value={generalStore.currentTab} onChange={handleTabChange}>
-            <Tab label="Users" value={TabsGeneralEnum.Users} />
             <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />

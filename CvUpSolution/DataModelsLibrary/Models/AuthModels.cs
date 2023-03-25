@@ -42,7 +42,6 @@ namespace DataModelsLibrary.Models
     {
         public string token { get; set; } = string.Empty;
         public string refreshToken { get; set; } = string.Empty;
-        public string perm { get; set; } = string.Empty;
     }
 
     public class InterviewerModel

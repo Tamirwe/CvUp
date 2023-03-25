@@ -11,10 +11,14 @@ import { useState } from "react";
 
 import { CiLogout, CiSettings } from "react-icons/ci";
 import { MdGroup } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
+import { UserRoleEnum } from "../../models/GeneralEnums";
 
 export const SettingsMenu = () => {
-  const { generalStore } = useStore();
+  const { generalStore, authStore } = useStore();
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -75,17 +79,24 @@ export const SettingsMenu = () => {
         </MenuItem>
         <Divider />
 
+        {authStore.userRole === UserRoleEnum.Admin && (
+          <MenuItem
+            onClick={() => {
+              generalStore.showUserListDialog = true;
+            }}
+          >
+            <Avatar>
+              <MdGroup />
+            </Avatar>
+            Users
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
-            generalStore.showUserListDialog = true;
+            authStore.logout();
+            navigate("/login");
           }}
         >
-          <Avatar>
-            <MdGroup />
-          </Avatar>
-          Users
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <CiLogout />
           </ListItemIcon>

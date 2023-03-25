@@ -30,7 +30,6 @@ export enum EmailTypeEnum {
 }
 
 export enum TabsGeneralEnum {
-  Users,
   Contacts,
   Folders,
   Positions,
@@ -50,4 +49,9 @@ export enum TextValidateTypeEnum {
   emailValid,
   phoneValid,
   notSelected,
+}
+
+export enum UserRoleEnum {
+  Admin,
+  User,
 }

@@ -24,7 +24,7 @@ namespace AuthLibrary
             _configuration = config;
         }
 
-        public async Task<bool> CheckDuplicateUserPassword(CompanyAndUserRegisetModel data)
+        public async Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data)
         {
             List<user> usersList = await _authQueries.GetUsersByEmail(data.email);
 
@@ -39,6 +39,18 @@ namespace AuthLibrary
                         return true;
                     }
                 }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> CheckCompanyUserDuplicate(UserModel data, int companyId)
+        {
+            List<user> usersList = await _authQueries.GetUsersByCompanyEmail(data.email, companyId);
+
+            if (usersList.Count > 0)
+            {
+                return true;
             }
 
             return false;
@@ -76,7 +88,7 @@ namespace AuthLibrary
             {
                 UserAuthStatus status = UserAuthStatus.Authenticated;
                 string key = generateSecretKey();
-                await _authQueries.AddUserPasswordReset(key, users[0]);
+                await _authQueries.AddRegistrationKey(key, users[0]);
                 await SendResetPasswordEmail(origin, key, users[0]);
                 return new UserStatusModel { status = status, user = users[0] };
 

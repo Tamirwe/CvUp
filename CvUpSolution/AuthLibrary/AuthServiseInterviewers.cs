@@ -32,26 +32,7 @@ namespace AuthLibrary
             return depList;
         }
 
-        public async Task<List<UserModel>> GetUsers(int companyId)
-        {
-            List<UserModel> depList = await _authQueries.GetUsers(companyId);
-            return depList;
-        }
-
-        public async Task AddUserByUser(UserModel data, int companyId)
-        {
-            await _authQueries.AddUserByUser(data, companyId);
-        }
-
-        public async Task UpdateUserByUser(UserModel data, int companyId)
-        {
-            await _authQueries.UpdateUserByUser(data, companyId);
-        }
-
-        public async Task DeleteUser(int companyId, int id)
-        {
-            await _authQueries.DeleteUser(companyId, id);
-        }
+       
 
     }
 }

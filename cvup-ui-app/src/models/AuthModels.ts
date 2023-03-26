@@ -8,6 +8,8 @@ export interface IUser {
   phone: string;
   permissionType: PermissionTypeEnum;
   activeStatus: UserActiveEnum;
+  addedByName?: string;
+  addedById?: string;
 }
 export interface IUserRegistration {
   firstName: string;

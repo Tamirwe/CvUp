@@ -130,6 +130,8 @@ export class AuthStore {
   }
 
   async addUser(user: IUser) {
+    user.addedByName = this.claims.DisplayName;
+    user.addedById = this.claims.UserId;
     this.rootStore.generalStore.backdrop = true;
     const data = await this.authApi.addUser(user);
     this.rootStore.generalStore.backdrop = false;

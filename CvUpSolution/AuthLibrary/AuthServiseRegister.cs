@@ -9,7 +9,7 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-        public async Task Register(string? origin, CompanyAndUserRegisetModel data)
+        public async Task AddCompanyAndFirstUser(string? origin, CompanyAndUserRegisetModel data)
         {
             await _authQueries.DeleteOldRegistrationsKeys();
 
@@ -17,12 +17,11 @@ namespace AuthLibrary
             //{
                 company newCompany = await AddCompany(data.companyName, data.companyDescr);
                 string hashPassword = SecretHasher.Hash(data.password);
-                user newUser = await RegisterUser(newCompany.id, data.companyName, data.email, hashPassword, data.firstName, data.lastName, UserPermission.Admin, "Registered");
-
+                user newUser = await _authQueries.AddUser(newCompany.id, data.email, hashPassword, data.firstName, data.lastName, UserActiveStatus.Waite_Complete_Registration, UserPermission.Admin, "Registered");
                 await GenerateCompanyEmail(newCompany.id);
                 AddCompanySatrterData(newCompany.id);
                 string key = generateSecretKey();
-                await _authQueries.AddUserPasswordReset(key, newUser);
+                await _authQueries.AddRegistrationKey(key, newUser);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
                 await AddEmailSent(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
                 //scope.Complete();
@@ -74,11 +73,11 @@ namespace AuthLibrary
             return await _emailQueries.AddEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
-        private async Task<user> RegisterUser(int companyId, string companyName, string email, string password, string firstName, string lastName, UserPermission permission, string log)
-        {
-            user user = await _authQueries.RegisterUser(companyId, email, password, firstName, lastName, UserActiveStatus.Waite_Complete_Registration, permission, log);
-            return user;
-        }
+        //private async Task<user> RegisterUser(int companyId, string email, string password, string firstName, string lastName, UserPermission permission, string log)
+        //{
+        //    user user = await _authQueries.RegisterUser(companyId, email, password, firstName, lastName, UserActiveStatus.Waite_Complete_Registration, permission, log);
+        //    return user;
+        //}
 
         private EmailModel SendRegistrationConfitmationEmail(string? origin, string key, user user)
         {
@@ -97,6 +96,54 @@ namespace AuthLibrary
         {
             var company = await _authQueries.AddCompany(companyName, companyDescr, CompanyActiveStatus.Waite_Complete_Registration);
             return company;
+        }
+
+        public async Task<List<UserModel>> GetUsers(int companyId)
+        {
+            List<UserModel> depList = await _authQueries.GetUsers(companyId);
+            return depList;
+        }
+
+        public async Task ResendRegistrationEmail(string? origin, UserModel data, int companyId)
+        {
+            user? usr = await _authQueries.GetUser(companyId ,data.email);
+
+            if (usr != null)
+            {
+                string key = generateSecretKey();
+                await _authQueries.AddRegistrationKey(key, usr);
+                EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, usr);
+                await AddEmailSent(EmailType.Confirm_Registration, companyId, usr, sentEmail);
+            }
+        }
+
+        public async Task DeactivateUser(int companyId, UserModel data)
+        {
+            user? usr = await _authQueries.GetUser(companyId, data.email);
+
+            if (usr != null)
+            {
+                await _authQueries.DeactivateUser(usr);
+            }
+        }
+
+        public async Task AddCompanyUser(string? origin, UserModel data, int companyId)
+        {
+            user newUser = await _authQueries.AddUser(companyId, data.email, null, data.firstName, data.lastName, UserActiveStatus.Waite_Complete_Registration,data.permissionType, $"addedBy:{data.addedById}-{data.addedByName}");
+            string key = generateSecretKey();
+            await _authQueries.AddRegistrationKey(key, newUser);
+            EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
+            await AddEmailSent(EmailType.Confirm_Registration, companyId, newUser, sentEmail);
+        }
+
+        public async Task UpdateCompanyUser(UserModel data, int companyId)
+        {
+            await _authQueries.UpdateCompanyUser(data, companyId);
+        }
+
+        public async Task DeleteUser(int companyId, int id)
+        {
+            await _authQueries.DeleteUser(companyId, id);
         }
     }
 }

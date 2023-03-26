@@ -109,7 +109,7 @@ export default class AuthApi extends BaseApi {
   async addUser(contactModel: IUser) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.post("Auth/AddUserByUser", contactModel)
+        await this.http.post("Auth/AddCompanyUser", contactModel)
       ).data;
       return data;
     });
@@ -120,7 +120,7 @@ export default class AuthApi extends BaseApi {
   async updateUser(contactModel: IUser) {
     const response = await this.apiWrapper(async () => {
       const data = (
-        await this.http.put("Auth/UpdateUserByUser", contactModel)
+        await this.http.put("Auth/UpdateCompanyUser", contactModel)
       ).data;
       return data;
     });
@@ -130,9 +130,8 @@ export default class AuthApi extends BaseApi {
 
   async deleteUser(id: number) {
     const response = await this.apiWrapper(async () => {
-      const data = (
-        await this.http.delete("Auth/DeleteUserByUser?id=" + id)
-      ).data;
+      const data = (await this.http.delete("Auth/DeleteCompanyUser?id=" + id))
+        .data;
       return data;
     });
 

@@ -29,11 +29,65 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<user>> GetUsersByCompanyEmail(string email, int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var usersList = await dbContext.users.Where(x => x.company_id == companyId && x.email == email).ToListAsync();
+                return usersList;
+            }
+        }
+
         public async Task<registeration_key?> GetRegistrationKey(string key)
         {
             using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task AddRegistrationKey(string key, user user)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var pr = new registeration_key
+                {
+                    email = user.email,
+                    user_id = user.id,
+                    id = key,
+                };
+
+                dbContext.registeration_keys.Add(pr);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteOldRegistrationsKeys()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                string sql = @"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                int rowsUpdated = await dbContext.Database.ExecuteSqlRawAsync(sql);
+            }
+        }
+
+        public async Task ActivateUser(user user)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                user.active_status = UserActiveStatus.Active.ToString();
+                var result = dbContext.users.Update(user);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeactivateUser(user user)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                user.active_status = UserActiveStatus.Not_Active.ToString();
+                var result = dbContext.users.Update(user);
+                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -67,6 +121,14 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.users.Where(x => x.id == userId).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<user?> GetUser(int companyId, string email)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return await dbContext.users.Where(x => x.company_id== companyId &&  x.email == email).FirstOrDefaultAsync();
             }
         }
 
@@ -108,7 +170,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> RegisterUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -137,41 +199,6 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.companies.Update(_company);
                 await dbContext.SaveChangesAsync();
                 return _company;
-            }
-        }
-
-        public async Task AddUserPasswordReset(string key, user user)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var pr = new registeration_key
-                {
-                    email = user.email,
-                    user_id = user.id,
-                    id = key,
-                };
-
-                dbContext.registeration_keys.Add(pr);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task DeleteOldRegistrationsKeys()
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                string sql = @"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                int rowsUpdated = await dbContext.Database.ExecuteSqlRawAsync(sql);
-            }
-        }
-
-        public async Task ActivateUser(user user)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                user.active_status = UserActiveStatus.Active.ToString();
-                var result = dbContext.users.Update(user);
-                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -342,27 +369,8 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task AddUserByUser(UserModel data, int companyId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var user = new user
-                {
-                    company_id = companyId,
-                    email = data.email,
-                    phone = data.phone,
-                    first_name = data.firstName,
-                    last_name = data.lastName,
-                    active_status = UserActiveStatus.Waite_Complete_Registration.ToString(),
-                    permission_type = UserPermission.User.ToString(),
-                };
-
-                dbContext.users.Add(user);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateUserByUser(UserModel data, int companyId)
+       
+        public async Task UpdateCompanyUser(UserModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -370,7 +378,6 @@ namespace DataModelsLibrary.Queries
 
                 if (user != null)
                 {
-                    user.email = data.email;
                     user.phone = data.phone;
                     user.first_name = data.firstName;
                     user.last_name = data.lastName;

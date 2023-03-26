@@ -6,23 +6,26 @@ namespace AuthLibrary
 {
     public interface IAuthServise
     {
-        public Task<user?> Login(UserLoginModel data);
-        public Task<List<IdNameModel>> UserCompanies(string email);
-        public Task<UserStatusModel> ForgotPassword(string origin, string email, int? companyId);
-        Task Register(string? origin, CompanyAndUserRegisetModel data);
-        public string GenerateRefreshToken();
-        public Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember);
-        public Task<TokenModel?> RefreshToken(string token, string refreshToken);
-        public Task RevokeToken(int userId);
-        public Task<user?> CompleteRegistration(UserLoginModel data);
-        public Task<user?> PasswordReset(UserLoginModel data);
-        public Task<bool> CheckDuplicateUserPassword(CompanyAndUserRegisetModel data);
-        public Task AddInterviewer(InterviewerModel data, int companyId);
-        public Task UpdateInterviewer(InterviewerModel data, int companyId);
-        public Task<List<InterviewerModel>> GetInterviewersList(int companyId);
+        Task<user?> Login(UserLoginModel data);
+        Task<List<IdNameModel>> UserCompanies(string email);
+        Task<UserStatusModel> ForgotPassword(string origin, string email, int? companyId);
+        Task AddCompanyAndFirstUser(string? origin, CompanyAndUserRegisetModel data);
+        string GenerateRefreshToken();
+        Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember);
+        Task ResendRegistrationEmail(string? origin, UserModel data, int companyId);
+        Task<TokenModel?> RefreshToken(string token, string refreshToken);
+        Task RevokeToken(int userId);
+        Task<user?> CompleteRegistration(UserLoginModel data);
+        Task<user?> PasswordReset(UserLoginModel data);
+        Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data);
+        Task<bool> CheckCompanyUserDuplicate(UserModel data, int companyId);
+        Task AddInterviewer(InterviewerModel data, int companyId);
+        Task UpdateInterviewer(InterviewerModel data, int companyId);
+        Task<List<InterviewerModel>> GetInterviewersList(int companyId);
         Task<List<UserModel>> GetUsers(int companyId);
-        Task AddUserByUser(UserModel data, int companyId);
-        Task UpdateUserByUser(UserModel data, int companyId);
+        Task AddCompanyUser(string? origin, UserModel data, int companyId);
+        Task UpdateCompanyUser(UserModel data, int companyId);
         Task DeleteUser(int companyId, int id);
+        Task DeactivateUser(int companyId, UserModel data);
     }
 }

@@ -69,15 +69,15 @@ namespace CvUpAPI.Controllers
         [Route("Registration")]
         public async Task<IActionResult> Registration(CompanyAndUserRegisetModel data)
         {
-            bool isDuplicateUserPassword = await _authServise.CheckDuplicateUserPassword(data);
+            bool isUserDuplicate = await _authServise.CheckUserDuplicate(data);
 
-            if (isDuplicateUserPassword)
+            if (isUserDuplicate)
             {
                 return Ok("duplicateUserPass");
             }
 
             string? origin = Request.Headers["Origin"].First();
-            await _authServise.Register(origin, data);
+            await _authServise.AddCompanyAndFirstUser(origin, data);
             return Ok();
         }
 
@@ -178,26 +178,51 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("AddUserByUser")]
-        public async Task<IActionResult> AddUserByUser(UserModel data)
+        [Route("AddCompanyUser")]
+        public async Task<IActionResult> AddCompanyUser(UserModel data)
         {
-            await _authServise.AddUserByUser(data, Globals.CompanyId);
+            bool isUserDuplicate = await _authServise.CheckCompanyUserDuplicate(data, Globals.CompanyId);
+
+            if (isUserDuplicate)
+            {
+                return Ok("duplicateUserPass");
+            }
+
+            string? origin = Request.Headers["Origin"].First();
+            await _authServise.AddCompanyUser(origin,data, Globals.CompanyId);
             return Ok();
         }
 
         [HttpPut]
-        [Route("UpdateUserByUser")]
-        public async Task<IActionResult> UpdateUserByUser(UserModel data)
+        [Route("UpdateCompanyUser")]
+        public async Task<IActionResult> UpdateCompanyUser(UserModel data)
         {
-            await _authServise.UpdateUserByUser(data, Globals.CompanyId);
+            await _authServise.UpdateCompanyUser(data, Globals.CompanyId);
             return Ok();
         }
 
         [HttpDelete]
-        [Route("DeleteUserByUser")]
-        public async Task<IActionResult> DeleteUserByUser(int id)
+        [Route("DeleteCompanyUser")]
+        public async Task<IActionResult> DeleteCompanyUser(int id)
         {
             await _authServise.DeleteUser(Globals.CompanyId, id);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("ActivateCompanyUser")]
+        public async Task<IActionResult> ActivateCompanyUser(UserModel data)
+        {
+            await _authServise.DeactivateUser(Globals.CompanyId, data);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("ResendRegistrationEmail")]
+        public async Task<IActionResult> ResendRegistrationEmail(UserModel data)
+        {
+            string? origin = Request.Headers["Origin"].First();
+            await _authServise.ResendRegistrationEmail(origin,data, Globals.CompanyId);
             return Ok();
         }
     }

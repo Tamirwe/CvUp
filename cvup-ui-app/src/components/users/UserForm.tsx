@@ -1,12 +1,15 @@
 import {
   Button,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
+  Switch,
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -17,7 +20,6 @@ import {
   PermissionTypeEnum,
   TextValidateTypeEnum,
   UserActiveEnum,
-  UserRoleEnum,
 } from "../../models/GeneralEnums";
 import { IUser } from "../../models/AuthModels";
 import {
@@ -28,6 +30,7 @@ import {
 } from "../../utils/Validation";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { enumToArrays } from "../../utils/GeneralUtils";
+import { MdSend } from "react-icons/md";
 
 interface IProps {
   onSaved: () => void;
@@ -182,13 +185,12 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             value={formModel.lastName}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
-            sx={{ minWidth: 350 }}
             fullWidth
             required
             InputLabelProps={{ shrink: true }}
-            disabled={crudType === CrudTypesEnum.Delete}
+            disabled={formModel.id > 0}
             margin="normal"
             type="text"
             id="emailInp"
@@ -207,9 +209,8 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             value={formModel.email}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
-            sx={{ minWidth: 350 }}
             fullWidth
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
@@ -258,8 +259,37 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
-          <FormControl fullWidth sx={{ mt: 2 }}>
+        <Grid
+          item
+          xs={6}
+          sx={{ display: "flex", justifyContent: "end", alignItems: "end" }}
+        >
+          <Link href="#" variant="body2">
+            Resend Registration email
+          </Link>
+          {/* <FormControl fullWidth sx={{ mt: 2 }}>
+            <Button
+              variant="outlined"
+              endIcon={<MdSend />}
+              onClick={handleSubmit}
+            >
+              Resend Registration email
+            </Button>
+          </FormControl> */}
+          {/* <FormControlLabel
+              control={
+                <Switch
+                  checked={formModel.activeStatus !== UserActiveEnum.Not_Active}
+                  onChange={(e) => {
+                    setUserActive(e.target.checked);
+                  }}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={userActive ? "Active" : "Active"}
+            /> */}
+
+          {/* <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel id="permissionlabel">Activation</InputLabel>
             <Select
               disabled={crudType === CrudTypesEnum.Delete}
@@ -284,25 +314,40 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
                 );
               })}
             </Select>
-          </FormControl>
+          </FormControl> */}
         </Grid>
         <Grid item xs={12}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
-        <Grid item xs={12} mt={3}>
+        <Grid item xs={12} mt={4}>
           <Grid container justifyContent="space-between">
             <Grid item>
-              {crudType === CrudTypesEnum.Update && (
-                <Button
-                  fullWidth
-                  color="warning"
-                  onClick={() => {
-                    deleteRecord();
-                  }}
-                >
-                  Delete
-                </Button>
-              )}
+              {crudType === CrudTypesEnum.Update &&
+                authStore.claims.UserId &&
+                parseInt(authStore.claims.UserId) !== formModel.id && (
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Button
+                      fullWidth
+                      color="error"
+                      onClick={() => {
+                        deleteRecord();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                    <Button
+                      fullWidth
+                      color="warning"
+                      onClick={() => {
+                        deleteRecord();
+                      }}
+                    >
+                      {formModel.activeStatus !== UserActiveEnum.Not_Active
+                        ? "Deactivate"
+                        : "Activate"}
+                    </Button>
+                  </Stack>
+                )}
             </Grid>
             <Grid item>
               <Stack direction="row" alignItems="center" gap={1}>

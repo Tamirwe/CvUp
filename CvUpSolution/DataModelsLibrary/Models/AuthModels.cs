@@ -62,5 +62,9 @@ namespace DataModelsLibrary.Models
         public string? phone { get; set; } = string.Empty;
         public UserPermission permissionType { get; set; } = UserPermission.User;
         public UserActiveStatus activeStatus { get; set; } = UserActiveStatus.Not_Active;
+        public string addedByName { get; set; } = string.Empty;
+        public string addedById { get; set; } = string.Empty;
+
+
     }
 }

@@ -3,58 +3,44 @@ import BaseApi from "./BaseApi";
 
 export default class CandsApi extends BaseApi {
   async search() {
-    return await this.apiWrapper(async () => {
-      const response = (await this.http.get("Search")).data;
-      return response;
+    return await this.apiWrapper2(async () => {
+      return await this.http.get("Search");
     });
   }
 
   async searchCands(value: string) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.get<ICand[]>(`Cand/SearchCands?searchKeyWords=${value}`)
-      ).data;
-      return response;
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get(`Cand/SearchCands?searchKeyWords=${value}`);
     });
   }
 
   async getCandsList() {
-    return await this.apiWrapper(async () => {
-      const response = (await this.http.get<ICand[]>("Cand/GetCandsList")).data;
-      return response;
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get("Cand/GetCandsList");
     });
   }
 
   async getDuplicatesCvsList(cvId: number, candidateId: number) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.get<ICand[]>(
-          `Cand/GetCandCvsList?cvId=${cvId}&candidateId=${candidateId}`
-        )
-      ).data;
-      return response;
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get(
+        `Cand/GetCandCvsList?cvId=${cvId}&candidateId=${candidateId}`
+      );
     });
   }
 
   async GetPosCandsList(positionId: number) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.get<ICand[]>(
-          `Cand/GetPosCandsList?positionId=${positionId}`
-        )
-      ).data;
-      return response;
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get(
+        `Cand/GetPosCandsList?positionId=${positionId}`
+      );
     });
   }
 
   async getFolderCandsList(folderId: number) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.get<ICand[]>(
-          `Cand/GetFolderCandsList?folderId=${folderId}`
-        )
-      ).data;
-      return response;
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get(
+        `Cand/GetFolderCandsList?folderId=${folderId}`
+      );
     });
   }
 
@@ -64,55 +50,43 @@ export default class CandsApi extends BaseApi {
     positionId: number,
     keyId: string
   ) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.post(`Cand/AttachPosCandCv`, {
-          candidateId,
-          cvId,
-          positionId,
-          keyId,
-        })
-      ).data;
-      return response;
+    return await this.apiWrapper2(async () => {
+      return await this.http.post(`Cand/AttachPosCandCv`, {
+        candidateId,
+        cvId,
+        positionId,
+        keyId,
+      });
     });
   }
 
   async detachPosCand(candidateId: number, cvId: number, positionId: number) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.post(`Cand/DetachPosCand`, {
-          candidateId,
-          cvId,
-          positionId,
-        })
-      ).data;
-      return response;
+    return await this.apiWrapper2(async () => {
+      return await this.http.post(`Cand/DetachPosCand`, {
+        candidateId,
+        cvId,
+        positionId,
+      });
     });
   }
 
   async detachFolderCand(folderCandId: number) {
-    return await this.apiWrapper(async () => {
-      const response = (
-        await this.http.delete(`Folders/DetachCandidate?id=${folderCandId}`)
-      ).data;
-      return response;
+    return await this.apiWrapper2(async () => {
+      return await this.http.delete(
+        `Folders/DetachCandidate?id=${folderCandId}`
+      );
     });
   }
 
   async getCv() {
-    return await this.apiWrapper(async () => {
-      const response = (await this.http.get<ICand>("Cand/getCv")).data;
-      return response;
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.get("Cand/getCv");
     });
   }
 
   async saveCvReview(cvReview: ICvReview) {
-    const responseData = await this.apiWrapper(async () => {
-      const response = (await this.http.post("Cand/SaveCvReview", cvReview))
-        .data;
-      return response;
+    return await this.apiWrapper2(async () => {
+      return await this.http.post("Cand/SaveCvReview", cvReview);
     });
-
-    return responseData;
   }
 }

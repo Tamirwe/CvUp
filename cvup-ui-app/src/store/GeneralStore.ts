@@ -149,9 +149,9 @@ export class GeneralStore {
 
   // async addUpdateCustomer(customer: IIdName) {
   //   this.rootStore.generalStore.backdrop = true;
-  //   const data = await this.generalApi.addUpdateCustomer(customer);
+  //   const response = await this.generalApi.addUpdateCustomer(customer);
   //   this.rootStore.generalStore.backdrop = false;
-  //   return data;
+  //   return response;
   // }
 
   // async getCustomersList(loadAgain: boolean) {
@@ -167,16 +167,16 @@ export class GeneralStore {
 
   // async deleteCustomer(customerId: number) {
   //   this.rootStore.generalStore.backdrop = true;
-  //   const data = await this.generalApi.deleteCustomer(customerId);
+  //   const response = await this.generalApi.deleteCustomer(customerId);
   //   this.rootStore.generalStore.backdrop = false;
-  //   return data;
+  //   return response;
   // }
 
   async addUpdateHrCompany(hrCompany: IIdName) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.addUpdateHrCompany(hrCompany);
+    const response = await this.generalApi.addUpdateHrCompany(hrCompany);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async getHrCompaniesList(loadAgain: boolean) {
@@ -192,8 +192,8 @@ export class GeneralStore {
 
   async deleteHrCompany(hrCompanyId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.generalApi.deleteHrCompany(hrCompanyId);
+    const response = await this.generalApi.deleteHrCompany(hrCompanyId);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 }

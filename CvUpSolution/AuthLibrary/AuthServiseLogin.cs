@@ -45,7 +45,8 @@ namespace AuthLibrary
                     {
                         if (user.active_status != UserActiveStatus.Active.ToString())
                         {
-                            await _authQueries.ActivateUser(user);
+                            user.active_status = UserActiveStatus.Active.ToString();
+                            await _authQueries.UpdateUser(user);
                             var company = await _authQueries.GetCompany(user.company_id);
 
                             if (company is not null && company.active_status == CompanyActiveStatus.Waite_Complete_Registration.ToString())

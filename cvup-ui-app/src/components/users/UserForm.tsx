@@ -114,6 +114,10 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
       if (response.isSuccess) {
         onSaved();
       } else {
+        if (response.errorData === "duplicateUserPass") {
+          return setSubmitError("User already exists.");
+        }
+
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
     }
@@ -264,59 +268,17 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
           xs={6}
           sx={{ display: "flex", justifyContent: "end", alignItems: "end" }}
         >
-          <Link href="#" variant="body2">
-            Resend Registration email
+          <Link
+            href="#"
+            variant="body2"
+            onClick={() => {
+              authStore.resendRegistrationEmail(formModel);
+            }}
+          >
+            Resend registration email
           </Link>
-          {/* <FormControl fullWidth sx={{ mt: 2 }}>
-            <Button
-              variant="outlined"
-              endIcon={<MdSend />}
-              onClick={handleSubmit}
-            >
-              Resend Registration email
-            </Button>
-          </FormControl> */}
-          {/* <FormControlLabel
-              control={
-                <Switch
-                  checked={formModel.activeStatus !== UserActiveEnum.Not_Active}
-                  onChange={(e) => {
-                    setUserActive(e.target.checked);
-                  }}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label={userActive ? "Active" : "Active"}
-            /> */}
-
-          {/* <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel id="permissionlabel">Activation</InputLabel>
-            <Select
-              disabled={crudType === CrudTypesEnum.Delete}
-              labelId="activationlabel"
-              id="sctivationSelect"
-              label="Activation"
-              onChange={(e) => {
-                setFormModel((currentProps) => ({
-                  ...currentProps,
-                  activeStatus: parseInt(e.target.value),
-                }));
-                updateFieldError("activeStatus", "");
-              }}
-              value={formModel.activeStatus.toString()}
-            >
-              {activationList.map((item) => {
-                // console.log(key, index);
-                return (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl> */}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} pt={3}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>
         <Grid item xs={12} mt={4}>

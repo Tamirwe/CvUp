@@ -133,22 +133,29 @@ export class AuthStore {
     user.addedByName = this.claims.DisplayName;
     user.addedById = this.claims.UserId;
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.authApi.addUser(user);
+    const response = await this.authApi.addUser(user);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async updateUser(user: IUser) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.authApi.updateUser(user);
+    const response = await this.authApi.updateUser(user);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async deleteUser(id: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.authApi.deleteUser(id);
+    const response = await this.authApi.deleteUser(id);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
+  }
+
+  async resendRegistrationEmail(user: IUser) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.authApi.resendRegistrationEmail(user);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
   }
 }

@@ -66,7 +66,6 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
     }
-
   };
 
   const handleMenuSelected = async (menuItem: string) => {

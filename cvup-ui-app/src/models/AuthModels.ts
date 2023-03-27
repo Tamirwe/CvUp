@@ -29,7 +29,8 @@ export interface IUserLogin {
 export interface ResponseModel<T> {
   data: T;
   isSuccess: boolean;
-  error: string;
+  errorData: string;
+  status: number;
 }
 
 export interface IForgotPassword {

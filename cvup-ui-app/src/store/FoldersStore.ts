@@ -39,24 +39,24 @@ export class FoldersStore {
 
   async addFolder(folderModel: IFolder) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.foldersApi.addFolder(folderModel);
+    const response = await this.foldersApi.addFolder(folderModel);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async updateFolder(folderModel: IFolder) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.foldersApi.updateFolder(folderModel);
+    const response = await this.foldersApi.updateFolder(folderModel);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async deleteFolder(id: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.foldersApi.deleteFolder(id);
+    const response = await this.foldersApi.deleteFolder(id);
     this.rootStore.generalStore.backdrop = false;
     this.selectedFolder = undefined;
-    return data;
+    return response;
   }
 
   async getFoldersList() {

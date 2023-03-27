@@ -410,7 +410,7 @@ export const RegisterForm = (props: IProps) => {
 //   };
 
 //   const submitForm = async () => {
-//     const response = await authStore.registerUser(formModel);
+//     const responseData = await authStore.registerUser(formModel);
 
 //     if (response.isSuccess) {
 //       if (response.data === "duplicateUserPass") {

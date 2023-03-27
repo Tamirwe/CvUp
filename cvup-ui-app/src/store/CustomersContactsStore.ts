@@ -36,23 +36,23 @@ export class CustomersContactsStore {
 
   async addContact(contactModel: IContact) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.addContact(contactModel);
+    const response = await this.contactsApi.addContact(contactModel);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async updateContact(contactModel: IContact) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.updateContact(contactModel);
+    const response = await this.contactsApi.updateContact(contactModel);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async deleteContact(id: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.deleteContact(id);
+    const response = await this.contactsApi.deleteContact(id);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async getContactsList() {
@@ -75,22 +75,22 @@ export class CustomersContactsStore {
 
   async addCustomer(customer: IIdName) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.addCustomer(customer);
+    const response = await this.contactsApi.addCustomer(customer);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async updateCustomer(customer: IIdName) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.updateCustomer(customer);
+    const response = await this.contactsApi.updateCustomer(customer);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async deleteCustomer(customerId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.contactsApi.deleteCustomer(customerId);
+    const response = await this.contactsApi.deleteCustomer(customerId);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 }

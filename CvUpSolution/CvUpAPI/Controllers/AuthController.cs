@@ -185,7 +185,7 @@ namespace CvUpAPI.Controllers
 
             if (isUserDuplicate)
             {
-                return Ok("duplicateUserPass");
+                return BadRequest("duplicateUserPass");
             }
 
             string? origin = Request.Headers["Origin"].First();
@@ -209,15 +209,15 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("ActivateCompanyUser")]
-        public async Task<IActionResult> ActivateCompanyUser(UserModel data)
+        [HttpPut]
+        [Route("ActivationCompanyUser")]
+        public async Task<IActionResult> ActivationCompanyUser(UserModel data)
         {
-            await _authServise.DeactivateUser(Globals.CompanyId, data);
+            await _authServise.ActivationCompanyUser(Globals.CompanyId, data);
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("ResendRegistrationEmail")]
         public async Task<IActionResult> ResendRegistrationEmail(UserModel data)
         {

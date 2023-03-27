@@ -71,26 +71,6 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task ActivateUser(user user)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                user.active_status = UserActiveStatus.Active.ToString();
-                var result = dbContext.users.Update(user);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task DeactivateUser(user user)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                user.active_status = UserActiveStatus.Not_Active.ToString();
-                var result = dbContext.users.Update(user);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
         public async Task RemoveRegistrationKey(registeration_key rkey)
         {
             using (var dbContext = new cvup00001Context())
@@ -170,7 +150,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> AddUser(int companyId, string email, string password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {

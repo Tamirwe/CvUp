@@ -3,55 +3,55 @@ import BaseApi from "./BaseApi";
 
 export default class FoldersApi extends BaseApi {
   async addFolder(folderModel: IFolder) {
-    const response = await this.apiWrapper(async () => {
-      const data = (await this.http.post("Folders/AddFolder", folderModel))
+    const responseData = await this.apiWrapper(async () => {
+      const response = (await this.http.post("Folders/AddFolder", folderModel))
         .data;
-      return data;
+      return response;
     });
 
-    return response;
+    return responseData;
   }
 
   async updateFolder(folderModel: IFolder) {
-    const response = await this.apiWrapper(async () => {
-      const data = (await this.http.put("Folders/UpdateFolder", folderModel))
+    const responseData = await this.apiWrapper(async () => {
+      const response = (await this.http.put("Folders/UpdateFolder", folderModel))
         .data;
-      return data;
+      return response;
     });
 
-    return response;
+    return responseData;
   }
 
   async deleteFolder(id: number) {
-    const response = await this.apiWrapper(async () => {
-      const data = (await this.http.delete("Folders/DeleteFolder?id=" + id))
+    const responseData = await this.apiWrapper(async () => {
+      const response = (await this.http.delete("Folders/DeleteFolder?id=" + id))
         .data;
-      return data;
+      return response;
     });
 
-    return response;
+    return responseData;
   }
 
   async getFoldersList() {
-    const response = await this.apiWrapper(async () => {
-      const data = (await this.http.get<IFolder[]>("Folders/GetFolders")).data;
-      return data;
+    const responseData = await this.apiWrapper(async () => {
+      const response = (await this.http.get<IFolder[]>("Folders/GetFolders")).data;
+      return response;
     });
 
-    return response;
+    return responseData;
   }
 
   async attachCandidate(folderId: number, candidateId: number | undefined) {
-    const response = await this.apiWrapper(async () => {
-      const data = (
+    const responseData = await this.apiWrapper(async () => {
+      const response = (
         await this.http.post("Folders/AttachCandidate", {
           folderId,
           candidateId,
         })
       ).data;
-      return data;
+      return response;
     });
 
-    return response;
+    return responseData;
   }
 }

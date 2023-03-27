@@ -117,13 +117,14 @@ namespace AuthLibrary
             }
         }
 
-        public async Task DeactivateUser(int companyId, UserModel data)
+        public async Task ActivationCompanyUser(int companyId, UserModel data)
         {
             user? usr = await _authQueries.GetUser(companyId, data.email);
 
             if (usr != null)
             {
-                await _authQueries.DeactivateUser(usr);
+                usr.active_status = data.activeStatus.ToString();
+                await _authQueries.UpdateUser(usr);
             }
         }
 

@@ -58,9 +58,9 @@ export class PositionsStore {
 
   async addUpdatePosition(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.positionApi.addUpdatePosition(position);
+    const response = await this.positionApi.addUpdatePosition(position);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 
   async getPositionsList(loadAgain: boolean) {
@@ -76,8 +76,8 @@ export class PositionsStore {
 
   async deleteHrCompany(positionId: number) {
     this.rootStore.generalStore.backdrop = true;
-    const data = await this.positionApi.deletePosition(positionId);
+    const response = await this.positionApi.deletePosition(positionId);
     this.rootStore.generalStore.backdrop = false;
-    return data;
+    return response;
   }
 }

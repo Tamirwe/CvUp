@@ -20,8 +20,6 @@ namespace DataModelsLibrary.Queries
         Task AddRegistrationKey(string key, user user);
         Task DeleteOldRegistrationsKeys();
         Task<registeration_key?> GetRegistrationKey(string key);
-        Task ActivateUser(user user);
-        Task DeactivateUser(user user);
         Task SaveRefreshToken(string refreshToken, user authenticateUser);
         Task RevokeUserToken(int userId);
         Task RemoveRegistrationKey(registeration_key rkey);

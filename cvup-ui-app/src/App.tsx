@@ -14,14 +14,14 @@ function App() {
   const [isServersLoaded, setIsServersLoaded] = useState(false);
   const [appSettings, setAppSettings] = useState<IAppSettings>({
     appServerUrl: "",
+    appMode: "",
   });
 
   useEffect(() => {
     try {
-      fetch(`${process.env.PUBLIC_URL}/servers.json`)
+      fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
         .then((res) => res.json())
         .then((data) => {
-          // appSettings.appServerUrl = data.appHttp;
           setIsServersLoaded(true);
           setAppSettings(data);
           Object.freeze(appSettings);

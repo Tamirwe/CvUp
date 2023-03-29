@@ -2,6 +2,7 @@ import { UserRoleEnum } from "./GeneralEnums";
 
 export interface IAppSettings {
   appServerUrl: string;
+  appMode: string;
 }
 export interface ISelectBox {
   id: number;

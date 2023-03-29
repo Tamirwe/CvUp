@@ -25,6 +25,11 @@ export class GeneralStore {
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
   confirmDialogTitle: string = "";
   confirmDialogMessage: string = "";
+  private appModeType: string = "";
+
+  get appMode() {
+    return this.appModeType;
+  }
 
   get confirmDialogOpen() {
     return this.isConfirmDialogOpen;
@@ -107,6 +112,7 @@ export class GeneralStore {
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.generalApi = new GeneralApi(appSettings);
+    this.appModeType = appSettings.appMode;
   }
 
   reset() {

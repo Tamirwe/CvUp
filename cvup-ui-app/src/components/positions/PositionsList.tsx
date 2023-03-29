@@ -12,6 +12,7 @@ import { MdPersonAddAlt1 } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
 import { TabsCandsEnum } from "../../models/GeneralEnums";
+import { BsPersonCheckFill, BsPersonDashFill } from "react-icons/bs";
 
 export const PositionsList = observer(() => {
   const { positionsStore, candsStore } = useStore();
@@ -104,7 +105,7 @@ export const PositionsList = observer(() => {
                   },
                 }}
                 icon={<MdPersonAddAlt1 />}
-                checkedIcon={<MdPersonAddAlt1 />}
+                checkedIcon={<BsPersonDashFill />}
               />
             </ListItemButton>
           </ListItem>

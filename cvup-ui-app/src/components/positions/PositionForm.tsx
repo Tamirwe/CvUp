@@ -25,6 +25,7 @@ import {
   MdFormatAlignLeft,
 } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
 import { IPosition } from "../../models/GeneralModels";
@@ -45,64 +46,59 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     useStore();
   const [openCustomersList, setOpenCustomersList] = useState(false);
   const [openHrCompaniesList, setOpenHrCompaniesList] = useState(false);
-  const [openInterviewersList, setOpenInterviewersList] = useState(false);
+  // const [openInterviewersList, setOpenInterviewersList] = useState(false);
   const [isRtlDirection, setIsRtlDirection] = useState(false);
   const [hrCompanyNames, setHrCompanyNames] = useState<string[]>([]);
   const [interviewersNames, setInterviewersNames] = useState<string[]>([]);
-  const [
-    frmState,
-    setFrmState,
-    frmErrs,
-    frmErrsMsgs,
-    frmMsg,
-    setFrmMsg,
-    setFieldErr,
-    setIsDirty,
-    isDirty,
-  ] = useStateForm<IPosition, any, any>(
-    positionsStore.selectedPosition as IPosition,
-    {
-      name: false,
-      descr: false,
-    },
-    {
-      name: "",
-      descr: "",
-    }
-  );
 
-  useEffect(() => {
-    (async () => {
-      if (pid && parseInt(pid) > 0) {
-        await positionsStore.getPosition(parseInt(pid));
-      } else {
-        positionsStore.newPosition();
-      }
+  const [submitError, setSubmitError] = useState("");
+  const [isDirty, setIsDirty] = useState(false);
+  const [formModel, setFormModel] = useState<IPosition>({
+    id: 0,
+    name: "",
+    descr: "",
+    isActive: true,
+    customerId: 0,
+    hrCompaniesIds: [],
+    interviewersIds: [],
+  });
+  const [updateFieldError, clearError, errModel] = useFormErrors({
+    name: "",
+    descr: "",
+  });
 
-      setFrmState((currentProps) => ({
-        ...currentProps,
-        ...positionsStore.selectedPosition,
-      }));
-      setFrmMsg("");
-      setIsDirty(false);
-    })();
-  }, [pid]); // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   (async () => {
+  //     if (pid && parseInt(pid) > 0) {
+  //       await positionsStore.getPosition(parseInt(pid));
+  //     } else {
+  //       positionsStore.newPosition();
+  //     }
+
+  //     setFormModel((currentProps) => ({
+  //       ...currentProps,
+  //       ...positionsStore.selectedPosition,
+  //     }));
+  //     setSubmitError("");
+  //     setIsDirty(false);
+  //   })();
+  // }, [pid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     (async () => {
       await Promise.all([
         customersContactsStore.getCustomersList(),
         generalStore.getHrCompaniesList(false),
-        authStore.getInterviewersList(false),
+        authStore.usersList.length === 0 && authStore.getUsersList(),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (frmState) {
+    if (formModel) {
       const interviewrsNamesArr: string[] = [];
 
-      frmState.interviewersIds.forEach((id) => {
+      formModel.interviewersIds.forEach((id) => {
         const interviewer = authStore.interviewersList?.find(
           (x) => x.id === id
         );
@@ -113,13 +109,13 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
       setInterviewersNames(interviewrsNamesArr);
     }
-  }, [frmState?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formModel?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (frmState) {
+    if (formModel) {
       const hrCompaniesNamesArr: string[] = [];
 
-      frmState.hrCompaniesIds.forEach((id) => {
+      formModel.hrCompaniesIds.forEach((id) => {
         const hrCompany = generalStore.hrCompaniesList?.find(
           (x) => x.id === id
         );
@@ -128,13 +124,13 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
       setHrCompanyNames(hrCompaniesNamesArr);
     }
-  }, [frmState?.hrCompaniesIds]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formModel?.hrCompaniesIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (frmState) {
+    if (formModel) {
       const interviewrsNamesArr: string[] = [];
 
-      frmState.interviewersIds.forEach((id) => {
+      formModel.interviewersIds.forEach((id) => {
         const interviewer = authStore.interviewersList?.find(
           (x) => x.id === id
         );
@@ -145,7 +141,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
       setInterviewersNames(interviewrsNamesArr);
     }
-  }, [frmState?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formModel?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleHrCompaniesChanged = (
     event: SelectChangeEvent<typeof hrCompanyNames>,
@@ -157,7 +153,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedCompanyIds = [...frmState.hrCompaniesIds];
+    const selectedCompanyIds = [...formModel.hrCompaniesIds];
 
     if (isChecked) {
       const ind = selectedCompanyIds.indexOf(id);
@@ -168,7 +164,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
     setIsDirty(true);
 
-    setFrmState((currentProps) => ({
+    setFormModel((currentProps) => ({
       ...currentProps,
       hrCompaniesIds: selectedCompanyIds,
     }));
@@ -186,7 +182,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
     const id = parseInt(node.props.id);
     const isChecked = node.props.children[0].props.checked;
-    const selectedInterviwersIds = [...frmState.interviewersIds];
+    const selectedInterviwersIds = [...formModel.interviewersIds];
 
     if (isChecked) {
       const ind = selectedInterviwersIds.indexOf(id);
@@ -197,7 +193,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
 
     setIsDirty(true);
 
-    setFrmState((currentProps) => ({
+    setFormModel((currentProps) => ({
       ...currentProps,
       interviewersIds: selectedInterviwersIds,
     }));
@@ -213,31 +209,31 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     setOpenHrCompaniesList(false);
   };
 
-  const handleInterviewersListClose = () => {
-    setOpenInterviewersList(false);
-  };
+  // const handleInterviewersListClose = () => {
+  //   setOpenInterviewersList(false);
+  // };
 
   const validateForm = () => {
     let isFormValid = true;
-    let errTxt = textFieldValidte(frmState.name, true, true, true);
-    isFormValid = setFieldErr("name", errTxt) && isFormValid;
+    let err = textFieldValidte(formModel.name, true, true, true);
+    isFormValid = updateFieldError("lastName", err) && isFormValid;
     return isFormValid;
   };
 
   const submitForm = async () => {
-    const response = await positionsStore.addUpdatePosition(frmState);
+    const response = await positionsStore.addUpdatePosition(formModel);
 
     if (response.isSuccess) {
       positionsStore.getPositionsList(true);
       navigate(`/position/${response.data}`);
     } else {
-      return setFrmMsg("An Error Occurred Please Try Again Later.");
+      return setSubmitError("An Error Occurred Please Try Again Later.");
     }
   };
 
   return (
     <>
-      {frmState && (
+      {formModel && (
         <form noValidate spellCheck="false">
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
@@ -262,17 +258,16 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                       label="Position title"
                       variant="outlined"
                       onChange={(e) => {
-                        setIsDirty(true);
-
-                        setFrmState((currentProps) => ({
+                        setFormModel((currentProps) => ({
                           ...currentProps,
                           name: e.target.value,
                         }));
-                        setFieldErr("name", "");
+                        clearError("firstName");
+                        setIsDirty(true);
                       }}
-                      error={frmErrs.name}
-                      helperText={frmErrsMsgs.name}
-                      value={frmState.name}
+                      error={errModel.name !== ""}
+                      helperText={errModel.name}
+                      value={formModel.name}
                     />
                     <Tooltip title="Direction">
                       <IconButton
@@ -308,17 +303,16 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     label="Description"
                     variant="outlined"
                     onChange={(e) => {
-                      setIsDirty(true);
-
-                      setFrmState((currentProps) => ({
+                      setFormModel((currentProps) => ({
                         ...currentProps,
                         descr: e.target.value,
                       }));
-                      setFieldErr("descr", "");
+                      clearError("firstName");
+                      setIsDirty(true);
                     }}
-                    error={frmErrs.descr}
-                    helperText={frmErrsMsgs.descr}
-                    value={frmState.descr}
+                    error={errModel.descr !== ""}
+                    helperText={errModel.descr}
+                    value={formModel.descr}
                   />
                 </Grid>
               </Grid>
@@ -337,18 +331,18 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                       renderValue={(selected) => selected.join(", ")}
                       input={<OutlinedInput label="Interviewers" />}
                       onChange={handleInterviewersChanged}
-                      sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
-                      endAdornment={
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setOpenInterviewersList(true)}
-                          edge="end"
-                        >
-                          <MdFormatIndentIncrease />
-                        </IconButton>
-                      }
+                      // sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
+                      // endAdornment={
+                      //   <IconButton
+                      //     aria-label="toggle password visibility"
+                      //     onClick={() => setOpenInterviewersList(true)}
+                      //     edge="end"
+                      //   >
+                      //     <MdFormatIndentIncrease />
+                      //   </IconButton>
+                      // }
                     >
-                      {authStore.interviewersList?.map((item, i) => {
+                      {authStore.usersList?.map((item, i) => {
                         return (
                           <MenuItem
                             key={item.id}
@@ -357,7 +351,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                           >
                             <Checkbox
                               checked={
-                                frmState.interviewersIds.indexOf(item.id) > -1
+                                formModel.interviewersIds.indexOf(item.id) > -1
                               }
                             />
                             <ListItemText
@@ -373,19 +367,18 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={frmState.isActive}
+                        checked={formModel.isActive}
                         onChange={(e) => {
-                          setIsDirty(true);
-
-                          setFrmState((currentProps) => ({
+                          setFormModel((currentProps) => ({
                             ...currentProps,
                             isActive: e.target.checked,
                           }));
+                          setIsDirty(true);
                         }}
                         inputProps={{ "aria-label": "controlled" }}
                       />
                     }
-                    label={frmState.isActive ? "Active" : "Not Active"}
+                    label={formModel.isActive ? "Active" : "Not Active"}
                   />
                 </Grid>
 
@@ -396,18 +389,17 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                       labelId="customerLabel"
                       id="customerSelect"
                       value={
-                        frmState.customerId === 0
+                        formModel.customerId === 0
                           ? ""
-                          : frmState.customerId.toString()
+                          : formModel.customerId.toString()
                       }
                       label="Customer"
                       onChange={(event: SelectChangeEvent) => {
-                        setIsDirty(true);
-
-                        setFrmState((currentProps) => ({
+                        setFormModel((currentProps) => ({
                           ...currentProps,
                           customerId: parseInt(event.target.value),
                         }));
+                        setIsDirty(true);
                       }}
                       sx={{ "& .MuiSelect-icon": { right: "45px !important" } }}
                       endAdornment={
@@ -461,7 +453,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                           >
                             <Checkbox
                               checked={
-                                frmState.hrCompaniesIds.indexOf(item.id) > -1
+                                formModel.hrCompaniesIds.indexOf(item.id) > -1
                               }
                             />
                             <ListItemText primary={item.name} />
@@ -473,9 +465,9 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
-            {frmMsg && (
+            {submitError && (
               <Grid item xs={12}>
-                <FormHelperText error>{frmMsg}</FormHelperText>
+                <FormHelperText error>{submitError}</FormHelperText>
               </Grid>
             )}
             <Grid item xs={12} sx={{ mt: 2 }}>
@@ -536,12 +528,12 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
               close={handleHrCompaniesListClose}
             />
           )}
-          {openInterviewersList && (
+          {/* {openInterviewersList && (
             <InterviewersListDialog
               isOpen={openInterviewersList}
               close={handleInterviewersListClose}
             />
-          )}
+          )} */}
         </form>
       )}
     </>

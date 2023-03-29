@@ -57,12 +57,12 @@ export interface IPosition {
   id: number;
   name: string;
   descr: string;
-  updated: Date;
+  updated?: Date;
   isActive: boolean;
   customerId: number;
   hrCompaniesIds: number[];
   interviewersIds: number[];
-  candidates: number[];
+  // candidates: number[];
 }
 
 export interface ICvReview {

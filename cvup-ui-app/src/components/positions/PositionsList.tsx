@@ -67,7 +67,9 @@ export const PositionsList = observer(() => {
               }}
             >
               <ListItemText
-                primary={format(new Date(pos.updated), "MMM d, yyyy")}
+                primary={
+                  pos.updated && format(new Date(pos.updated), "MMM d, yyyy")
+                }
                 sx={{
                   textAlign: "right",
                   alignSelf: "start",

@@ -152,6 +152,20 @@ export class AuthStore {
     return response;
   }
 
+  async activateUser(user: IUser) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.authApi.activateUser(user);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
+  }
+
+  async dactivateUser(user: IUser) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.authApi.dactivateUser(user);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
+  }
+
   async resendRegistrationEmail(user: IUser) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.authApi.resendRegistrationEmail(user);

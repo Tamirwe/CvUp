@@ -14,7 +14,6 @@ import { PermissionTypeEnum, UserActiveEnum } from "../../models/GeneralEnums";
 
 export const UsersList = observer(() => {
   const { authStore, generalStore } = useStore();
-  const [userActive, setUserActive] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,7 +48,7 @@ export const UsersList = observer(() => {
                 <Typography variant="caption" display="block" gutterBottom>
                   <b>Role:</b> {PermissionTypeEnum[item.permissionType]}
                   <b>, Status: </b>
-                  {UserActiveEnum[item.activeStatus].replace("_", " ")}
+                  {UserActiveEnum[item.activeStatus].replaceAll("_", " ")}
                 </Typography>
               }
             />

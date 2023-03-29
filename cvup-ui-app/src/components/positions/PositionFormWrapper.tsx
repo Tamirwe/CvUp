@@ -22,9 +22,7 @@ export const PositionFormWrapper = () => {
             },
           }}
         >
-          <CardContent>
-            <PositionForm />
-          </CardContent>
+          <CardContent>{/* <PositionForm /> */}</CardContent>
         </Card>
       </Grid>
     </Grid>

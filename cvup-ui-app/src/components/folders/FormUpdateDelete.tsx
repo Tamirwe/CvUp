@@ -1,6 +1,7 @@
 import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
+import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import { IFolder } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
 import { FolderSettingsMenu } from "./FolderSettingsMenu";
@@ -23,7 +24,7 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
   const [errModel, setErrModel] = useState({
     name: "",
   });
- 
+
   useEffect(() => {
     if (foldersStore.editFolderSelected) {
       setFolderModel({ ...foldersStore.editFolderSelected });
@@ -52,7 +53,8 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
   };
 
   const deleteRecord = async () => {
-    const isDelete = await generalStore.confirmDialog(
+    const isDelete = await generalStore.alertConfirmDialog(
+      AlertConfirmDialogEnum.Confirm,
       "Delete Folder",
       "Are you sure you want to delete this folder?"
     );

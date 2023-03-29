@@ -33,7 +33,12 @@ import { CustomersListDialog } from "../customers/CustomersListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
 
-export const PositionForm = observer(() => {
+interface IProps {
+  onSaved: () => void;
+  onCancel: () => void;
+}
+
+export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
   let { pid } = useParams();
   const navigate = useNavigate();
   const { positionsStore, generalStore, authStore, customersContactsStore } =

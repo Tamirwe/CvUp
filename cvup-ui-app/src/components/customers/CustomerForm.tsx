@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
-import { CrudTypesEnum, TextValidateTypeEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  CrudTypesEnum,
+  TextValidateTypeEnum,
+} from "../../models/GeneralEnums";
 import { textFieldValidte, validateTxt } from "../../utils/Validation";
 
 interface IProps {
@@ -65,7 +69,8 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
   };
 
   const deleteRecord = async () => {
-    const isDelete = await generalStore.confirmDialog(
+    const isDelete = await generalStore.alertConfirmDialog(
+      AlertConfirmDialogEnum.Confirm,
       "Delete Customer",
       "Are you sure you want to delete this customer?"
     );

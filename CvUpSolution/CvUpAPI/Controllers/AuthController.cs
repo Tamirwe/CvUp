@@ -210,10 +210,19 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPut]
-        [Route("ActivationCompanyUser")]
-        public async Task<IActionResult> ActivationCompanyUser(UserModel data)
+        [Route("ActivateCompanyUser")]
+        public async Task<IActionResult> ActivateCompanyUser(UserModel data)
         {
-            await _authServise.ActivationCompanyUser(Globals.CompanyId, data);
+            string? origin = Request.Headers["Origin"].First();
+            await _authServise.ActivateCompanyUser(origin,Globals.CompanyId, data);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("DactivateCompanyUser")]
+        public async Task<IActionResult> DactivateCompanyUser(UserModel data)
+        {
+            await _authServise.DactivateCompanyUser(Globals.CompanyId, data);
             return Ok();
         }
 

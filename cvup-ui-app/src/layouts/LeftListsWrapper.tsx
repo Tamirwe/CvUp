@@ -14,7 +14,8 @@ import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper"
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
-  const { generalStore, foldersStore, customersContactsStore } = useStore();
+  const { generalStore, foldersStore, customersContactsStore, positionsStore } =
+    useStore();
 
   const themeRtl = createTheme({
     direction: "rtl", // Both here and <body dir="rtl">
@@ -36,7 +37,9 @@ export const LeftListsWrapper = observer(() => {
   const handleAddClick = () => {
     switch (generalStore.currentTab) {
       case TabsGeneralEnum.Positions:
-        navigate("/position/0");
+        positionsStore.selectedPosition = undefined;
+        generalStore.showPositionFormDialog = true;
+        // navigate("/position/0");
         break;
       case TabsGeneralEnum.Folders:
         foldersStore.editFolderSelected = foldersStore.rootFolder;

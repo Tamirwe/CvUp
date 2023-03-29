@@ -13,7 +13,11 @@ import { MdAdd } from "react-icons/md";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
-import { CrudTypesEnum, TextValidateTypeEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  CrudTypesEnum,
+  TextValidateTypeEnum,
+} from "../../models/GeneralEnums";
 import { IContact } from "../../models/GeneralModels";
 import {
   validateSelect,
@@ -116,7 +120,8 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
   };
 
   const deleteRecord = async () => {
-    const isDelete = await generalStore.confirmDialog(
+    const isDelete = await generalStore.alertConfirmDialog(
+      AlertConfirmDialogEnum.Confirm,
       "Delete Contact",
       "Are you sure you want to delete this contact?"
     );

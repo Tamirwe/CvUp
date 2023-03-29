@@ -12,10 +12,11 @@ import { ContactEmailSender } from "../components/email/ContactEmailSender";
 import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FormFolderDialog } from "../components/folders/FormFolderDialog";
 import { useState } from "react";
-import { AlertDialog } from "./AlertDialog";
+import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
 import { UsersListDialog } from "../components/users/UsersListDialog";
+import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 
 export const LayoutAuth = observer(() => {
   const { generalStore } = useStore();
@@ -46,6 +47,12 @@ export const LayoutAuth = observer(() => {
           }
         />
       )}
+      {generalStore.showPositionFormDialog && (
+        <PositionFormDialog
+          isOpen={generalStore.showPositionFormDialog}
+          onClose={() => (generalStore.showPositionFormDialog = false)}
+        />
+      )}
       {generalStore.showContactFormDialog && (
         <ContactsFormDialog
           isOpen={generalStore.showContactFormDialog}
@@ -70,7 +77,7 @@ export const LayoutAuth = observer(() => {
           onClose={() => (generalStore.showUserListDialog = false)}
         />
       )}
-      {generalStore.confirmDialogOpen && <AlertDialog />}
+      {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}
       <Grid container spacing={0} columns={18}>
         <Grid item xs={5}>
           <Drawer

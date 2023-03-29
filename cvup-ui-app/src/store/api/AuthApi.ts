@@ -95,4 +95,16 @@ export default class AuthApi extends BaseApi {
       return await this.http.put("Auth/ResendRegistrationEmail", userModel);
     });
   }
+
+  async activateUser(userModel: IUser) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put("Auth/ActivateCompanyUser", userModel);
+    });
+  }
+
+  async dactivateUser(userModel: IUser) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put("Auth/DactivateCompanyUser", userModel);
+    });
+  }
 }

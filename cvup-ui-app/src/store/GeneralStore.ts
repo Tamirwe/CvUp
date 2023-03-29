@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
 import {
+  AlertConfirmDialogEnum,
   CrudTypesEnum,
   EmailTypeEnum,
   TabsGeneralEnum,
@@ -21,22 +22,24 @@ export class GeneralStore {
   private isShowCustomersListDialog: boolean = false;
   private isShowUserFormDialog: boolean = false;
   private isShowUserListDialog: boolean = false;
-  private isConfirmDialogOpen: boolean = false;
+  private isAlertConfirmDialogOpen: boolean = false;
+  private isPositionFormDialogOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
-  confirmDialogTitle: string = "";
-  confirmDialogMessage: string = "";
+  alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
+  alertConfirmDialogTitle: string = "";
+  alertConfirmDialogMessage: string = "";
   private appModeType: string = "";
 
   get appMode() {
     return this.appModeType;
   }
 
-  get confirmDialogOpen() {
-    return this.isConfirmDialogOpen;
+  get alertConfirmDialogOpen() {
+    return this.isAlertConfirmDialogOpen;
   }
 
-  set confirmDialogOpen(val) {
-    this.isConfirmDialogOpen = val;
+  set alertConfirmDialogOpen(val) {
+    this.isAlertConfirmDialogOpen = val;
   }
 
   get backdrop() {
@@ -59,6 +62,14 @@ export class GeneralStore {
   }
   set showEmailDialog(val) {
     this.showEmailDialogType = val;
+  }
+
+  get showPositionFormDialog() {
+    return this.isPositionFormDialogOpen;
+  }
+
+  set showPositionFormDialog(val) {
+    this.isPositionFormDialogOpen = val;
   }
 
   get currentTab() {
@@ -120,10 +131,15 @@ export class GeneralStore {
     this.isShowBackdrop = false;
   }
 
-  confirmDialog(title: string, message: string) {
-    this.confirmDialogTitle = title;
-    this.confirmDialogMessage = message;
-    this.isConfirmDialogOpen = true;
+  alertConfirmDialog(
+    type: AlertConfirmDialogEnum,
+    title: string,
+    message: string
+  ) {
+    this.alertConfirmDialogType = type;
+    this.alertConfirmDialogTitle = title;
+    this.alertConfirmDialogMessage = message;
+    this.isAlertConfirmDialogOpen = true;
 
     const confirmPromise = () =>
       new Promise<boolean>((resolve, reject) => {

@@ -6,41 +6,45 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
+import { AlertConfirmDialogEnum } from "../models/GeneralEnums";
 
-export const AlertDialog = observer(() => {
+export const AlertConfirmDialog = observer(() => {
   const { generalStore } = useStore();
 
   const handleOk = () => {
     generalStore.confirmResponse(true);
-    generalStore.confirmDialogOpen = false;
+    generalStore.alertConfirmDialogOpen = false;
   };
 
   const handleCancel = () => {
     generalStore.confirmResponse(false);
-    generalStore.confirmDialogOpen = false;
+    generalStore.alertConfirmDialogOpen = false;
   };
 
   return (
     <div>
       <Dialog
-        open={generalStore.confirmDialogOpen}
+        open={generalStore.alertConfirmDialogOpen}
         onClose={handleCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {generalStore.confirmDialogTitle}
+          {generalStore.alertConfirmDialogTitle}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {generalStore.confirmDialogMessage}
+            {generalStore.alertConfirmDialogMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOk}>OK</Button>
-          <Button onClick={handleCancel} autoFocus>
-            Cancel
-          </Button>
+          {generalStore.alertConfirmDialogType ===
+            AlertConfirmDialogEnum.Confirm && (
+            <Button onClick={handleCancel} autoFocus>
+              Cancel
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

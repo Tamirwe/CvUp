@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import {
+  AlertConfirmDialogEnum,
   CrudTypesEnum,
   PermissionTypeEnum,
   TextValidateTypeEnum,
@@ -112,6 +113,13 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
       }
 
       if (response.isSuccess) {
+        if (crudType === CrudTypesEnum.Insert) {
+          await generalStore.alertConfirmDialog(
+            AlertConfirmDialogEnum.Confirm,
+            "New User",
+            `An email registration was sent to ${formModel.firstName}.`
+          );
+        }
         onSaved();
       } else {
         if (response.errorData === "duplicateUserPass") {
@@ -123,8 +131,9 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
     }
   };
 
-  const deleteRecord = async () => {
-    const isDelete = await generalStore.confirmDialog(
+  const deleteUser = async () => {
+    const isDelete = await generalStore.alertConfirmDialog(
+      AlertConfirmDialogEnum.Confirm,
       "Delete User",
       "Are you sure you want to delete this user?"
     );
@@ -137,6 +146,38 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
+    }
+  };
+
+  const activateUser = async () => {
+    const response = await authStore.activateUser(formModel);
+
+    if (response.isSuccess) {
+      await generalStore.alertConfirmDialog(
+        AlertConfirmDialogEnum.Confirm,
+        "Activate User",
+        `An email registration was sent to ${formModel.firstName}.`
+      );
+
+      onSaved();
+    } else {
+      return setSubmitError("An Error Occurred Please Try Again Later.");
+    }
+  };
+
+  const dactivateUser = async () => {
+    const response = await authStore.dactivateUser(formModel);
+
+    if (response.isSuccess) {
+      await generalStore.alertConfirmDialog(
+        AlertConfirmDialogEnum.Confirm,
+        "Deactivate User",
+        "User Deactivated."
+      );
+
+      onSaved();
+    } else {
+      return setSubmitError("An Error Occurred Please Try Again Later.");
     }
   };
 
@@ -292,7 +333,7 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
                       fullWidth
                       color="error"
                       onClick={() => {
-                        deleteRecord();
+                        deleteUser();
                       }}
                     >
                       Delete
@@ -301,12 +342,18 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
                       fullWidth
                       color="warning"
                       onClick={() => {
-                        deleteRecord();
+                        if (
+                          formModel.activeStatus === UserActiveEnum.Not_Active
+                        ) {
+                          activateUser();
+                        } else {
+                          dactivateUser();
+                        }
                       }}
                     >
-                      {formModel.activeStatus !== UserActiveEnum.Not_Active
-                        ? "Deactivate"
-                        : "Activate"}
+                      {formModel.activeStatus === UserActiveEnum.Not_Active
+                        ? "Activate"
+                        : "Deactivate"}
                     </Button>
                   </Stack>
                 )}

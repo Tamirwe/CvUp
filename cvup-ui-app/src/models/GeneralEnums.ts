@@ -12,8 +12,8 @@ export enum PermissionTypeEnum {
 
 export enum UserActiveEnum {
   Active,
-  Not_Active,
   Wait_Complete_Registration,
+  Not_Active,
 }
 
 export enum CvDisplayedListEnum {
@@ -54,4 +54,9 @@ export enum TextValidateTypeEnum {
 export enum UserRoleEnum {
   Admin,
   User,
+}
+
+export enum AlertConfirmDialogEnum {
+  Alert,
+  Confirm,
 }

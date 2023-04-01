@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
 import {
   AlertConfirmDialogEnum,
+  AppModeEnum,
   CrudTypesEnum,
   EmailTypeEnum,
   TabsGeneralEnum,
@@ -28,7 +29,7 @@ export class GeneralStore {
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
   alertConfirmDialogMessage: string = "";
-  private appModeType: string = "";
+  private appModeType: AppModeEnum = AppModeEnum.HRCompany;
 
   get appMode() {
     return this.appModeType;
@@ -123,7 +124,8 @@ export class GeneralStore {
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.generalApi = new GeneralApi(appSettings);
-    this.appModeType = appSettings.appMode;
+    this.appModeType =
+      AppModeEnum[appSettings.appMode as keyof typeof AppModeEnum];
   }
 
   reset() {

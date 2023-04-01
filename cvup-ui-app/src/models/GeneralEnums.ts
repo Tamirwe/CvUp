@@ -60,3 +60,8 @@ export enum AlertConfirmDialogEnum {
   Alert,
   Confirm,
 }
+
+export enum AppModeEnum {
+  HRCompany,
+  HRDepartment,
+}

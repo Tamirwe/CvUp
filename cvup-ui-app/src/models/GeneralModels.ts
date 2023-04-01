@@ -62,6 +62,7 @@ export interface IPosition {
   customerId: number;
   hrCompaniesIds: number[];
   interviewersIds: number[];
+  contactsIds: number[];
   // candidates: number[];
 }
 

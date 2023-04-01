@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Checkbox,
   FormControl,
@@ -28,8 +29,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStateForm } from "../../Hooks/useStateForm";
 import { useStore } from "../../Hooks/useStore";
+import { AppModeEnum, CrudTypesEnum } from "../../models/GeneralEnums";
 import { IPosition } from "../../models/GeneralModels";
 import { textFieldValidte } from "../../utils/Validation";
+import { ContactsAutoCompleteMulty } from "../contacts/ContactsAutoCompleteMulty";
 import { CustomersListDialog } from "../customers/CustomersListDialog";
 import { HrCompaniesListDialog } from "../hrCompanies/HrCompaniesListDialog";
 import { InterviewersListDialog } from "../interviewers/InterviewersListDialog";
@@ -61,6 +64,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     customerId: 0,
     hrCompaniesIds: [],
     interviewersIds: [],
+    contactsIds: [],
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
@@ -90,6 +94,8 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
         customersContactsStore.getCustomersList(),
         generalStore.getHrCompaniesList(false),
         authStore.usersList.length === 0 && authStore.getUsersList(),
+        customersContactsStore.contactsList.length === 0 &&
+          customersContactsStore.getContactsList,
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -107,7 +113,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
         );
       });
 
-      setInterviewersNames(interviewrsNamesArr);
+      // setInterviewersNames(interviewrsNamesArr);
     }
   }, [formModel?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -139,7 +145,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
         );
       });
 
-      setInterviewersNames(interviewrsNamesArr);
+      // setInterviewersNames(interviewrsNamesArr);
     }
   }, [formModel?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -198,7 +204,9 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       interviewersIds: selectedInterviwersIds,
     }));
 
-    setInterviewersNames(typeof value === "string" ? value.split(",") : value);
+    if (value && Array.isArray(value)) {
+      setInterviewersNames([...value]);
+    }
   };
 
   const handleCustomersListClose = () => {
@@ -235,15 +243,11 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     <>
       {formModel && (
         <form noValidate spellCheck="false">
-          <Grid container spacing={2}>
+          <Grid container>
             <Grid item xs={12} lg={12}>
               <Grid container>
                 <Grid item xs={12}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    spacing={1}
-                  >
+                  <Stack direction="row" justifyContent="space-between">
                     <TextField
                       sx={{
                         "& input": {
@@ -317,10 +321,15 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
-
-            <Grid item xs={12} lg={12} sx={{ mt: 2 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} lg={6}>
+            <Grid item xs={12}>
+              <Grid container>
+                <Grid item xs={12} mt={2}>
+                  <ContactsAutoCompleteMulty
+                    allRecordslist={customersContactsStore.contactsList}
+                    selectedRecords={[]}
+                  />
+                </Grid>
+                <Grid item xs={12} mt={3}>
                   <FormControl fullWidth>
                     <InputLabel id="interviewersLabel">Interviewers</InputLabel>
                     <Select
@@ -363,28 +372,14 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} lg={6} mt={1}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formModel.isActive}
-                        onChange={(e) => {
-                          setFormModel((currentProps) => ({
-                            ...currentProps,
-                            isActive: e.target.checked,
-                          }));
-                          setIsDirty(true);
-                        }}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
-                    }
-                    label={formModel.isActive ? "Active" : "Not Active"}
-                  />
-                </Grid>
 
-                <Grid item xs={12} lg={6}>
+                <Grid item xs={6} mt={3}>
                   <FormControl fullWidth>
-                    <InputLabel id="customerLabel">Customer</InputLabel>
+                    <InputLabel id="customerLabel">
+                      {generalStore.appMode === AppModeEnum.HRCompany
+                        ? "Customer"
+                        : "Team"}
+                    </InputLabel>
                     <Select
                       labelId="customerLabel"
                       id="customerSelect"
@@ -422,7 +417,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} lg={6}>
+                <Grid item xs={6} mt={3}>
                   <FormControl fullWidth>
                     <InputLabel id="hrCompanyLabel">HR Companies</InputLabel>
                     <Select
@@ -462,6 +457,24 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                       })}
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12} mt={3}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={formModel.isActive}
+                        onChange={(e) => {
+                          setFormModel((currentProps) => ({
+                            ...currentProps,
+                            isActive: e.target.checked,
+                          }));
+                          setIsDirty(true);
+                        }}
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                    }
+                    label={formModel.isActive ? "Active" : "Not Active"}
+                  />
                 </Grid>
               </Grid>
             </Grid>

@@ -29,6 +29,7 @@ export class PositionsStore {
         hrCompaniesIds: [],
         interviewersIds: [],
         candidates: [],
+        contactsIds: [],
       } as IPosition;
     });
   }

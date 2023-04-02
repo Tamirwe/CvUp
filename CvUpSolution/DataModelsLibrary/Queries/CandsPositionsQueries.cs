@@ -234,7 +234,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<PositionClientModel> GetPosition(int companyId, int positionId)
+        public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -246,14 +246,13 @@ namespace DataModelsLibrary.Queries
                 var query = from p in dbContext.positions
                             where p.id == positionId && p.company_id == companyId
                             orderby p.name
-                            select new PositionClientModel
+                            select new PositionModel
                             {
                                 id = p.id,
                                 name = p.name,
                                 descr = p.descr ?? "",
-                                companyId = companyId,
                                 customerId = p.customer_id ?? 0,
-                                isActive = Convert.ToBoolean(p.is_active),
+                                status = p.status,
                                 interviewersIds = inter.ToArray()
                             };
 
@@ -263,7 +262,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<position> AddPosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position> AddPosition(PositionModel data, int companyId, int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -272,7 +271,7 @@ namespace DataModelsLibrary.Queries
                     company_id = companyId,
                     name = data.name,
                     descr = data.descr,
-                    is_active = Convert.ToSByte(data.isActive),
+                    status = data.status,
                     opener_id = userId,
                     updater_id = userId,
                     date_created = DateTime.Now,
@@ -293,7 +292,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position?> UpdatePosition(PositionModel data, int companyId, int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -304,7 +303,7 @@ namespace DataModelsLibrary.Queries
                     name = data.name,
                     descr = data.descr,
                     customer_id = data.customerId == 0 ? null : data.customerId,
-                    is_active = Convert.ToSByte(data.isActive),
+                    status = data.status,
                     updater_id = userId,
                     date_created = DateTime.Now,
                     date_updated = DateTime.Now,
@@ -330,7 +329,7 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                isActive = Convert.ToBoolean(p.is_active),
+                                status = p.status,
                                 updated = p.date_updated,
                             };
 
@@ -354,6 +353,35 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task ActivatePosition(int companyId, PositionModel data)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position ent = new position
+                {
+                    id = data.id,
+                    status = data.status,
+                };
+
+                dbContext.positions.Update(ent);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DactivatePosition(int companyId, PositionModel data)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position ent = new position
+                {
+                    id = data.id,
+                    status = data.status,
+                };
+
+                dbContext.positions.Update(ent);
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
         private async Task UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
         {

@@ -139,19 +139,19 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
         }
 
-        public async Task<PositionClientModel> GetPosition(int companyId, int positionId)
+        public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
-            PositionClientModel pos = await _cvsPositionsQueries.GetPosition(companyId, positionId);
+            PositionModel pos = await _cvsPositionsQueries.GetPosition(companyId, positionId);
             return pos;
         }
 
-        public async Task<position?> AddPosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position?> AddPosition(PositionModel data, int companyId, int userId)
         {
             position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
             return newRec;
         }
 
-        public async Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId)
+        public async Task<position?> UpdatePosition(PositionModel data, int companyId, int userId)
         {
             position? updRec = await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
             return updRec;
@@ -224,6 +224,17 @@ namespace CandsPositionsLibrary
         public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
         {
             return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId);
+        }
+
+        public async Task ActivatePosition( int companyId, PositionModel data)
+        {
+             await _cvsPositionsQueries.ActivatePosition(companyId, data);
+        }
+
+        public async Task DactivatePosition(int companyId, PositionModel data)
+        {
+             await _cvsPositionsQueries.DactivatePosition(companyId, data);
+
         }
     }
 }

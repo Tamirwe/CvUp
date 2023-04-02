@@ -10,29 +10,31 @@ namespace CandsPositionsLibrary
 {
     public interface ICandsPositionsServise
     {
-        public Task<int> AddCv(ImportCvModel importCv);
-        public Task AddCvToIndex(ImportCvModel item);
-        public Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
-        public Task IndexCompanyCvs(int companyId);
-        public Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
-        public Task<position?> AddPosition(PositionClientModel data, int companyId, int userId);
-        public Task<position?> UpdatePosition(PositionClientModel data, int companyId, int userId);
-        public Task<List<PositionModel>> GetPositionsList(int companyId);
-        public Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
-        public Task<List<CandModel>> GetPosCandsList(int companyId, int positionId);
-        public Task DeletePosition(int companyId, int id);
-        public Task<PositionClientModel> GetPosition(int companyId, int positionId);
-        public Task<List<ParserRulesModel>> GetParsersRules(int companyId);
-        public Task<CvModel?> GetCv(int cvId, int companyId);
-        public Task UpdateCvKeyId(ImportCvModel importCv);
-        public Task SaveCvReview(CvReviewModel cvReview);
-        public Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
-        public Task UpdateCandidateLastCv(ImportCvModel importCv);
-        public Task UpdateSameCv(ImportCvModel importCv);
-        public Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
-        public Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
-        public Task<List<company_cvs_email>> GetCompaniesEmails();
-        public Task<List<int>> SearchCands(int companyId, string searchKeyWords);
+        Task<int> AddCv(ImportCvModel importCv);
+        Task AddCvToIndex(ImportCvModel item);
+        Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
+        Task IndexCompanyCvs(int companyId);
+        Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
+        Task<position?> AddPosition(PositionModel data, int companyId, int userId);
+        Task<position?> UpdatePosition(PositionModel data, int companyId, int userId);
+        Task<List<PositionModel>> GetPositionsList(int companyId);
+        Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
+        Task<List<CandModel>> GetPosCandsList(int companyId, int positionId);
+        Task DeletePosition(int companyId, int id);
+        Task<PositionModel> GetPosition(int companyId, int positionId);
+        Task<List<ParserRulesModel>> GetParsersRules(int companyId);
+        Task<CvModel?> GetCv(int cvId, int companyId);
+        Task UpdateCvKeyId(ImportCvModel importCv);
+        Task SaveCvReview(CvReviewModel cvReview);
+        Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
+        Task UpdateCandidateLastCv(ImportCvModel importCv);
+        Task UpdateSameCv(ImportCvModel importCv);
+        Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
+        Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
+        Task<List<company_cvs_email>> GetCompaniesEmails();
+        Task<List<int>> SearchCands(int companyId, string searchKeyWords);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
+        Task ActivatePosition( int companyId, PositionModel data);
+        Task DactivatePosition(int companyId, PositionModel data);
     }
 }

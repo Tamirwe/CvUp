@@ -14,9 +14,15 @@ export default class PositionsApi extends BaseApi {
     });
   }
 
-  async addUpdatePosition(position: IPosition) {
+  async addPosition(position: IPosition) {
     return await this.apiWrapper2<number>(async () => {
-      return await this.http.post("Positions/AddUpdatePosition", position);
+      return await this.http.post("Positions/AddPosition", position);
+    });
+  }
+
+  async updatePosition(position: IPosition) {
+    return await this.apiWrapper2<number>(async () => {
+      return await this.http.put("Positions/UpdatePosition", position);
     });
   }
 
@@ -29,6 +35,18 @@ export default class PositionsApi extends BaseApi {
   async deletePosition(id: number) {
     return await this.apiWrapper2(async () => {
       return await this.http.delete(`Positions/DeletePosition?id=${id}`);
+    });
+  }
+
+  async activatePosition(position: IPosition) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put("Auth/ActivatePosition", position);
+    });
+  }
+
+  async dactivatePosition(position: IPosition) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put("Auth/DactivatePosition", position);
     });
   }
 }

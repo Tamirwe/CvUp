@@ -23,26 +23,8 @@ namespace CvUpAPI.Controllers
         [Route("GetPosition")]
         public async Task<IActionResult> GetPosition(int id)
         {
-            PositionClientModel position = await _cvsPosService.GetPosition(Globals.CompanyId, id);
+            PositionModel position = await _cvsPosService.GetPosition(Globals.CompanyId, id);
             return Ok(position);
-        }
-
-        [HttpPost]
-        [Route("AddUpdatePosition")]
-        public async Task<IActionResult> AddUpdatePosition(PositionClientModel data)
-        {
-            position? pos;
-
-            if (data.id == 0)
-            {
-                pos = await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
-            }
-            else
-            {
-                pos = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
-            }
-
-            return Ok(pos != null ? pos.id : 0);
         }
 
         [HttpGet]
@@ -53,11 +35,44 @@ namespace CvUpAPI.Controllers
             return Ok(positions);
         }
 
+        [HttpPost]
+        [Route("AddPosition")]
+        public async Task<IActionResult> AddPosition(PositionModel data)
+        {
+            await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("UpdatePosition")]
+        public async Task<IActionResult> UpdatePosition(PositionModel data)
+        {
+            position? pos;
+            pos = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("DeletePosition")]
         public async Task<IActionResult> DeletePosition(int id)
         {
             await _cvsPosService.DeletePosition(Globals.CompanyId, id);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("ActivatePosition")]
+        public async Task<IActionResult> ActivatePosition(PositionModel data)
+        {
+            await _cvsPosService.ActivatePosition( Globals.CompanyId, data);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("DactivatePosition")]
+        public async Task<IActionResult> DactivatePosition(PositionModel data)
+        {
+            await _cvsPosService.DactivatePosition(Globals.CompanyId, data);
             return Ok();
         }
     }

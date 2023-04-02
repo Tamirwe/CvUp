@@ -16,6 +16,12 @@ export enum UserActiveEnum {
   Not_Active,
 }
 
+export enum PositionStatusEnum {
+  Active,
+  Not_Active,
+  Completed,
+}
+
 export enum CvDisplayedListEnum {
   None,
   CandsList,

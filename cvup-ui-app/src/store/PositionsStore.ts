@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { PositionStatusEnum } from "../models/GeneralEnums";
 import { IAppSettings, IPosition } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
@@ -24,7 +25,7 @@ export class PositionsStore {
         name: "",
         descr: "",
         updated: new Date(),
-        isActive: true,
+        status: PositionStatusEnum.Active,
         customerId: 0,
         hrCompaniesIds: [],
         interviewersIds: [],
@@ -57,9 +58,16 @@ export class PositionsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async addUpdatePosition(position: IPosition) {
+  async addPosition(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
-    const response = await this.positionApi.addUpdatePosition(position);
+    const response = await this.positionApi.addPosition(position);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
+  }
+
+  async updatePosition(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.positionApi.updatePosition(position);
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
@@ -75,9 +83,23 @@ export class PositionsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async deleteHrCompany(positionId: number) {
+  async deletePosition(id: number) {
     this.rootStore.generalStore.backdrop = true;
-    const response = await this.positionApi.deletePosition(positionId);
+    const response = await this.positionApi.deletePosition(id);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
+  }
+
+  async activatePosition(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.positionApi.activatePosition(position);
+    this.rootStore.generalStore.backdrop = false;
+    return response;
+  }
+
+  async dactivatePosition(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const response = await this.positionApi.dactivatePosition(position);
     this.rootStore.generalStore.backdrop = false;
     return response;
   }

@@ -1,4 +1,4 @@
-import { UserRoleEnum } from "./GeneralEnums";
+import { PositionStatusEnum, UserRoleEnum } from "./GeneralEnums";
 
 export interface IAppSettings {
   appServerUrl: string;
@@ -58,12 +58,10 @@ export interface IPosition {
   name: string;
   descr: string;
   updated?: Date;
-  isActive: boolean;
+  status: PositionStatusEnum;
   customerId: number;
-  hrCompaniesIds: number[];
   interviewersIds: number[];
   contactsIds: number[];
-  // candidates: number[];
 }
 
 export interface ICvReview {

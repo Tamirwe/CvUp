@@ -1,16 +1,16 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IContact } from "../../models/GeneralModels";
+import { IUser } from "../../models/AuthModels";
 
 interface IProps {
-  options: IContact[];
+  options: IUser[];
   valueIds: number[];
-  onChange: (value: number[], customerId: number) => void;
+  onChange: (value: number[]) => void;
 }
 
-export const ContactsAutoCompleteMulty = (props: IProps) => {
-  const [optionsList, setOptionsList] = useState<IContact[]>([]);
-  const [valuesList, setValuesList] = useState<IContact[]>([]);
+export const UsersAutoCompleteMulty = (props: IProps) => {
+  const [optionsList, setOptionsList] = useState<IUser[]>([]);
+  const [valuesList, setValuesList] = useState<IUser[]>([]);
 
   useEffect(() => {
     setOptionsList([...props.options]);
@@ -30,24 +30,20 @@ export const ContactsAutoCompleteMulty = (props: IProps) => {
       id="tags-standard"
       options={optionsList}
       getOptionLabel={(option) => {
-        return `${option.firstName} ${option.lastName} - ${option.customerName}`;
+        return `${option.firstName} ${option.lastName} ${option.id}`;
       }}
       value={valuesList}
       onChange={(event, newValue) => {
         if (event && event.type === "click") {
-          const customerId = newValue.length > 0 ? newValue[0].customerId : 0;
-          props.onChange(
-            newValue.map((item) => item.id),
-            customerId
-          );
+          props.onChange(newValue.map((item) => item.id));
         }
       }}
       renderInput={(params) => (
         <TextField
           {...params}
           variant="outlined"
-          label="Contact person"
-          placeholder="Contact person"
+          label="Interviewers"
+          placeholder="Interviewers"
         />
       )}
     />

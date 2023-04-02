@@ -14,6 +14,13 @@ namespace DataModelsLibrary.Enums
         Not_Active ,
     }
 
+    public enum PositionStatusEnum
+    {
+        Active,
+        Not_Active,
+        Completed
+    }
+
     public enum UserActiveStatus
     {
         Active,

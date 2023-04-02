@@ -350,9 +350,9 @@ namespace Database.models
 
                 entity.Property(e => e.descr).HasMaxLength(2000);
 
-                entity.Property(e => e.is_active).HasDefaultValueSql("'1'");
-
                 entity.Property(e => e.name).HasMaxLength(500);
+
+                entity.Property(e => e.status).HasColumnType("enum('Active','Not_Active','Completed')");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.positions)

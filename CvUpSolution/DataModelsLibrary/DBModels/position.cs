@@ -18,9 +18,9 @@ namespace Database.models
         public DateTime date_created { get; set; }
         public DateTime date_updated { get; set; }
         public int? customer_id { get; set; }
-        public sbyte is_active { get; set; }
         public int? updater_id { get; set; }
         public int opener_id { get; set; }
+        public string status { get; set; } = null!;
 
         public virtual company company { get; set; } = null!;
         public virtual customer? customer { get; set; }

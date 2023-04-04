@@ -5,6 +5,11 @@ namespace Database.models
 {
     public partial class contact
     {
+        public contact()
+        {
+            position_contacts = new HashSet<position_contact>();
+        }
+
         public int id { get; set; }
         public int company_id { get; set; }
         public int? customer_id { get; set; }
@@ -15,5 +20,6 @@ namespace Database.models
 
         public virtual company company { get; set; } = null!;
         public virtual customer? customer { get; set; }
+        public virtual ICollection<position_contact> position_contacts { get; set; }
     }
 }

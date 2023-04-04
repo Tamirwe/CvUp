@@ -145,16 +145,20 @@ namespace CandsPositionsLibrary
             return pos;
         }
 
-        public async Task<position?> AddPosition(PositionModel data, int companyId, int userId)
+        public async Task<int> AddPosition(PositionModel data, int companyId, int userId)
         {
             position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
-            return newRec;
+            await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
+            await _cvsPositionsQueries.AddUpdateContacts(companyId, newRec.id, data.contactsIds);
+            return newRec.id;
         }
 
-        public async Task<position?> UpdatePosition(PositionModel data, int companyId, int userId)
+        public async Task<int> UpdatePosition(PositionModel data, int companyId, int userId)
         {
             position? updRec = await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
-            return updRec;
+            await _cvsPositionsQueries.AddUpdateInterviewers(companyId, data.id,data.interviewersIds);
+            await _cvsPositionsQueries.AddUpdateContacts(companyId, data.id, data.contactsIds);
+            return updRec.id;
         }
 
         public async Task<List<PositionModel>> GetPositionsList(int companyId)

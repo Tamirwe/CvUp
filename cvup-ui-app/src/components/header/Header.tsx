@@ -34,7 +34,7 @@ export const Header = () => {
           <Grid container spacing={0}>
             <Grid item xs={7}>
               <Stack direction="row" alignItems="center" spacing={1}>
-                <IconButton
+                {/* <IconButton
                   size="medium"
                   onClick={(e) => {
                     authStore.logout();
@@ -72,9 +72,9 @@ export const Header = () => {
                   }}
                 >
                   <CiEdit />
-                </IconButton>
+                </IconButton> */}
                 <SettingsMenu />
-                <SearchCands />
+                {/* <SearchCands /> */}
               </Stack>
             </Grid>
             <Grid item xs={5}></Grid>

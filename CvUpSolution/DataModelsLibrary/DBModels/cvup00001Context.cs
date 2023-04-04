@@ -33,6 +33,7 @@ namespace Database.models
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
         public virtual DbSet<position_candidate_stage> position_candidate_stages { get; set; } = null!;
+        public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -434,6 +435,30 @@ namespace Database.models
                     .WithMany(p => p.position_candidate_stages)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_position_candidate_stages_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<position_contact>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_contacts_company_id_companies_id");
+
+                entity.HasIndex(e => e.contact_id, "fk_position_contacts_contact_id_contacts_id");
+
+                entity.HasIndex(e => e.position_id, "fk_position_contacts_position_id_positions_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_contacts)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_position_contacts_company_id_companies_id");
+
+                entity.HasOne(d => d.contact)
+                    .WithMany(p => p.position_contacts)
+                    .HasForeignKey(d => d.contact_id)
+                    .HasConstraintName("fk_position_contacts_contact_id_contacts_id");
+
+                entity.HasOne(d => d.position)
+                    .WithMany(p => p.position_contacts)
+                    .HasForeignKey(d => d.position_id)
+                    .HasConstraintName("fk_position_contacts_position_id_positions_id");
             });
 
             modelBuilder.Entity<position_interviewer>(entity =>

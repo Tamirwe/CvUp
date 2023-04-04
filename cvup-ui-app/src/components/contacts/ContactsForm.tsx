@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { MdAdd } from "react-icons/md";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
-import { IIdName } from "../../models/AuthModels";
 import {
   AlertConfirmDialogEnum,
   CrudTypesEnum,
@@ -25,7 +24,6 @@ import {
   validteEmail,
   validtePhone,
 } from "../../utils/Validation";
-import { CustomersListDialog } from "../customers/CustomersListDialog";
 
 interface IProps {
   onSaved: () => void;

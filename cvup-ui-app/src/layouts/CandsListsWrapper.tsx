@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { useEffect } from "react";
 import { useStore } from "../Hooks/useStore";
 import { CandsList } from "../components/cands/CandsList";
@@ -8,9 +8,12 @@ import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
 import { TabsCandsEnum } from "../models/GeneralEnums";
+import { SearchCands } from "../components/header/SearchCands";
+import { SearchControl } from "../components/header/SearchControl";
+import { MdOutlineEdit } from "react-icons/md";
 
 export const CandsListsWrapper = observer(() => {
-  const { candsStore, positionsStore, foldersStore } = useStore();
+  const { candsStore, positionsStore, foldersStore, generalStore } = useStore();
 
   useEffect(() => {
     candsStore.getCandsList();
@@ -65,13 +68,42 @@ export const CandsListsWrapper = observer(() => {
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}>
           {candsStore.currentTabCandsLists === TabsCandsEnum.AllCands && (
-            <CandsList candsListData={candsStore.candsAllList} />
+            <>
+              <Box mt={1} ml={1}>
+                <SearchControl />
+              </Box>
+              <CandsList candsListData={candsStore.candsAllList} />
+            </>
           )}
           {candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands && (
-            <CandsList candsListData={candsStore.posCandsList} />
+            <>
+              <Box mt={1} ml={1}>
+                <Stack direction="row" gap={1}>
+                  <IconButton
+                    title="Edit position"
+                    size="medium"
+                    onClick={async () => {
+                      await positionsStore.getPosition(
+                        positionsStore.selectedPosition?.id || 0
+                      );
+                      generalStore.showPositionFormDialog = true;
+                    }}
+                  >
+                    <MdOutlineEdit />
+                  </IconButton>
+                  <SearchControl />
+                </Stack>
+              </Box>
+              <CandsList candsListData={candsStore.posCandsList} />
+            </>
           )}
           {candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands && (
-            <CandsList candsListData={candsStore.folderCandsList} />
+            <>
+              <Box mt={1} ml={1}>
+                <SearchControl />
+              </Box>
+              <CandsList candsListData={candsStore.folderCandsList} />
+            </>
           )}
         </ThemeProvider>
       </CacheProvider>

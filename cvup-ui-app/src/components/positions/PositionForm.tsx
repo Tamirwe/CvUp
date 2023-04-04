@@ -10,7 +10,6 @@ import {
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { MdFormatAlignRight, MdFormatAlignLeft } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
@@ -20,17 +19,16 @@ import {
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { IPosition } from "../../models/GeneralModels";
-import { textFieldValidte, validateTxt } from "../../utils/Validation";
-import { ContactsAutoCompleteMulty } from "../contacts/ContactsAutoCompleteMulty";
-import { UsersAutoCompleteMulty } from "../contacts/UsersAutoCompleteMulty";
+import { validateTxt } from "../../utils/Validation";
+import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
+import { UsersAutoCompleteMulty } from "./UsersAutoCompleteMulty";
 
 interface IProps {
-  onSaved: () => void;
+  onSaved: (id: number) => void;
   onCancel: () => void;
 }
 
 export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
-  const navigate = useNavigate();
   const { positionsStore, authStore, generalStore, customersContactsStore } =
     useStore();
   const [isRtlDirection, setIsRtlDirection] = useState(false);
@@ -52,6 +50,11 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
   });
 
   useEffect(() => {
+    if (positionsStore.editPosition) {
+      setCrudType(CrudTypesEnum.Update);
+      setFormModel({ ...positionsStore.editPosition });
+    }
+
     (async () => {
       await Promise.all([
         authStore.usersList.length === 0 && authStore.getUsersList(),
@@ -102,7 +105,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       }
 
       if (response.isSuccess) {
-        onSaved();
+        onSaved(response.data);
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
@@ -120,7 +123,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       const response = await positionsStore.deletePosition(formModel.id);
 
       if (response.isSuccess) {
-        onSaved();
+        onSaved(0);
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
@@ -131,7 +134,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     const response = await positionsStore.activatePosition(formModel);
 
     if (response.isSuccess) {
-      onSaved();
+      onSaved(formModel.id);
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }
@@ -147,7 +150,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
         "Position Deactivated."
       );
 
-      onSaved();
+      onSaved(formModel.id);
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }

@@ -16,13 +16,13 @@ export default class PositionsApi extends BaseApi {
 
   async addPosition(position: IPosition) {
     return await this.apiWrapper2<number>(async () => {
-      return await this.http.post("Positions/AddPosition", position);
+      return await this.http.post<number>("Positions/AddPosition", position);
     });
   }
 
   async updatePosition(position: IPosition) {
     return await this.apiWrapper2<number>(async () => {
-      return await this.http.put("Positions/UpdatePosition", position);
+      return await this.http.put<number>("Positions/UpdatePosition", position);
     });
   }
 

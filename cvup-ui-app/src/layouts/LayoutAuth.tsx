@@ -95,7 +95,7 @@ export const LayoutAuth = observer(() => {
         </Grid>
         <Grid
           item
-          xs={13}
+          xs={8}
           columns={12}
           sx={{ backgroundColor: "#fff", paddingLeft: "10px" }}
         >
@@ -105,24 +105,24 @@ export const LayoutAuth = observer(() => {
             spacing={0}
             sx={{ marginTop: "58px", borderRadius: "6px" }}
           >
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <Outlet />
             </Grid>
-            <Grid item xs={5}>
-              <Drawer
-                open={true}
-                variant="persistent"
-                anchor="right"
-                sx={{
-                  [`& .MuiDrawer-paper`]: {
-                    display: "contents",
-                  },
-                }}
-              >
-                <CandsListsWrapper />
-              </Drawer>
-            </Grid>
           </Grid>
+        </Grid>
+        <Grid item xs={5}>
+          <Drawer
+            open={true}
+            variant="persistent"
+            anchor="right"
+            sx={{
+              [`& .MuiDrawer-paper`]: {
+                display: "contents",
+              },
+            }}
+          >
+            <CandsListsWrapper />
+          </Drawer>
         </Grid>
       </Grid>
     </Box>

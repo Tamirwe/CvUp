@@ -14,7 +14,7 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
   const [formTitle, setFormTitle] = useState("Add Position");
 
   useEffect(() => {
-    if (positionsStore.selectedPosition) {
+    if (positionsStore.editPosition) {
       setFormTitle("Edit Position");
     }
     setOpen(isOpen);
@@ -30,7 +30,17 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         <PositionForm
-          onSaved={() => onClose(true)}
+          onSaved={async (posId) => {
+            await positionsStore.getPositionsList();
+
+            if (posId > 0) {
+              positionsStore.setPosSelected(posId);
+            } else {
+              positionsStore.selectedPosition = undefined;
+            }
+
+            onClose(true);
+          }}
           onCancel={() => onClose(false)}
         />
       </DialogContent>

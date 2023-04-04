@@ -15,9 +15,18 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import { useStore } from "../../Hooks/useStore";
+import { CiEdit } from "react-icons/ci";
+import { IconButton } from "@mui/material";
+import {
+  MdOutlineAttachEmail,
+  MdOutlineContactMail,
+  MdOutlineEdit,
+} from "react-icons/md";
+import { EmailTypeEnum } from "../../models/GeneralEnums";
 
 export const PdfViewer = observer(() => {
-  const { candsStore } = useStore();
+  const { candsStore, generalStore } = useStore();
+
   // const defaultLayoutPluginInstance = defaultLayoutPlugin({
   //   sidebarTabs: (defaultTabs) => [],
   // });
@@ -94,12 +103,12 @@ export const PdfViewer = observer(() => {
       <div
         style={{
           alignItems: "center",
-          backgroundColor: "#e1e1e1",
+          backgroundColor: "#f1f1f1",
           border: "1px solid rgba(0, 0, 0, 0.2)",
           borderRadius: "2px",
           bottom: "5px",
           display: "flex",
-          left: "50%",
+          left: "40%",
           padding: "4px",
           position: "fixed",
           transform: "translate(-50%, 0)",
@@ -122,12 +131,60 @@ export const PdfViewer = observer(() => {
             return (
               <>
                 <div style={{ padding: "0px 2px" }}>
+                  <IconButton
+                    title="Email to candidate"
+                    sx={{ color: "#1976d2", fontSize: "1.3rem" }}
+                    size="small"
+                    onClick={() =>
+                      (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
+                    }
+                  >
+                    <MdOutlineContactMail />
+                  </IconButton>
+                </div>
+                <div style={{ padding: "0px 2px" }}>
+                  <IconButton
+                    title="Email to customer"
+                    sx={{ color: "#1976d2", fontSize: "1.3rem" }}
+                    size="small"
+                    onClick={() =>
+                      (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+                    }
+                  >
+                    <MdOutlineAttachEmail />
+                  </IconButton>
+                </div>
+                <div style={{ padding: "0px 2px" }}>
+                  <IconButton
+                    title="Review"
+                    sx={{ color: "#1976d2", fontSize: "1.3rem" }}
+                    size="small"
+                    onClick={() => {
+                      if (generalStore.cvReviewDialogOpen) {
+                        localStorage.setItem("rteX", "50");
+                        localStorage.setItem("rteY", "50");
+                      }
+
+                      generalStore.cvReviewDialogOpen =
+                        !generalStore.cvReviewDialogOpen;
+                    }}
+                  >
+                    <MdOutlineEdit />
+                  </IconButton>
+                </div>
+                <div
+                  style={{ borderRight: "1px inset #979797", paddingLeft: 5 }}
+                >
+                  &nbsp;
+                </div>
+
+                <div style={{ padding: "0px 2px" }}>
                   <ZoomOut />
                 </div>
                 <div style={{ padding: "0px 2px" }}>
                   <ZoomIn />
                 </div>
-                <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
+                {/* <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
                   <GoToPreviousPage />
                 </div>
                 <div style={{ padding: "0px 2px", width: "4rem" }}>
@@ -138,7 +195,7 @@ export const PdfViewer = observer(() => {
                 </div>
                 <div style={{ padding: "0px 2px" }}>
                   <GoToNextPage />
-                </div>
+                </div> */}
                 <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
                   <EnterFullScreen />
                 </div>

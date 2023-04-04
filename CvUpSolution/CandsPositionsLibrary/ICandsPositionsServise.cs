@@ -15,8 +15,8 @@ namespace CandsPositionsLibrary
         Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         Task IndexCompanyCvs(int companyId);
         Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
-        Task<position?> AddPosition(PositionModel data, int companyId, int userId);
-        Task<position?> UpdatePosition(PositionModel data, int companyId, int userId);
+        Task<int> AddPosition(PositionModel data, int companyId, int userId);
+        Task<int> UpdatePosition(PositionModel data, int companyId, int userId);
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
         Task<List<CandModel>> GetPosCandsList(int companyId, int positionId);

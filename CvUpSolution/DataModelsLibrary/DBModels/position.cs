@@ -8,6 +8,7 @@ namespace Database.models
         public position()
         {
             position_candidates = new HashSet<position_candidate>();
+            position_contacts = new HashSet<position_contact>();
             position_interviewers = new HashSet<position_interviewer>();
         }
 
@@ -27,6 +28,7 @@ namespace Database.models
         public virtual user opener { get; set; } = null!;
         public virtual user? updater { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
+        public virtual ICollection<position_contact> position_contacts { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
     }
 }

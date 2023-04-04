@@ -1,7 +1,6 @@
 import {
   Button,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
@@ -9,7 +8,6 @@ import {
   MenuItem,
   Select,
   Stack,
-  Switch,
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -24,14 +22,12 @@ import {
 } from "../../models/GeneralEnums";
 import { IUser } from "../../models/AuthModels";
 import {
-  textFieldValidte,
   validateTxt,
   validteEmail,
   validtePhone,
 } from "../../utils/Validation";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { enumToArrays } from "../../utils/GeneralUtils";
-import { MdSend } from "react-icons/md";
 
 interface IProps {
   onSaved: () => void;

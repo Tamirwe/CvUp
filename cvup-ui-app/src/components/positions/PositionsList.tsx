@@ -31,7 +31,9 @@ export const PositionsList = observer(() => {
 
   useEffect(() => {
     (async () => {
-      await positionsStore.getPositionsList(false);
+      if (positionsStore.positionsList.length === 0) {
+        await positionsStore.getPositionsList();
+      }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -8,6 +8,7 @@ export class PositionsStore {
   private positionApi;
   positionsList: IPosition[] = [];
   private positionSelected?: IPosition;
+  private positionEdit?: IPosition;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -43,19 +44,16 @@ export class PositionsStore {
     this.positionSelected = val;
   }
 
-  setPosSelected(posId: number) {
-    this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+  get editPosition() {
+    return this.positionEdit;
   }
 
-  async getPosition(posId: number) {
-    this.rootStore.generalStore.backdrop = true;
+  set editPosition(val: IPosition | undefined) {
+    this.positionEdit = val;
+  }
 
-    const res = await this.positionApi.getPosition(posId);
-    runInAction(() => {
-      this.selectedPosition = res.data;
-    });
-
-    this.rootStore.generalStore.backdrop = false;
+  setPosSelected(posId: number) {
+    this.selectedPosition = this.positionsList.find((x) => x.id === posId);
   }
 
   async addPosition(position: IPosition) {
@@ -72,14 +70,23 @@ export class PositionsStore {
     return response;
   }
 
-  async getPositionsList(loadAgain: boolean) {
+  async getPositionsList() {
     this.rootStore.generalStore.backdrop = true;
-    if (this.positionsList.length === 0 || loadAgain) {
-      const res = await this.positionApi.getPositionsList();
-      runInAction(() => {
-        this.positionsList = res.data;
-      });
-    }
+    const res = await this.positionApi.getPositionsList();
+    runInAction(() => {
+      this.positionsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async getPosition(posId: number) {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.positionApi.getPosition(posId);
+    runInAction(() => {
+      this.positionEdit = res.data;
+    });
+
     this.rootStore.generalStore.backdrop = false;
   }
 

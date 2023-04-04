@@ -39,17 +39,16 @@ namespace CvUpAPI.Controllers
         [Route("AddPosition")]
         public async Task<IActionResult> AddPosition(PositionModel data)
         {
-            await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
-            return Ok();
+            var posId = await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
+            return Ok(posId);
         }
 
         [HttpPut]
         [Route("UpdatePosition")]
         public async Task<IActionResult> UpdatePosition(PositionModel data)
         {
-            position? pos;
-            pos = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
-            return Ok();
+            var posId = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
+            return Ok(posId);
         }
 
         [HttpDelete]

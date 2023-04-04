@@ -1,4 +1,5 @@
 ﻿using Database.models;
+using DataModelsLibrary.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,11 @@ namespace DataModelsLibrary.Models
         public int id { get; set; } = 0;
         public string name { get; set; } = string.Empty;
         public string? descr { get; set; } = string.Empty;
-        public string? status { get; set; } = string.Empty;
+        public PositionStatusEnum status { get; set; } = PositionStatusEnum.Active;
         public DateTime? updated { get; set; }
         public int? customerId { get; set; } = 0;
-        public int[]? contactsIds { get; set; } = new int[] { };
-        public int[]? interviewersIds { get; set; } = new int[] { };
+        public int[] contactsIds { get; set; } = new int[] { };
+        public int[] interviewersIds { get; set; } = new int[] { };
     }
 
     //public class PositionClientModel

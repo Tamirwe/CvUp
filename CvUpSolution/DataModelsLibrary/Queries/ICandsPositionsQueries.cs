@@ -12,7 +12,7 @@ namespace DataModelsLibrary.Queries
          Task<List<CvPropsToIndexModel>> GetCompanyCvsToIndex(int companyId);
          Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
          Task<position> AddPosition(PositionModel data, int companyId, int userId);
-         Task<position?> UpdatePosition(PositionModel data, int companyId, int userId);
+         Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
          Task<List<PositionModel>> GetPositionsList(int companyId);
          Task DeletePosition(int companyId, int id);
          Task<PositionModel> GetPosition(int companyId, int positionId);
@@ -34,5 +34,8 @@ namespace DataModelsLibrary.Queries
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
         Task ActivatePosition(int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);
+        Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
+        Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds);
+
     }
 }

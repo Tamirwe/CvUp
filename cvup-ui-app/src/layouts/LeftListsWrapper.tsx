@@ -37,7 +37,7 @@ export const LeftListsWrapper = observer(() => {
   const handleAddClick = () => {
     switch (generalStore.currentTab) {
       case TabsGeneralEnum.Positions:
-        positionsStore.selectedPosition = undefined;
+        positionsStore.editPosition = undefined;
         generalStore.showPositionFormDialog = true;
         // navigate("/position/0");
         break;

@@ -1,4 +1,5 @@
 ﻿using Database.models;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
@@ -243,6 +244,11 @@ namespace DataModelsLibrary.Queries
                           .Select(p => p.user_id)
                           .ToArrayAsync();
 
+                var conts = await dbContext.position_contacts
+                       .Where(p => p.company_id == companyId && p.position_id == positionId)
+                       .Select(p => p.contact_id)
+                       .ToArrayAsync();
+
                 var query = from p in dbContext.positions
                             where p.id == positionId && p.company_id == companyId
                             orderby p.name
@@ -252,8 +258,9 @@ namespace DataModelsLibrary.Queries
                                 name = p.name,
                                 descr = p.descr ?? "",
                                 customerId = p.customer_id ?? 0,
-                                status = p.status,
-                                interviewersIds = inter.ToArray()
+                                status = Enum.Parse<PositionStatusEnum>(p.status),
+                                interviewersIds = inter.ToArray(),
+                                contactsIds = conts.ToArray()
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -271,7 +278,7 @@ namespace DataModelsLibrary.Queries
                     company_id = companyId,
                     name = data.name,
                     descr = data.descr,
-                    status = data.status,
+                    status = data.status.ToString(),
                     opener_id = userId,
                     updater_id = userId,
                     date_created = DateTime.Now,
@@ -286,33 +293,26 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.positions.Add(ent);
                 await dbContext.SaveChangesAsync();
 
-                await AddInterviewers(companyId, result.Entity.id, data.interviewersIds);
-
                 return result.Entity;
             }
         }
 
-        public async Task<position?> UpdatePosition(PositionModel data, int companyId, int userId)
+        public async Task<position> UpdatePosition(PositionModel data, int companyId, int userId)
         {
+
             using (var dbContext = new cvup00001Context())
             {
-                position ent = new position
-                {
-                    id = data.id,
-                    company_id = companyId,
-                    name = data.name,
-                    descr = data.descr,
-                    customer_id = data.customerId == 0 ? null : data.customerId,
-                    status = data.status,
-                    updater_id = userId,
-                    date_created = DateTime.Now,
-                    date_updated = DateTime.Now,
-                };
+                position? pos = dbContext.positions.Where(x => x.company_id == companyId && x.id == data.id).First();
 
-                var result = dbContext.positions.Update(ent);
+                pos.name = data.name;
+                pos.descr = data.descr;
+                pos.customer_id = data.customerId == 0 ? null : data.customerId;
+                pos.status = data.status.ToString();
+                pos.updater_id = userId;
+                pos.date_updated = DateTime.Now;
+
+                var result = dbContext.positions.Update(pos);
                 await dbContext.SaveChangesAsync();
-
-                UpdateInterviewers(companyId, data.id, data.interviewersIds);
 
                 return result.Entity;
             }
@@ -329,7 +329,7 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                status = p.status,
+                                status = Enum.Parse<PositionStatusEnum>(p.status),
                                 updated = p.date_updated,
                             };
 
@@ -360,7 +360,7 @@ namespace DataModelsLibrary.Queries
                 position ent = new position
                 {
                     id = data.id,
-                    status = data.status,
+                    status = data.status.ToString(),
                 };
 
                 dbContext.positions.Update(ent);
@@ -375,7 +375,7 @@ namespace DataModelsLibrary.Queries
                 position ent = new position
                 {
                     id = data.id,
-                    status = data.status,
+                    status = data.status.ToString(),
                 };
 
                 dbContext.positions.Update(ent);
@@ -383,7 +383,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        private async Task UpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
+        public async Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -416,20 +416,33 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        private async Task AddInterviewers(int companyId, int positionId, int[] interviewersIds)
+        public async Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds)
         {
             using (var dbContext = new cvup00001Context())
             {
-                foreach (var item in interviewersIds)
-                {
-                    var interviewer = new position_interviewer
-                    {
-                        company_id = companyId,
-                        user_id = item,
-                        position_id = positionId
-                    };
+                var conts = await (from i in dbContext.position_contacts
+                                           where i.company_id == companyId && i.position_id == positionId
+                                           select i).ToListAsync();
 
-                    dbContext.position_interviewers.Add(interviewer);
+                foreach (var id in contactsIds)
+                {
+                    if (conts.Find(x => x.contact_id == id) == null)
+                    {
+                        dbContext.position_contacts.Add(new position_contact
+                        {
+                            company_id = companyId,
+                            position_id = positionId,
+                            contact_id = id,
+                        });
+                    }
+                }
+
+                foreach (var item in conts)
+                {
+                    if (Array.IndexOf(contactsIds, item.contact_id) == -1)
+                    {
+                        dbContext.position_contacts.Remove(item);
+                    }
                 }
 
                 await dbContext.SaveChangesAsync();

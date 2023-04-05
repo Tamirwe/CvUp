@@ -21,7 +21,6 @@ export class CandsStore {
   candPosSelected?: ICand;
   candFolderSelected?: ICand;
   candDisplay?: ICand;
-  candsListTypeDisplay: CvDisplayedListEnum = CvDisplayedListEnum.None;
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
@@ -46,7 +45,6 @@ export class CandsStore {
     runInAction(() => {
       this.candAllSelected = cand;
       this.candDisplay = this.candAllSelected;
-      this.candsListTypeDisplay = CvDisplayedListEnum.CandsList;
       this.getPdf(cand.keyId);
     });
   }
@@ -55,7 +53,6 @@ export class CandsStore {
     runInAction(() => {
       this.candDupSelected = candCv;
       // this.candDisplay = this.candDupSelected;
-      this.candsListTypeDisplay = listType;
 
       switch (listType) {
         case CvDisplayedListEnum.CandsList:
@@ -84,7 +81,6 @@ export class CandsStore {
     runInAction(() => {
       this.candPosSelected = cand;
       this.candDisplay = this.candPosSelected;
-      this.candsListTypeDisplay = CvDisplayedListEnum.PositionCandsList;
       this.getPdf(cand.keyId);
     });
   }
@@ -192,30 +188,32 @@ export class CandsStore {
       );
     }
 
-    if (this.candDisplay) {
-      this.candDisplay.candPosIds.push(positionId);
-      this.candDisplay.cvPosIds.push(positionId);
+    runInAction(() => {
+      if (this.candDisplay) {
+        this.candDisplay.candPosIds.push(positionId);
+        this.candDisplay.cvPosIds.push(positionId);
 
-      let cand = this.candsAllList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
+        let cand = this.candsAllList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
 
-      if (cand) {
-        this.updateCandPosArrays(cand, this.candDisplay);
+        if (cand) {
+          this.updateCandPosArrays(cand, this.candDisplay);
+        }
+
+        cand = this.folderCandsList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (cand) {
+          this.updateCandPosArrays(cand, this.candDisplay);
+        }
+
+        if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
+          this.getPositionCands(positionId);
+        }
       }
-
-      cand = this.folderCandsList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
-
-      if (cand) {
-        this.updateCandPosArrays(cand, this.candDisplay);
-      }
-
-      if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
-        this.getPositionCands(positionId);
-      }
-    }
+    });
   }
 
   async detachPosCand(detachCand: ICand, index: number) {

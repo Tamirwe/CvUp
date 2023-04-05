@@ -13,7 +13,7 @@ import { useState } from "react";
 import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { CvDisplayedListEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 
@@ -28,9 +28,7 @@ export const CandsList = observer(({ candsListData }: IProps) => {
   const navigate = useNavigate();
 
   const handleDetachCand = (cand: ICand, index: number) => {
-    if (
-      candsStore.candsListTypeDisplay === CvDisplayedListEnum.PositionCandsList
-    ) {
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands) {
       candsStore.detachPosCand(cand, index);
     } else {
       candsStore.detachFolderCand(cand, index);
@@ -118,7 +116,8 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                 primary={cand.candidateName}
                 secondary={cand.emailSubject}
               />
-              {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands ? (
+              {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands &&
+              candsStore.candDisplay?.candidateId === cand.candidateId ? (
                 <ListItemIcon
                   onClick={(event) => {
                     event.stopPropagation();

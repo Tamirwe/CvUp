@@ -8,7 +8,6 @@ import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
 import { TabsCandsEnum } from "../models/GeneralEnums";
-import { SearchCands } from "../components/header/SearchCands";
 import { SearchControl } from "../components/header/SearchControl";
 import { MdOutlineEdit } from "react-icons/md";
 
@@ -16,7 +15,12 @@ export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore, foldersStore, generalStore } = useStore();
 
   useEffect(() => {
-    candsStore.getCandsList();
+    if (
+      candsStore.currentTabCandsLists === TabsCandsEnum.AllCands &&
+      candsStore.candsAllList.length === 0
+    ) {
+      candsStore.getCandsList();
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const themeRtl = createTheme({

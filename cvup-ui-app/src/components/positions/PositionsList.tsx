@@ -12,22 +12,24 @@ import { MdPersonAddAlt1 } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
 import { TabsCandsEnum } from "../../models/GeneralEnums";
-import { BsPersonCheckFill, BsPersonDashFill } from "react-icons/bs";
+import { BsFillPersonFill } from "react-icons/bs";
 
 export const PositionsList = observer(() => {
   const { positionsStore, candsStore } = useStore();
 
   const handleAttachPosCandCv = (posId: number) => {
     candsStore.attachPosCandCv(posId);
+    positionsStore.setPosSelected(posId);
+    candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
 
-  // const handleDetachPosCand = (
-  //   positionId: number,
-  //   cand: ICand,
-  //   index: number
-  // ) => {
-  //   candsStore.detachPosCandidate(positionId, cand, index);
-  // };
+  const handlePositionClick = (posId: number) => {
+    if (positionsStore.selectedPosition?.id !== posId) {
+      positionsStore.setPosSelected(posId);
+      candsStore.getPositionCands(posId);
+      candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -62,11 +64,7 @@ export const PositionsList = observer(() => {
             <ListItemButton
               sx={{ pl: "4px" }}
               selected={pos.id === positionsStore.selectedPosition?.id}
-              onClick={() => {
-                positionsStore.setPosSelected(pos.id);
-                candsStore.getPositionCands(pos.id);
-                candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-              }}
+              onClick={() => handlePositionClick(pos.id)}
             >
               <ListItemText
                 primary={
@@ -92,8 +90,6 @@ export const PositionsList = observer(() => {
                   candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
                 }
                 onChange={(event) => {
-                  event.stopPropagation();
-                  event.preventDefault();
                   handleAttachPosCandCv(pos.id);
                 }}
                 onClick={(event) => {
@@ -109,7 +105,7 @@ export const PositionsList = observer(() => {
                   },
                 }}
                 icon={<MdPersonAddAlt1 />}
-                checkedIcon={<BsPersonDashFill />}
+                checkedIcon={<BsFillPersonFill />}
               />
             </ListItemButton>
           </ListItem>

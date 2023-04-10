@@ -20,12 +20,19 @@ namespace Database.models
         public DateTime date_updated { get; set; }
         public int? customer_id { get; set; }
         public int? updater_id { get; set; }
-        public int opener_id { get; set; }
+        public int? opener_id { get; set; }
         public string status { get; set; } = null!;
+        public int? cvdbid { get; set; }
+        public string? remarks { get; set; }
+        public string? requirements { get; set; }
+        public int? position_number { get; set; }
+        public int? assigned_user_id { get; set; }
+        public int? contact_id { get; set; }
 
         public virtual company company { get; set; } = null!;
+        public virtual contact? contact { get; set; }
         public virtual customer? customer { get; set; }
-        public virtual user opener { get; set; } = null!;
+        public virtual user? opener { get; set; }
         public virtual user? updater { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
         public virtual ICollection<position_contact> position_contacts { get; set; }

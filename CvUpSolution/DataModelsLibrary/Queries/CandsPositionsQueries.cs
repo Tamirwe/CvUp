@@ -134,7 +134,7 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_html,
+                                 //review = cand.review_html,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -185,7 +185,7 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_html,
+                                 //review = cand.review_html,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -217,7 +217,7 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_html,
+                                 //review = cand.review_html,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -496,7 +496,7 @@ namespace DataModelsLibrary.Queries
                             {
                                 candId = cand.id,
                                 cvId = cvs.id,
-                                reviewHtml = cand.review_html,
+                                //reviewHtml = cand.review_html,
                             };
 
                 return await query.FirstOrDefaultAsync();
@@ -508,7 +508,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.id == cvReview.candidateId).First();
-                cand.review_html = cvReview.reviewHtml;
+                //cand.review_html = cvReview.reviewHtml;
                 cand.review_text = cvReview.reviewText;
                 var result = dbContext.candidates.Update(cand);
                 await dbContext.SaveChangesAsync();

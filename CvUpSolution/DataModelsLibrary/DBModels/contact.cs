@@ -8,6 +8,7 @@ namespace Database.models
         public contact()
         {
             position_contacts = new HashSet<position_contact>();
+            positions = new HashSet<position>();
         }
 
         public int id { get; set; }
@@ -17,9 +18,12 @@ namespace Database.models
         public string? last_name { get; set; }
         public string email { get; set; } = null!;
         public string? phone { get; set; }
+        public int? cvdbid { get; set; }
+        public string? role { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual customer? customer { get; set; }
         public virtual ICollection<position_contact> position_contacts { get; set; }
+        public virtual ICollection<position> positions { get; set; }
     }
 }

@@ -20,14 +20,14 @@ namespace Database.models
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
         public sbyte? has_duplicates_cvs { get; set; }
-        public string? review_html { get; set; }
+        public byte[]? review_html { get; set; }
         public string? review_text { get; set; }
         public DateTime? last_cv_sent { get; set; }
         public int? last_cv_id { get; set; }
         public string? pos_ids { get; set; }
+        public int? cvdbid { get; set; }
 
         public virtual company company { get; set; } = null!;
-        public virtual cv? last_cv { get; set; }
         public virtual ICollection<cv> cvs { get; set; }
         public virtual ICollection<folders_cand> folders_cands { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }

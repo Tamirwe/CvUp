@@ -12,12 +12,21 @@ namespace Database.models
         public int cv_id { get; set; }
         public int? stage_id { get; set; }
         public DateTime date_created { get; set; }
+        public DateTime? date_updated { get; set; }
         public string? cand_cvs { get; set; }
+        public string? stages_history { get; set; }
+        public string? customer_review { get; set; }
+        public DateTime? date_cv_sent_to_customer { get; set; }
+        public DateTime? date_interview_customer_request { get; set; }
+        public DateTime? date_sent_talk_request { get; set; }
+        public DateTime? date_rejected { get; set; }
+        public DateTime? date_accepted { get; set; }
+        public DateTime? date_msg_accept_reject_sent { get; set; }
+        public DateTime? date_remove_candidacy { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual company company { get; set; } = null!;
         public virtual cv cv { get; set; } = null!;
         public virtual position position { get; set; } = null!;
-        public virtual position_candidate_stage? stage { get; set; }
     }
 }

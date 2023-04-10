@@ -58,6 +58,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.last_cv_id, "fk_candidates_last_cv_id_cvs_id");
 
+                entity.HasIndex(e => e.cvdbid, "ix_candidates_cvdbid");
+
                 entity.HasIndex(e => e.last_cv_sent, "ix_candidates_last_cv_sent");
 
                 entity.Property(e => e.date_created)
@@ -82,20 +84,14 @@ namespace Database.models
 
                 entity.Property(e => e.pos_ids).HasColumnType("json");
 
-                entity.Property(e => e.review_html).HasMaxLength(8000);
+                entity.Property(e => e.review_html).HasColumnType("blob");
 
-                entity.Property(e => e.review_text).HasMaxLength(5000);
+                entity.Property(e => e.review_text).HasMaxLength(16000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_candidates_company_id_companies_id");
-
-                entity.HasOne(d => d.last_cv)
-                    .WithMany(p => p.candidates)
-                    .HasForeignKey(d => d.last_cv_id)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("fk_candidates_last_cv_id_cvs_id");
             });
 
             modelBuilder.Entity<company>(entity =>
@@ -146,7 +142,7 @@ namespace Database.models
 
             modelBuilder.Entity<contact>(entity =>
             {
-                entity.HasIndex(e => e.company_id, "fk_contacts_customer_id_companies_id");
+                entity.HasIndex(e => e.company_id, "fk_contacts_company_id_companies_id");
 
                 entity.HasIndex(e => e.customer_id, "fk_contacts_customer_id_customers_id");
 
@@ -158,6 +154,8 @@ namespace Database.models
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
+                entity.Property(e => e.role).HasMaxLength(50);
+
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.contacts)
                     .HasForeignKey(d => d.company_id)
@@ -166,7 +164,6 @@ namespace Database.models
                 entity.HasOne(d => d.customer)
                     .WithMany(p => p.contacts)
                     .HasForeignKey(d => d.customer_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_contacts_customer_id_customers_id");
             });
 
@@ -174,9 +171,13 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_customers_company_id_companies_id");
 
+                entity.Property(e => e.address).HasMaxLength(500);
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.descr).HasMaxLength(1000);
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
@@ -191,6 +192,8 @@ namespace Database.models
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
 
                 entity.HasIndex(e => e.company_id, "ix_cvs_company_id");
+
+                entity.HasIndex(e => e.cvdbid, "ix_cvs_cvdbid");
 
                 entity.HasIndex(e => e.key_id, "ix_cvs_key_id")
                     .IsUnique();
@@ -296,9 +299,9 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_company_id_folders_cands_companies_id");
 
-                entity.HasIndex(e => e.folder_id, "fk_folder_id_folders_cands");
-
                 entity.HasIndex(e => e.candidate_id, "fk_folders_cands_candidate_id_candidates_id");
+
+                entity.HasIndex(e => e.folder_id, "fk_folders_cands_folder_id_folders_id");
 
                 entity.HasOne(d => d.candidate)
                     .WithMany(p => p.folders_cands)
@@ -313,7 +316,7 @@ namespace Database.models
                 entity.HasOne(d => d.folder)
                     .WithMany(p => p.folders_cands)
                     .HasForeignKey(d => d.folder_id)
-                    .HasConstraintName("fk_folder_id_folders_cands");
+                    .HasConstraintName("fk_folders_cands_folder_id_folders_id");
             });
 
             modelBuilder.Entity<parser>(entity =>
@@ -339,6 +342,8 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_positions_company_id_companies_id");
 
+                entity.HasIndex(e => e.contact_id, "fk_positions_contact_id_contacts_id");
+
                 entity.HasIndex(e => e.customer_id, "fk_positions_department_id_departments_id");
 
                 entity.HasIndex(e => e.opener_id, "fk_positions_opener_id_users_id");
@@ -353,6 +358,10 @@ namespace Database.models
 
                 entity.Property(e => e.name).HasMaxLength(500);
 
+                entity.Property(e => e.remarks).HasMaxLength(500);
+
+                entity.Property(e => e.requirements).HasMaxLength(2000);
+
                 entity.Property(e => e.status).HasColumnType("enum('Active','Not_Active','Completed')");
 
                 entity.HasOne(d => d.company)
@@ -360,20 +369,27 @@ namespace Database.models
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_positions_company_id_companies_id");
 
+                entity.HasOne(d => d.contact)
+                    .WithMany(p => p.positions)
+                    .HasForeignKey(d => d.contact_id)
+                    .HasConstraintName("fk_positions_contact_id_contacts_id");
+
                 entity.HasOne(d => d.customer)
                     .WithMany(p => p.positions)
                     .HasForeignKey(d => d.customer_id)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_positions_customer_id_customers_id");
 
                 entity.HasOne(d => d.opener)
                     .WithMany(p => p.positionopeners)
                     .HasForeignKey(d => d.opener_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_positions_opener_id_users_id");
 
                 entity.HasOne(d => d.updater)
                     .WithMany(p => p.positionupdaters)
                     .HasForeignKey(d => d.updater_id)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_positions_updater_id_users_id");
             });
 
@@ -391,14 +407,33 @@ namespace Database.models
 
                 entity.Property(e => e.cand_cvs).HasColumnType("json");
 
+                entity.Property(e => e.customer_review).HasMaxLength(1000);
+
+                entity.Property(e => e.date_accepted).HasColumnType("datetime");
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.date_cv_sent_to_customer).HasColumnType("datetime");
+
+                entity.Property(e => e.date_interview_customer_request).HasColumnType("datetime");
+
+                entity.Property(e => e.date_msg_accept_reject_sent).HasColumnType("datetime");
+
+                entity.Property(e => e.date_rejected).HasColumnType("datetime");
+
+                entity.Property(e => e.date_remove_candidacy).HasColumnType("datetime");
+
+                entity.Property(e => e.date_sent_talk_request).HasColumnType("datetime");
+
+                entity.Property(e => e.date_updated).HasColumnType("datetime");
+
+                entity.Property(e => e.stages_history).HasColumnType("json");
+
                 entity.HasOne(d => d.candidate)
                     .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.candidate_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_position_candidates_candidate_id_candidates_id");
 
                 entity.HasOne(d => d.company)
@@ -415,19 +450,11 @@ namespace Database.models
                     .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.position_id)
                     .HasConstraintName("fk_position_candidates_position_id_positions_id");
-
-                entity.HasOne(d => d.stage)
-                    .WithMany(p => p.position_candidates)
-                    .HasForeignKey(d => d.stage_id)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("fk_position_candidates_stage_id_position_candidate_stages_id");
             });
 
             modelBuilder.Entity<position_candidate_stage>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
 
                 entity.Property(e => e.name).HasMaxLength(50);
 

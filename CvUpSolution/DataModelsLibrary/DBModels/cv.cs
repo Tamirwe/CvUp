@@ -7,7 +7,6 @@ namespace Database.models
     {
         public cv()
         {
-            candidates = new HashSet<candidate>();
             cvs_txts = new HashSet<cvs_txt>();
             position_candidates = new HashSet<position_candidate>();
         }
@@ -24,9 +23,9 @@ namespace Database.models
         public int? duplicate_cv_id { get; set; }
         public DateTime date_created { get; set; }
         public string? pos_ids { get; set; }
+        public int? cvdbid { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
-        public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
     }

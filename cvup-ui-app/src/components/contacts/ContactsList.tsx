@@ -10,6 +10,12 @@ export const ContactsList = observer(() => {
   const [contactsList, setContactsList] = useState<IContact[]>([]);
 
   useEffect(() => {
+    if (!customersContactsStore.contactsList.length) {
+      customersContactsStore.getContactsList();
+    }
+  }, []);
+
+  useEffect(() => {
     if (customersContactsStore.contactsList.length > 0) {
       setContactsList(customersContactsStore.contactsList?.slice(0, 50));
     }
@@ -88,8 +94,10 @@ export const ContactsList = observer(() => {
               }}
             >
               <ListItemText
-                primary={`${cont.firstName} ${cont.lastName} - ${cont.customerName}`}
-                secondary={`${cont.email}, ${cont.phone}`}
+                primary={`${cont.firstName} ${
+                  cont.lastName ? cont.lastName : ""
+                } - ${cont.customerName}`}
+                secondary={`${cont.email}, ${cont.phone ? cont.phone : ""}`}
                 sx={{
                   textAlign: "right",
                   fontSize: "0.775rem",

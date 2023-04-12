@@ -71,9 +71,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export const SearchControl = () => {
-  const { candsStore } = useStore();
+interface IProps {
+  onSearch: (value: string) => void;
+}
 
+export const SearchControl = ({ onSearch }: IProps) => {
   const [value, setValue] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +89,7 @@ export const SearchControl = () => {
   };
 
   const search = () => {
-    candsStore.searchCands(value);
+    onSearch(value);
   };
 
   return (

@@ -24,7 +24,7 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCandsList")]
-        public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 50)
+        public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 200)
         {
             return await _candPosService.GetCandsList(Globals.CompanyId, page, take, null);
         }

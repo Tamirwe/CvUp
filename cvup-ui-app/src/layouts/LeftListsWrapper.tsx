@@ -11,6 +11,7 @@ import { MdAdd } from "react-icons/md";
 import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
 import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
+import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -85,15 +86,18 @@ export const LeftListsWrapper = observer(() => {
       >
         <CacheProvider value={cacheRtl}>
           <ThemeProvider theme={themeRtl}>
-            {generalStore.currentTab === TabsGeneralEnum.Positions && (
-              <PositionsList />
-            )}
-            {generalStore.currentTab === TabsGeneralEnum.Folders && (
+            <div hidden={generalStore.currentTab !== TabsGeneralEnum.Positions}>
+              <PositionsListWrapper />
+            </div>
+
+            <div hidden={generalStore.currentTab !== TabsGeneralEnum.Folders}>
+              {" "}
               <FoldersListWrapper />
-            )}
-            {generalStore.currentTab === TabsGeneralEnum.Contacts && (
+            </div>
+            <div hidden={generalStore.currentTab !== TabsGeneralEnum.Contacts}>
+              {" "}
               <ContactsListWrapper />
-            )}
+            </div>
           </ThemeProvider>
         </CacheProvider>
       </Box>

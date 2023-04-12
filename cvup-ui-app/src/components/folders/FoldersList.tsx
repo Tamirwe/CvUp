@@ -14,6 +14,12 @@ export const FoldersList = observer(() => {
   const [rootFoldersList, setRootFoldersList] = useState<IFolder[]>([]);
 
   useEffect(() => {
+    if (!foldersStore.foldersList.length) {
+      foldersStore.getFoldersList();
+    }
+  }, []);
+  
+  useEffect(() => {
     if (foldersStore.foldersList.length > 0) {
       setRootFoldersList(foldersStore.foldersList?.slice(0, 50));
     }

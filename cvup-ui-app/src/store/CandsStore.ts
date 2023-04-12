@@ -173,6 +173,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getFolderCandsList(folderId);
     runInAction(() => {
+      this.tabDisplayCandsLists = TabsCandsEnum.FolderCands;
       this.folderCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;

@@ -6,7 +6,7 @@ import { RootStore } from "./RootStore";
 
 export class PositionsStore {
   private positionApi;
-  positionsList: IPosition[] = [];
+  private positionsList: IPosition[] = [];
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
 
@@ -41,6 +41,10 @@ export class PositionsStore {
 
   set editPosition(val: IPosition | undefined) {
     this.positionEdit = val;
+  }
+
+  searchPositions() {
+    throw new Error("Method not implemented.");
   }
 
   setPosSelected(posId: number) {

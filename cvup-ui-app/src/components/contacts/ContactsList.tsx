@@ -10,16 +10,16 @@ export const ContactsList = observer(() => {
   const [contactsList, setContactsList] = useState<IContact[]>([]);
 
   useEffect(() => {
-    if (!customersContactsStore.contactsList.length) {
+    if (!customersContactsStore.contactsListSorted.length) {
       customersContactsStore.getContactsList();
     }
   }, []);
 
   useEffect(() => {
-    if (customersContactsStore.contactsList.length > 0) {
-      setContactsList(customersContactsStore.contactsList?.slice(0, 50));
+    if (customersContactsStore.contactsListSorted.length > 0) {
+      setContactsList(customersContactsStore.contactsListSorted?.slice(0, 50));
     }
-  }, [customersContactsStore.contactsList]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [customersContactsStore.contactsListSorted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
@@ -31,7 +31,7 @@ export const ContactsList = observer(() => {
       if (contactsList) {
         const numRecords = contactsList.length;
         const newPosList = contactsList.concat(
-          customersContactsStore.contactsList?.slice(
+          customersContactsStore.contactsListSorted?.slice(
             numRecords,
             numRecords + 50
           )

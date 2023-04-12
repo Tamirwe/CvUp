@@ -60,7 +60,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     (async () => {
       await Promise.all([
         authStore.usersList.length === 0 && authStore.getUsersList(),
-        customersContactsStore.contactsList.length === 0 &&
+        customersContactsStore.contactsListSorted.length === 0 &&
           customersContactsStore.getContactsList(),
       ]);
     })();
@@ -242,7 +242,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                 {/* {generalStore.appMode === AppModeEnum.HRCompany ? ( */}
                 <Grid item xs={12} mt={2}>
                   <ContactsAutoCompleteMulty
-                    options={customersContactsStore.contactsList}
+                    options={customersContactsStore.contactsListSorted}
                     valueIds={formModel.contactsIds}
                     onChange={(value, customerId) => {
                       setFormModel((currentProps) => ({

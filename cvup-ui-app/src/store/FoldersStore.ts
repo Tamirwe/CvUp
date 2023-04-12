@@ -5,7 +5,7 @@ import { RootStore } from "./RootStore";
 
 export class FoldersStore {
   private foldersApi;
-  foldersList: IFolder[] = [];
+  private foldersList: IFolder[] = [];
   private folderSelected?: IFolder;
   private editFolder?: IFolder;
   rootFolder: IFolder = {
@@ -13,6 +13,10 @@ export class FoldersStore {
     name: "Folders",
     parentId: -1,
   };
+
+  get foldersListSorted() {
+    return this.foldersList.slice();
+  }
 
   get selectedFolder() {
     return this.folderSelected;
@@ -36,6 +40,10 @@ export class FoldersStore {
   }
 
   reset() {}
+
+  searchFolders() {
+    throw new Error("Method not implemented.");
+  }
 
   async addFolder(folderModel: IFolder) {
     this.rootStore.generalStore.backdrop = true;

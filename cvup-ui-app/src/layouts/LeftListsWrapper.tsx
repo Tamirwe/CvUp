@@ -9,9 +9,9 @@ import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
 import { MdAdd } from "react-icons/md";
 import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
-import { FoldersListWrapper } from "../components/folders/FoldersListWrapper";
-import { ContactsListWrapper } from "../components/contacts/ContactsListWrapper";
-import { PositionsListWrapper } from "../components/positions/PositionsListWrapper";
+import { SearchControl } from "../components/header/SearchControl";
+import { ContactsList } from "../components/contacts/ContactsList";
+import { FoldersList } from "../components/folders/FoldersList";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -55,6 +55,18 @@ export const LeftListsWrapper = observer(() => {
     }
   };
 
+  const handlePositionsSearch = (val: string) => {
+    positionsStore.searchPositions();
+  };
+
+  const handleFoldersSearch = (val: string) => {
+    foldersStore.searchFolders();
+  };
+
+  const handleContactsSearch = (val: string) => {
+    customersContactsStore.searchContacts();
+  };
+
   return (
     <Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -87,16 +99,28 @@ export const LeftListsWrapper = observer(() => {
         <CacheProvider value={cacheRtl}>
           <ThemeProvider theme={themeRtl}>
             <div hidden={generalStore.currentTab !== TabsGeneralEnum.Positions}>
-              <PositionsListWrapper />
+              <Box>
+                <Box mt={1} ml={1}>
+                  <SearchControl onSearch={handlePositionsSearch} />
+                </Box>
+                <PositionsList />;
+              </Box>
             </div>
-
             <div hidden={generalStore.currentTab !== TabsGeneralEnum.Folders}>
-              {" "}
-              <FoldersListWrapper />
+              <Box>
+                <Box mt={1} ml={1}>
+                  <SearchControl onSearch={handleFoldersSearch} />
+                </Box>
+                <FoldersList />;
+              </Box>
             </div>
             <div hidden={generalStore.currentTab !== TabsGeneralEnum.Contacts}>
-              {" "}
-              <ContactsListWrapper />
+              <Box>
+                <Box mt={1} ml={1}>
+                  <SearchControl onSearch={handleContactsSearch} />
+                </Box>
+                <ContactsList />;
+              </Box>
             </div>
           </ThemeProvider>
         </CacheProvider>

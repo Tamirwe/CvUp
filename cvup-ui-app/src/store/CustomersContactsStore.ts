@@ -8,7 +8,7 @@ export class CustomersContactsStore {
   private contactsApi;
   private contactSelected?: IContact;
   private customerSelected?: IIdName;
-  contactsList: IContact[] = [];
+  private contactsList: IContact[] = [];
   customersList: IIdName[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -17,6 +17,10 @@ export class CustomersContactsStore {
   }
 
   reset() {}
+
+  get contactsListSorted() {
+    return this.contactsList.slice();
+  }
 
   get selectedContact() {
     return this.contactSelected;
@@ -32,6 +36,10 @@ export class CustomersContactsStore {
 
   set selectedCustomer(val: IIdName | undefined) {
     this.customerSelected = val;
+  }
+
+  searchContacts() {
+    throw new Error("Method not implemented.");
   }
 
   async addContact(contactModel: IContact) {

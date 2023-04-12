@@ -36,7 +36,7 @@ export const PositionsList = observer(() => {
 
   useEffect(() => {
     (async () => {
-      if (positionsStore.positionsList.length === 0) {
+      if (positionsStore.positionsSorted.length === 0) {
         await positionsStore.getPositionsList();
       }
     })();

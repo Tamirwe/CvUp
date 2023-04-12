@@ -323,6 +323,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.positions
+                             join c in dbContext.customers on p.customer_id equals c.id
                             where p.company_id == companyId
                             orderby p.name
                             select new PositionModel
@@ -331,6 +332,8 @@ namespace DataModelsLibrary.Queries
                                 name = p.name,
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 updated = p.date_updated,
+                                customerName = c.name,
+                                customerId = p.customer_id
                             };
 
                 return await query.ToListAsync();

@@ -19,21 +19,12 @@ export class PositionsStore {
     this.positionsList = [];
   }
 
-  async newPosition() {
-    runInAction(() => {
-      this.selectedPosition = {
-        id: 0,
-        name: "",
-        descr: "",
-        updated: new Date(),
-        status: PositionStatusEnum.Active,
-        customerId: 0,
-        hrCompaniesIds: [],
-        interviewersIds: [],
-        candidates: [],
-        contactsIds: [],
-      } as IPosition;
-    });
+  get positionsSorted() {
+    return this.positionsList
+      .slice()
+      .sort(
+        (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime()
+      );
   }
 
   get selectedPosition() {

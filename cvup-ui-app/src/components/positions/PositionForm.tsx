@@ -40,8 +40,10 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     id: 0,
     name: "",
     descr: "",
+    updated: new Date(),
     status: PositionStatusEnum.Active,
     customerId: 0,
+    customerName: "",
     interviewersIds: [],
     contactsIds: [],
   });

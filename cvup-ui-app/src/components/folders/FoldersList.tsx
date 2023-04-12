@@ -6,10 +6,47 @@ import { CrudTypesEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
 import { MdPersonAddAlt1 } from "react-icons/md";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export const FoldersList = observer(() => {
   const { foldersStore, candsStore, generalStore } = useStore();
-  // let vv = 1;
+  const listRef = useRef<any>(null);
+  const [rootFoldersList, setRootFoldersList] = useState<IFolder[]>([]);
+
+  useEffect(() => {
+    if (foldersStore.foldersList.length > 0) {
+      setRootFoldersList(foldersStore.foldersList?.slice(0, 50));
+    }
+  }, [foldersStore.foldersList]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const onScroll = useCallback(() => {
+    const instance = listRef.current;
+
+    if (
+      instance.scrollHeight - instance.clientHeight <
+      instance.scrollTop + 150
+    ) {
+      if (rootFoldersList) {
+        const numRecords = rootFoldersList.length;
+        const newPosList = rootFoldersList.concat(
+          foldersStore.foldersList?.slice(numRecords, numRecords + 50)
+        );
+        setRootFoldersList(newPosList);
+      }
+
+      console.log(instance.scrollTop);
+    }
+  }, [rootFoldersList]);
+
+  useEffect(() => {
+    const instance = listRef.current;
+
+    instance.addEventListener("scroll", onScroll);
+
+    return () => {
+      instance.removeEventListener("scroll", onScroll);
+    };
+  }, [onScroll]);
 
   const editFolder = (folder: IFolder) => {
     return (
@@ -77,12 +114,12 @@ export const FoldersList = observer(() => {
   };
 
   return (
-    <ul className={styles.ulRoot} style={{}} role="tree">
+    <ul className={styles.ulRoot} style={{}} role="tree" ref={listRef}>
       {renderChildren({
         folder: {
           ...foldersStore.rootFolder,
         },
-        children: foldersStore.foldersList.filter((x) => x.parentId === 0),
+        children: rootFoldersList.filter((x) => x.parentId === 0),
       })}
     </ul>
   );

@@ -57,9 +57,10 @@ export interface IPosition {
   id: number;
   name: string;
   descr: string;
-  updated?: Date;
+  updated: Date;
   status: PositionStatusEnum;
   customerId: number;
+  customerName: string;
   interviewersIds: number[];
   contactsIds: number[];
 }

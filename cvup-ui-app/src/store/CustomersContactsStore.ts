@@ -9,6 +9,7 @@ export class CustomersContactsStore {
   private contactSelected?: IContact;
   private customerSelected?: IIdName;
   private contactsList: IContact[] = [];
+  private searchPhrase: string = "";
   customersList: IIdName[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -19,7 +20,13 @@ export class CustomersContactsStore {
   reset() {}
 
   get contactsListSorted() {
-    return this.contactsList.slice();
+    if (this.searchPhrase) {
+      return this.contactsList.filter((x) =>
+        this.searchStringContacts(x).includes(this.searchPhrase.toLowerCase())
+      );
+    } else {
+      return this.contactsList.slice();
+    }
   }
 
   get selectedContact() {
@@ -38,9 +45,17 @@ export class CustomersContactsStore {
     this.customerSelected = val;
   }
 
-  searchContacts() {
-    throw new Error("Method not implemented.");
+  searchContacts(val: string) {
+    this.searchPhrase = val;
   }
+
+  searchStringContacts = (x: IContact) => {
+    return (
+      (x.firstName + "").toLowerCase() +
+      (x.lastName + "").toLowerCase() +
+      (x.customerName + "").toLowerCase()
+    );
+  };
 
   async addContact(contactModel: IContact) {
     this.rootStore.generalStore.backdrop = true;

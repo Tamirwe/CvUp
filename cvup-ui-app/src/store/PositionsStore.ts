@@ -9,6 +9,7 @@ export class PositionsStore {
   private positionsList: IPosition[] = [];
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
+  private searchPhrase: string = "";
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -20,11 +21,18 @@ export class PositionsStore {
   }
 
   get positionsSorted() {
-    return this.positionsList
-      .slice()
-      .sort(
-        (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime()
+    if (this.searchPhrase) {
+      return this.positionsList.filter((x) =>
+        this.searchStringPositions(x).includes(this.searchPhrase.toLowerCase())
       );
+    } else {
+      return this.positionsList
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.updated).getTime() - new Date(a.updated).getTime()
+        );
+    }
   }
 
   get selectedPosition() {
@@ -43,9 +51,13 @@ export class PositionsStore {
     this.positionEdit = val;
   }
 
-  searchPositions() {
-    throw new Error("Method not implemented.");
+  searchPositions(val: string) {
+    this.searchPhrase = val;
   }
+
+  searchStringPositions = (x: IPosition) => {
+    return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
+  };
 
   setPosSelected(posId: number) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);

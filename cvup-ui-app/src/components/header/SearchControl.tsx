@@ -1,9 +1,8 @@
 import { InputBase } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
-
-import { CiSearch, CiCircleRemove } from "react-icons/ci";
-import { useStore } from "../../Hooks/useStore";
+import { useEffect, useState } from "react";
+import { MdOutlineClose, MdOutlineSearch } from "react-icons/md";
+import useDebounce from "../../Hooks/useDebounce";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -77,6 +76,11 @@ interface IProps {
 
 export const SearchControl = ({ onSearch }: IProps) => {
   const [value, setValue] = useState("");
+  const debouncedValue = useDebounce<string>(value, 500);
+
+  useEffect(() => {
+    onSearch(value);
+  }, [debouncedValue]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -95,18 +99,17 @@ export const SearchControl = ({ onSearch }: IProps) => {
   return (
     <Search>
       <SearchIconWrapper>
-        <CiSearch onClick={search} />
+        <MdOutlineSearch onClick={search} />
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"
-        inputProps={{ "aria-label": "search" }}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
       {value && (
         <CancelIconWrapper>
-          <CiCircleRemove onClick={() => setValue("")} />
+          <MdOutlineClose onClick={() => setValue("")} />
         </CancelIconWrapper>
       )}
     </Search>

@@ -82,7 +82,7 @@ export const PositionsList = observer(() => {
       ref={listRef}
       sx={{
         backgroundColor: "#fff",
-        height: "calc(100vh - 81px)",
+        height: "calc(100vh - 114px)",
         overflowY: "hidden",
         "&:hover ": {
           overflow: "overlay",

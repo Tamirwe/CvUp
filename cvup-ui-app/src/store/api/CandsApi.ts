@@ -10,7 +10,11 @@ export default class CandsApi extends BaseApi {
 
   async searchCands(value: string) {
     return await this.apiWrapper2<ICand[]>(async () => {
-      return await this.http.get(`Cand/SearchCands?searchKeyWords=${value}`);
+      return await this.http.post(`Cand/SearchCands?searchKeyWords`, {
+        keyWords: value,
+        folder: 0,
+        position: 0,
+      });
     });
   }
 

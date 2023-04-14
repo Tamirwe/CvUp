@@ -36,7 +36,7 @@ namespace CandsPositionsLibrary
 
         public async Task AddCvToIndex(ImportCvModel importCv)
         {
-            CvPropsToIndexModel cvPropsToIndex = new CvPropsToIndexModel
+            CvsToIndexModel cvPropsToIndex = new CvsToIndexModel
             {
                 candName = importCv.candidateName,
                 cvId = importCv.cvId,
@@ -117,7 +117,7 @@ namespace CandsPositionsLibrary
 
         public async Task IndexCompanyCvs(int companyId)
         {
-            List<CvPropsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
             await _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
         }
 
@@ -238,7 +238,11 @@ namespace CandsPositionsLibrary
         public async Task DactivatePosition(int companyId, PositionModel data)
         {
              await _cvsPositionsQueries.DactivatePosition(companyId, data);
+        }
 
+        public async Task UpdateCvsAsciiSum(int companyId)
+        {
+            await _cvsPositionsQueries.UpdateCvsAsciiSum(companyId);
         }
     }
 }

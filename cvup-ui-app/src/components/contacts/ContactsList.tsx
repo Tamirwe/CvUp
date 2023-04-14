@@ -16,9 +16,9 @@ export const ContactsList = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (customersContactsStore.contactsListSorted.length > 0) {
-      setContactsList(customersContactsStore.contactsListSorted?.slice(0, 50));
-    }
+    // if (customersContactsStore.contactsListSorted.length > 0) {
+    setContactsList(customersContactsStore.contactsListSorted?.slice(0, 50));
+    // }
   }, [customersContactsStore.contactsListSorted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {

@@ -9,7 +9,7 @@ namespace DataModelsLibrary.Queries
          Task<int> AddCandidate(candidate importCv);
          Task UpdateCandidate(candidate cand);
          Task<candidate?> GetCandidateByEmail(string email);
-         Task<List<CvPropsToIndexModel>> GetCompanyCvsToIndex(int companyId);
+         Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId);
          Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
          Task<position> AddPosition(PositionModel data, int companyId, int userId);
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
@@ -27,6 +27,7 @@ namespace DataModelsLibrary.Queries
          Task UpdateSameCv(ImportCvModel importCv);
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
+         Task UpdateCvsAsciiSum(int companyId);
          Task<List<CandModel>> GetPosCandsList(int companyId, int positionId, string encriptKey);
          Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
          Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);

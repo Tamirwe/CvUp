@@ -8,6 +8,7 @@ export class FoldersStore {
   private foldersList: IFolder[] = [];
   private folderSelected?: IFolder;
   private editFolder?: IFolder;
+  private searchPhrase: string = "";
   rootFolder: IFolder = {
     id: 0,
     name: "Folders",
@@ -15,7 +16,13 @@ export class FoldersStore {
   };
 
   get foldersListSorted() {
-    return this.foldersList.slice();
+    if (this.searchPhrase) {
+      return this.foldersList.filter((x) =>
+        x.name.toLowerCase().includes(this.searchPhrase.toLowerCase())
+      );
+    } else {
+      return this.foldersList.slice();
+    }
   }
 
   get selectedFolder() {
@@ -41,8 +48,8 @@ export class FoldersStore {
 
   reset() {}
 
-  searchFolders() {
-    throw new Error("Method not implemented.");
+  searchFolders(val: string) {
+    this.searchPhrase = val;
   }
 
   async addFolder(folderModel: IFolder) {

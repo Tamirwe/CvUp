@@ -23,6 +23,7 @@ namespace Database.models
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<customer> customers { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
+        public virtual DbSet<cvs_ascii_sum> cvs_ascii_sums { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
         public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
@@ -218,6 +219,11 @@ namespace Database.models
                     .WithMany(p => p.cvs)
                     .HasForeignKey(d => d.candidate_id)
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
+            });
+
+            modelBuilder.Entity<cvs_ascii_sum>(entity =>
+            {
+                entity.ToTable("cvs_ascii_sum");
             });
 
             modelBuilder.Entity<cvs_txt>(entity =>

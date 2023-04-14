@@ -12,6 +12,7 @@ namespace Database.models
     {
 
         public virtual DbSet<IdNameModel> idNameModelDB { get; set; } = null!;
+        public virtual DbSet<CvsToIndexModel> cvsToIndexDB { get; set; } = null!;
 
     }
 }

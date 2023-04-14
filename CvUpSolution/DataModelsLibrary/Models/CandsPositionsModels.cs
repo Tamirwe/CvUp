@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,18 +31,28 @@ namespace DataModelsLibrary.Models
         public bool isSameCv { get; set; } = false;
     }
 
-    public class CvPropsToIndexModel
+    [Keyless]
+    public class CvsToIndexModel
     {
         public int companyId { get; set; }
         public int cvId { get; set; }
         public int candidateId { get; set; }
-        public string cvKey { get; set; } = "";
+        //public string cvKey { get; set; } = "";
         public string? cvTxt { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
         public string? emailSubject { get; set; } = "";
         public string? candName { get; set; } = "";
         public string? reviewText { get; set; } = "";
+    }
+
+    public class CvPropsToIndexModel
+    {
+        public int id { get; set; }
+        public int companyId { get; set; }
+        public int candidateId { get; set; }
+        public string? cvTxt { get; set; } = "";
+        public int? cvdbid { get; set; }
     }
 
     public class CandCvModel
@@ -87,6 +99,13 @@ namespace DataModelsLibrary.Models
         public int cvId { get; set; }
         public string reviewHtml { get; set; } = "";
         public string reviewText { get; set; } = "";
+    }
+
+    public class searchCandCvModel
+    {
+        public string keyWords { get; set; } = "";
+        public int folder { get; set; }
+        public int position { get; set; }
     }
 
     public class AttachePosCandCvModel

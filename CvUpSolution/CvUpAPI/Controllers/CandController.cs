@@ -36,12 +36,14 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("SearchCands")]
-        public async Task<List<CandModel?>> SearchCands(string searchKeyWords = "")
+        public async Task<List<CandModel?>> SearchCands(searchCandCvModel search)
         {
-            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, searchKeyWords);
-            return await _candPosService.GetCandsList(Globals.CompanyId, 1, 50, candsIds);
+            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, search.keyWords);
+            var candsList = await _candPosService.GetCandsList(Globals.CompanyId, 1, 50, candsIds);
+            var sortedCands = candsList.OrderBy(x => candsIds.IndexOf(x.candidateId)).ToList();
+            return sortedCands;
         }
 
         [HttpGet]

@@ -56,15 +56,15 @@ export const LeftListsWrapper = observer(() => {
   };
 
   const handlePositionsSearch = (val: string) => {
-    positionsStore.searchPositions();
+    positionsStore.searchPositions(val);
   };
 
   const handleFoldersSearch = (val: string) => {
-    foldersStore.searchFolders();
+    foldersStore.searchFolders(val);
   };
 
   const handleContactsSearch = (val: string) => {
-    customersContactsStore.searchContacts();
+    customersContactsStore.searchContacts(val);
   };
 
   return (

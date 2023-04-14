@@ -36,5 +36,6 @@ namespace CandsPositionsLibrary
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
         Task ActivatePosition( int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);
+        Task UpdateCvsAsciiSum(int companyId);
     }
 }

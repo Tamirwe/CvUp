@@ -27,9 +27,12 @@ export const PositionsList = observer(() => {
   };
 
   const handlePositionClick = (posId: number) => {
-    if (positionsStore.selectedPosition?.id !== posId) {
+    if (
+      candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands ||
+      positionsStore.selectedPosition?.id !== posId
+    ) {
       positionsStore.setPosSelected(posId);
-      candsStore.getPositionCands(posId);
+      candsStore.getPositionCands();
       candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
     }
   };

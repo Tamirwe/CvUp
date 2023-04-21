@@ -5,6 +5,8 @@ using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace DataModelsLibrary.Queries
 {
@@ -159,7 +161,8 @@ namespace DataModelsLibrary.Queries
                                  cvSent = Convert.ToDateTime(cand.last_cv_sent),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                             }).Skip(skip).Take(take);
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                             }).Take(300);
 
                 var result = await query.ToListAsync();
                 return result;
@@ -237,7 +240,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandModel>> GetPosCandsList(int companyId, int positionId, string encriptKey)
+        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -245,7 +248,7 @@ namespace DataModelsLibrary.Queries
                              join pcv in dbContext.position_candidates on   cand.id equals pcv.candidate_id
                              join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
                              where pcv.company_id == companyId
-                                    && pcv.position_id == positionId
+                                    && pcv.position_id == positionId 
                              select new CandModel
                              {
                                  cvId = cvs.id,
@@ -260,6 +263,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
+                                 //posStages = cand.pos_stages == null ? new stageModel[] { } : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
                                  candCvs = pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
@@ -269,7 +273,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -277,7 +281,7 @@ namespace DataModelsLibrary.Queries
                              join fc in dbContext.folders_cands on cand.id equals fc.candidate_id
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
                              where fc.company_id == companyId
-                                    && fc.folder_id == folderId
+                                    && fc.folder_id == folderId 
                              select new CandModel
                              {
                                  cvId = cvs.id,
@@ -292,6 +296,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
+                                 //posStages = cand.pos_stages == null ? new stageModel[] { } : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
                                  folderCandId = fc.id
                              });
 
@@ -724,5 +729,27 @@ namespace DataModelsLibrary.Queries
                 return await dbContext.company_cvs_emails.ToListAsync();
             }
         }
+      
+        public async  Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from st in dbContext.company_stages_types
+                             where st.company_id == companyId
+                             orderby st.order
+                             select new companyStagesTypesModel
+                             {
+                                 name = st.name,
+                                 stageType = st.stage_Type,
+                                 order = st.order,
+                                 isCustom = Convert.ToBoolean(st.is_custom),
+                             });
+
+                return await query.ToListAsync();
+
+
+            }
+        }
+
     }
 }

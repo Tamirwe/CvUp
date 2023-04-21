@@ -134,9 +134,9 @@ namespace CandsPositionsLibrary
             return cvsList;
         }
 
-        public async Task<List<CandModel>> GetPosCandsList(int companyId, int positionId)
+        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
         {
-            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId,  candsIds);
         }
 
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
@@ -225,9 +225,9 @@ namespace CandsPositionsLibrary
             return distinctCandsList;
         }
 
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
         {
-            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId);
+            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId,  candsIds);
         }
 
         public async Task ActivatePosition( int companyId, PositionModel data)
@@ -243,6 +243,11 @@ namespace CandsPositionsLibrary
         public async Task UpdateCvsAsciiSum(int companyId)
         {
             await _cvsPositionsQueries.UpdateCvsAsciiSum(companyId);
+        }
+
+        public async Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId)
+        {
+            return await _cvsPositionsQueries.GetCompanyStagesTypes(companyId);
         }
     }
 }

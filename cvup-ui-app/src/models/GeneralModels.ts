@@ -36,6 +36,19 @@ export interface ICand {
   candCvs: IPosCandCvs[];
   hasDuplicates: boolean;
   folderCandId: number;
+  posStages?: IPosStages[];
+}
+
+interface IPosStages {
+  id: number;
+  t: string;
+  d: string;
+}
+
+export interface ICompanyStagesTypes {
+  stageType: string;
+  order: number;
+  name: string;
 }
 
 export interface ICandCv {

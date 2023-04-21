@@ -28,15 +28,15 @@ namespace DataModelsLibrary.Queries
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
          Task UpdateCvsAsciiSum(int companyId);
-         Task<List<CandModel>> GetPosCandsList(int companyId, int positionId, string encriptKey);
+         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
          Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
          Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
          Task<List<company_cvs_email>> GetCompaniesEmails();
-        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
         Task ActivatePosition(int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
         Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds);
-
+        Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
     }
 }

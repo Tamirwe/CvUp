@@ -5,6 +5,7 @@ import {
   ICand,
   ICandCv,
   ICvReview,
+  ICompanyStagesTypes,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -21,7 +22,8 @@ export class CandsStore {
   candPosSelected?: ICand;
   candFolderSelected?: ICand;
   candDisplay?: ICand;
-  private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
+  private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.None;
+  stagesTypes?: ICompanyStagesTypes[];
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -130,11 +132,36 @@ export class CandsStore {
     });
   }
 
-  async searchCands(value: string) {
+  async searchAllCands(value: string) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(value);
+    const res = await this.cvsApi.searchCands(value, 0, 0);
     runInAction(() => {
       this.candsAllList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async searchPositionCands(value: string) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.searchCands(
+      value,
+      this.rootStore.positionsStore.selectedPosition?.id
+    );
+    runInAction(() => {
+      this.posCandsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async searchFolderCands(value: string) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.searchCands(
+      value,
+      0,
+      this.rootStore.foldersStore.selectedFolder?.id
+    );
+    runInAction(() => {
+      this.folderCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -160,18 +187,22 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getPositionCands(positionId: number) {
+  async getPositionCands() {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.GetPosCandsList(positionId);
+    const res = await this.cvsApi.GetPosCandsList(
+      this.rootStore.positionsStore.selectedPosition?.id!
+    );
     runInAction(() => {
       this.posCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getFolderCandsList(folderId: number) {
+  async getFolderCandsList() {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getFolderCandsList(folderId);
+    const res = await this.cvsApi.getFolderCandsList(
+      this.rootStore.foldersStore.selectedFolder?.id!
+    );
     runInAction(() => {
       this.tabDisplayCandsLists = TabsCandsEnum.FolderCands;
       this.folderCandsList = res.data;
@@ -211,7 +242,7 @@ export class CandsStore {
         }
 
         if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
-          this.getPositionCands(positionId);
+          this.getPositionCands();
         }
       }
     });
@@ -276,5 +307,20 @@ export class CandsStore {
         numArr.splice(index, 1);
       }
     }
+  }
+
+  async getCompanyStagesTypes() {
+    const res = await this.cvsApi.getCompanyStagesTypes();
+    runInAction(() => {
+      this.stagesTypes = res.data;
+    });
+  }
+
+  findStageName(stageType: string) {
+    if (this.stagesTypes) {
+      return this.stagesTypes.find((x) => x.stageType === stageType)?.name;
+    }
+
+    return "";
   }
 }

@@ -5,16 +5,22 @@ namespace Database.models
 {
     public partial class position_candidate
     {
+        public position_candidate()
+        {
+            position_candidate_stages = new HashSet<position_candidate_stage>();
+        }
+
         public int id { get; set; }
         public int company_id { get; set; }
         public int position_id { get; set; }
         public int candidate_id { get; set; }
         public int cv_id { get; set; }
         public int? stage_id { get; set; }
+        public string? stage_type { get; set; }
+        public DateTime? stage_date { get; set; }
         public DateTime date_created { get; set; }
         public DateTime? date_updated { get; set; }
         public string? cand_cvs { get; set; }
-        public string? stages_history { get; set; }
         public string? customer_review { get; set; }
         public DateTime? date_cv_sent_to_customer { get; set; }
         public DateTime? date_interview_customer_request { get; set; }
@@ -28,5 +34,6 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual cv cv { get; set; } = null!;
         public virtual position position { get; set; } = null!;
+        public virtual ICollection<position_candidate_stage> position_candidate_stages { get; set; }
     }
 }

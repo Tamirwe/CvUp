@@ -1,4 +1,8 @@
-import { ICand, ICvReview } from "../../models/GeneralModels";
+import {
+  ICand,
+  ICvReview,
+  ICompanyStagesTypes,
+} from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class CandsApi extends BaseApi {
@@ -8,12 +12,12 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async searchCands(value: string) {
+  async searchCands(value: string, posId?: number, folderId?: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.post(`Cand/SearchCands?searchKeyWords`, {
         keyWords: value,
-        folder: 0,
-        position: 0,
+        positionId: posId,
+        folderId: folderId,
       });
     });
   }
@@ -91,6 +95,12 @@ export default class CandsApi extends BaseApi {
   async saveCvReview(cvReview: ICvReview) {
     return await this.apiWrapper2(async () => {
       return await this.http.post("Cand/SaveCvReview", cvReview);
+    });
+  }
+
+  async getCompanyStagesTypes() {
+    return await this.apiWrapper2<ICompanyStagesTypes[]>(async () => {
+      return await this.http.get("Cand/GetCompanyStagesTypes");
     });
   }
 }

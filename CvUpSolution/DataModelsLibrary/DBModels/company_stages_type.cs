@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.models
 {
-    public partial class candidate_position_stage
+    public partial class company_stages_type
     {
         public int id { get; set; }
         public int company_id { get; set; }

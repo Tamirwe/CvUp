@@ -1,4 +1,5 @@
 import {
+  Box,
   Collapse,
   IconButton,
   List,
@@ -6,6 +7,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
@@ -14,7 +17,7 @@ import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { TabsCandsEnum } from "../../models/GeneralEnums";
-import { ICand, IPosition } from "../../models/GeneralModels";
+import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 
 interface IProps {
@@ -22,7 +25,7 @@ interface IProps {
 }
 
 export const CandsList = observer(({ candsListData }: IProps) => {
-  const { candsStore } = useStore();
+  const { candsStore, positionsStore } = useStore();
   const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
   const navigate = useNavigate();
@@ -143,7 +146,7 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                 </IconButton>
               </ListItemIcon>
 
-              <ListItemText
+              {/* <ListItemText
                 primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
                 sx={{
                   textAlign: "right",
@@ -152,10 +155,43 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                   alignSelf: "start",
                   whiteSpace: "nowrap",
                 }}
-              />
+              /> */}
               <ListItemText
-                primary={cand.candidateName}
-                secondary={cand.emailSubject}
+                primary={
+                  <Box
+                    sx={{
+                      textAlign: "right",
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>{format(new Date(cand.cvSent), "MMM d, yyyy")}</div>
+                      <div>{cand.candidateName}</div>
+                    </Stack>
+                    <div>{cand.emailSubject}</div>
+                    {cand.posStages?.length && (
+                      <table style={{ marginLeft: "auto", width: "100%" }}>
+                        <tbody>
+                          {cand.posStages.map((stage, i) => {
+                            return (
+                              <tr key={i}>
+                                <td>
+                                  {format(new Date(stage.d), "MMM d, yy")}
+                                </td>
+                                <td>{candsStore.findStageName(stage.t)}</td>
+                                <td>{positionsStore.findPosName(stage.id)}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    )}
+                  </Box>
+                }
               />
               {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands &&
               candsStore.candDisplay?.candidateId === cand.candidateId ? (

@@ -287,29 +287,29 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddCompanySatrterData(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
-            {
+            //using (var dbContext = new cvup00001Context())
+            //{
 
-                var parser = new company_parser
-                {
-                    company_id = companyId,
-                    parser_id = 1
-                };
+            //    var parser = new company_parser
+            //    {
+            //        company_id = companyId,
+            //        parser_id = 1
+            //    };
 
-                dbContext.company_parsers.Add(parser);
+            //    dbContext.company_parsers.Add(parser);
 
-                var stages = new position_candidate_stage
-                {
-                    id = 1,
-                    company_id = companyId,
-                    name = "Attached"
-                };
+            //    var stages = new position_candidate_stage
+            //    {
+            //        id = 1,
+            //        company_id = companyId,
+            //        name = "Attached"
+            //    };
 
-                dbContext.position_candidate_stages.Add(stages);
+            //    dbContext.position_candidate_stages.Add(stages);
 
-                await dbContext.SaveChangesAsync();
+            //    await dbContext.SaveChangesAsync();
 
-            }
+            //}
         }
 
         public async Task AddCompanyCvsEmail(int companyId, string generatedCompanyEmail)

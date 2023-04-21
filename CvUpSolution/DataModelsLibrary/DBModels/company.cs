@@ -10,6 +10,7 @@ namespace Database.models
             candidates = new HashSet<candidate>();
             company_cvs_emails = new HashSet<company_cvs_email>();
             company_parsers = new HashSet<company_parser>();
+            company_stages_types = new HashSet<company_stages_type>();
             contacts = new HashSet<contact>();
             customers = new HashSet<customer>();
             emails_sents = new HashSet<emails_sent>();
@@ -33,6 +34,7 @@ namespace Database.models
         public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<company_cvs_email> company_cvs_emails { get; set; }
         public virtual ICollection<company_parser> company_parsers { get; set; }
+        public virtual ICollection<company_stages_type> company_stages_types { get; set; }
         public virtual ICollection<contact> contacts { get; set; }
         public virtual ICollection<customer> customers { get; set; }
         public virtual ICollection<emails_sent> emails_sents { get; set; }

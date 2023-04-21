@@ -80,10 +80,27 @@ namespace DataModelsLibrary.Models
         public DateTime cvSent { get; set; }
         public int[]? candPosIds { get; set; } 
         public int[]? cvPosIds { get; set; }
+        public stageModel[]? posStages { get; set; }
         public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
         public List<PosCandCvsModel>? candCvs { get; set; }
         public int folderCandId { get; set; }
+    }
+
+    public class companyStagesTypesModel
+    {
+        public string stageType { get; set; } = "";
+        public int? order { get; set; }
+        public string name { get; set; } = "";
+        public bool isCustom { get; set; } = false;
+    }
+
+    public class stageModel
+    {
+        public int id { get; set; } 
+        public string? t { get; set; } = "";
+        public string? d { get; set; } = "";
+
     }
 
     public class PosCandCvsModel
@@ -104,8 +121,8 @@ namespace DataModelsLibrary.Models
     public class searchCandCvModel
     {
         public string keyWords { get; set; } = "";
-        public int folder { get; set; }
-        public int position { get; set; }
+        public int folderId { get; set; }
+        public int positionId { get; set; }
     }
 
     public class AttachePosCandCvModel

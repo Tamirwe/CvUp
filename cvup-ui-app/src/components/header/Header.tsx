@@ -1,15 +1,18 @@
 import { useStore } from "../../Hooks/useStore";
-import { IconButton, Grid, Stack } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { CiLogout, CiEdit } from "react-icons/ci";
-import { SearchCands } from "./SearchCands";
+import { Grid, Stack } from "@mui/material";
+// import { useNavigate } from "react-router-dom";
 import { SettingsMenu } from "./SettingsMenu";
-import { EmailTypeEnum } from "../../models/GeneralEnums";
-import { MdOutlineAttachEmail, MdOutlineContactMail } from "react-icons/md";
+import { useEffect } from "react";
 
 export const Header = () => {
-  const { authStore, generalStore } = useStore();
-  const navigate = useNavigate();
+  const { candsStore } = useStore();
+  // const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      await candsStore.getCompanyStagesTypes();
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ position: "relative", backgroundColor: "#f3f4f5" }}>

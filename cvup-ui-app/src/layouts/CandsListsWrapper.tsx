@@ -22,12 +22,14 @@ export const CandsListsWrapper = observer(() => {
   }, [foldersStore.selectedFolder?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (
-      candsStore.currentTabCandsLists === TabsCandsEnum.AllCands &&
-      candsStore.candsAllList.length === 0
-    ) {
-      candsStore.getCandsList();
-    }
+    candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
+    candsStore.getCandsList();
+    // if (
+    //   candsStore.currentTabCandsLists === TabsCandsEnum.AllCands &&
+    //   candsStore.candsAllList.length === 0
+    // ) {
+    //   candsStore.getCandsList();
+    // }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const themeRtl = createTheme({
@@ -48,98 +50,117 @@ export const CandsListsWrapper = observer(() => {
   };
 
   const handleAllCandsSearch = (val: string) => {
-    candsStore.searchCands(val);
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.AllCands) {
+      if (val) {
+        candsStore.searchAllCands(val);
+      } else {
+        candsStore.getCandsList();
+      }
+    }
   };
 
-  const handlePositionCandsSearch = (val: string) => {};
+  const handlePositionCandsSearch = (val: string) => {
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands) {
+      if (val) {
+        candsStore.searchPositionCands(val);
+      } else {
+        candsStore.getPositionCands();
+      }
+    }
+  };
 
-  const handleFolderCandsSearch = (val: string) => {};
+  const handleFolderCandsSearch = (val: string) => {
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands) {
+      if (val) {
+        candsStore.searchFolderCands(val);
+      } else {
+        candsStore.getFolderCandsList();
+      }
+    }
+  };
 
   return (
     <Box sx={{ marginTop: "0" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={candsStore.currentTabCandsLists}
-          onChange={handleTabChange}
-          sx={{ direction: "rtl" }}
-        >
-          <Tab label="Candidates" value={TabsCandsEnum.AllCands} />
-          {positionsStore.selectedPosition?.name && (
-            <Tab
-              label={positionsStore.selectedPosition?.name}
-              value={TabsCandsEnum.PositionCands}
-              sx={{
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            />
-          )}
-          {foldersStore.selectedFolder?.id && (
-            <Tab
-              label={foldersStore.selectedFolder?.name}
-              value={TabsCandsEnum.FolderCands}
-              sx={{
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            />
-          )}
-        </Tabs>
+        {candsStore.currentTabCandsLists !== TabsCandsEnum.None && (
+          <Tabs
+            value={candsStore.currentTabCandsLists}
+            onChange={handleTabChange}
+            sx={{ direction: "rtl" }}
+          >
+            <Tab label="Candidates" value={TabsCandsEnum.AllCands} />
+            {positionsStore.selectedPosition?.name && (
+              <Tab
+                label={positionsStore.selectedPosition?.name}
+                value={TabsCandsEnum.PositionCands}
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                }}
+              />
+            )}
+            {foldersStore.selectedFolder?.id && (
+              <Tab
+                label={foldersStore.selectedFolder?.name}
+                value={TabsCandsEnum.FolderCands}
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                }}
+              />
+            )}
+          </Tabs>
+        )}
       </Box>
-      <CacheProvider value={cacheRtl}>
-        <ThemeProvider theme={themeRtl}>
-          <div
-            hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}
-          >
-            <Box mt={1} ml={1}>
-              <SearchControl onSearch={handleAllCandsSearch} />
-            </Box>
-            <CandsList candsListData={candsStore.candsAllList} />
-          </div>
-          <div
-            hidden={
-              candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands
-            }
-          >
-            <Box mt={1} ml={1}>
-              <Stack direction="row" gap={1}>
-                <IconButton
-                  title="Edit position"
-                  size="medium"
-                  onClick={async () => {
-                    await positionsStore.getPosition(
-                      positionsStore.selectedPosition?.id || 0
-                    );
-                    generalStore.showPositionFormDialog = true;
-                  }}
-                >
-                  <MdOutlineEdit />
-                </IconButton>
-                <SearchControl onSearch={handlePositionCandsSearch} />
-              </Stack>
-            </Box>
-            <CandsList candsListData={candsStore.posCandsList} />
-          </div>
-          <div
-            hidden={
-              candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands
-            }
-          >
-            <Box mt={1} ml={1}>
-              <SearchControl onSearch={handleFolderCandsSearch} />
-            </Box>
-            <CandsList
-              candsListData={
-                foldersStore.selectedFolder?.id === folderId
-                  ? candsStore.folderCandsList
-                  : []
-              }
-            />
-          </div>
-        </ThemeProvider>
-      </CacheProvider>
+      {/* <CacheProvider value={cacheRtl}>
+        <ThemeProvider theme={themeRtl}> */}
+      <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}>
+        <Box mt={1} ml={1}>
+          <SearchControl onSearch={handleAllCandsSearch} />
+        </Box>
+        <CandsList candsListData={candsStore.candsAllList} />
+      </div>
+      <div
+        hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
+      >
+        <Box mt={1} ml={1}>
+          <Stack direction="row" gap={1}>
+            <IconButton
+              title="Edit position"
+              size="medium"
+              onClick={async () => {
+                await positionsStore.getPosition(
+                  positionsStore.selectedPosition?.id || 0
+                );
+                generalStore.showPositionFormDialog = true;
+              }}
+            >
+              <MdOutlineEdit />
+            </IconButton>
+            <SearchControl onSearch={handlePositionCandsSearch} />
+          </Stack>
+        </Box>
+        <CandsList candsListData={candsStore.posCandsList} />
+      </div>
+      <div
+        hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
+      >
+        <Box mt={1} ml={1}>
+          <SearchControl onSearch={handleFolderCandsSearch} />
+        </Box>
+        <CandsList
+          candsListData={candsStore.folderCandsList}
+          // candsListData={
+          //   foldersStore.selectedFolder?.id === folderId
+          //     ? candsStore.folderCandsList
+          //     : []
+          // }
+        />
+      </div>
+      {/* </ThemeProvider>
+      </CacheProvider> */}
     </Box>
   );
 });

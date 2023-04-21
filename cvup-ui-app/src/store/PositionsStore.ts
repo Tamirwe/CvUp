@@ -1,5 +1,4 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { PositionStatusEnum } from "../models/GeneralEnums";
 import { IAppSettings, IPosition } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
@@ -116,5 +115,9 @@ export class PositionsStore {
     const response = await this.positionApi.dactivatePosition(position);
     this.rootStore.generalStore.backdrop = false;
     return response;
+  }
+
+  findPosName(posId: number) {
+    return this.positionsList.find((x) => x.id === posId)?.name;
   }
 }

@@ -19,7 +19,7 @@ namespace CandsPositionsLibrary
         Task<int> UpdatePosition(PositionModel data, int companyId, int userId);
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
-        Task<List<CandModel>> GetPosCandsList(int companyId, int positionId);
+        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
         Task DeletePosition(int companyId, int id);
         Task<PositionModel> GetPosition(int companyId, int positionId);
         Task<List<ParserRulesModel>> GetParsersRules(int companyId);
@@ -33,9 +33,10 @@ namespace CandsPositionsLibrary
         Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
         Task<List<company_cvs_email>> GetCompaniesEmails();
         Task<List<int>> SearchCands(int companyId, string searchKeyWords);
-        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
         Task ActivatePosition( int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);
         Task UpdateCvsAsciiSum(int companyId);
+        Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
     }
 }

@@ -88,9 +88,14 @@ export const FoldersList = observer(() => {
         <div
           className={styles.folderLine}
           onClick={() => {
-            foldersStore.selectedFolder = node.folder;
-            candsStore.getFolderCandsList(node.folder.id);
-            candsStore.currentTabCandsLists = TabsCandsEnum.FolderCands;
+              if (
+                candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands ||
+                foldersStore.selectedFolder?.id !== node.folder.id
+              ) {
+                foldersStore.selectedFolder = node.folder;
+                candsStore.getFolderCandsList();
+                candsStore.currentTabCandsLists = TabsCandsEnum.FolderCands;
+              }
           }}
         >
           <div>{node.folder.name}</div>

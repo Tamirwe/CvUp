@@ -8,7 +8,6 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
-  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
@@ -16,15 +15,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdRemove } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { TabsCandsEnum } from "../../models/GeneralEnums";
+import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 
 interface IProps {
   candsListData: ICand[];
+  candsSource: CandsSourceEnum;
 }
 
-export const CandsList = observer(({ candsListData }: IProps) => {
+export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
   const { candsStore, positionsStore } = useStore();
   const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
@@ -36,6 +36,7 @@ export const CandsList = observer(({ candsListData }: IProps) => {
   useEffect(() => {
     if (candsListData) {
       setCandsList(candsListData?.slice(0, 50));
+      listRef.current.scrollTop = 0;
     }
   }, [candsListData, setCandsList]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -86,8 +87,9 @@ export const CandsList = observer(({ candsListData }: IProps) => {
         backgroundColor: "#fff",
         height: "calc(100vh - 114px)",
         overflowY: "hidden",
+        overflowX: "hidden",
         "&:hover ": {
-          overflow: "overlay",
+          overflowY: "overlay",
         },
       }}
     >
@@ -156,43 +158,81 @@ export const CandsList = observer(({ candsListData }: IProps) => {
                   whiteSpace: "nowrap",
                 }}
               /> */}
-              <ListItemText
-                primary={
-                  <Box
+
+              <Box sx={{ width: "100%" }}>
+                <Stack
+                  direction="row-reverse"
+                  sx={{
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <ListItemText
+                    primary={cand.emailSubject}
                     sx={{
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                       textAlign: "right",
+                      maxWidth: "21rem",
+                      direction: "rtl",
                     }}
-                  >
-                    <Stack
-                      direction="row"
-                      sx={{
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div>{format(new Date(cand.cvSent), "MMM d, yyyy")}</div>
-                      <div>{cand.candidateName}</div>
-                    </Stack>
-                    <div>{cand.emailSubject}</div>
-                    {cand.posStages?.length && (
-                      <table style={{ marginLeft: "auto", width: "100%" }}>
-                        <tbody>
-                          {cand.posStages.map((stage, i) => {
-                            return (
-                              <tr key={i}>
-                                <td>
-                                  {format(new Date(stage.d), "MMM d, yy")}
-                                </td>
-                                <td>{candsStore.findStageName(stage.t)}</td>
-                                <td>{positionsStore.findPosName(stage.id)}</td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    )}
-                  </Box>
-                }
-              />
+                  />
+                  <ListItemText
+                    primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
+                    sx={{ whiteSpace: "nowrap" }}
+                  />
+                </Stack>
+                {cand.posStages?.length && (
+                  <div style={{ fontSize: "0.775rem", paddingRight: "1rem" }}>
+                    {candsStore.sortPosStage(cand.posStages).map((stage, i) => {
+                      return (
+                        <Stack
+                          key={i}
+                          direction="row-reverse"
+                          gap={1}
+                          title={candsStore.findStageName(stage.t)}
+                          color={candsStore.findStageColor(stage.t)}
+                          fontWeight={
+                            candsSource === CandsSourceEnum.Position &&
+                            stage.id === positionsStore.selectedPosition?.id
+                              ? "bold"
+                              : "none"
+                          }
+                        >
+                          {" "}
+                          <div>{format(new Date(stage.d), "dd/MM/yyyy")}</div>
+                          <div>-</div>
+                          <div
+                            style={{
+                              direction: "rtl",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                              paddingLeft: "1rem",
+                              maxWidth: "21rem",
+                              textDecoration:
+                                candsSource === CandsSourceEnum.Position &&
+                                stage.id === positionsStore.selectedPosition?.id
+                                  ? "underline"
+                                  : "none",
+                            }}
+                          >
+                            {positionsStore.findPosName(stage.id)}
+                          </div>
+                        </Stack>
+                        // <tr key={i}>
+                        //   <td>{positionsStore.findPosName(stage.id)}</td>
+                        //   <td>
+                        //     {format(new Date(stage.d), "MMM dd, yyyy")}
+                        //   </td>
+                        // <td>{candsStore.findStageName(stage.t)}</td>
+                        // </tr>
+                      );
+                    })}
+                  </div>
+                )}
+              </Box>
+
               {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands &&
               candsStore.candDisplay?.candidateId === cand.candidateId ? (
                 <ListItemIcon

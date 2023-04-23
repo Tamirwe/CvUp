@@ -93,6 +93,7 @@ namespace DataModelsLibrary.Models
         public int? order { get; set; }
         public string name { get; set; } = "";
         public bool isCustom { get; set; } = false;
+        public string? color { get; set; } = "";
     }
 
     public class stageModel

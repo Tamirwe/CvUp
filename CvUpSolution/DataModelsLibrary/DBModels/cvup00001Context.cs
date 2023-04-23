@@ -149,6 +149,8 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
 
+                entity.Property(e => e.color).HasMaxLength(20);
+
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.stage_Type).HasMaxLength(50);
@@ -574,6 +576,8 @@ namespace Database.models
 
             modelBuilder.Entity<stages_type>(entity =>
             {
+                entity.Property(e => e.color).HasMaxLength(20);
+
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.stage_type).HasMaxLength(50);

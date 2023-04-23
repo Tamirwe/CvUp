@@ -9,5 +9,6 @@ namespace Database.models
         public string stage_type { get; set; } = null!;
         public int order { get; set; }
         public string name { get; set; } = null!;
+        public string? color { get; set; }
     }
 }

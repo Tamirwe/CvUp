@@ -72,3 +72,9 @@ export enum AppModeEnum {
   HRCompany,
   HRDepartment,
 }
+
+export enum CandsSourceEnum {
+  AllCands,
+  Position,
+  Folder,
+}

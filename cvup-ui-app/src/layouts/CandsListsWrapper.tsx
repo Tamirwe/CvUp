@@ -7,7 +7,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
-import { TabsCandsEnum } from "../models/GeneralEnums";
+import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
 import { SearchControl } from "../components/header/SearchControl";
 import { MdOutlineEdit } from "react-icons/md";
 
@@ -120,7 +120,10 @@ export const CandsListsWrapper = observer(() => {
         <Box mt={1} ml={1}>
           <SearchControl onSearch={handleAllCandsSearch} />
         </Box>
-        <CandsList candsListData={candsStore.candsAllList} />
+        <CandsList
+          candsListData={candsStore.candsAllList}
+          candsSource={CandsSourceEnum.AllCands}
+        />
       </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
@@ -142,7 +145,10 @@ export const CandsListsWrapper = observer(() => {
             <SearchControl onSearch={handlePositionCandsSearch} />
           </Stack>
         </Box>
-        <CandsList candsListData={candsStore.posCandsList} />
+        <CandsList
+          candsListData={candsStore.posCandsList}
+          candsSource={CandsSourceEnum.Position}
+        />
       </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
@@ -152,11 +158,7 @@ export const CandsListsWrapper = observer(() => {
         </Box>
         <CandsList
           candsListData={candsStore.folderCandsList}
-          // candsListData={
-          //   foldersStore.selectedFolder?.id === folderId
-          //     ? candsStore.folderCandsList
-          //     : []
-          // }
+          candsSource={CandsSourceEnum.Folder}
         />
       </div>
       {/* </ThemeProvider>

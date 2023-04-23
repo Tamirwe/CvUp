@@ -5,6 +5,7 @@ using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -263,7 +264,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                                 //posStages = cand.pos_stages == null ? new stageModel[] { } : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
                                  candCvs = pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
@@ -296,7 +297,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                                 //posStages = cand.pos_stages == null ? new stageModel[] { } : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
                                  folderCandId = fc.id
                              });
 
@@ -743,6 +744,7 @@ namespace DataModelsLibrary.Queries
                                  stageType = st.stage_Type,
                                  order = st.order,
                                  isCustom = Convert.ToBoolean(st.is_custom),
+                                 color = st.color
                              });
 
                 return await query.ToListAsync();

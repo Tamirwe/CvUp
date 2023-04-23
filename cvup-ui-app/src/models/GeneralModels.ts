@@ -39,7 +39,7 @@ export interface ICand {
   posStages?: IPosStages[];
 }
 
-interface IPosStages {
+export interface IPosStages {
   id: number;
   t: string;
   d: string;
@@ -49,6 +49,7 @@ export interface ICompanyStagesTypes {
   stageType: string;
   order: number;
   name: string;
+  color?: string;
 }
 
 export interface ICandCv {

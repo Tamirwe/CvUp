@@ -118,6 +118,7 @@ export class PositionsStore {
   }
 
   findPosName(posId: number) {
-    return this.positionsList.find((x) => x.id === posId)?.name;
+    const pos = this.positionsList.find((x) => x.id === posId);
+    return `${pos?.customerName} - ${pos?.name}`;
   }
 }

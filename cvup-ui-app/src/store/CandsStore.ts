@@ -6,6 +6,7 @@ import {
   ICandCv,
   ICvReview,
   ICompanyStagesTypes,
+  IPosStages,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -322,5 +323,22 @@ export class CandsStore {
     }
 
     return "";
+  }
+
+  findStageColor(stageType: string) {
+    if (this.stagesTypes) {
+      return (
+        this.stagesTypes.find((x) => x.stageType === stageType)?.color ||
+        "black"
+      );
+    }
+
+    return "";
+  }
+
+  sortPosStage(posStages: IPosStages[]) {
+    return posStages
+      .slice()
+      .sort((a, b) => (a.d < b.d ? 1 : b.d < a.d ? -1 : 0));
   }
 }

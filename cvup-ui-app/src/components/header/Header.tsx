@@ -27,11 +27,12 @@ export const Header = () => {
       >
         <div
           style={{
-            backgroundColor: "#fff",
-            padding: "0 10px",
+            backgroundColor: "#f3f4f5",
+            margin: "5px 10px",
             height: "100%",
             display: "flex",
             alignItems: "center",
+            borderRadius: "25px",
           }}
         >
           <Grid container spacing={0}>

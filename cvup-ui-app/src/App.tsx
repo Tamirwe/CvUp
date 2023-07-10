@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { IAppSettings } from "./models/GeneralModels";
 
 
-// import { ThemeCustomization } from "./themes/ThemeCustomization";
+import { ThemeCustomization } from "./themes/ThemeCustomization";
 
 function App() {
   const [isServersLoaded, setIsServersLoaded] = useState(false);
@@ -38,8 +38,7 @@ function App() {
   };
 
   return (
-    // <ThemeCustomization>
-    <>
+    <ThemeCustomization>
       {isServersLoaded ? (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
           <StoreProvider store={getRootStore()}>
@@ -49,8 +48,7 @@ function App() {
       ) : (
         <div></div>
       )}
-    </>
-    // </ThemeCustomization>
+    </ThemeCustomization>
   );
 }
 

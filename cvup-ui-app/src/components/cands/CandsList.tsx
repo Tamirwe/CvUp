@@ -18,6 +18,9 @@ import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
+import styles from "./CandsList.module.scss";
+import classNames from "classnames";
+import { usePositionClick } from "../../Hooks/usePositionClick";
 
 interface IProps {
   candsListData: ICand[];
@@ -26,6 +29,8 @@ interface IProps {
 
 export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
   const { candsStore, positionsStore } = useStore();
+  const handlePositionClick = usePositionClick();
+
   const [dupCv, setDupCv] = useState(0);
   let location = useLocation();
   const navigate = useNavigate();
@@ -86,11 +91,11 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
       sx={{
         backgroundColor: "#fff",
         height: "calc(100vh - 114px)",
-        overflowY: "hidden",
+        overflowY: "scroll",
         overflowX: "hidden",
-        "&:hover ": {
-          overflowY: "overlay",
-        },
+        // "&:hover ": {
+        //   overflowY: "overlay",
+        // },
       }}
     >
       {candsList.map((cand, i) => {
@@ -186,18 +191,27 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                   <div style={{ fontSize: "0.775rem", paddingRight: "1rem" }}>
                     {candsStore.sortPosStage(cand.posStages).map((stage, i) => {
                       return (
-                        <Stack
+                        <div
                           key={i}
-                          direction="row-reverse"
-                          gap={1}
+                          className={classNames({
+                            [styles.listItem]: true,
+                            [styles.listItemSelected]:
+                              cand.candidateId ===
+                              candsStore.candDisplay?.candidateId,
+                          })}
+                          style={{
+                            color: candsStore.findStageColor(stage.t),
+                          }}
                           title={candsStore.findStageName(stage.t)}
-                          color={candsStore.findStageColor(stage.t)}
-                          fontWeight={
-                            candsSource === CandsSourceEnum.Position &&
-                            stage.id === positionsStore.selectedPosition?.id
-                              ? "bold"
-                              : "none"
-                          }
+                          {...(cand.candidateId ===
+                            candsStore.candDisplay?.candidateId && {
+                            onClick: (event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+
+                              handlePositionClick(stage.id);
+                            },
+                          })}
                         >
                           {" "}
                           <div>{format(new Date(stage.d), "dd/MM/yyyy")}</div>
@@ -219,14 +233,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                           >
                             {positionsStore.findPosName(stage.id)}
                           </div>
-                        </Stack>
-                        // <tr key={i}>
-                        //   <td>{positionsStore.findPosName(stage.id)}</td>
-                        //   <td>
-                        //     {format(new Date(stage.d), "MMM dd, yyyy")}
-                        //   </td>
-                        // <td>{candsStore.findStageName(stage.t)}</td>
-                        // </tr>
+                        </div>
                       );
                     })}
                   </div>

@@ -31,8 +31,8 @@ namespace CvUpAPI.Controllers
 
             string companyFolder = secArr[0];
             string yearFolder = secArr[1].Substring(0, 4);
-            string monthFolder = secArr[1].Substring(4, 2);
-            string fileType = Utils.FileTypeName(secArr[1][secArr[1].Length - 1]);
+            string monthFolder = secArr[1].Substring(4, secArr[1].Length - 5);
+            string fileType = Utils.FileTypeName(secArr[1].Last());
 
 
             string[] pathArr = secArr[0].Split("_");

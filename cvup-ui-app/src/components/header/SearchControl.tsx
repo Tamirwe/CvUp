@@ -97,7 +97,7 @@ export const SearchControl = ({ onSearch }: IProps) => {
   };
 
   return (
-    <Search>
+    <Search sx={{ direction: "rtl" }}>
       <SearchIconWrapper>
         <MdOutlineSearch onClick={search} />
       </SearchIconWrapper>

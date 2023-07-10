@@ -5,7 +5,8 @@
   }
   
   .scrollCv:hover {
-    overflow: overlay !important;
+    /* overflow: overlay !important; */
+    overflow: scroll;
     z-index: 9999;
   }
   

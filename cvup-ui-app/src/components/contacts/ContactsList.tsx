@@ -60,10 +60,10 @@ export const ContactsList = observer(() => {
       sx={{
         backgroundColor: "#fff",
         height: "calc(100vh - 81px)",
-        overflowY: "hidden",
-        "&:hover ": {
-          overflow: "overlay",
-        },
+        overflowY: "scroll",
+        // "&:hover ": {
+        //   overflow: "overlay",
+        // },
       }}
     >
       {contactsList.map((cont, i) => {

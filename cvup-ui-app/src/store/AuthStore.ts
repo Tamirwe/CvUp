@@ -18,6 +18,7 @@ export const REFRESH_TOKEN = "refreshToken";
 export class AuthStore {
   private authApi;
   private userSelected?: IUser;
+  private isUserAppDirRtl = true;
 
   isLoggedIn = false;
   claims: IUserClaims = {};
@@ -44,6 +45,10 @@ export class AuthStore {
     this.isLoggedIn = false;
     this.claims = {};
     this.interviewersList = [];
+  }
+
+  get isRtl() {
+    return this.isUserAppDirRtl;
   }
 
   get selectedUser() {

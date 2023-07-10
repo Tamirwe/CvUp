@@ -1,22 +1,27 @@
 import {
   Checkbox,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { MdPersonAddAlt1 } from "react-icons/md";
+import { MdOutlineEdit, MdPersonAddAlt1, MdRemove } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
 import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IPosition } from "../../models/GeneralModels";
+import { usePositionClick } from "../../Hooks/usePositionClick";
 
 export const PositionsList = observer(() => {
-  const { positionsStore, candsStore } = useStore();
+  const { positionsStore, candsStore, generalStore } = useStore();
+  const handlePositionClick = usePositionClick();
+
   const listRef = useRef<any>(null);
   const [posList, setPosList] = useState<IPosition[]>([]);
 
@@ -24,17 +29,6 @@ export const PositionsList = observer(() => {
     candsStore.attachPosCandCv(posId);
     positionsStore.setPosSelected(posId);
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-  };
-
-  const handlePositionClick = (posId: number) => {
-    if (
-      candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands ||
-      positionsStore.selectedPosition?.id !== posId
-    ) {
-      positionsStore.setPosSelected(posId);
-      candsStore.getPositionCands();
-      candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-    }
   };
 
   useEffect(() => {
@@ -80,16 +74,29 @@ export const PositionsList = observer(() => {
     };
   }, [onScroll]);
 
+  // const handlePositionClick = (posId: number) => {
+  //   if (
+  //     candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands ||
+  //     positionsStore.selectedPosition?.id !== posId
+  //   ) {
+  //     positionsStore.setPosSelected(posId);
+  //     candsStore.getPositionCands();
+  //     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+  //   }
+  // };
+
+  const handleEditPositionClick = () => {};
+
   return (
     <List
       ref={listRef}
       sx={{
         backgroundColor: "#fff",
         height: "calc(100vh - 114px)",
-        overflowY: "hidden",
-        "&:hover ": {
-          overflow: "overlay",
-        },
+        overflowY: "scroll",
+        // "&:hover ": {
+        //   overflow: "overlay",
+        // },
       }}
     >
       {posList.map((pos, i) => {
@@ -116,13 +123,50 @@ export const PositionsList = observer(() => {
                   pos.updated && format(new Date(pos.updated), "MMM d, yyyy")
                 }
                 sx={{
-                  textAlign: "right",
+                  textAlign: "left",
                   alignSelf: "start",
                   color: "#bcc9d5",
                   fontSize: "0.775rem",
                 }}
               />
-              <ListItemText primary={pos.name} secondary={pos.customerName} />
+              <ListItemText
+                primary={pos.name}
+                secondary={pos.customerName}
+                sx={{
+                  textAlign: "right",
+                  paddingRight: 2,
+                }}
+              />
+              {positionsStore.selectedPosition?.id === pos.id && (
+                <ListItemIcon
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleEditPositionClick();
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      right: 0,
+                      marginRight: 1,
+                      color: "#d7d2d2",
+                      "&:hover ": {
+                        color: "#ffab55",
+                      },
+                    }}
+                    color="primary"
+                    aria-label="upload picture"
+                    component="label"
+                    onClick={async () => {
+                      await positionsStore.getPosition(
+                        positionsStore.selectedPosition?.id || 0
+                      );
+                      generalStore.showPositionFormDialog = true;
+                    }}
+                  >
+                    <MdOutlineEdit />
+                  </IconButton>
+                </ListItemIcon>
+              )}
               <Checkbox
                 checked={
                   candsStore.candDisplay && candsStore.candDisplay.candPosIds

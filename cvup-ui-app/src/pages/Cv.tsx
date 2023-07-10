@@ -5,12 +5,16 @@ import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
 
 export const Cv = observer(() => {
-  const { candsStore } = useStore();
+  const { candsStore, authStore } = useStore();
 
   return (
     <div className={styles.scrollCv}>
       <div className="qlCustom">
         <div
+          style={{
+            direction: authStore.isRtl ? "rtl" : "ltr",
+            textAlign: authStore.isRtl ? "right" : "left",
+          }}
           className="ql-editor"
           dangerouslySetInnerHTML={{
             __html: candsStore.candAllSelected?.review || "",

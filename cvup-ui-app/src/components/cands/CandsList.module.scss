@@ -1,0 +1,16 @@
+.listItem{
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 5;
+ 
+}
+
+.listItemSelected{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.listItemSelected:hover{
+  color: rgb(35, 112, 226) !important;
+}
+ 

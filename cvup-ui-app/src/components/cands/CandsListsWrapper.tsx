@@ -1,18 +1,18 @@
 import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useStore } from "../Hooks/useStore";
-import { CandsList } from "../components/cands/CandsList";
+import { useStore } from "../../Hooks/useStore";
+import { CandsList } from "./CandsList";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
-import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
-import { SearchControl } from "../components/header/SearchControl";
+import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import { SearchControl } from "../header/SearchControl";
 import { MdOutlineEdit } from "react-icons/md";
 
 export const CandsListsWrapper = observer(() => {
-  const { candsStore, positionsStore, foldersStore, generalStore } = useStore();
+  const { candsStore, positionsStore, foldersStore } = useStore();
   const [folderId, setFolderId] = useState(0);
 
   useEffect(() => {
@@ -81,43 +81,56 @@ export const CandsListsWrapper = observer(() => {
 
   return (
     <Box sx={{ marginTop: "0" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box>
         {candsStore.currentTabCandsLists !== TabsCandsEnum.None && (
           <Tabs
             value={candsStore.currentTabCandsLists}
+            variant="scrollable"
+            scrollButtons
+            allowScrollButtonsMobile
             onChange={handleTabChange}
-            sx={{ direction: "rtl" }}
           >
-            <Tab label="Candidates" value={TabsCandsEnum.AllCands} />
-            {positionsStore.selectedPosition?.name && (
-              <Tab
-                label={positionsStore.selectedPosition?.name}
-                value={TabsCandsEnum.PositionCands}
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                }}
-              />
-            )}
             {foldersStore.selectedFolder?.id && (
               <Tab
                 label={foldersStore.selectedFolder?.name}
                 value={TabsCandsEnum.FolderCands}
                 sx={{
                   overflow: "hidden",
-                  whiteSpace: "nowrap",
                   textOverflow: "ellipsis",
+                  alignSelf: "flex-start",
                 }}
               />
             )}
+            {positionsStore.selectedPosition?.name && (
+              <Tab
+                label={
+                  <div>
+                    <div>{positionsStore.selectedPosition?.name}</div>
+                    <div>{positionsStore.selectedPosition?.customerName}</div>
+                  </div>
+                }
+                value={TabsCandsEnum.PositionCands}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  alignSelf: "flex-start",
+                }}
+              />
+            )}
+            <Tab
+              label="Candidates"
+              value={TabsCandsEnum.AllCands}
+              sx={{
+                alignSelf: "flex-start",
+              }}
+            />
           </Tabs>
         )}
       </Box>
       {/* <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={themeRtl}> */}
       <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}>
-        <Box mt={1} ml={1}>
+        <Box mt={1} mr={2}>
           <SearchControl onSearch={handleAllCandsSearch} />
         </Box>
         <CandsList
@@ -128,20 +141,8 @@ export const CandsListsWrapper = observer(() => {
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
       >
-        <Box mt={1} ml={1}>
+        <Box mt={1} mr={2}>
           <Stack direction="row" gap={1}>
-            <IconButton
-              title="Edit position"
-              size="medium"
-              onClick={async () => {
-                await positionsStore.getPosition(
-                  positionsStore.selectedPosition?.id || 0
-                );
-                generalStore.showPositionFormDialog = true;
-              }}
-            >
-              <MdOutlineEdit />
-            </IconButton>
             <SearchControl onSearch={handlePositionCandsSearch} />
           </Stack>
         </Box>
@@ -153,7 +154,7 @@ export const CandsListsWrapper = observer(() => {
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
       >
-        <Box mt={1} ml={1}>
+        <Box mt={1} mr={2}>
           <SearchControl onSearch={handleFolderCandsSearch} />
         </Box>
         <CandsList

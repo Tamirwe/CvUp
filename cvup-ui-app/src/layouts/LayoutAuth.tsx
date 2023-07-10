@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { LeftListsWrapper } from "./LeftListsWrapper";
 import { observer } from "mobx-react";
-import { CandsListsWrapper } from "./CandsListsWrapper";
+import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
 import { CrudTypesEnum, EmailTypeEnum } from "../models/GeneralEnums";

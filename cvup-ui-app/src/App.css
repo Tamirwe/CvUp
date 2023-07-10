@@ -8,11 +8,11 @@ body {
   border: 0 !important;
 }
 .rpv-core__inner-pages.rpv-core__inner-pages--vertical{
-  overflow: hidden  !important;
+  /* overflow: hidden  !important; */
 }
 
 .rpv-core__inner-pages.rpv-core__inner-pages--vertical:hover{
-  overflow: overlay  !important;
+  /* overflow: overlay  !important; */
   z-index: 1;
 }
 

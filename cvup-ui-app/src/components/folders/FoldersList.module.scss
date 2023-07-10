@@ -5,11 +5,11 @@
   padding-inline-start: 10px;
   margin-top: 5px;
   height: calc(100vh - 107px);
-  overflow-y: hidden,
+  overflow-y: scroll,
 }
-.ulRoot:hover{
-  overflow: overlay;
-}
+// .ulRoot:hover{
+//   overflow: overlay;
+// }
 
 .iconsDiv{
  display: flex;

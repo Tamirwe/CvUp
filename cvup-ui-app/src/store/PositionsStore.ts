@@ -9,6 +9,7 @@ export class PositionsStore {
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
   private searchPhrase: string = "";
+  private positionCandIdSelected?: number;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -46,6 +47,10 @@ export class PositionsStore {
     return this.positionEdit;
   }
 
+  get selectedPositionCandId() {
+    return this.positionCandIdSelected;
+  }
+
   set editPosition(val: IPosition | undefined) {
     this.positionEdit = val;
   }
@@ -58,8 +63,9 @@ export class PositionsStore {
     return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
   };
 
-  setPosSelected(posId: number) {
+  setPosSelected(posId: number, candId?: number) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+    this.positionCandIdSelected = candId;
   }
 
   async addPosition(position: IPosition) {

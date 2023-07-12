@@ -10,6 +10,7 @@ import {
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
+import { format } from "date-fns";
 
 export class CandsStore {
   private cvsApi;
@@ -189,13 +190,31 @@ export class CandsStore {
   }
 
   async getPositionCands() {
+    this.posCandsList = [];
+
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.GetPosCandsList(
       this.rootStore.positionsStore.selectedPosition?.id!
     );
-    runInAction(() => {
-      this.posCandsList = res.data;
-    });
+
+    const candsList = [...res.data];
+
+    if (this.rootStore.positionsStore.selectedPositionCandId) {
+      const objIndex = candsList.findIndex(
+        (x) =>
+          x.candidateId === this.rootStore.positionsStore.selectedPositionCandId
+      );
+
+      if (objIndex > -1) {
+        const candSelected = candsList.splice(objIndex, 1);
+        candsList.splice(0, 0, candSelected[0]);
+      }
+    }
+
+    // runInAction(() => {
+    this.posCandsList = [...candsList];
+    // });
+
     this.rootStore.generalStore.backdrop = false;
   }
 
@@ -221,36 +240,41 @@ export class CandsStore {
       );
     }
 
-    runInAction(() => {
-      if (this.candDisplay) {
-        this.candDisplay.candPosIds.push(positionId);
-        this.candDisplay.cvPosIds.push(positionId);
+    // runInAction(() => {
+    if (this.candDisplay) {
+      this.candDisplay.candPosIds.push(positionId);
+      this.candDisplay.cvPosIds.push(positionId);
+      this.candDisplay.posStages?.push({
+        d: format(new Date(), "yyyy-MM-dd"),
+        id: positionId,
+        t: "attached_to_position",
+      });
 
-        let cand = this.candsAllList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
+      let cand = this.candsAllList.find(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
 
-        if (cand) {
-          this.updateCandPosArrays(cand, this.candDisplay);
-        }
-
-        cand = this.folderCandsList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          this.updateCandPosArrays(cand, this.candDisplay);
-        }
-
-        if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
-          this.getPositionCands();
-        }
+      if (cand) {
+        this.updateCandPosArrays(cand, this.candDisplay);
       }
-    });
+
+      cand = this.folderCandsList.find(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
+
+      if (cand) {
+        this.updateCandPosArrays(cand, this.candDisplay);
+      }
+
+      if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
+        this.getPositionCands();
+      }
+    }
+    // });
   }
 
-  async detachPosCand(detachCand: ICand, index: number) {
-    const positionId = this.rootStore.positionsStore.selectedPosition?.id;
+  async detachPosCand(detachCand: ICand, positionId: number, index: number) {
+    // const positionId = this.rootStore.positionsStore.selectedPosition?.id;
 
     if (positionId) {
       await this.cvsApi.detachPosCand(
@@ -259,8 +283,9 @@ export class CandsStore {
         positionId
       );
 
-      this.unPushNumArr(positionId, detachCand.candPosIds);
-      this.unPushNumArr(positionId, detachCand.cvPosIds);
+      this.numArrRemoveItem(positionId, detachCand.candPosIds);
+      this.numArrRemoveItem(positionId, detachCand.cvPosIds);
+      this.objArrRemoveItem(positionId, detachCand.posStages, "id");
 
       if (this.candDisplay?.candidateId === detachCand.candidateId) {
         this.updateCandPosArrays(this.candDisplay, detachCand);
@@ -300,13 +325,21 @@ export class CandsStore {
     }
   }
 
-  unPushNumArr(id: number, numArr?: number[]) {
+  numArrRemoveItem(id: number, numArr?: number[]) {
     if (numArr) {
       let index = numArr.indexOf(id);
 
       if (index > -1) {
         numArr.splice(index, 1);
       }
+    }
+  }
+
+  objArrRemoveItem(id: number, objArr: any, col: string) {
+    let index = objArr.findIndex((x: any) => x[col] === id);
+
+    if (index > -1) {
+      objArr.splice(index, 1);
     }
   }
 

@@ -10,10 +10,14 @@ import { observer } from "mobx-react";
 import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { SearchControl } from "../header/SearchControl";
 import { MdOutlineEdit } from "react-icons/md";
+import { ICand } from "../../models/GeneralModels";
 
 export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
   const [folderId, setFolderId] = useState(0);
+  const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
+  const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
+  const [candsAllList, setCandsAllList] = useState<ICand[]>([]);
 
   useEffect(() => {
     if (foldersStore.selectedFolder?.id) {
@@ -32,15 +36,27 @@ export const CandsListsWrapper = observer(() => {
     // }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const themeRtl = createTheme({
-    direction: "rtl", // Both here and <body dir="rtl">
-  });
+  useEffect(() => {
+    setCandsAllList(candsStore.candsAllList);
+  }, [candsStore.candsAllList]);
 
-  // Create rtl cache
-  const cacheRtl = createCache({
-    key: "muirtl",
-    stylisPlugins: [rtlPlugin],
-  });
+  useEffect(() => {
+    setCandsPosList(candsStore.posCandsList);
+  }, [candsStore.posCandsList]);
+
+  useEffect(() => {
+    setCandsFolderList(candsStore.folderCandsList);
+  }, [candsStore.folderCandsList]);
+
+  // const themeRtl = createTheme({
+  //   direction: "rtl", // Both here and <body dir="rtl">
+  // });
+
+  // // Create rtl cache
+  // const cacheRtl = createCache({
+  //   key: "muirtl",
+  //   stylisPlugins: [rtlPlugin],
+  // });
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -134,7 +150,7 @@ export const CandsListsWrapper = observer(() => {
           <SearchControl onSearch={handleAllCandsSearch} />
         </Box>
         <CandsList
-          candsListData={candsStore.candsAllList}
+          candsListData={candsAllList}
           candsSource={CandsSourceEnum.AllCands}
         />
       </div>
@@ -147,7 +163,7 @@ export const CandsListsWrapper = observer(() => {
           </Stack>
         </Box>
         <CandsList
-          candsListData={candsStore.posCandsList}
+          candsListData={candsPosList}
           candsSource={CandsSourceEnum.Position}
         />
       </div>
@@ -158,7 +174,7 @@ export const CandsListsWrapper = observer(() => {
           <SearchControl onSearch={handleFolderCandsSearch} />
         </Box>
         <CandsList
-          candsListData={candsStore.folderCandsList}
+          candsListData={candsFolderList}
           candsSource={CandsSourceEnum.Folder}
         />
       </div>

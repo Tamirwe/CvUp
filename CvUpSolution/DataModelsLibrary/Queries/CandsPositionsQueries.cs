@@ -41,7 +41,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = Convert.ToDateTime(cand.last_cv_sent),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
                              }).Take(300);
 
                 var result = await query.ToListAsync();
@@ -72,7 +72,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
                                  stageId = pcv.stage_id,
                                  dateAttached = pcv.date_created,
                                  candCvs = pcv.cand_cvs == null ? new List<PosCandCvsModel> { } : JsonConvert.DeserializeObject<List<PosCandCvsModel>>(pcv.cand_cvs),
@@ -105,7 +105,7 @@ namespace DataModelsLibrary.Queries
                                  cvSent = cvs.date_created,
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
-                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<stageModel[]>(cand.pos_stages),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
                                  folderCandId = fc.id
                              });
 
@@ -651,7 +651,9 @@ namespace DataModelsLibrary.Queries
                     candidate_id = posCandCv.candidateId,
                     cv_id = posCandCv.cvId,
                     stage_id = 1,
-                    cand_cvs = posCvsStr
+                    cand_cvs = posCvsStr,
+                    stage_date = DateTime.Now,
+                    stage_type = "attached_to_position"
                 };
 
                 dbContext.position_candidates.Add(newPosCv);
@@ -687,12 +689,14 @@ namespace DataModelsLibrary.Queries
                 List<position_candidate>? candPosList = await dbContext.position_candidates.Where(x => x.company_id == companyId
                    && x.candidate_id == candidateId).ToListAsync();
 
+                List<CandPosStageModel> candPosStages = new List<CandPosStageModel>();
                 List<int> candPos = new List<int>();
                 List<int> cvPos = new List<int>();
 
                 foreach (var pcv in candPosList)
                 {
                     candPos.Add(pcv.position_id);
+                    candPosStages.Add(new CandPosStageModel { d = pcv.stage_date?.ToString("yyyy-MM-dd"), t = pcv.stage_type, id = pcv.position_id });
 
                     if (pcv.cv_id == cvId)
                     {
@@ -700,11 +704,14 @@ namespace DataModelsLibrary.Queries
                     }
                 }
 
+                var candPosStagesJson = JsonConvert.SerializeObject(candPosStages);
+
                 candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
 
                 if (cand != null)
                 {
                     cand.pos_ids = $"[{string.Join(",", candPos)}]";
+                    cand.pos_stages = candPosStagesJson;
                     var result = dbContext.candidates.Update(cand);
                 }
 

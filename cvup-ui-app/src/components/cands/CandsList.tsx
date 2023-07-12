@@ -36,14 +36,14 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
   const navigate = useNavigate();
 
   const listRef = useRef<any>(null);
-  const [candsList, setCandsList] = useState<ICand[]>([]);
+  const [listCands, setListCands] = useState<ICand[]>([]);
 
   useEffect(() => {
     if (candsListData) {
-      setCandsList(candsListData?.slice(0, 50));
+      setListCands([...candsListData?.slice(0, 50)]);
       listRef.current.scrollTop = 0;
     }
-  }, [candsListData, setCandsList]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
@@ -52,19 +52,19 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
       instance.scrollHeight - instance.clientHeight <
       instance.scrollTop + 150
     ) {
-      if (candsList) {
-        const numRecords = candsList.length;
+      if (listCands) {
+        const numRecords = listCands.length;
 
-        const newPosList = candsList.concat(
+        const newPosList = listCands.concat(
           candsListData?.slice(numRecords, numRecords + 50)
         );
 
-        setCandsList(newPosList);
+        setListCands(newPosList);
       }
 
       console.log(instance.scrollTop);
     }
-  }, [candsList, setCandsList]);
+  }, [listCands, setListCands]);
 
   useEffect(() => {
     const instance = listRef.current;
@@ -76,9 +76,9 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
     };
   }, [onScroll]);
 
-  const handleDetachCand = (cand: ICand, index: number) => {
+  const handleDetachCand = (cand: ICand, positionId: number, index: number) => {
     if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands) {
-      candsStore.detachPosCand(cand, index);
+      candsStore.detachPosCand(cand, positionId, index);
     } else {
       candsStore.detachFolderCand(cand, index);
     }
@@ -98,7 +98,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
         // },
       }}
     >
-      {candsList.map((cand, i) => {
+      {listCands.map((cand, i) => {
         return (
           <ListItem
             key={cand.candidateId}
@@ -183,7 +183,11 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                     }}
                   />
                   <ListItemText
-                    primary={format(new Date(cand.cvSent), "MMM d, yyyy")}
+                    primary={
+                      candsSource === CandsSourceEnum.Position
+                        ? format(new Date(cand.dateAttached), "MMM d, yyyy")
+                        : format(new Date(cand.cvSent), "MMM d, yyyy")
+                    }
                     sx={{ whiteSpace: "nowrap" }}
                   />
                 </Stack>
@@ -193,45 +197,66 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                       return (
                         <div
                           key={i}
-                          className={classNames({
-                            [styles.listItem]: true,
-                            [styles.listItemSelected]:
-                              cand.candidateId ===
-                              candsStore.candDisplay?.candidateId,
-                          })}
                           style={{
-                            color: candsStore.findStageColor(stage.t),
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            alignItems: "center",
                           }}
-                          title={candsStore.findStageName(stage.t)}
-                          {...(cand.candidateId ===
-                            candsStore.candDisplay?.candidateId && {
-                            onClick: (event) => {
-                              event.stopPropagation();
-                              event.preventDefault();
-
-                              handlePositionClick(stage.id);
-                            },
-                          })}
                         >
-                          {" "}
-                          <div>{format(new Date(stage.d), "dd/MM/yyyy")}</div>
-                          <div>-</div>
+                          {cand.candidateId ===
+                            candsStore.candDisplay?.candidateId && (
+                            <IconButton
+                              size="small"
+                              sx={{ ml: 1 }}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                candsStore.detachPosCand(cand, stage.id, i);
+                              }}
+                            >
+                              <MdRemove />
+                            </IconButton>
+                          )}{" "}
                           <div
+                            className={classNames({
+                              [styles.listItem]: true,
+                              [styles.listItemSelected]:
+                                cand.candidateId ===
+                                candsStore.candDisplay?.candidateId,
+                            })}
                             style={{
-                              direction: "rtl",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              textOverflow: "ellipsis",
-                              paddingLeft: "1rem",
-                              maxWidth: "21rem",
-                              textDecoration:
-                                candsSource === CandsSourceEnum.Position &&
-                                stage.id === positionsStore.selectedPosition?.id
-                                  ? "underline"
-                                  : "none",
+                              color: candsStore.findStageColor(stage.t),
                             }}
+                            title={candsStore.findStageName(stage.t)}
+                            {...(cand.candidateId ===
+                              candsStore.candDisplay?.candidateId && {
+                              onClick: (event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                handlePositionClick(stage.id, cand.candidateId);
+                              },
+                            })}
                           >
-                            {positionsStore.findPosName(stage.id)}
+                            <div>{format(new Date(stage.d), "dd/MM/yyyy")}</div>
+                            <div>-</div>
+                            <div
+                              style={{
+                                direction: "rtl",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                paddingLeft: "1rem",
+                                maxWidth: "21rem",
+                                textDecoration:
+                                  candsSource === CandsSourceEnum.Position &&
+                                  stage.id ===
+                                    positionsStore.selectedPosition?.id
+                                    ? "underline"
+                                    : "none",
+                              }}
+                            >
+                              {positionsStore.findPosName(stage.id)}
+                            </div>
                           </div>
                         </div>
                       );
@@ -240,7 +265,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 )}
               </Box>
 
-              {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands &&
+              {/* {candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands &&
               candsStore.candDisplay?.candidateId === cand.candidateId ? (
                 <ListItemIcon
                   onClick={(event) => {
@@ -266,7 +291,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 </ListItemIcon>
               ) : (
                 <div>&nbsp;&nbsp;</div>
-              )}
+              )} */}
             </ListItemButton>
             <Collapse in={cand.cvId === dupCv} timeout="auto" unmountOnExit>
               <CandDupCvsList />

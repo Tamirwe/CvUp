@@ -80,7 +80,7 @@ namespace DataModelsLibrary.Models
         public DateTime cvSent { get; set; }
         public int[]? candPosIds { get; set; } 
         public int[]? cvPosIds { get; set; }
-        public stageModel[]? posStages { get; set; }
+        public CandPosStageModel[]? posStages { get; set; }
         public int? stageId { get; set; }
         public DateTime dateAttached { get; set; }
         public List<PosCandCvsModel>? candCvs { get; set; }
@@ -96,7 +96,7 @@ namespace DataModelsLibrary.Models
         public string? color { get; set; } = "";
     }
 
-    public class stageModel
+    public class CandPosStageModel
     {
         public int id { get; set; } 
         public string? t { get; set; } = "";

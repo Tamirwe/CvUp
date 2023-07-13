@@ -62,7 +62,7 @@ namespace LuceneLibrary
 
                 if (mIndexSearcher != null)
                 {
-                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 500).ScoreDocs);
+                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 5000).ScoreDocs);
 
                     for (int i = 0; i < hitIdxs.Length; i++)
                     {

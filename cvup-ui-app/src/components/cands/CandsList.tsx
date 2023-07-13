@@ -116,7 +116,10 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
               selected={
                 cand.candidateId === candsStore.candDisplay?.candidateId
               }
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }

@@ -58,6 +58,7 @@ namespace DataModelsLibrary.Queries
                              join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
                              where pcv.company_id == companyId
                                     && pcv.position_id == positionId
+                             orderby pcv.date_created descending
                              select new CandModel
                              {
                                  cvId = cvs.id,

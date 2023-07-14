@@ -90,7 +90,7 @@ export class CandsStore {
   }
 
   async getPdf(keyId: string) {
-    this.pdfUrl = `${this.appSettings.appServerUrl}DD?id=${keyId}`;
+    this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
   }
 
   async saveCvReview(reviewText: any, reviewHtml: any) {

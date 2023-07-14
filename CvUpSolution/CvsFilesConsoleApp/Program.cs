@@ -18,5 +18,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
+
 var cvsFilesServise = host.Services.GetRequiredService<ICvsFilesService>();
-cvsFilesServise.RemoveUnRelatedCvsFiles();
+await cvsFilesServise.ImportNewCvsExternalDisk(154,@"E:\\CvsFolders");
+//cvsFilesServise.RemoveUnRelatedCvsFiles();

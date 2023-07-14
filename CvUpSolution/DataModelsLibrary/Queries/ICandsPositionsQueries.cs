@@ -38,5 +38,6 @@ namespace DataModelsLibrary.Queries
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
         Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
+         Task<List<cv>> GetCompanyCvs(int companyId);
     }
 }

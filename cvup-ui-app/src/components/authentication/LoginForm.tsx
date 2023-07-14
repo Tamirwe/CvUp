@@ -7,6 +7,8 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -20,6 +22,11 @@ import { useStore } from "../../Hooks/useStore";
 import { IUserLogin } from "../../models/AuthModels";
 import { TextValidateTypeEnum } from "../../models/GeneralEnums";
 import { passwordValidate, validteEmail } from "../../utils/Validation";
+import {
+  IApiUrl,
+  IAppSettings,
+  IAppSettingsFile,
+} from "../../models/GeneralModels";
 
 interface IProps {
   loginType: string;
@@ -32,6 +39,9 @@ export const LoginForm = ({ loginType }: IProps) => {
   const [isDirty, setIsDirty] = useState(true);
   const [submitError, setSubmitError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [serversApi, setServersApi] = useState<IApiUrl[]>();
+  const [apiUrl, setApiUrl] = useState("");
+  const [apiUrlsSelectBoxShow, setApiUrlsSelectBoxShow] = useState(false);
 
   const [formModel, setFormModel] = useState<IUserLogin>({
     email: "",
@@ -50,6 +60,22 @@ export const LoginForm = ({ loginType }: IProps) => {
     candsStore.reset();
     generalStore.reset();
     positionsStore.reset();
+
+    const apiUrlFlag = localStorage.getItem("apiUrlOn");
+
+    if (apiUrlFlag === "on") {
+      setApiUrlsSelectBoxShow(apiUrlFlag === "on");
+      const storedSettings = localStorage.getItem("settings");
+      const settingsObj: IAppSettings = JSON.parse(storedSettings || "");
+      setApiUrl(settingsObj.apiUrl);
+
+      fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
+        .then((res) => res.json())
+        .then((data: IAppSettingsFile) => {
+          setServersApi(data.servers);
+          Object.freeze(serversApi);
+        });
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
@@ -88,6 +114,35 @@ export const LoginForm = ({ loginType }: IProps) => {
   return (
     <form noValidate spellCheck="false" autoComplete="off">
       <Grid container>
+        {apiUrlsSelectBoxShow && (
+          <Grid item xs={12}>
+            <Select
+              labelId="companylabel"
+              id="companySelect"
+              label="Company"
+              sx={{ width: "100%" }}
+              onChange={(e) => {
+                setApiUrl(e.target.value);
+
+                const settingsObj: IAppSettings = JSON.parse(
+                  localStorage.getItem("settings") || ""
+                );
+                settingsObj.apiUrl = e.target.value;
+                localStorage.setItem("settings", JSON.stringify(settingsObj));
+                window.location.reload();
+              }}
+              value={apiUrl}
+            >
+              {serversApi?.map((server, i) => {
+                return (
+                  <MenuItem key={i} value={server.apiUrl}>
+                    {server.apiUrl}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <TextField
             fullWidth

@@ -551,6 +551,23 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<cv>> GetCompanyCvs(int companyId)
+        {
+            try
+            {
+                using (var dbContext = new cvup00001Context())
+                {
+                    List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId ).ToListAsync();
+                    return cvs;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<List<string?>> GetCompanyCvsIds(int companyId)
         {
             using (var dbContext = new cvup00001Context())

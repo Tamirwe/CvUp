@@ -33,10 +33,10 @@ namespace CvUpAPI.Controllers
             string yearFolder = secArr[1].Substring(0, 4);
             string monthFolder = secArr[1].Substring(4, secArr[1].Length - 5);
             string fileType = Utils.FileTypeName(secArr[1].Last());
-
+            string fileName = $"{companyFolder}-{yearFolder}{monthFolder}-{secArr[2]}{fileType}";
 
             string[] pathArr = secArr[0].Split("_");
-            string path = $"{_configuration["GlobalSettings:CvsFilesRootFolder"]}\\{companyFolder}\\{yearFolder}\\{monthFolder}\\{id}{fileType}";
+            string path = $"{_configuration["GlobalSettings:CvsFilesRootFolder"]}\\{companyFolder}_\\{yearFolder}\\{monthFolder}\\{fileName}";
 
             if (fileType == ".pdf")
             {

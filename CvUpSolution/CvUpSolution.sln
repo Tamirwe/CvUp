@@ -25,13 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandsPositionsLibrary", "Ca
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoldersLibrary", "FoldersLibrary\FoldersLibrary.csproj", "{8A26D461-29BD-4AC6-AF08-791F9ED9C147}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{97AFB2EE-87B4-44EE-81C2-08600E8F427C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomersContactsLibrary", "CustomersContactsLibrary\CustomersContactsLibrary.csproj", "{97884993-9776-4214-AD90-11058C58D457}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsS3Library", "..\AwsS3Library\AwsS3Library.csproj", "{2D24AB04-8B53-4D92-B079-84C04C5BE820}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,10 +79,6 @@ Global
 		{8A26D461-29BD-4AC6-AF08-791F9ED9C147}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A26D461-29BD-4AC6-AF08-791F9ED9C147}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A26D461-29BD-4AC6-AF08-791F9ED9C147}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{97AFB2EE-87B4-44EE-81C2-08600E8F427C}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{97884993-9776-4214-AD90-11058C58D457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97884993-9776-4214-AD90-11058C58D457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97884993-9776-4214-AD90-11058C58D457}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,10 +87,6 @@ Global
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D24AB04-8B53-4D92-B079-84C04C5BE820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D24AB04-8B53-4D92-B079-84C04C5BE820}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D24AB04-8B53-4D92-B079-84C04C5BE820}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D24AB04-8B53-4D92-B079-84C04C5BE820}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

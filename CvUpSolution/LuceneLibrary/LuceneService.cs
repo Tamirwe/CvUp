@@ -83,6 +83,10 @@ namespace LuceneLibrary
 
         public async Task BuildCompanyIndex(int companyId, List<CvsToIndexModel> CompanyTextToIndexList)
         {
+            try
+            {
+
+            
             string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
 
             using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
@@ -103,6 +107,13 @@ namespace LuceneLibrary
                         await Task.Run(() => indexWriter.AddDocument(documentToIndex(item)));
                     }
                 }
+            }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ;
             }
         }
 

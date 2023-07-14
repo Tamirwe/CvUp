@@ -18,9 +18,9 @@ function App() {
 
   useEffect(() => {
     const storedSettings = localStorage.getItem("settings");
-    setAppSettings(JSON.parse(storedSettings || ""));
 
     if (storedSettings) {
+      setAppSettings(JSON.parse(storedSettings));
       setIsServersLoaded(true);
     } else {
       try {

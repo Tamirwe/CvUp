@@ -20,45 +20,46 @@ export const CandDupCvsList = observer(() => {
         border: "1px solid #ffdcdc",
         maxHeight: "300px",
         overflowY: "hidden",
+        fontSize: "0.75rem",
         "&:hover ": {
           overflow: "overlay",
         },
       }}
     >
-      {candsStore.candDupCvsList.map((dupCv, i) => {
-        return (
-          <ListItemButton
-            key={`${dupCv.cvId}dup`}
-            sx={{ fontSize: "0.75rem", pl: 4 }}
-            selected={dupCv.cvId === candsStore.candDisplay?.cvId}
-            onClick={() => {
-              if (location.pathname !== "/cv") {
-                navigate(`/cv`);
-              }
-              candsStore.displayCvDuplicate(
-                dupCv,
-                CvDisplayedListEnum.CandsList
-              );
-            }}
-          >
-            <ListItemText
-              primary={format(new Date(dupCv.cvSent), "MMM d, yyyy")}
-              sx={{
-                textAlign: "right",
-                color: "#bcc9d5",
-                fontSize: "0.775rem",
-                alignSelf: "start",
-                "& span": { fontSize: "0.75rem" },
+      {candsStore.candDupCvsList &&
+        candsStore.candDupCvsList.map((dupCv, i) => {
+          return (
+            <ListItemButton
+              key={`${dupCv.cvId}dup`}
+              sx={{ fontSize: "0.75rem", pl: 4, textAlign: "right" }}
+              selected={dupCv.cvId === candsStore.candDisplay?.cvId}
+              onClick={() => {
+                if (location.pathname !== "/cv") {
+                  navigate(`/cv`);
+                }
+                candsStore.displayCvDuplicate(
+                  dupCv,
+                  CvDisplayedListEnum.CandsList
+                );
               }}
-            />
-            <ListItemText
-              sx={{ "& span, p": { fontSize: "0.75rem" } }}
-              primary={dupCv.emailSubject}
-              // secondary={dupCv.emailSubject}
-            />
-          </ListItemButton>
-        );
-      })}
+            >
+              <ListItemText
+                sx={{
+                  "& span, p": { fontSize: "0.75rem", textAlign: "right" },
+                }}
+                primary={dupCv.emailSubject}
+                // secondary={dupCv.emailSubject}
+              />
+              <ListItemText
+                primary={format(new Date(dupCv.cvSent), "MMM d, yyyy")}
+                sx={{
+                  maxWidth: "5rem",
+                  "& span": { fontSize: "0.75rem" },
+                }}
+              />
+            </ListItemButton>
+          );
+        })}
     </List>
   );
 });

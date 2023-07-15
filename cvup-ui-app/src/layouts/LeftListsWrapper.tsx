@@ -68,7 +68,7 @@ export const LeftListsWrapper = observer(() => {
   };
 
   return (
-    <Box>
+    <Box sx={{ backgroundColor: "white" }}>
       <Box>
         <Stack direction="row" justifyContent="space-between">
           <Tabs value={generalStore.currentTab} onChange={handleTabChange}>
@@ -85,46 +85,29 @@ export const LeftListsWrapper = observer(() => {
           </IconButton>
         </Stack>
       </Box>
-      <Box
-        sx={{
-          height: "83vh",
-          // display: "flex",
-          // flexDirection: "column",
-          // flexWrap: "wrap",
-          // "& > :not(style)": {
-          //   m: 1,
-          // },
-        }}
-      >
-        {/* <CacheProvider value={cacheRtl}>
+
+      {/* <CacheProvider value={cacheRtl}>
           <ThemeProvider theme={themeRtl}> */}
-        <div hidden={generalStore.currentTab !== TabsGeneralEnum.Positions}>
-          <Box>
-            <Box mt={1} ml={1}>
-              <SearchControl onSearch={handlePositionsSearch} />
-            </Box>
-            <PositionsList />;
-          </Box>
-        </div>
-        <div hidden={generalStore.currentTab !== TabsGeneralEnum.Folders}>
-          <Box>
-            <Box mt={1} ml={1}>
-              <SearchControl onSearch={handleFoldersSearch} />
-            </Box>
-            <FoldersList />;
-          </Box>
-        </div>
-        <div hidden={generalStore.currentTab !== TabsGeneralEnum.Contacts}>
-          <Box>
-            <Box mt={1} ml={1}>
-              <SearchControl onSearch={handleContactsSearch} />
-            </Box>
-            <ContactsList />;
-          </Box>
-        </div>
-        {/* </ThemeProvider>
-        </CacheProvider> */}
+      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Positions}>
+        <Box mt={1} ml={1}>
+          <SearchControl onSearch={handlePositionsSearch} />
+        </Box>
+        <PositionsList />;
       </Box>
+      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Folders}>
+        <Box mt={1} ml={1}>
+          <SearchControl onSearch={handleFoldersSearch} />
+        </Box>
+        <FoldersList />;
+      </Box>
+      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Contacts}>
+        <Box mt={1} ml={1}>
+          <SearchControl onSearch={handleContactsSearch} />
+        </Box>
+        <ContactsList />;
+      </Box>
+      {/* </ThemeProvider>
+        </CacheProvider> */}
     </Box>
   );
 });

@@ -3,7 +3,7 @@ import { LoadError, SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 import { toolbarPlugin, ToolbarSlot } from "@react-pdf-viewer/toolbar";
-
+import { isMobile } from "react-device-detect";
 
 // import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
 // import type {
@@ -218,7 +218,8 @@ export const PdfViewer = observer(() => {
       >
         {candsStore.pdfUrl && (
           <Viewer
-            defaultScale={SpecialZoomLevel.PageWidth}
+            // defaultScale={SpecialZoomLevel.PageWidth}
+            defaultScale={isMobile ? 1.0 : SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfUrl}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}

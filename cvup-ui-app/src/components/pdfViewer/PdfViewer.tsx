@@ -96,6 +96,7 @@ export const PdfViewer = observer(() => {
         border: "0",
         display: "flex",
         position: "relative",
+        paddingBottom: "2rem",
         // height: "calc(100vh - 67px)",
         // marginTop: "4rem",
       }}

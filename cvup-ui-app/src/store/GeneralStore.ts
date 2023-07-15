@@ -17,7 +17,7 @@ export class GeneralStore {
   isShowBackdrop: boolean = false;
   private isCvReviewDialogOpen: boolean = false;
   private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
-  currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
+  private currentTabSelectesd: TabsGeneralEnum = TabsGeneralEnum.Positions;
   private FolderFormDialogModeOpen: CrudTypesEnum = CrudTypesEnum.None;
   private isShowContactFormDialog: boolean = false;
   private isShowCustomersListDialog: boolean = false;
@@ -25,6 +25,8 @@ export class GeneralStore {
   private isShowUserListDialog: boolean = false;
   private isAlertConfirmDialogOpen: boolean = false;
   private isPositionFormDialogOpen: boolean = false;
+  private isLeftDrawerOpen: boolean = false;
+  private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
@@ -73,11 +75,27 @@ export class GeneralStore {
     this.isPositionFormDialogOpen = val;
   }
 
-  get currentTab() {
+  get leftDrawerOpen() {
+    return this.isLeftDrawerOpen;
+  }
+
+  set leftDrawerOpen(val) {
+    this.isLeftDrawerOpen = val;
+  }
+
+  get rightDrawerOpen() {
+    return this.isRightDrawerOpen;
+  }
+
+  set rightDrawerOpen(val) {
+    this.isRightDrawerOpen = val;
+  }
+
+  get currentLeftDrawerTab() {
     return this.currentTabSelectesd;
   }
 
-  set currentTab(val) {
+  set currentLeftDrawerTab(val) {
     this.currentTabSelectesd = val;
   }
 

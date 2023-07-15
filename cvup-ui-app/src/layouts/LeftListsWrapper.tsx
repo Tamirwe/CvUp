@@ -32,11 +32,11 @@ export const LeftListsWrapper = observer(() => {
     event: React.SyntheticEvent,
     newValue: TabsGeneralEnum
   ) => {
-    generalStore.currentTab = newValue;
+    generalStore.currentLeftDrawerTab = newValue;
   };
 
   const handleAddClick = () => {
-    switch (generalStore.currentTab) {
+    switch (generalStore.currentLeftDrawerTab) {
       case TabsGeneralEnum.Positions:
         positionsStore.editPosition = undefined;
         generalStore.showPositionFormDialog = true;
@@ -71,7 +71,10 @@ export const LeftListsWrapper = observer(() => {
     <Box sx={{ backgroundColor: "white" }}>
       <Box>
         <Stack direction="row" justifyContent="space-between">
-          <Tabs value={generalStore.currentTab} onChange={handleTabChange}>
+          <Tabs
+            value={generalStore.currentLeftDrawerTab}
+            onChange={handleTabChange}
+          >
             <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />
@@ -88,19 +91,25 @@ export const LeftListsWrapper = observer(() => {
 
       {/* <CacheProvider value={cacheRtl}>
           <ThemeProvider theme={themeRtl}> */}
-      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Positions}>
+      <Box
+        hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Positions}
+      >
         <Box mt={1} ml={1}>
           <SearchControl onSearch={handlePositionsSearch} />
         </Box>
         <PositionsList />;
       </Box>
-      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Folders}>
+      <Box
+        hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Folders}
+      >
         <Box mt={1} ml={1}>
           <SearchControl onSearch={handleFoldersSearch} />
         </Box>
         <FoldersList />;
       </Box>
-      <Box hidden={generalStore.currentTab !== TabsGeneralEnum.Contacts}>
+      <Box
+        hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Contacts}
+      >
         <Box mt={1} ml={1}>
           <SearchControl onSearch={handleContactsSearch} />
         </Box>

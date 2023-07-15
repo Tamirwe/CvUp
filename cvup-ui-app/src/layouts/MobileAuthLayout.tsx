@@ -5,35 +5,19 @@ import { LeftListsWrapper } from "./LeftListsWrapper";
 import { observer } from "mobx-react";
 import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
 import { useState } from "react";
+import { useStore } from "../Hooks/useStore";
 
 type Anchor = "left" | "right";
 
 export const MobileAuthLayout = observer(() => {
-  const [drawerState, setDrawerState] = useState({
-    left: false,
-    right: true,
-  });
-
-  const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-
-      setDrawerState({ ...drawerState, [anchor]: open });
-    };
+  const { generalStore } = useStore();
 
   return (
     <>
       <Drawer
-        open={drawerState["left"]}
+        open={generalStore.leftDrawerOpen}
         anchor="left"
-        onClose={toggleDrawer("left", false)}
+        onClose={() => (generalStore.leftDrawerOpen = false)}
         sx={{
           zIndex: 9999,
           backgroundColor: "white",
@@ -50,9 +34,9 @@ export const MobileAuthLayout = observer(() => {
       <Header />
       <Outlet />
       <Drawer
-        open={drawerState["right"]}
+        open={generalStore.rightDrawerOpen}
         anchor="right"
-        onClose={toggleDrawer("right", false)}
+        onClose={() => (generalStore.rightDrawerOpen = false)}
         sx={{
           zIndex: 9999,
           height: "100vh",

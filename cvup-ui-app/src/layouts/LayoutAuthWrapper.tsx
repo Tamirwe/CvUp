@@ -17,8 +17,11 @@ import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
 import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
+import { BrowserView, MobileView } from "react-device-detect";
+import { BrowserAuthLayout } from "./BrowserAuthLayout";
+import { MobileAuthLayout } from "./MobileAuthLayout";
 
-export const LayoutAuth = observer(() => {
+export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -78,53 +81,12 @@ export const LayoutAuth = observer(() => {
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}
-      <Grid container spacing={0} columns={18}>
-        <Grid item xs={5}>
-          <Drawer
-            open={true}
-            variant="persistent"
-            anchor="left"
-            sx={{
-              [`& .MuiDrawer-paper`]: {
-                display: "contents",
-              },
-            }}
-          >
-            <LeftListsWrapper />
-          </Drawer>
-        </Grid>
-        <Grid
-          item
-          xs={8}
-          columns={12}
-          sx={{ backgroundColor: "#fff", paddingLeft: "10px" }}
-        >
-          <Header />
-          <Grid
-            container
-            spacing={0}
-            sx={{ marginTop: "58px", borderRadius: "6px" }}
-          >
-            <Grid item xs={12}>
-              <Outlet />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={5}>
-          <Drawer
-            open={true}
-            variant="persistent"
-            anchor="right"
-            sx={{
-              [`& .MuiDrawer-paper`]: {
-                display: "contents",
-              },
-            }}
-          >
-            <CandsListsWrapper />
-          </Drawer>
-        </Grid>
-      </Grid>
+      <BrowserView>
+        <BrowserAuthLayout />
+      </BrowserView>
+      <MobileView>
+        <MobileAuthLayout />
+      </MobileView>
     </Box>
   );
 });

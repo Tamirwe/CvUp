@@ -1,29 +1,24 @@
-import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
+import { Box, Stack, Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { CandsList } from "./CandsList";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import rtlPlugin from "stylis-plugin-rtl";
 import { observer } from "mobx-react";
 import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { SearchControl } from "../header/SearchControl";
-import { MdOutlineEdit } from "react-icons/md";
 import { ICand } from "../../models/GeneralModels";
 
 export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
-  const [folderId, setFolderId] = useState(0);
+  // const [folderId, setFolderId] = useState(0);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
   const [candsAllList, setCandsAllList] = useState<ICand[]>([]);
 
-  useEffect(() => {
-    if (foldersStore.selectedFolder?.id) {
-      setFolderId(foldersStore.selectedFolder.id);
-    }
-  }, [foldersStore.selectedFolder?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   if (foldersStore.selectedFolder?.id) {
+  //     setFolderId(foldersStore.selectedFolder.id);
+  //   }
+  // }, [foldersStore.selectedFolder?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
@@ -96,7 +91,7 @@ export const CandsListsWrapper = observer(() => {
   };
 
   return (
-    <Box sx={{ marginTop: "0" }}>
+    <Box sx={{ marginTop: "0", backgroundColor: "white" }}>
       <Box>
         {candsStore.currentTabCandsLists !== TabsCandsEnum.None && (
           <Tabs
@@ -143,8 +138,7 @@ export const CandsListsWrapper = observer(() => {
           </Tabs>
         )}
       </Box>
-      {/* <CacheProvider value={cacheRtl}>
-        <ThemeProvider theme={themeRtl}> */}
+
       <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}>
         <Box mt={1} mr={2}>
           <SearchControl onSearch={handleAllCandsSearch} />
@@ -178,8 +172,6 @@ export const CandsListsWrapper = observer(() => {
           candsSource={CandsSourceEnum.Folder}
         />
       </div>
-      {/* </ThemeProvider>
-      </CacheProvider> */}
     </Box>
   );
 });

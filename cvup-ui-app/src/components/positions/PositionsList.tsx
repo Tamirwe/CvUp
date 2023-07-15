@@ -48,20 +48,20 @@ export const PositionsList = observer(() => {
   const onScroll = useCallback(() => {
     const instance = listRef.current;
 
-    if (
-      instance.scrollHeight - instance.clientHeight <
-      instance.scrollTop + 150
-    ) {
-      if (posList) {
-        const numRecords = posList.length;
-        const newPosList = posList.concat(
-          positionsStore.positionsSorted?.slice(numRecords, numRecords + 50)
-        );
-        setPosList(newPosList);
-      }
+    // if (
+    //   instance.scrollHeight - instance.clientHeight <
+    //   instance.scrollTop + 150
+    // ) {
+    //   if (posList) {
+    //     const numRecords = posList.length;
+    //     const newPosList = posList.concat(
+    //       positionsStore.positionsSorted?.slice(numRecords, numRecords + 50)
+    //     );
+    //     setPosList(newPosList);
+    //   }
 
-      console.log(instance.scrollTop);
-    }
+    //   console.log(instance.scrollTop);
+    // }
   }, [posList]);
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export const PositionsList = observer(() => {
       ref={listRef}
       sx={{
         backgroundColor: "#fff",
-        height: "calc(100vh - 114px)",
+        height: "calc(100vh - 96px)",
         overflowY: "scroll",
         // "&:hover ": {
         //   overflow: "overlay",

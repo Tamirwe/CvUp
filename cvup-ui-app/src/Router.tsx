@@ -2,7 +2,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
 // import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
-import { LayoutAuth } from "./layouts/LayoutAuth";
+import { LayoutAuthWrapper } from "./layouts/LayoutAuthWrapper";
 import { LayoutNotAuth } from "./layouts/LayoutNotAuth";
 import { Login } from "./pages/authentication/Login";
 import { Register } from "./pages/authentication/Register";
@@ -25,7 +25,7 @@ const Router = () => {
   return (
     <Routes>
       <Route element={<AuthRoutes />}>
-        <Route element={<LayoutAuth />}>
+        <Route element={<LayoutAuthWrapper />}>
           <Route path="/" element={<Cv />} />
           <Route path="/cv" element={<Cv />} />
           <Route path="/position/:pid" element={<Position />} />

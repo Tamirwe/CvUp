@@ -36,7 +36,7 @@ export const BrowserAuthLayout = observer(() => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={5} sx={{ direction: "rtl" }}>
           <Drawer
             open={true}
             variant="persistent"

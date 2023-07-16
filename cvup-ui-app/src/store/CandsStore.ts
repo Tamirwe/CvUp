@@ -14,6 +14,7 @@ import { format } from "date-fns";
 
 export class CandsStore {
   private cvsApi;
+  private cvIdDuplicatesList: number = 0;
   candsAllList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
@@ -24,12 +25,20 @@ export class CandsStore {
   candPosSelected?: ICand;
   candFolderSelected?: ICand;
   candDisplay?: ICand;
-  private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.None;
+  private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
   stagesTypes?: ICompanyStagesTypes[];
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.cvsApi = new CandsApi(appSettings);
+  }
+
+  get duplicateCvId() {
+    return this.cvIdDuplicatesList;
+  }
+
+  set duplicateCvId(val) {
+    this.cvIdDuplicatesList = val;
   }
 
   reset() {

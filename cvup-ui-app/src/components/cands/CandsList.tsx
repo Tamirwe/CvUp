@@ -19,6 +19,9 @@ import { CandsSourceEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import { CandDupCvsList } from "./CandDupCvsList";
 import { CandsPosStagesList } from "./CandsPosStagesList";
+import { isMobile } from "react-device-detect";
+import styles from "./CandsList.module.scss";
+import classNames from "classnames";
 
 interface IProps {
   candsListData: ICand[];
@@ -26,8 +29,7 @@ interface IProps {
 }
 
 export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
-  const { candsStore, positionsStore } = useStore();
-  const [dupCv, setDupCv] = useState(0);
+  const { candsStore, generalStore } = useStore();
   let location = useLocation();
   const navigate = useNavigate();
 
@@ -76,12 +78,10 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
     <List
       ref={listRef}
       dense={true}
-      sx={{
-        backgroundColor: "#fff",
-        height: "calc(100vh - 96px)",
-        overflowY: "scroll",
-        overflowX: "hidden",
-      }}
+      className={classNames({
+        [styles.candList]: true,
+        [styles.isMobile]: isMobile,
+      })}
     >
       {listCands.map((cand, i) => {
         return (
@@ -93,18 +93,22 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
             sx={{
               flexDirection: "column",
               alignItems: "normal",
-              pl: "10px",
+              direction: "rtl",
+              // pl: "10px",
             }}
           >
             <ListItemButton
-              sx={{ pr: "4px", pl: "4px" }}
               selected={
                 cand.candidateId === candsStore.candDisplay?.candidateId
               }
               onClick={(event) => {
                 event.stopPropagation();
                 event.preventDefault();
-                setDupCv(0);
+                candsStore.duplicateCvId = 0;
+
+                if (isMobile) {
+                  generalStore.rightDrawerOpen = false;
+                }
 
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
@@ -112,74 +116,88 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 candsStore.displayCvMain(cand);
               }}
             >
-              <ListItemIcon
-                itemID="dupListIcon"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  event.preventDefault();
-
-                  if (location.pathname !== "/cv") {
-                    navigate(`/cv`);
-                  }
-                  candsStore.displayCvMain(cand);
-
-                  if (!dupCv || dupCv !== cand.cvId) {
-                    setDupCv(cand.cvId);
-                    candsStore.getDuplicatesCvsList(cand);
-                  } else {
-                    setDupCv(0);
-                  }
-                }}
+              <Box
                 sx={{
-                  visibility: !cand.hasDuplicates ? "hidden" : "visible",
-                  minWidth: "45px",
+                  width: "100%",
                 }}
               >
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="label"
-                >
-                  {dupCv && dupCv === cand.cvId ? (
-                    <MdExpandLess />
-                  ) : (
-                    <MdExpandMore />
-                  )}
-                </IconButton>
-              </ListItemIcon>
-              <Box sx={{ width: "100%" }}>
-                <Stack
-                  direction="row-reverse"
-                  sx={{
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <ListItemText
-                    primary={cand.emailSubject}
-                    sx={{
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
-                      textOverflow: "ellipsis",
-                      textAlign: "right",
-                      maxWidth: "21rem",
-                      direction: "rtl",
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "92%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
-                  />
-                  <ListItemText
-                    primary={
-                      candsSource === CandsSourceEnum.Position
+                  >
+                    <div
+                      className={classNames({
+                        [styles.listItemText]: true,
+                        [styles.isMobile]: isMobile,
+                      })}
+                    >
+                      {cand.emailSubject}
+                    </div>
+                    <div
+                      className={classNames({
+                        [styles.listItemDate]: true,
+                        [styles.isMobile]: isMobile,
+                      })}
+                    >
+                      {candsSource === CandsSourceEnum.Position
                         ? format(new Date(cand.dateAttached), "MMM d, yyyy")
-                        : format(new Date(cand.cvSent), "MMM d, yyyy")
-                    }
-                    sx={{ whiteSpace: "nowrap" }}
-                  />
-                </Stack>
+                        : format(new Date(cand.cvSent), "MMM d, yyyy")}
+                    </div>
+                  </div>
+
+                  <ListItemIcon
+                    sx={{
+                      visibility: !cand.hasDuplicates ? "hidden" : "visible",
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+
+                      if (location.pathname !== "/cv") {
+                        navigate(`/cv`);
+                      }
+                      candsStore.displayCvMain(cand);
+
+                      if (
+                        !candsStore.duplicateCvId ||
+                        candsStore.duplicateCvId !== cand.cvId
+                      ) {
+                        candsStore.duplicateCvId = cand.cvId;
+                        candsStore.getDuplicatesCvsList(cand);
+                      } else {
+                        candsStore.duplicateCvId = 0;
+                      }
+                    }}
+                  >
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                    >
+                      {candsStore.duplicateCvId &&
+                      candsStore.duplicateCvId === cand.cvId ? (
+                        <MdExpandLess />
+                      ) : (
+                        <MdExpandMore />
+                      )}
+                    </IconButton>
+                  </ListItemIcon>
+                </div>
                 {cand.posStages?.length && (
                   <CandsPosStagesList cand={cand} candsSource={candsSource} />
                 )}
               </Box>
             </ListItemButton>
-            <Collapse in={cand.cvId === dupCv} timeout="auto" unmountOnExit>
+            <Collapse
+              in={cand.cvId === candsStore.duplicateCvId}
+              timeout="auto"
+              unmountOnExit
+            >
               <CandDupCvsList />
             </Collapse>
           </ListItem>

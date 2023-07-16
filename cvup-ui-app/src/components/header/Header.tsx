@@ -6,12 +6,16 @@ import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
 
 export const Header = () => {
-  const { candsStore, generalStore } = useStore();
+  const { candsStore, generalStore, positionsStore } = useStore();
   // const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      await candsStore.getCompanyStagesTypes();
+      await Promise.all([
+        candsStore.getCompanyStagesTypes(),
+        positionsStore.getPositionsList(),
+        candsStore.getCandsList(),
+      ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

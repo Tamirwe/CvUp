@@ -46,7 +46,14 @@ export const MobileAuthLayout = observer(() => {
           },
         }}
       >
-        <div style={{ width: "90%", position: "fixed", right: 0 }}>
+        <div
+          style={{
+            width: "90%",
+            position: "fixed",
+            right: 0,
+            direction: "rtl",
+          }}
+        >
           <CandsListsWrapper />
         </div>
       </Drawer>

@@ -7,6 +7,7 @@ import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 
 export const FoldersList = observer(() => {
   const { foldersStore, candsStore, generalStore } = useStore();
@@ -88,14 +89,19 @@ export const FoldersList = observer(() => {
         <div
           className={styles.folderLine}
           onClick={() => {
-              if (
-                candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands ||
-                foldersStore.selectedFolder?.id !== node.folder.id
-              ) {
-                foldersStore.selectedFolder = node.folder;
-                candsStore.getFolderCandsList();
-                candsStore.currentTabCandsLists = TabsCandsEnum.FolderCands;
+            if (
+              candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands ||
+              foldersStore.selectedFolder?.id !== node.folder.id
+            ) {
+              if (isMobile) {
+                generalStore.leftDrawerOpen = false;
+                generalStore.rightDrawerOpen = true;
               }
+
+              foldersStore.selectedFolder = node.folder;
+              candsStore.getFolderCandsList();
+              candsStore.currentTabCandsLists = TabsCandsEnum.FolderCands;
+            }
           }}
         >
           <div>{node.folder.name}</div>

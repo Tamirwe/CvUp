@@ -1,5 +1,6 @@
 import { useStore } from "./useStore";
 import { TabsCandsEnum } from "../models/GeneralEnums";
+import { isMobile } from "react-device-detect";
 
 export const usePositionClick = () => {
   const { positionsStore, candsStore, generalStore } = useStore();
@@ -11,6 +12,12 @@ export const usePositionClick = () => {
     ) {
       positionsStore.setPosSelected(posId, candId);
       candsStore.getPositionCands();
+
+      if (isMobile) {
+        generalStore.leftDrawerOpen = false;
+        generalStore.rightDrawerOpen = true;
+      }
+
       candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
     }
   };

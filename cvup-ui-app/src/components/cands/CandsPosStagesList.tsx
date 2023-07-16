@@ -8,6 +8,7 @@ import { ICand } from "../../models/GeneralModels";
 import styles from "./CandsList.module.scss";
 import classNames from "classnames";
 import { usePositionClick } from "../../Hooks/usePositionClick";
+import { isMobile } from "react-device-detect";
 
 interface IProps {
   candsSource: CandsSourceEnum;
@@ -19,7 +20,9 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
   const handlePositionClick = usePositionClick();
 
   return (
-    <div style={{ fontSize: "0.775rem", paddingRight: "1rem" }}>
+    <div
+      style={{ direction: "ltr", fontSize: "0.775rem", paddingRight: "1rem" }}
+    >
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
           return (
@@ -28,6 +31,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
               style={{
                 display: "flex",
                 flexDirection: "row-reverse",
+                // paddingRight: "2.5rem",
                 alignItems: "center",
               }}
             >
@@ -63,8 +67,15 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                   },
                 })}
               >
-                <div>{format(new Date(stage.d), "dd/MM/yyyy")}</div>
-                <div>-</div>
+                <div
+                  className={classNames({
+                    [styles.listItemDate]: true,
+                    [styles.isMobile]: isMobile,
+                  })}
+                >
+                  {format(new Date(stage.d), "dd/MM/yyyy")}
+                </div>
+                <div>&nbsp;-&nbsp;</div>
                 <div
                   style={{
                     direction: "rtl",
@@ -72,7 +83,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                     paddingLeft: "1rem",
-                    maxWidth: "21rem",
+
                     textDecoration:
                       candsSource === CandsSourceEnum.Position &&
                       stage.id === positionsStore.selectedPosition?.id

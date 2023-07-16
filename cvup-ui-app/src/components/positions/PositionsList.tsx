@@ -32,14 +32,6 @@ export const PositionsList = observer(() => {
   };
 
   useEffect(() => {
-    (async () => {
-      if (positionsStore.positionsSorted.length === 0) {
-        await positionsStore.getPositionsList();
-      }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     if (positionsStore.positionsSorted) {
       setPosList(positionsStore.positionsSorted?.slice(0, 50));
     }

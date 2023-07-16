@@ -14,23 +14,6 @@ export const CandsListsWrapper = observer(() => {
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
   const [candsAllList, setCandsAllList] = useState<ICand[]>([]);
 
-  // useEffect(() => {
-  //   if (foldersStore.selectedFolder?.id) {
-  //     setFolderId(foldersStore.selectedFolder.id);
-  //   }
-  // }, [foldersStore.selectedFolder?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
-    candsStore.getCandsList();
-    // if (
-    //   candsStore.currentTabCandsLists === TabsCandsEnum.AllCands &&
-    //   candsStore.candsAllList.length === 0
-    // ) {
-    //   candsStore.getCandsList();
-    // }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     setCandsAllList(candsStore.candsAllList);
   }, [candsStore.candsAllList]);

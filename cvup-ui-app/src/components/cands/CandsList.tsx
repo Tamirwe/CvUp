@@ -158,11 +158,13 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                       event.stopPropagation();
                       event.preventDefault();
 
-                      if (location.pathname !== "/cv") {
-                        navigate(`/cv`);
+                      if (!isMobile) {
+                        if (location.pathname !== "/cv") {
+                          navigate(`/cv`);
+                        }
+                        candsStore.displayCvMain(cand);
                       }
-                      candsStore.displayCvMain(cand);
-
+                    
                       if (
                         !candsStore.duplicateCvId ||
                         candsStore.duplicateCvId !== cand.cvId

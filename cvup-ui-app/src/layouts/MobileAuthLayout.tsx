@@ -15,32 +15,14 @@ export const MobileAuthLayout = observer(() => {
   return (
     <>
       <Drawer
-        open={generalStore.leftDrawerOpen}
+        variant="persistent"
+        open={true}
         anchor="left"
         onClose={() => (generalStore.leftDrawerOpen = false)}
         sx={{
           zIndex: 9999,
           backgroundColor: "white",
-          height: "100vh",
-          [`& .MuiDrawer-paper`]: {
-            display: "contents",
-          },
-        }}
-      >
-        <div style={{ width: "90%" }}>
-          <LeftListsWrapper />
-        </div>
-      </Drawer>
-      <Header />
-      <Outlet />
-      <Drawer
-        open={generalStore.rightDrawerOpen}
-        anchor="right"
-        onClose={() => (generalStore.rightDrawerOpen = false)}
-        sx={{
-          zIndex: 9999,
-          height: "100vh",
-          backgroundColor: "white",
+          // height: "100vh",
           [`& .MuiDrawer-paper`]: {
             display: "contents",
           },
@@ -48,13 +30,79 @@ export const MobileAuthLayout = observer(() => {
       >
         <div
           style={{
-            width: "90%",
+            width: "100%",
             position: "fixed",
-            right: 0,
+            left: generalStore.leftDrawerOpen ? 0 : "-500px",
+            height: "100vh",
+            top: 0,
             direction: "rtl",
+            zIndex: "9999",
+            backgroundColor: "#0000002e",
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            generalStore.leftDrawerOpen = false;
           }}
         >
-          <CandsListsWrapper />
+          <div
+            onClick={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
+            style={{
+              position: "fixed",
+              left: generalStore.leftDrawerOpen ? 0 : "-500px",
+              zIndex: "99999",
+              width: "90%",
+            }}
+          >
+            <LeftListsWrapper />
+          </div>
+        </div>
+      </Drawer>
+      <Header />
+      <Outlet />
+      <Drawer
+        variant="persistent"
+        open={true}
+        anchor="right"
+        onClose={() => (generalStore.rightDrawerOpen = false)}
+        sx={{
+          // height: "100vh",
+          [`& .MuiDrawer-paper`]: {
+            display: "contents",
+          },
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            position: "fixed",
+            right: generalStore.rightDrawerOpen ? 0 : "-500px",
+            top: 0,
+            direction: "rtl",
+            zIndex: "9999",
+            backgroundColor: "#0000002e",
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            generalStore.rightDrawerOpen = false;
+          }}
+        >
+          <div
+            onClick={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
+            style={{
+              zIndex: "99999",
+              width: "90%",
+            }}
+          >
+            <CandsListsWrapper />
+          </div>
         </div>
       </Drawer>
     </>

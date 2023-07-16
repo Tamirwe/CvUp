@@ -220,7 +220,7 @@ export const PdfViewer = observer(() => {
         {candsStore.pdfUrl && (
           <Viewer
             // defaultScale={SpecialZoomLevel.PageWidth}
-            defaultScale={isMobile ? 1.0 : SpecialZoomLevel.PageWidth}
+            defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfUrl}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}

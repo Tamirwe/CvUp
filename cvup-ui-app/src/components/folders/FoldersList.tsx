@@ -22,7 +22,10 @@ export const FoldersList = observer(() => {
 
   useEffect(() => {
     if (foldersStore.foldersListSorted.length > 0) {
-      setRootFoldersList(foldersStore.foldersListSorted?.slice(0, 50));
+      const numRecords = rootFoldersList.length;
+      setRootFoldersList(
+        foldersStore.foldersListSorted?.slice(0, numRecords + 50)
+      );
     }
   }, [foldersStore.foldersListSorted]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -60,7 +63,15 @@ export const FoldersList = observer(() => {
       <div className={styles.iconsDiv}>
         <IconButton
           size="small"
-          onClick={async () => {
+          sx={{ color: "#dfdfdf" }}
+          onClick={async (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            if (isMobile) {
+              generalStore.leftDrawerOpen = false;
+            }
+
             foldersStore.editFolderSelected = folder;
             generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
           }}
@@ -69,7 +80,15 @@ export const FoldersList = observer(() => {
         </IconButton>
         <IconButton
           size="small"
-          onClick={async () => {
+          sx={{ color: "#dfdfdf" }}
+          onClick={async (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            if (isMobile) {
+              generalStore.leftDrawerOpen = false;
+            }
+
             await foldersStore.attachCandidate(folder.id);
           }}
         >
@@ -84,7 +103,14 @@ export const FoldersList = observer(() => {
       <li
         key={node.folder.id}
         role="treeitem"
-        style={{ cursor: "pointer", lineHeight: 1 }}
+        style={{
+          cursor: "pointer",
+          lineHeight: 1,
+          backgroundColor:
+            node.folder.id === foldersStore.selectedFolder?.id
+              ? "ButtonFace"
+              : "unset",
+        }}
       >
         <div
           className={styles.folderLine}

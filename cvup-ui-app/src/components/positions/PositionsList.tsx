@@ -17,6 +17,8 @@ import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IPosition } from "../../models/GeneralModels";
 import { usePositionClick } from "../../Hooks/usePositionClick";
+import classNames from "classnames";
+import { isMobile } from "react-device-detect";
 
 export const PositionsList = observer(() => {
   const { positionsStore, candsStore, generalStore } = useStore();
@@ -31,6 +33,14 @@ export const PositionsList = observer(() => {
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
 
+  // useEffect(() => {
+  //   (async () => {
+  //     if (positionsStore.positionsSorted.length === 0) {
+  //       await positionsStore.getPositionsList();
+  //     }
+  //   })();
+  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (positionsStore.positionsSorted) {
       setPosList(positionsStore.positionsSorted?.slice(0, 50));
@@ -40,20 +50,20 @@ export const PositionsList = observer(() => {
   const onScroll = useCallback(() => {
     const instance = listRef.current;
 
-    // if (
-    //   instance.scrollHeight - instance.clientHeight <
-    //   instance.scrollTop + 150
-    // ) {
-    //   if (posList) {
-    //     const numRecords = posList.length;
-    //     const newPosList = posList.concat(
-    //       positionsStore.positionsSorted?.slice(numRecords, numRecords + 50)
-    //     );
-    //     setPosList(newPosList);
-    //   }
+    if (
+      instance.scrollHeight - instance.clientHeight <
+      instance.scrollTop + 150
+    ) {
+      if (posList) {
+        const numRecords = posList.length;
+        const newPosList = posList.concat(
+          positionsStore.positionsSorted?.slice(numRecords, numRecords + 50)
+        );
+        setPosList(newPosList);
+      }
 
-    //   console.log(instance.scrollTop);
-    // }
+      console.log(instance.scrollTop);
+    }
   }, [posList]);
 
   useEffect(() => {
@@ -82,14 +92,19 @@ export const PositionsList = observer(() => {
   return (
     <List
       ref={listRef}
-      sx={{
-        backgroundColor: "#fff",
-        height: "calc(100vh - 96px)",
-        overflowY: "scroll",
-        // "&:hover ": {
-        //   overflow: "overlay",
-        // },
-      }}
+      className={classNames({
+        [styles.posList]: true,
+        [styles.isMobile]: isMobile,
+      })}
+
+      // sx={{
+      //   backgroundColor: "#fff",
+      //   height: "calc(100vh - 96px)",
+      //   overflowY: "scroll",
+      //   // "&:hover ": {
+      //   //   overflow: "overlay",
+      //   // },
+      // }}
     >
       {posList.map((pos, i) => {
         return (
@@ -110,17 +125,14 @@ export const PositionsList = observer(() => {
               selected={pos.id === positionsStore.selectedPosition?.id}
               onClick={() => handlePositionClick(pos.id)}
             >
-              <ListItemText
-                primary={
-                  pos.updated && format(new Date(pos.updated), "MMM d, yyyy")
-                }
-                sx={{
-                  textAlign: "left",
-                  alignSelf: "start",
-                  color: "#bcc9d5",
-                  fontSize: "0.775rem",
-                }}
-              />
+              <div
+                className={classNames({
+                  [styles.listItemDate]: true,
+                  [styles.isMobile]: isMobile,
+                })}
+              >
+                {pos.updated && format(new Date(pos.updated), "MMM d, yyyy")}
+              </div>
               <ListItemText
                 primary={pos.name}
                 secondary={pos.customerName}

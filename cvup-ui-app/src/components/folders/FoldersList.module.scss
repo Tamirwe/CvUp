@@ -25,18 +25,18 @@
   justify-content: space-between;
 
   .editFolder {
-    display: none;
-  }
-}
-
-.folderLine:hover {
-  background-color: #f9f9f9;
-
-  .editFolder {
     display: inline;
-    animation: fadeIn linear 0.5s 1 normal forwards !important;
   }
 }
+
+// .folderLine:hover {
+//   background-color: #f9f9f9;
+
+//   .editFolder {
+//     display: inline;
+//     animation: fadeIn linear 0.5s 1 normal forwards !important;
+//   }
+// }
 
 @keyframes fadeIn {
   from {

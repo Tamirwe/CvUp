@@ -35,7 +35,6 @@ export const MobileAuthLayout = observer(() => {
             left: generalStore.leftDrawerOpen ? 0 : "-500px",
             height: "100vh",
             top: 0,
-            direction: "rtl",
             zIndex: "9999",
             backgroundColor: "#0000002e",
           }}

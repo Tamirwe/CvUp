@@ -94,10 +94,11 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
               flexDirection: "column",
               alignItems: "normal",
               direction: "rtl",
-              // pl: "10px",
+              pl: 0,
             }}
           >
             <ListItemButton
+              sx={{ pl: 0 }}
               selected={
                 cand.candidateId === candsStore.candDisplay?.candidateId
               }
@@ -124,7 +125,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 <div style={{ display: "flex" }}>
                   <div
                     style={{
-                      width: "92%",
+                      width: "87%",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
@@ -164,7 +165,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                         }
                         candsStore.displayCvMain(cand);
                       }
-                    
+
                       if (
                         !candsStore.duplicateCvId ||
                         candsStore.duplicateCvId !== cand.cvId

@@ -1,8 +1,22 @@
-// .showAddCv .addCv {
-//   display: none;
-//   position: absolute;
-// }
+.posList {
+    height: calc(100vh - 96px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    direction: ltr;
+  
+    &.isMobile {
+      font-size: 0.7rem;
+    }
+  }
 
-// .showAddCv:hover .addCv {
-//     display: flex;
-//   }
+  .listItemDate {
+    white-space: nowrap;
+    font-size: 0.7rem;
+    align-self: self-start;
+    padding-top: 8px;
+
+
+    &.isMobile {
+      font-size: 0.6rem;
+    }
+  }

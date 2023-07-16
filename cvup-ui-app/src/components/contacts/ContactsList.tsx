@@ -76,7 +76,7 @@ export const ContactsList = observer(() => {
             sx={{
               flexDirection: "column",
               alignItems: "normal",
-              pl: "10px",
+              pr: "10px",
             }}
           >
             <ListItemButton

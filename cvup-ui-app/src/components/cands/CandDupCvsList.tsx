@@ -23,7 +23,6 @@ export const CandDupCvsList = observer(() => {
         border: "1px solid #ffdcdc",
         maxHeight: "300px",
         overflowY: "scroll",
-        fontSize: "0.75rem",
 
         // "&:hover ": {
         //   overflow: "overlay",

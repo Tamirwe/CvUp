@@ -25,7 +25,7 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
       open={open}
       onClose={() => onClose(false)}
       fullWidth
-      maxWidth={"md"}
+      maxWidth={"lg"}
     >
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>

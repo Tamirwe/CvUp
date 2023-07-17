@@ -19,7 +19,7 @@ export const CandDupCvsList = observer(() => {
       disablePadding
       dense={true}
       sx={{
-        backgroundColor: "#fbfbfb",
+        backgroundColor: "#fbfff0",
         border: "1px solid #ffdcdc",
         maxHeight: "300px",
         overflowY: "scroll",

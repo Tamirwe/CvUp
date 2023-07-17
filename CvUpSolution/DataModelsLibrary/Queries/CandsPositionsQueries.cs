@@ -92,6 +92,7 @@ namespace DataModelsLibrary.Queries
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
                              where fc.company_id == companyId
                                     && fc.folder_id == folderId
+                             orderby cand.last_cv_sent descending
                              select new CandModel
                              {
                                  cvId = cvs.id,

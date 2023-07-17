@@ -20,11 +20,13 @@ namespace DataModelsLibrary.Models
         public string name { get; set; } = string.Empty;
         public string customerName { get; set; } = string.Empty;
         public string? descr { get; set; } = string.Empty;
-        public PositionStatusEnum status { get; set; } = PositionStatusEnum.Active;
+        public string status { get; set; } = PositionStatusEnum.Active.ToString();
         public DateTime? updated { get; set; }
         public int? customerId { get; set; } = 0;
         public int[] contactsIds { get; set; } = new int[] { };
         public int[] interviewersIds { get; set; } = new int[] { };
+        public string? emailsubjectAddon { get; set; } = string.Empty;
+
     }
 
     //public class PositionClientModel

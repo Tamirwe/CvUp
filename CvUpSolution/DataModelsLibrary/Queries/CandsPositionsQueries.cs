@@ -330,9 +330,10 @@ namespace DataModelsLibrary.Queries
                                 name = p.name,
                                 descr = p.descr ?? "",
                                 customerId = p.customer_id ?? 0,
-                                status = Enum.Parse<PositionStatusEnum>(p.status),
+                                status = p.status,
                                 interviewersIds = inter.ToArray(),
-                                contactsIds = conts.ToArray()
+                                contactsIds = conts.ToArray(),
+                                emailsubjectAddon=p.customer_pos_num
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

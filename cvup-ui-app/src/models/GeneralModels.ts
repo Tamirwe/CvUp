@@ -83,12 +83,14 @@ export interface IPosition {
   id: number;
   name: string;
   descr: string;
+  requirements: string;
   updated: Date;
   status: PositionStatusEnum;
   customerId: number;
   customerName: string;
   interviewersIds: number[];
   contactsIds: number[];
+  emailsubjectAddon: string;
 }
 
 export interface ICvReview {

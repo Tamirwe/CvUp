@@ -26,6 +26,7 @@ import { IPosition } from "../../models/GeneralModels";
 import { validateTxt } from "../../utils/Validation";
 import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
 import { UsersAutoCompleteMulty } from "./UsersAutoCompleteMulty";
+import { format } from "date-fns";
 
 interface IProps {
   onSaved: (id: number) => void;
@@ -44,12 +45,14 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     id: 0,
     name: "",
     descr: "",
+    requirements: "",
     updated: new Date(),
     status: PositionStatusEnum.Active,
     customerId: 0,
     customerName: "",
     interviewersIds: [],
     contactsIds: [],
+    emailsubjectAddon: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
@@ -167,45 +170,12 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       {formModel && (
         <form noValidate spellCheck="false">
           <Grid container>
-            <Grid item xs={12} lg={12}>
+            <Grid item xs={12} lg={12} sx={{ direction: "rtl" }}>
               <Grid container>
-                <Grid item xs={6}>
-                  <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel id="permissionlabel">
-                      Permission Type
-                    </InputLabel>
-                    <Select
-                      disabled={crudType === CrudTypesEnum.Delete}
-                      labelId="permissionlabel"
-                      id="permissionTypeSelect"
-                      label="Permission Type"
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          permissionType: parseInt(e.target.value),
-                        }));
-                        updateFieldError("permissionType", "");
-                      }}
-                      value={formModel.status.toString()}
-                    >
-                      {Object.keys(PositionStatusEnum).map((key, i) => {
-                        return (
-                          <MenuItem key={i} value={key}>
-                            {key.replace("_", " ")}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  {/* <Stack direction="row" justifyContent="space-between"> */}
+                <Grid item xs={12} lg={8}>
                   <TextField
                     sx={{
                       direction: "rtl",
-                      // "& input": {
-                      //   direction: "rtl",
-                      // },
                     }}
                     fullWidth
                     required
@@ -226,56 +196,54 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     helperText={errModel.name}
                     value={formModel.name}
                   />
-                  {/* <Tooltip title="Direction">
-                      <IconButton
-                        sx={{
-                          height: "fit-content",
-                          alignSelf: "center",
-                        }}
-                        size="medium"
-                        onClick={() => setIsRtlDirection(!isRtlDirection)}
-                      >
-                        {isRtlDirection ? (
-                          <MdFormatAlignLeft />
-                        ) : (
-                          <MdFormatAlignRight />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </Stack> */}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} lg={2}>
+                  <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="permissionlabel">status</InputLabel>
+                    <Select
+                      sx={{ direction: "ltr" }}
+                      disabled={crudType === CrudTypesEnum.Delete}
+                      labelId="permissionlabel"
+                      id="permissionTypeSelect"
+                      label="status"
+                      onChange={(e) => {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          status: e.target.value as PositionStatusEnum,
+                        }));
+                      }}
+                      value={formModel.status}
+                    >
+                      {Object.keys(PositionStatusEnum)
+                        .filter((x) => isNaN(Number(x)))
+                        .map((key, i) => {
+                          return (
+                            <MenuItem key={i} value={i}>
+                              {key.replace("_", " ")}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} lg={2}>
                   <TextField
                     sx={{
                       direction: "rtl",
-                      // "& textarea": {
-                      //   direction: isRtlDirection ? "rtl" : "ltr",
-                      // },
                     }}
                     fullWidth
-                    multiline
-                    rows={8}
+                    disabled={true}
                     margin="normal"
                     type="text"
-                    id="description"
-                    label="Description"
+                    id="lastupdate"
+                    label="Last update"
                     variant="outlined"
-                    onChange={(e) => {
-                      setFormModel((currentProps) => ({
-                        ...currentProps,
-                        descr: e.target.value,
-                      }));
-                      setIsDirty(true);
-                    }}
-                    value={formModel.descr}
+                    value={
+                      format(new Date(formModel.updated), "MMM d, yyyy") || ""
+                    }
                   />
                 </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container>
-                {/* {generalStore.appMode === AppModeEnum.HRCompany ? ( */}
-                <Grid item xs={12} mt={2}>
+                <Grid item xs={12} lg={8} mt={2} sx={{ direction: "ltr" }}>
                   <ContactsAutoCompleteMulty
                     options={customersContactsStore.contactsListSorted}
                     valueIds={formModel.contactsIds}
@@ -292,27 +260,100 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     }}
                   />
                 </Grid>
-                {/* ) : ( */}
-                <Grid item xs={12} mt={2}>
-                  <UsersAutoCompleteMulty
-                    options={authStore.usersList}
-                    valueIds={formModel.interviewersIds}
-                    onChange={(value) => {
+
+                <Grid item xs={12} lg={4}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="title"
+                    label="Email Subject add-on"
+                    variant="outlined"
+                    onChange={(e) => {
                       setFormModel((currentProps) => ({
                         ...currentProps,
-                        interviewersIds: value,
+                        emailsubjectAddon: e.target.value,
+                      }));
+                      clearError("firstName");
+                      setIsDirty(true);
+                    }}
+                    value={formModel.emailsubjectAddon || ""}
+                  />
+                </Grid>
+
+                <Grid item xs={12} lg={6}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                      // "& textarea": {
+                      //   direction: isRtlDirection ? "rtl" : "ltr",
+                      // },
+                    }}
+                    fullWidth
+                    multiline
+                    rows={18}
+                    margin="normal"
+                    type="text"
+                    id="description"
+                    label="Description"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        descr: e.target.value,
                       }));
                       setIsDirty(true);
                     }}
+                    value={formModel.descr}
                   />
                 </Grid>
+                <Grid item xs={12} lg={6}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                      // "& textarea": {
+                      //   direction: isRtlDirection ? "rtl" : "ltr",
+                      // },
+                    }}
+                    fullWidth
+                    multiline
+                    rows={18}
+                    margin="normal"
+                    type="text"
+                    id="requirements"
+                    label="Requirements"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        requirements: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.requirements}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container>
+                {/* {generalStore.appMode === AppModeEnum.HRCompany ? ( */}
+
+                {/* ) : ( */}
+
                 {/* )} */}
                 <Grid item xs={12} mt={3}></Grid>
               </Grid>
             </Grid>
             {submitError && (
               <Grid item xs={12}>
-                <FormHelperText error>{submitError}</FormHelperText>
+                <div style={{ direction: "ltr" }}>
+                  <FormHelperText error>{submitError}</FormHelperText>
+                </div>
               </Grid>
             )}
             <Grid item xs={12} mt={4}>
@@ -373,7 +414,19 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
-
+            {/* <Grid item xs={12} lg={10} mt={2}>
+                  <UsersAutoCompleteMulty
+                    options={authStore.usersList}
+                    valueIds={formModel.interviewersIds}
+                    onChange={(value) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        interviewersIds: value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                  />
+                </Grid> */}
             {/* <Grid item xs={12} sx={{ mt: 2 }}>
               <Grid container>
                 <Grid item xs={0} lg={10}></Grid>

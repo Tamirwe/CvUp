@@ -35,6 +35,7 @@ export const ContactsAutoCompleteMulty = (props: IProps) => {
         }`;
       }}
       value={valuesList}
+      sx={{ "& .MuiAutocomplete-inputRoot": { padding: "7px" } }}
       onChange={(event, newValue) => {
         if (event && event.type === "click") {
           const customerId = newValue.length > 0 ? newValue[0].customerId : 0;

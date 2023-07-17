@@ -8,9 +8,11 @@ import {
   MdOutlineAttachEmail,
   MdOutlineContactMail,
   MdOutlineEdit,
+  MdOutlineMarkEmailRead,
+  MdOutlineMarkEmailUnread,
 } from "react-icons/md";
 import { EmailTypeEnum } from "../../models/GeneralEnums";
-import { CiEdit, CiMail, CiPaperplane } from "react-icons/ci";
+import { CiEdit, CiMail } from "react-icons/ci";
 
 export const Header = () => {
   const { candsStore, generalStore, positionsStore } = useStore();
@@ -107,23 +109,23 @@ export const Header = () => {
                 <SettingsMenu />
                 <IconButton
                   title="Email to candidate"
-                  // sx={{ fontSize: "1.55rem" }}
+                  sx={{ fontSize: "1.56rem" }}
                   size="medium"
                   onClick={() =>
                     (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
                   }
                 >
-                  <CiMail />
+                  <MdOutlineMarkEmailRead />
                 </IconButton>
                 <IconButton
                   title="Email to customer"
-                  sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                  sx={{ fontSize: "1.54rem" }}
                   size="small"
                   onClick={() =>
                     (generalStore.showEmailDialog = EmailTypeEnum.Contact)
                   }
                 >
-                  <CiPaperplane />
+                  <MdOutlineMarkEmailUnread />
                 </IconButton>
                 <IconButton
                   title="Review"

@@ -32,6 +32,7 @@ export const UsersAutoCompleteMulty = (props: IProps) => {
       getOptionLabel={(option) => {
         return `${option.firstName} ${option.lastName} ${option.id}`;
       }}
+      sx={{ "& .MuiAutocomplete-inputRoot": { padding: "8px" } }}
       value={valuesList}
       onChange={(event, newValue) => {
         if (event && event.type === "click") {

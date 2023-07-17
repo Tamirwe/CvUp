@@ -329,11 +329,13 @@ namespace DataModelsLibrary.Queries
                                 id = p.id,
                                 name = p.name,
                                 descr = p.descr ?? "",
+                                requirements = p.requirements ?? "",
                                 customerId = p.customer_id ?? 0,
-                                status = p.status,
+                                status = Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
                                 contactsIds = conts.ToArray(),
-                                emailsubjectAddon=p.customer_pos_num
+                                emailsubjectAddon=p.customer_pos_num,
+                                updated=p.date_updated
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -351,6 +353,7 @@ namespace DataModelsLibrary.Queries
                     company_id = companyId,
                     name = data.name,
                     descr = data.descr,
+                    requirements = data.requirements,
                     status = data.status.ToString(),
                     opener_id = userId,
                     updater_id = userId,
@@ -379,6 +382,7 @@ namespace DataModelsLibrary.Queries
 
                 pos.name = data.name;
                 pos.descr = data.descr;
+                pos.requirements = data.requirements;
                 pos.customer_id = data.customerId == 0 ? null : data.customerId;
                 pos.status = data.status.ToString();
                 pos.updater_id = userId;

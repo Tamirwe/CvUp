@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
-        //ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -53,7 +53,7 @@ builder.Services.AddSwaggerGen(option =>
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
-        Scheme = "Bearer"
+        Scheme = "Bearer",
     });
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {

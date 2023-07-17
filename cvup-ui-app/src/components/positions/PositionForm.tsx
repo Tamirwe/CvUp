@@ -1,8 +1,12 @@
 import {
   Button,
+  FormControl,
   FormHelperText,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -165,34 +169,64 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
           <Grid container>
             <Grid item xs={12} lg={12}>
               <Grid container>
-                <Grid item xs={12}>
-                  <Stack direction="row" justifyContent="space-between">
-                    <TextField
-                      sx={{
-                        "& input": {
-                          direction: isRtlDirection ? "rtl" : "ltr",
-                        },
-                      }}
-                      fullWidth
-                      required
-                      margin="normal"
-                      type="text"
-                      id="title"
-                      label="Position title"
-                      variant="outlined"
+                <Grid item xs={6}>
+                  <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="permissionlabel">
+                      Permission Type
+                    </InputLabel>
+                    <Select
+                      disabled={crudType === CrudTypesEnum.Delete}
+                      labelId="permissionlabel"
+                      id="permissionTypeSelect"
+                      label="Permission Type"
                       onChange={(e) => {
                         setFormModel((currentProps) => ({
                           ...currentProps,
-                          name: e.target.value,
+                          permissionType: parseInt(e.target.value),
                         }));
-                        clearError("firstName");
-                        setIsDirty(true);
+                        updateFieldError("permissionType", "");
                       }}
-                      error={errModel.name !== ""}
-                      helperText={errModel.name}
-                      value={formModel.name}
-                    />
-                    <Tooltip title="Direction">
+                      value={formModel.status.toString()}
+                    >
+                      {Object.keys(PositionStatusEnum).map((key, i) => {
+                        return (
+                          <MenuItem key={i} value={key}>
+                            {key.replace("_", " ")}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  {/* <Stack direction="row" justifyContent="space-between"> */}
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                      // "& input": {
+                      //   direction: "rtl",
+                      // },
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="title"
+                    label="Position title"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        name: e.target.value,
+                      }));
+                      clearError("firstName");
+                      setIsDirty(true);
+                    }}
+                    error={errModel.name !== ""}
+                    helperText={errModel.name}
+                    value={formModel.name}
+                  />
+                  {/* <Tooltip title="Direction">
                       <IconButton
                         sx={{
                           height: "fit-content",
@@ -208,14 +242,15 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                         )}
                       </IconButton>
                     </Tooltip>
-                  </Stack>
+                  </Stack> */}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     sx={{
-                      "& textarea": {
-                        direction: isRtlDirection ? "rtl" : "ltr",
-                      },
+                      direction: "rtl",
+                      // "& textarea": {
+                      //   direction: isRtlDirection ? "rtl" : "ltr",
+                      // },
                     }}
                     fullWidth
                     multiline

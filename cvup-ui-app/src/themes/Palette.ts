@@ -32,10 +32,10 @@ export default function themePalette(theme: themeType) {
       dark: theme.colors?.orangeDark,
     },
     warning: {
-      light: theme.colors?.warningLight,
-      200: theme.colors?.warningLight,
-      main: theme.colors?.warningMain,
-      dark: theme.colors?.warningDark,
+      light: theme.colors?.orangeLight,
+      200: theme.colors?.orangeLight,
+      main: theme.colors?.orangeMain,
+      dark: theme.colors?.orangeDark,
     },
     success: {
       light: theme.colors?.successLight,

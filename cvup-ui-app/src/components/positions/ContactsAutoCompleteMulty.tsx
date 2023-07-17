@@ -30,7 +30,9 @@ export const ContactsAutoCompleteMulty = (props: IProps) => {
       id="tags-standard"
       options={optionsList}
       getOptionLabel={(option) => {
-        return `${option.firstName} ${option.lastName} - ${option.customerName}`;
+        return `${option.firstName || ""} ${option.lastName || ""} - ${
+          option.customerName
+        }`;
       }}
       value={valuesList}
       onChange={(event, newValue) => {
@@ -44,6 +46,7 @@ export const ContactsAutoCompleteMulty = (props: IProps) => {
       }}
       renderInput={(params) => (
         <TextField
+          // dir="rtl"
           {...params}
           variant="outlined"
           label="Contact person"

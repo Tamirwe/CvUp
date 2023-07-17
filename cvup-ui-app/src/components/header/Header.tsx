@@ -4,6 +4,13 @@ import { SettingsMenu } from "./SettingsMenu";
 import { useEffect } from "react";
 import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
+import {
+  MdOutlineAttachEmail,
+  MdOutlineContactMail,
+  MdOutlineEdit,
+} from "react-icons/md";
+import { EmailTypeEnum } from "../../models/GeneralEnums";
+import { CiEdit, CiMail, CiPaperplane } from "react-icons/ci";
 
 export const Header = () => {
   const { candsStore, generalStore, positionsStore } = useStore();
@@ -96,8 +103,44 @@ export const Header = () => {
                     <BsList />
                   </IconButton>
                 )}
-                <SettingsMenu />
 
+                <SettingsMenu />
+                <IconButton
+                  title="Email to candidate"
+                  // sx={{ fontSize: "1.55rem" }}
+                  size="medium"
+                  onClick={() =>
+                    (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
+                  }
+                >
+                  <CiMail />
+                </IconButton>
+                <IconButton
+                  title="Email to customer"
+                  sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                  size="small"
+                  onClick={() =>
+                    (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+                  }
+                >
+                  <CiPaperplane />
+                </IconButton>
+                <IconButton
+                  title="Review"
+                  sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                  size="small"
+                  onClick={() => {
+                    if (generalStore.cvReviewDialogOpen) {
+                      localStorage.setItem("rteX", "50");
+                      localStorage.setItem("rteY", "50");
+                    }
+
+                    generalStore.cvReviewDialogOpen =
+                      !generalStore.cvReviewDialogOpen;
+                  }}
+                >
+                  <CiEdit />
+                </IconButton>
                 {/* <SearchCands /> */}
               </Stack>
             </Grid>

@@ -11,6 +11,13 @@ export default function ComponentStyleOverrides(theme: themeType) {
         },
       },
     },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.125rem",
+        },
+      },
+    },
     MuiPaper: {
       defaultProps: {
         elevation: 0,

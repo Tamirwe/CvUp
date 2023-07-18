@@ -113,5 +113,13 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetCompanyStagesTypes(Globals.CompanyId);
         }
 
+        [HttpPost]
+        [Route("SendEmailToCand")]
+        public async Task<bool> SendEmailToCand(EmailToCandModel emailToCand)
+        {
+            emailToCand.companyId = Globals.CompanyId;
+            return await _candPosService.SendEmailToCand(emailToCand);
+        }
+
     }
 }

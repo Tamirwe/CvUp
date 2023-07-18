@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+    <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
   </ItemGroup>
 

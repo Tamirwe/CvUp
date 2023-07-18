@@ -1,7 +1,10 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using EmailsLibrary;
+using EmailsLibrary.Models;
 using LuceneLibrary;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,13 +19,16 @@ namespace CandsPositionsLibrary
         private IConfiguration _configuration;
         private ICandsPositionsQueries _cvsPositionsQueries;
         private ILuceneService _luceneService;
+        private IEmailService _emailService;
+        private IEmailQueries _emailQueries;
 
-        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService)
+        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService, IEmailService emailService, IEmailQueries emailQueries)
         {
             _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneService = luceneService;
-
+            _emailService = emailService;
+            _emailQueries = emailQueries;
         }
         public async Task<int> AddCv(ImportCvModel importCv)
         {
@@ -249,5 +255,20 @@ namespace CandsPositionsLibrary
         {
             return await _cvsPositionsQueries.GetCompanyStagesTypes(companyId);
         }
+
+        public async Task<bool> SendEmailToCand(EmailToCandModel emailToCand)
+        {
+            var email = new EmailModel
+            {
+                To = emailToCand.addresses,
+                Subject = emailToCand.emailSubject,
+                Body = emailToCand.emailBody
+            };
+
+            await _emailService.Send(email);
+
+            return true;
+        }
+
     }
 }

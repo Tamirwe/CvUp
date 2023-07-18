@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
   </ItemGroup>
 

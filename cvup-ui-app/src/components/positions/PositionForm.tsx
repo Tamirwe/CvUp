@@ -211,6 +211,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                           ...currentProps,
                           status: e.target.value as PositionStatusEnum,
                         }));
+                        setIsDirty(true);
                       }}
                       value={formModel.status}
                     >

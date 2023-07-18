@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmailsLibrary.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -133,6 +134,16 @@ namespace DataModelsLibrary.Models
         public int candidateId { get; set; }
         public int cvId { get; set; }
         public string? keyId { get; set; } = "";
+    }
+
+    public class EmailToCandModel
+    {
+        public int companyId { get; set; }
+        public int positionId { get; set; }
+        public int candidateId { get; set; }
+        public List<EmailAddress> addresses { get; set; }= new List<EmailAddress>();
+        public string emailSubject { get; set; } = "";
+        public string emailBody { get; set; } = "";
     }
 
     public class PosCvsModel

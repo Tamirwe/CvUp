@@ -38,5 +38,6 @@ namespace CandsPositionsLibrary
         Task DactivatePosition(int companyId, PositionModel data);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
+        Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
     }
 }

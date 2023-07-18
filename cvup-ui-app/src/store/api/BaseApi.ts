@@ -36,17 +36,17 @@ export default abstract class BaseApi {
       const response = await apiCall();
       // return Promise.resolve({ data, isSuccess: true, error: "" });
       return Promise.resolve({
-        data: response.data as T,
+        data: response ? (response.data as T) : response,
         isSuccess: true,
         errorData: "",
-        status: response.status,
+        status: response ? response.status : "",
       });
     } catch (error: any) {
       return Promise.resolve({
         data: null as any,
         isSuccess: false,
-        errorData: error.response.data,
-        status: error.response.status,
+        errorData: error.response ? error.response.data : error,
+        status: error.response ? error.response.status : "",
       });
     }
   }

@@ -41,8 +41,7 @@ export default class AuthApi extends BaseApi {
 
   async passwordReset(loginInfo: IUserLogin) {
     return await this.apiWrapper2<TokensModel>(async () => {
-      return;
-      await this.http.post("Auth/PasswordReset", loginInfo);
+      return await this.http.post("Auth/PasswordReset", loginInfo);
     });
   }
 

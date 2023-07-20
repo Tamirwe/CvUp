@@ -2,6 +2,7 @@ import {
   ICand,
   ICvReview,
   ICompanyStagesTypes,
+  IEmailTemplate,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -110,6 +111,26 @@ export default class CandsApi extends BaseApi {
   async getCompanyStagesTypes() {
     return await this.apiWrapper2<ICompanyStagesTypes[]>(async () => {
       return await this.http.get("Cand/GetCompanyStagesTypes");
+    });
+  }
+
+  async getEmailTemplates() {
+    return await this.apiWrapper2<IEmailTemplate[]>(async () => {
+      return await this.http.get("Cand/GetEmailTemplates");
+    });
+  }
+
+  async addUpdateEmailTemplate(emailTemplate: IEmailTemplate) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.post(`Cand/AddUpdateEmailTemplate`, {
+        emailTemplate,
+      });
+    });
+  }
+
+  async deleteEmailTemplate(id: number) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.delete(`Cand/DeleteEmailTemplate?id=${id}`);
     });
   }
 }

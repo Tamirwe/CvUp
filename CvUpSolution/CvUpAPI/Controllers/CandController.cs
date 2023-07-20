@@ -136,5 +136,28 @@ namespace CvUpAPI.Controllers
             return await _candPosService.SendEmailToCand(emailToCand);
         }
 
+        [HttpGet]
+        [Route("GetEmailTemplates")]
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates()
+        {
+            return await _candPosService.GetEmailTemplates(Globals.CompanyId);
+        }
+
+        [HttpPost]
+        [Route("AddUpdateEmailTemplate")]
+        public async Task<IActionResult> AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)
+        {
+            emailTemplate.companyId = Globals.CompanyId;
+            await _candPosService.AddUpdateEmailTemplate(emailTemplate);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("DeleteEmailTemplate")]
+        public async Task<IActionResult> DeleteEmailTemplate(int id)
+        {
+            await _candPosService.DeleteEmailTemplate(Globals.CompanyId, id);
+            return Ok();
+        }
     }
 }

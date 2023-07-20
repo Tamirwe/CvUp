@@ -40,5 +40,8 @@ namespace DataModelsLibrary.Queries
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
          Task<List<cv>> GetCompanyCvs(int companyId);
         Task SaveCandReview(CandReviewModel candReview);
+        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
+        Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
+        Task DeleteEmailTemplate(int companyId, int id);
     }
 }

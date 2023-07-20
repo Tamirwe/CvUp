@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -276,5 +277,19 @@ namespace CandsPositionsLibrary
             return true;
         }
 
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
+        {
+            return await _cvsPositionsQueries.GetEmailTemplates(companyId);
+        }
+
+        public async Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)
+        {
+            await _cvsPositionsQueries.AddUpdateEmailTemplate(emailTemplate);
+        }
+
+        public async Task DeleteEmailTemplate(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeleteEmailTemplate(companyId, id);
+        }
     }
 }

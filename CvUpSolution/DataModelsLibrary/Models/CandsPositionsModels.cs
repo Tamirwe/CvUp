@@ -152,6 +152,15 @@ namespace DataModelsLibrary.Models
         public string emailBody { get; set; } = "";
     }
 
+    public class EmailTemplateModel
+    {
+        public int? companyId { get; set; }
+        public int id { get; set; }
+        public string name { get; set; } = "";
+        public string subject { get; set; } = "";
+        public string body { get; set; } = "";
+    }
+
     public class PosCvsModel
     {
         public int cvId { get; set; }

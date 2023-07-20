@@ -110,6 +110,13 @@ export interface IEmailForm {
   review: string;
 }
 
+export interface IEmailTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  body: string;
+}
+
 export interface IContact {
   id: number;
   firstName: string;

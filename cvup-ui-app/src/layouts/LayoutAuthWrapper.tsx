@@ -21,6 +21,7 @@ import { BrowserView, MobileView } from "react-device-detect";
 import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { MobileAuthLayout } from "./MobileAuthLayout";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
+import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -85,6 +86,12 @@ export const LayoutAuthWrapper = observer(() => {
         <ReviewCandDialog
           isOpen={generalStore.showReviewCandDialog}
           onClose={() => (generalStore.showReviewCandDialog = false)}
+        />
+      )}
+      {generalStore.showEmailTemplatesDialog && (
+        <EmailTemplateFormDialog
+          isOpen={generalStore.showEmailTemplatesDialog}
+          onClose={() => (generalStore.showEmailTemplatesDialog = false)}
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}

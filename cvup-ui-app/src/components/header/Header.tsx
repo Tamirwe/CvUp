@@ -24,6 +24,7 @@ export const Header = () => {
         candsStore.getCompanyStagesTypes(),
         positionsStore.getPositionsList(),
         candsStore.getCandsList(),
+        candsStore.getEmailTemplates(),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

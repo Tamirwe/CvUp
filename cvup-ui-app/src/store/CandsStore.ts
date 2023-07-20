@@ -7,6 +7,7 @@ import {
   ICvReview,
   ICompanyStagesTypes,
   IPosStages,
+  IEmailTemplate,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -27,6 +28,7 @@ export class CandsStore {
   candDisplay?: ICand;
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
   stagesTypes?: ICompanyStagesTypes[];
+  emailTemplates?: IEmailTemplate[];
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -466,5 +468,22 @@ export class CandsStore {
     return posStages
       .slice()
       .sort((a, b) => (a.d < b.d ? 1 : b.d < a.d ? -1 : 0));
+  }
+
+  async getEmailTemplates() {
+    const res = await this.cvsApi.getEmailTemplates();
+    runInAction(() => {
+      this.emailTemplates = res.data;
+    });
+  }
+
+  async addUpdateEmailTemplate(emailTemplate: IEmailTemplate) {
+    const res = await this.cvsApi.addUpdateEmailTemplate(emailTemplate);
+    return res;
+  }
+
+  async deleteEmailTemplate(id: number) {
+    const res = await this.cvsApi.deleteEmailTemplate(id);
+    return res;
   }
 }

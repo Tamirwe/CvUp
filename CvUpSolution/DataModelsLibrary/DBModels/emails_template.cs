@@ -9,6 +9,5 @@ namespace Database.models
         public string name { get; set; } = null!;
         public string subject { get; set; } = null!;
         public string body { get; set; } = null!;
-        public string lang { get; set; } = null!;
     }
 }

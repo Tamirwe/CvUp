@@ -46,7 +46,7 @@ namespace Database.models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.33-mysql"));
+                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.30-mysql"));
             }
         }
 
@@ -185,7 +185,6 @@ namespace Database.models
                 entity.HasOne(d => d.customer)
                     .WithMany(p => p.contacts)
                     .HasForeignKey(d => d.customer_id)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_contacts_customer_id_customers_id");
             });
 
@@ -225,8 +224,6 @@ namespace Database.models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email_id).HasMaxLength(300);
-
-                entity.Property(e => e.file_extension).HasMaxLength(6);
 
                 entity.Property(e => e.from).HasMaxLength(200);
 
@@ -306,13 +303,9 @@ namespace Database.models
 
             modelBuilder.Entity<emails_template>(entity =>
             {
-                entity.HasIndex(e => e.lang, "fk_emails_templates_lang_enum_lung_id");
-
                 entity.Property(e => e.id).ValueGeneratedNever();
 
                 entity.Property(e => e.body).HasMaxLength(2000);
-
-                entity.Property(e => e.lang).HasColumnType("enum('HE','EN')");
 
                 entity.Property(e => e.name).HasMaxLength(50);
 
@@ -387,8 +380,6 @@ namespace Database.models
 
                 entity.HasIndex(e => e.updater_id, "fk_positions_updater_id_users_id");
 
-                entity.Property(e => e.customer_pos_num).HasMaxLength(50);
-
                 entity.Property(e => e.date_created).HasColumnType("datetime");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
@@ -411,7 +402,6 @@ namespace Database.models
                 entity.HasOne(d => d.contact)
                     .WithMany(p => p.positions)
                     .HasForeignKey(d => d.contact_id)
-                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_positions_contact_id_contacts_id");
 
                 entity.HasOne(d => d.customer)

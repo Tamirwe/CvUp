@@ -70,7 +70,13 @@ export const CandidateEmailSender = (props: IProps) => {
   };
 
   return (
-    <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth="md">
+    <Dialog
+      fullScreen
+      open={props.open}
+      onClose={props.onClose}
+      fullWidth
+      maxWidth="md"
+    >
       <DialogTitle>Send Email To Candidate</DialogTitle>
       <DialogContent>
         <Grid item xs={12} lg={12}>

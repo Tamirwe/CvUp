@@ -11,6 +11,10 @@ export default function ComponentStyleOverrides(theme: themeType) {
             margin: 0,
             width: "calc(100% - 22px)",
           },
+          "& .MuiDialog-container .MuiDialog-paperFullScreen": {
+            padding: 2,
+            width: "100%",
+          },
           "& .MuiDialogContent-root": isMobile
             ? {
                 padding: "20px 2px",

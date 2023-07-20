@@ -40,7 +40,7 @@ body {
 }
 
 .ql-editor{
-  height: 45vh;
+  height: 50vh;
   overflow: auto;
   /* min-height:40vh; */
 }

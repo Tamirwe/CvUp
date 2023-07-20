@@ -105,6 +105,11 @@ export interface IMailsList {
   userTyped?: boolean;
 }
 
+export interface IEmailForm {
+  subject: string;
+  review: string;
+}
+
 export interface IContact {
   id: number;
   firstName: string;

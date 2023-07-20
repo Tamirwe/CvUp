@@ -15,7 +15,6 @@ export const Cv = observer(() => {
             direction: authStore.isRtl ? "rtl" : "ltr",
             textAlign: authStore.isRtl ? "right" : "left",
           }}
-          className="ql-editor"
           dangerouslySetInnerHTML={{
             __html: candsStore.candAllSelected?.review || "",
           }}

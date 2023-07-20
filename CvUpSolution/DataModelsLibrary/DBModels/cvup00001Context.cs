@@ -380,6 +380,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.updater_id, "fk_positions_updater_id_users_id");
 
+                entity.Property(e => e.customer_pos_num).HasMaxLength(50);
+
                 entity.Property(e => e.date_created).HasColumnType("datetime");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");

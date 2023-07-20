@@ -90,6 +90,21 @@ namespace CvUpAPI.Controllers
             _candPosService.SaveCvReview(cvReview);
         }
 
+        [HttpPut]
+        [Route("SaveCandReview")]
+        public async Task<IActionResult> SaveCandReview(CandReviewModel candReview)
+        {
+            bool isSaved = await _candPosService.SaveCandReview(candReview);
+
+            if (isSaved) {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         [Route("AttachPosCandCv")]
         public async Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv)

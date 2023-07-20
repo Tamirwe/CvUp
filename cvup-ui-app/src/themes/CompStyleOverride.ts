@@ -1,8 +1,24 @@
+import { isMobile } from "react-device-detect";
 import { themeType } from ".";
 
 export default function ComponentStyleOverrides(theme: themeType) {
   const bgColor = theme.colors?.grey50;
   return {
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          "& .MuiDialog-container .MuiDialog-paper": {
+            margin: 0,
+            width: "calc(100% - 22px)",
+          },
+          "& .MuiDialogContent-root": isMobile
+            ? {
+                padding: "20px 2px",
+              }
+            : "",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

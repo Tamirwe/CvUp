@@ -39,5 +39,6 @@ namespace DataModelsLibrary.Queries
         Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
          Task<List<cv>> GetCompanyCvs(int companyId);
+        Task SaveCandReview(CandReviewModel candReview);
     }
 }

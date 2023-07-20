@@ -137,8 +137,8 @@ export const Header = () => {
                       localStorage.setItem("rteY", "50");
                     }
 
-                    generalStore.cvReviewDialogOpen =
-                      !generalStore.cvReviewDialogOpen;
+                    generalStore.showReviewCandDialog =
+                      !generalStore.showReviewCandDialog;
                   }}
                 >
                   <CiEdit />

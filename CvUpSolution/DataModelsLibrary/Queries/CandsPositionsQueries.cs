@@ -612,6 +612,18 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task SaveCandReview(CandReviewModel candReview)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.id == candReview.candidateId).First();
+                cand.review_text = candReview.review;
+                var result = dbContext.candidates.Update(cand);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+
         public async Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
         {
             using (var dbContext = new cvup00001Context())

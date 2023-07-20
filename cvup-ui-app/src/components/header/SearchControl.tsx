@@ -31,7 +31,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   justifyContent: "center",
   color: "#0000008a",
   fontSize: "1.5rem",
-  zIndex: 999999,
+  zIndex: 999,
 }));
 
 const CancelIconWrapper = styled("div")(({ theme }) => ({
@@ -46,7 +46,7 @@ const CancelIconWrapper = styled("div")(({ theme }) => ({
   justifyContent: "center",
   color: "#0000008a",
   fontSize: "1.5rem",
-  zIndex: 999999,
+  zIndex: 999,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({

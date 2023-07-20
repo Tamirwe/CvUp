@@ -120,6 +120,12 @@ namespace DataModelsLibrary.Models
         public string reviewText { get; set; } = "";
     }
 
+    public class CandReviewModel
+    {
+        public int candidateId { get; set; }
+        public string review { get; set; } = "";
+    }
+
     public class searchCandCvModel
     {
         public string keyWords { get; set; } = "";

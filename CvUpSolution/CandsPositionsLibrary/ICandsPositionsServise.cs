@@ -39,5 +39,6 @@ namespace CandsPositionsLibrary
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
         Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
+        Task<bool> SaveCandReview(CandReviewModel candReview);
     }
 }

@@ -25,6 +25,7 @@ export class GeneralStore {
   private isShowUserListDialog: boolean = false;
   private isAlertConfirmDialogOpen: boolean = false;
   private isPositionFormDialogOpen: boolean = false;
+  private isShowReviewCandDialog: boolean = false;
   private isLeftDrawerOpen: boolean = false;
   private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
@@ -137,6 +138,14 @@ export class GeneralStore {
 
   set showUserListDialog(val) {
     this.isShowUserListDialog = val;
+  }
+
+  get showReviewCandDialog() {
+    return this.isShowReviewCandDialog;
+  }
+
+  set showReviewCandDialog(val) {
+    this.isShowReviewCandDialog = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

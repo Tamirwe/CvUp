@@ -270,5 +270,11 @@ namespace CandsPositionsLibrary
             return true;
         }
 
+        public async Task<bool> SaveCandReview(CandReviewModel candReview)
+        {
+            await _cvsPositionsQueries.SaveCandReview(candReview);
+            return true;
+        }
+
     }
 }

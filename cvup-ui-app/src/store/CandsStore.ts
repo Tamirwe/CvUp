@@ -143,6 +143,49 @@ export class CandsStore {
     });
   }
 
+  async saveCandReview(review: string) {
+    this.rootStore.generalStore.backdrop = true;
+
+    if (this.candDisplay) {
+      const data = await this.cvsApi.saveCandReview(
+        review,
+        this.candDisplay?.candidateId
+      );
+
+      runInAction(() => {
+        if (this.candDisplay) {
+          this.candDisplay.review = review;
+
+          let cand = this.candsAllList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.review = review;
+          }
+
+          cand = this.posCandsList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.review = review;
+          }
+
+          cand = this.folderCandsList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.review = review;
+          }
+        }
+      });
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
   async searchAllCands(value: string) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(value, 0, 0);

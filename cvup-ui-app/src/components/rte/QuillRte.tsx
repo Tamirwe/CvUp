@@ -1,12 +1,43 @@
 import { observer } from "mobx-react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
+import "./quillStyles.css";
 
 interface IProps {
   onInit: (quillRef: any) => void;
   quillHtml?: string;
 }
+
+Quill.register(Quill.import("attributors/style/direction"), true);
+Quill.register(Quill.import("attributors/style/align"), true);
+
+const Size = Quill.import("attributors/style/size");
+Size.whitelist = ["0.75em", "1em", "1.5em", "2.5em"];
+Quill.register(Size, true);
+
+const Parchment = Quill.import("parchment");
+class IndentAttributor extends Parchment.Attributor.Style {
+  constructor(a: any, b: any, c: any) {
+    super(a, b, c);
+  }
+
+  add(node: any, value: any) {
+    if (value === 0) {
+      this.remove(node);
+      return true;
+    } else {
+      return super.add(node, `${value}em`);
+    }
+  }
+}
+
+let IndentStyle = new IndentAttributor("indent", "text-indent", {
+  scope: Parchment.Scope.BLOCK,
+  whitelist: ["1em", "2em", "3em", "4em", "5em", "6em", "7em", "8em", "9em"],
+});
+
+Quill.register(IndentStyle, true);
 
 export const QuillRte = observer(({ onInit, quillHtml }: IProps) => {
   const [quillRef, setQuillRef] = useState<any>(null);
@@ -35,7 +66,9 @@ export const QuillRte = observer(({ onInit, quillHtml }: IProps) => {
 
   const modulesRef = {
     toolbar: [
-      [{ header: [1, 2, false] }],
+      // [{ header: [1, 2, false] }],
+      [{ size: ["0.75em", "1em", "1.5em", "2.5em"] }],
+
       ["bold", "italic", "underline", "strike", "link"],
       [
         { list: "ordered" },
@@ -43,6 +76,8 @@ export const QuillRte = observer(({ onInit, quillHtml }: IProps) => {
         { indent: "-1" },
         { indent: "+1" },
       ],
+      [{ color: [] }],
+      [{ background: [] }],
       // ["link"],
       // ["clean"],
       [{ direction: "rtl" }],

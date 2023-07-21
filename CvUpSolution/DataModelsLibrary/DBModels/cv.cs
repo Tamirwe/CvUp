@@ -24,6 +24,8 @@ namespace Database.models
         public DateTime date_created { get; set; }
         public string? pos_ids { get; set; }
         public int? cvdbid { get; set; }
+        public string? file_extension { get; set; }
+        public int? file_type { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }

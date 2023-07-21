@@ -188,6 +188,69 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
+  async saveCandDetails(
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string
+  ) {
+    this.rootStore.generalStore.backdrop = true;
+
+    if (this.candDisplay) {
+      const data = await this.cvsApi.saveCandDetails(
+        this.candDisplay?.candidateId,
+        firstName,
+        lastName,
+        email,
+        phone
+      );
+
+      runInAction(() => {
+        if (this.candDisplay) {
+          this.candDisplay.firstName = firstName;
+          this.candDisplay.lastName = lastName;
+          this.candDisplay.email = email;
+          this.candDisplay.phone = phone;
+
+          let cand = this.candsAllList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.firstName = firstName;
+            cand.lastName = lastName;
+            cand.email = email;
+            cand.phone = phone;
+          }
+
+          cand = this.posCandsList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.firstName = firstName;
+            cand.lastName = lastName;
+            cand.email = email;
+            cand.phone = phone;
+          }
+
+          cand = this.folderCandsList.find(
+            (x) => x.candidateId === this.candDisplay?.candidateId
+          );
+
+          if (cand) {
+            cand.firstName = firstName;
+            cand.lastName = lastName;
+            cand.email = email;
+            cand.phone = phone;
+          }
+        }
+      });
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
   async SendEmailToCand(
     subject: string,
     addresses: string[],

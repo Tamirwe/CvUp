@@ -24,8 +24,8 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
   return (
     <>
       <form noValidate spellCheck="false">
-        <Grid container>
-          <Grid item xs={12} lg={12} sx={{ direction: "rtl" }}>
+        <Grid container sx={{ direction: "rtl" }} gap={0}>
+          <Grid item xs={12} lg={12}>
             <TextField
               sx={{
                 direction: "rtl",

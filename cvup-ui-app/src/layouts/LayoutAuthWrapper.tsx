@@ -22,6 +22,7 @@ import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { MobileAuthLayout } from "./MobileAuthLayout";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
 import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
+import { CandFormDialog } from "../components/cands/CandFormDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -92,6 +93,12 @@ export const LayoutAuthWrapper = observer(() => {
         <EmailTemplateFormDialog
           isOpen={generalStore.showEmailTemplatesDialog}
           onClose={() => (generalStore.showEmailTemplatesDialog = false)}
+        />
+      )}
+      {generalStore.showCandFormDialog && (
+        <CandFormDialog
+          isOpen={generalStore.showCandFormDialog}
+          onClose={() => (generalStore.showCandFormDialog = false)}
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}

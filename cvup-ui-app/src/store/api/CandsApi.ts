@@ -108,6 +108,24 @@ export default class CandsApi extends BaseApi {
     });
   }
 
+  async saveCandDetails(
+    candidateId: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string
+  ) {
+    return await this.apiWrapper2<boolean>(async () => {
+      return await this.http.put("Cand/UpdateCandDetails", {
+        candidateId,
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
+    });
+  }
+
   async getCompanyStagesTypes() {
     return await this.apiWrapper2<ICompanyStagesTypes[]>(async () => {
       return await this.http.get("Cand/GetCompanyStagesTypes");

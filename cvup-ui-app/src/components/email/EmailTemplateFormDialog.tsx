@@ -9,6 +9,7 @@ interface IProps {
 }
 
 export const EmailTemplateFormDialog = ({ isOpen, onClose }: IProps) => {
+  const { candsStore } = useStore();
   const [formTitle, setFormTitle] = useState("Email Templates");
 
   return (
@@ -22,6 +23,7 @@ export const EmailTemplateFormDialog = ({ isOpen, onClose }: IProps) => {
       <DialogContent>
         <EmailTemplateForm
           onSaved={() => {
+            candsStore.getEmailTemplates();
             onClose(true);
           }}
           onCancel={() => onClose(false)}

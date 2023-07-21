@@ -27,6 +27,7 @@ export class GeneralStore {
   private isPositionFormDialogOpen: boolean = false;
   private isShowReviewCandDialog: boolean = false;
   private isShowEmailTemplatesDialog: boolean = false;
+  private isShowCandFormDialog: boolean = false;
   private isLeftDrawerOpen: boolean = false;
   private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
@@ -155,6 +156,14 @@ export class GeneralStore {
 
   set showEmailTemplatesDialog(val) {
     this.isShowEmailTemplatesDialog = val;
+  }
+
+  get showCandFormDialog() {
+    return this.isShowCandFormDialog;
+  }
+
+  set showCandFormDialog(val) {
+    this.isShowCandFormDialog = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

@@ -7,7 +7,7 @@ import { Grid, IconButton } from "@mui/material";
 import { CiEdit } from "react-icons/ci";
 
 export const Cv = observer(() => {
-  const { candsStore, authStore } = useStore();
+  const { candsStore, authStore, generalStore } = useStore();
 
   return (
     <div className={styles.scrollCv}>
@@ -30,7 +30,12 @@ export const Cv = observer(() => {
             }}
           >
             <Grid item xs="auto" lg="auto">
-              <IconButton color="primary" onClick={() => {}}>
+              <IconButton
+                color="primary"
+                onClick={() => {
+                  generalStore.showCandFormDialog = true;
+                }}
+              >
                 <CiEdit />
               </IconButton>
             </Grid>

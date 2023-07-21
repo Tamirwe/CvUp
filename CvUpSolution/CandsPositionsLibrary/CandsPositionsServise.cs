@@ -45,7 +45,8 @@ namespace CandsPositionsLibrary
         {
             CvsToIndexModel cvPropsToIndex = new CvsToIndexModel
             {
-                candName = importCv.candidateName,
+                firstName = importCv.firstName,
+                lastName = importCv.lastName,
                 cvId = importCv.cvId,
                 candidateId = importCv.candidateId,
                 cvTxt = importCv.cvTxt,
@@ -82,24 +83,22 @@ namespace CandsPositionsLibrary
 
             if (cand != null)
             {
-                string newCandName = importCv.candidateName.Trim();
+                string candFirstName = importCv.firstName.Trim();
+                string candLastName = importCv.lastName.Trim();
 
 
                 if (cand != null)
                 {
-                    if (cand.name != null)
+                    if (string.IsNullOrEmpty(cand.first_name))
                     {
-                        if (newCandName == "")
-                        {
-                            newCandName = cand.name;
-                        }
-                        else if (newCandName != cand.name)
-                        {
-                            newCandName = cand.name;
-                        }
+                        cand.first_name = candFirstName;
                     }
 
-                    cand.name = newCandName;
+                    if (string.IsNullOrEmpty(cand.last_name))
+                    {
+                        cand.last_name = candLastName;
+                    }
+
                     await _cvsPositionsQueries.UpdateCandidate(cand);
                     importCv.candidateId = cand.id;
                 }
@@ -114,7 +113,8 @@ namespace CandsPositionsLibrary
                     company_id = importCv.companyId,
                     email = email,
                     phone = importCv.phone,
-                    name = importCv.candidateName
+                    first_name = importCv.firstName,
+                    last_name = importCv.lastName
                 };
 
                 importCv.isNewCandidate = true;

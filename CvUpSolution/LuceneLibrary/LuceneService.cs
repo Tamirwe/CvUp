@@ -140,7 +140,7 @@ namespace LuceneLibrary
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
-            string txtToIndex = $"{cvCand.email}~~~{cvCand.phone}~~~{cvCand.reviewText}~~~{cvCand.candName}~~~{cvCand.emailSubject}~~~{cvCand.cvTxt}".ToLower();
+            string txtToIndex = $"{cvCand.email}~~~{cvCand.phone}~~~{cvCand.reviewText}~~~{cvCand.firstName}~~~{cvCand.lastName}~~~{cvCand.emailSubject}~~~{cvCand.cvTxt}".ToLower();
             var doc = new Document();
             doc.Add(new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES));
             doc.Add(new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES));

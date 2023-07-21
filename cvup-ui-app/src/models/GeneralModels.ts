@@ -37,7 +37,8 @@ export interface ICand {
   phone?: string;
   email?: string;
   emailSubject: string;
-  candidateName?: string;
+  firstName?: string;
+  lastName?: string;
   reviewTct: string;
   fileType: string;
   cvSent: Date;

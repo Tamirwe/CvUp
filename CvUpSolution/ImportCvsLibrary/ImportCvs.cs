@@ -254,6 +254,10 @@ namespace ImportCvsLibrary
                             switch (parserRules[i].value_type)
                             {
                                 case nameof(ParserValueType.Name):
+                                    //to be check
+                                    var nameParts = subjectArr[i].Split(' ');
+                                    cv.firstName = nameParts[nameParts.Length - 1].Trim();
+                                    cv.lastName = subjectArr[i].Replace(cv.firstName, "").Trim();
                                     cv.candidateName = subjectArr[i];
                                     break;
                                 case nameof(ParserValueType.Position):

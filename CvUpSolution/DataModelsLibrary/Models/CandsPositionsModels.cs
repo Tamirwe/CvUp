@@ -22,6 +22,8 @@ namespace DataModelsLibrary.Models
         public int candidateId { get; set; } = 0;
         public bool isNewCandidate { get; set; } = false;
         public string candidateName { get; set; } = "";
+        public string firstName { get; set; } = "";
+        public string lastName { get; set; } = "";
         public string emailId { get; set; } = "";
         public string subject { get; set; } = "";
         public string from { get; set; } = "";

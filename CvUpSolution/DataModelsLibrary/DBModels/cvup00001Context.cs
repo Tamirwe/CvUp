@@ -65,6 +65,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.last_cv_sent, "ix_candidates_last_cv_sent");
 
+                entity.Property(e => e.adress).HasMaxLength(150);
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -75,11 +77,15 @@ namespace Database.models
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
+                entity.Property(e => e.first_name).HasMaxLength(50);
+
                 entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.last_cv_sent)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.last_name).HasMaxLength(50);
 
                 entity.Property(e => e.name).HasMaxLength(100);
 
@@ -91,7 +97,7 @@ namespace Database.models
 
                 entity.Property(e => e.review_html).HasColumnType("blob");
 
-                entity.Property(e => e.review_text).HasMaxLength(16000);
+                entity.Property(e => e.review_text).HasMaxLength(14000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)
@@ -306,13 +312,7 @@ namespace Database.models
 
             modelBuilder.Entity<emails_template>(entity =>
             {
-                entity.HasIndex(e => e.lang, "fk_emails_templates_lang_enum_lung_id");
-
-                entity.Property(e => e.id).ValueGeneratedNever();
-
                 entity.Property(e => e.body).HasMaxLength(2000);
-
-                entity.Property(e => e.lang).HasColumnType("enum('HE','EN')");
 
                 entity.Property(e => e.name).HasMaxLength(50);
 

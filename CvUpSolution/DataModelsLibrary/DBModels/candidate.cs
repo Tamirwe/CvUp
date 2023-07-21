@@ -17,7 +17,10 @@ namespace Database.models
         public int company_id { get; set; }
         public string? email { get; set; }
         public string? name { get; set; }
+        public string? first_name { get; set; }
+        public string? last_name { get; set; }
         public string? phone { get; set; }
+        public string? adress { get; set; }
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
         public sbyte? has_duplicates_cvs { get; set; }

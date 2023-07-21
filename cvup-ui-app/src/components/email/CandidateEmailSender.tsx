@@ -60,7 +60,10 @@ export const CandidateEmailSender = observer((props: IProps) => {
       const emailsList = [
         {
           email: candsStore.candAllSelected?.email || "",
-          name: candsStore.candAllSelected?.candidateName || "",
+          name:
+            (candsStore.candDisplay?.firstName || "") +
+            " " +
+            (candsStore.candDisplay?.lastName || ""),
         },
       ];
 

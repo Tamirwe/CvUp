@@ -160,7 +160,7 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateCandDetails")]
         public async Task<IActionResult> UpdateCandDetails(CandDetailsModel candDetails)
         {

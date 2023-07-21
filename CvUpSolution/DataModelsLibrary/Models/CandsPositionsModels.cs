@@ -95,7 +95,7 @@ namespace DataModelsLibrary.Models
     public class CandDetailsModel
     {
         public int candidateId { get; set; }
-        public int companyId { get; set; }
+        public int? companyId { get; set; }
         public string? firstName { get; set; } = "";
         public string? lastName { get; set; } = "";
         public string? email { get; set; } = "";

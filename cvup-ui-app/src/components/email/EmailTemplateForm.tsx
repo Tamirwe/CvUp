@@ -34,12 +34,7 @@ interface IProps {
 
 export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   const { candsStore, generalStore } = useStore();
-  const [isRtlDirection, setIsRtlDirection] = useState(false);
-  const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
-
-  const [emailTemplate, setEmailTemplate] = useState(
-    candsStore.emailTemplates ? candsStore.emailTemplates[0] : null
-  );
+  // const [emailTemplate, setEmailTemplate] = useState( null  );
   const [submitError, setSubmitError] = useState("");
   const [isDirty, setIsDirty] = useState(false);
   const [formModel, setFormModel] = useState<IEmailTemplate>({
@@ -54,7 +49,11 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
     body: "",
   });
 
-  useEffect(() => {}, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (candsStore.emailTemplates?.length) {
+      setFormModel(candsStore.emailTemplates[0]);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
     let isFormValid = true,
@@ -63,21 +62,18 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
     err = validateTxt(formModel.name, [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
-      TextValidateTypeEnum.startWithTwoLetters,
     ]);
     isFormValid = updateFieldError("name", err) && isFormValid;
 
     err = validateTxt(formModel.subject, [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
-      TextValidateTypeEnum.startWithTwoLetters,
     ]);
     isFormValid = updateFieldError("subject", err) && isFormValid;
 
     err = validateTxt(formModel.body, [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
-      TextValidateTypeEnum.startWithTwoLetters,
     ]);
     isFormValid = updateFieldError("body", err) && isFormValid;
 
@@ -102,8 +98,8 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   const deletePosition = async () => {
     const isDelete = await generalStore.alertConfirmDialog(
       AlertConfirmDialogEnum.Confirm,
-      "Delete User",
-      "Are you sure you want to delete this user?"
+      "Delete Email Template",
+      "Are you sure you want to delete this template?"
     );
 
     if (isDelete) {
@@ -173,6 +169,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                         Email Template
                       </InputLabel>
                       <Select
+                        fullWidth
                         labelId="emailTemplate"
                         id="emailTemplate"
                         label="Email Template"
@@ -182,7 +179,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                             status: e.target.value as PositionStatusEnum,
                           }));
                         }}
-                        value={emailTemplate && emailTemplate.id}
+                        value={formModel.id}
                       >
                         {candsStore.emailTemplates?.map((item) => {
                           return (

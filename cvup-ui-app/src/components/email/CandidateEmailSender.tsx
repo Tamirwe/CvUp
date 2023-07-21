@@ -31,13 +31,14 @@ import {
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { CiEdit } from "react-icons/ci";
+import { observer } from "mobx-react-lite";
 
 interface IProps {
   open: boolean;
   onClose: () => void;
 }
 
-export const CandidateEmailSender = (props: IProps) => {
+export const CandidateEmailSender = observer((props: IProps) => {
   const { candsStore, generalStore } = useStore();
   const refQuill = useRef();
   const [emailTemplate, setEmailTemplate] = useState(
@@ -200,4 +201,4 @@ export const CandidateEmailSender = (props: IProps) => {
       </DialogContent>
     </Dialog>
   );
-};
+});

@@ -122,9 +122,7 @@ export default class CandsApi extends BaseApi {
 
   async addUpdateEmailTemplate(emailTemplate: IEmailTemplate) {
     return await this.apiWrapper2(async () => {
-      return await this.http.post(`Cand/AddUpdateEmailTemplate`, {
-        emailTemplate,
-      });
+      return await this.http.post(`Cand/AddUpdateEmailTemplate`, emailTemplate);
     });
   }
 

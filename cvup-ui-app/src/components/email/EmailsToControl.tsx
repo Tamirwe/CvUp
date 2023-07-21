@@ -37,7 +37,6 @@ export const EmailsToControl = (props: IProps) => {
 
   return (
     <Autocomplete
-      sx={{ paddingTop: 1, paddingBottom: 3 }}
       multiple
       id="tags-standard"
       options={emailsToList}

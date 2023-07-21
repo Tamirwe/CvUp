@@ -40,5 +40,8 @@ namespace CandsPositionsLibrary
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
         Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
         Task<bool> SaveCandReview(CandReviewModel candReview);
+        Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
+        Task DeleteEmailTemplate(int companyId, int id);
+        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
     }
 }

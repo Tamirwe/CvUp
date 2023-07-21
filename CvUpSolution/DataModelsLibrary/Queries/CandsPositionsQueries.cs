@@ -796,5 +796,58 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async  Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from et in dbContext.emails_templates
+                             orderby et.name
+                             select new EmailTemplateModel
+                             {
+                                 id = et.id,
+                                 name = et.name,
+                                  subject= et.subject,
+                                   body= et.body,
+                             });
+
+                return await query.ToListAsync();
+            }
+        }
+
+        public async Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                if (emailTemplate.id == 0)
+                {
+                    dbContext.emails_templates.Add(new emails_template { name= emailTemplate.name, subject= emailTemplate.subject, body= emailTemplate.body});
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    emails_template? etm = dbContext.emails_templates.Where(x => x.id == emailTemplate.id).First();
+                    etm.name= emailTemplate.name;
+                    etm.subject= emailTemplate.subject;
+                    etm.body= emailTemplate.body;
+
+                    var result = dbContext.emails_templates.Update(etm);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+        public async Task DeleteEmailTemplate(int companyId, int id)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                emails_template? etm = dbContext.emails_templates.Where(x => x.id == id).FirstOrDefault();
+
+                if (etm != null)
+                {
+                    dbContext.emails_templates.Remove(etm);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }

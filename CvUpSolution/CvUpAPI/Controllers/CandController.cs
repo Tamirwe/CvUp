@@ -159,5 +159,14 @@ namespace CvUpAPI.Controllers
             await _candPosService.DeleteEmailTemplate(Globals.CompanyId, id);
             return Ok();
         }
+
+        [HttpPost]
+        [Route("UpdateCandDetails")]
+        public async Task<IActionResult> UpdateCandDetails(CandDetailsModel candDetails)
+        {
+            candDetails.companyId = Globals.CompanyId;
+            await _candPosService.UpdateCandDetails(candDetails);
+            return Ok();
+        }
     }
 }

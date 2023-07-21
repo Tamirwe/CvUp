@@ -291,5 +291,10 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.DeleteEmailTemplate(companyId, id);
         }
+
+        public async Task UpdateCandDetails(CandDetailsModel candDetails)
+        {
+            await _cvsPositionsQueries.UpdateCandDetails(candDetails);
+        }
     }
 }

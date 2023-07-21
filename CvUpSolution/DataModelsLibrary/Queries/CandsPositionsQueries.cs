@@ -3,6 +3,7 @@ using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using System.Data;
 using System.Drawing;
@@ -848,6 +849,24 @@ namespace DataModelsLibrary.Queries
                 if (etm != null)
                 {
                     dbContext.emails_templates.Remove(etm);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task UpdateCandDetails(CandDetailsModel candDetails)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.id == candDetails.candidateId).FirstOrDefault();
+
+                if (cand != null)
+                {
+                    cand.first_name = candDetails.firstName;
+                    cand.last_name = candDetails.lastName;
+                    cand.email = candDetails.email;
+                    cand.phone = candDetails.phone;
+                    var result = dbContext.candidates.Update(cand);
                     await dbContext.SaveChangesAsync();
                 }
             }

@@ -43,5 +43,6 @@ namespace DataModelsLibrary.Queries
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
+        Task UpdateCandDetails(CandDetailsModel candDetails);
     }
 }

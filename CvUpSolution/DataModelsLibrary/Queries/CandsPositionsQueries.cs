@@ -35,7 +35,8 @@ namespace DataModelsLibrary.Queries
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
-                                 candidateName = cand.name,
+                                 firstName = cand.first_name,
+                                 lastName = cand.last_name,
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = Convert.ToDateTime(cand.last_cv_sent),
@@ -67,7 +68,8 @@ namespace DataModelsLibrary.Queries
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
-                                 candidateName = cand.name,
+                                 firstName = cand.first_name,
+                                 lastName = cand.last_name,
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
@@ -101,7 +103,8 @@ namespace DataModelsLibrary.Queries
                                  candidateId = cand.id,
                                  email = cand.email,
                                  emailSubject = cvs.subject,
-                                 candidateName = cand.name,
+                                 firstName = cand.first_name,
+                                 lastName = cand.last_name,
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
@@ -202,7 +205,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
-                        , cvs.subject emailSubject, cnd.name candName , cnd.review_text reviewText
+                        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review_text reviewText
 	                            FROM candidates cnd 
 	                            INNER JOIN cvs ON cnd.id = cvs.candidate_id
 	                            INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
@@ -227,7 +230,8 @@ namespace DataModelsLibrary.Queries
                 //                cvTxt = cvTxt.cv_txt,
                 //                email = cand.email,
                 //                emailSubject = cvs.subject,
-                //                candName = cand.name,
+                //                firstName = cand.first_name,
+                //                lastName = cand.last_name,
                 //                reviewText = cand.review_text,
                 //                phone = cand.phone,
                 //            };

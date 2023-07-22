@@ -15,7 +15,11 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { IEmailForm, IMailsList } from "../../models/GeneralModels";
+import {
+  IEmailForm,
+  IEmailTemplate,
+  IMailsList,
+} from "../../models/GeneralModels";
 import {
   emailValidte,
   isEmailValid,
@@ -41,9 +45,12 @@ interface IProps {
 export const CandidateEmailSender = observer((props: IProps) => {
   const { candsStore, generalStore } = useStore();
   const refQuill = useRef();
-  const [emailTemplate, setEmailTemplate] = useState(
-    candsStore.emailTemplates ? candsStore.emailTemplates[0] : null
-  );
+  const [emailTemplate, setEmailTemplate] = useState<IEmailTemplate>({
+    id: 0,
+    body: "",
+    name: "",
+    subject: "",
+  });
   const [emailsToList, setEmailsToList] = useState<IMailsList[]>([]);
   const [listDefaultEmails, setListDefaultEmails] = useState<IMailsList[]>([]);
   const [reviewHtml, setReviewHtml] = useState("");
@@ -79,10 +86,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
     }
   }, []);
 
-  const handleRteInit = (editor: any) => {
-    // setQuillEditor(editor);
-    // ref.current = editor;
-  };
+  useEffect(() => {}, [emailTemplate]);
 
   const validateForm = () => {
     let isFormValid = true,
@@ -138,7 +142,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
               onChange={(e) => {
                 setFormModel((currentProps) => ({
                   ...currentProps,
-                  name: e.target.value,
+                  subject: e.target.value,
                 }));
                 clearError("subject");
               }}
@@ -149,24 +153,39 @@ export const CandidateEmailSender = observer((props: IProps) => {
           </Grid>
           <Grid item xs={12} lg={4} pt={1}>
             <Stack direction="row">
-              <FormControl fullWidth>
+              <FormControl fullWidth sx={{ direction: "rtl" }}>
                 <InputLabel id="emailTemplatelabel">Email Template</InputLabel>
                 <Select
-                  sx={{ direction: "ltr" }}
                   labelId="emailTemplate"
                   id="emailTemplate"
                   label="Email Template"
                   onChange={(e) => {
-                    setFormModel((currentProps) => ({
-                      ...currentProps,
-                      status: e.target.value as PositionStatusEnum,
-                    }));
+                    if (e.target.value) {
+                      const emTemplate = candsStore.emailTemplates?.find(
+                        (x) => x.id === e.target.value
+                      );
+                      emTemplate && setEmailTemplate(emTemplate);
+                    } else {
+                      setEmailTemplate({
+                        id: 0,
+                        body: "",
+                        name: "",
+                        subject: "",
+                      });
+                    }
                   }}
-                  value={emailTemplate && emailTemplate.id}
+                  value={emailTemplate?.id}
                 >
+                  <MenuItem key={0} value={0} sx={{ direction: "rtl" }}>
+                    &nbsp;
+                  </MenuItem>
                   {candsStore.emailTemplates?.map((item) => {
                     return (
-                      <MenuItem key={item.id} value={item.id}>
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        sx={{ direction: "rtl" }}
+                      >
                         {item.name}
                       </MenuItem>
                     );
@@ -184,11 +203,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
             </Stack>
           </Grid>
         </Grid>
-        <QuillRte
-          onInit={handleRteInit}
-          ref={refQuill}
-          quillHtml={reviewHtml}
-        />
+        <QuillRte ref={refQuill} quillHtml={reviewHtml} />
         <Grid container>
           <Grid item xs={12} lg={12} pt={2}>
             <Stack direction="row" justifyContent="flex-end" gap={1}>

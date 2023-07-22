@@ -5,7 +5,6 @@ import { forwardRef, useEffect, useState } from "react";
 import "./quillStyles.css";
 
 interface IProps {
-  onInit: (quillRef: any) => void;
   quillHtml?: string;
 }
 
@@ -40,7 +39,7 @@ let IndentStyle = new IndentAttributor("indent", "text-indent", {
 Quill.register(IndentStyle, true);
 
 export const QuillRte = observer(
-  forwardRef(({ onInit, quillHtml }: IProps, refQuill: any) => {
+  forwardRef(({ quillHtml }: IProps, refQuill: any) => {
     // const [quillRef, setQuillRef] = useState<any>(null);
 
     // let quillRef: any = null;
@@ -64,8 +63,17 @@ export const QuillRte = observer(
     //   quillEditor.format("align", "right");
     //   onInit(quillEditor);
     // };
+    const [Value, setValue] = useState("");
+    const [ReadOnly, setReadOnly] = useState(true);
 
-    const modulesRef = {
+    useEffect(() => {
+      setValue(quillHtml || "");
+      if (quillHtml != null) {
+        setReadOnly(false);
+      }
+    }, [quillHtml]);
+
+    const modules = {
       toolbar: [
         // [{ header: [1, 2, false] }],
         [{ size: ["0.75em", "1em", "1.5em", "2.5em"] }],
@@ -120,10 +128,11 @@ export const QuillRte = observer(
             quillEditor.format("align", "right");
           }
         }}
-        modules={modulesRef}
+        modules={modules}
         theme={"snow"}
         formats={formats}
-        value={quillHtml}
+        value={Value}
+        readOnly={ReadOnly}
         // onChange={handleChange}
       />
     );

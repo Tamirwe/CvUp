@@ -5,6 +5,7 @@ import {
   Grid,
   IconButton,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -26,6 +27,9 @@ import { validateTxt } from "../../utils/Validation";
 import { format } from "date-fns";
 import { CiEdit } from "react-icons/ci";
 import { GoPlus } from "react-icons/go";
+import { classes } from "istanbul-lib-coverage";
+import { MdContentCopy } from "react-icons/md";
+import { copyToClipBoard } from "../../utils/GeneralUtils";
 
 interface IProps {
   onSaved: () => void;
@@ -59,19 +63,19 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
     let isFormValid = true,
       err = "";
 
-    err = validateTxt(formModel.name, [
+    err = validateTxt(formModel.name || "", [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
     ]);
     isFormValid = updateFieldError("name", err) && isFormValid;
 
-    err = validateTxt(formModel.subject, [
+    err = validateTxt(formModel.subject || "", [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
     ]);
     isFormValid = updateFieldError("subject", err) && isFormValid;
 
-    err = validateTxt(formModel.body, [
+    err = validateTxt(formModel.body || "", [
       TextValidateTypeEnum.notEmpty,
       TextValidateTypeEnum.twoCharsMin,
     ]);
@@ -256,10 +260,46 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     Dynamic data to add:
                   </div>
                   <div>
-                    <span>&lt;First Name&gt;</span>&nbsp;&nbsp;
-                    <span>&lt;Last Name&gt;</span>
-                    &nbsp;&nbsp;<span>&lt;Company Name&gt;</span>&nbsp;&nbsp;
-                    <span>&lt;Position Name&gt;</span>
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        copyToClipBoard("<First Name>");
+                      }}
+                    >
+                      <MdContentCopy />
+                      &lt;First Name&gt;
+                    </Link>
+                    &nbsp;&nbsp;
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        copyToClipBoard("<Full Name>");
+                      }}
+                    >
+                      <MdContentCopy />
+                      &lt;Full Name&gt;
+                    </Link>
+                    &nbsp;&nbsp;
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        copyToClipBoard("<Company Name>");
+                      }}
+                    >
+                      <MdContentCopy />
+                      &lt;Company Name&gt;
+                    </Link>
+                    &nbsp;&nbsp;
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        copyToClipBoard("<Position Name>");
+                      }}
+                    >
+                      <MdContentCopy />
+                      &lt;Position Name&gt;
+                    </Link>
+                    &nbsp;&nbsp;
                   </div>
                 </Grid>
               </Grid>

@@ -21,3 +21,12 @@ export const delay= (time: number)=> {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 // await this.delay(1000);
+
+export const copyToClipBoard = async (copyMe: string) => {
+  try {
+    await navigator.clipboard.writeText(copyMe);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};

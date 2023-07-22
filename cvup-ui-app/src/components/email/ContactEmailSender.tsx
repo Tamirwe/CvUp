@@ -45,10 +45,7 @@ export const ContactEmailSender = (props: IProps) => {
           listEmailsTo={emailsToList}
           listDefaultEmails={listDefaultEmails}
         />
-        <QuillRte
-          onInit={handleRteInit}
-          quillHtml={candsStore.candAllSelected?.review}
-        />
+        <QuillRte quillHtml={candsStore.candAllSelected?.review} />
       </DialogContent>
     </Dialog>
   );

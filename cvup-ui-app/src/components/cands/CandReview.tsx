@@ -83,10 +83,7 @@ export const CandReview = observer(() => {
               </div>
             </strong>
           </Typography>
-          <QuillRte
-            onInit={handleRteInit}
-            quillHtml={candsStore.candAllSelected?.review}
-          />
+          <QuillRte quillHtml={candsStore.candAllSelected?.review} />
         </CardContent>
         <CardActions>
           <Button

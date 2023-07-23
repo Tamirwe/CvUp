@@ -31,6 +31,7 @@ import { useFormErrors } from "../../Hooks/useFormErrors";
 import { isMobile } from "react-device-detect";
 import {
   CrudTypesEnum,
+  DynamicEmailDataEnum,
   PositionStatusEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
@@ -45,6 +46,8 @@ interface IProps {
 export const CandidateEmailSender = observer((props: IProps) => {
   const { candsStore, generalStore } = useStore();
   const refQuill = useRef();
+  const [dynamicData, setDynamicData] = useState<Map<string, string>>();
+
   const [emailTemplate, setEmailTemplate] = useState<IEmailTemplate>({
     id: 0,
     body: "",
@@ -55,7 +58,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
   const [listDefaultEmails, setListDefaultEmails] = useState<IEmailsAddress[]>(
     []
   );
-  const [reviewHtml, setReviewHtml] = useState("");
+  const [bodyHtml, setBodyHtml] = useState("");
   const [formModel, setFormModel] = useState<IEmailForm>({
     subject: "",
     body: "",
@@ -69,8 +72,8 @@ export const CandidateEmailSender = observer((props: IProps) => {
     if (candsStore.candDisplay) {
       const emailsList = [
         {
-          email: candsStore.candAllSelected?.email || "",
-          name:
+          Address: candsStore.candAllSelected?.email || "",
+          Name:
             (candsStore.candDisplay?.firstName || "") +
             " " +
             (candsStore.candDisplay?.lastName || ""),
@@ -86,17 +89,48 @@ export const CandidateEmailSender = observer((props: IProps) => {
       // setReviewHtml(reviewLinesHtml?.join("") || "");
       setEmailsToList(emailsList);
       setListDefaultEmails(emailsList);
+
+      const dynamicDataMap = new Map();
+
+      dynamicDataMap.set("FirstName", candsStore.candDisplay.firstName);
+      dynamicDataMap.set(
+        "FullName",
+        `${candsStore.candDisplay.firstName} ${candsStore.candDisplay.lastName}`
+      );
+
+      dynamicDataMap.set("CustomerName", candsStore.candDisplay.customerName);
+      dynamicDataMap.set("PositionName", candsStore.candDisplay.positionName);
+
+      setDynamicData(dynamicDataMap);
     }
   }, []);
 
   useEffect(() => {
+    let subject = replaceDynamicData(emailTemplate.subject);
+    let body = replaceDynamicData(emailTemplate.body);
+
     setFormModel((currentProps) => ({
       ...currentProps,
-      subject: emailTemplate.subject,
+      subject: subject,
     }));
 
-    setReviewHtml(emailTemplate.body);
+    setBodyHtml(body);
   }, [emailTemplate]);
+
+  const replaceDynamicData = (str: string) => {
+    let strReplaced = str;
+
+    Object.keys(DynamicEmailDataEnum)
+      .filter((x) => isNaN(Number(x)))
+      .forEach((item) => {
+        strReplaced = strReplaced.replaceAll(
+          item,
+          dynamicData?.get(item) || ""
+        );
+      });
+
+    return strReplaced;
+  };
 
   const validateForm = () => {
     const quillEditor = refQuill.current as any;
@@ -121,16 +155,25 @@ export const CandidateEmailSender = observer((props: IProps) => {
   };
 
   const handleSend = async () => {
-    validateForm();
-    const quillEditor = refQuill.current as any;
-    const reviewText = quillEditor.getText();
-    const reviewHtml = quillEditor.root.innerHTML;
-    await candsStore.sendEmailToCandidate(
-      emailsToList,
-      formModel.subject,
-      reviewHtml
-    );
-    // props.onClose();
+    const isValid = validateForm();
+
+    if (isValid) {
+      const quillEditor = refQuill.current as any;
+      const emailBody = quillEditor.root.innerHTML;
+      var data = await candsStore.sendEmailToCandidate(
+        emailsToList,
+        formModel.subject,
+        emailBody
+      );
+
+      if (data.isSuccess) {
+        generalStore.alertSnackbar("success", "Email sent");
+      } else {
+        generalStore.alertSnackbar("error", "Email send error - check outbox");
+      }
+
+      props.onClose();
+    }
   };
 
   return (
@@ -227,7 +270,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
             </Stack>
           </Grid>
           <Grid item xs={12} lg={12} pt={1}>
-            <QuillRte ref={refQuill} quillHtml={reviewHtml} />
+            <QuillRte ref={refQuill} quillHtml={bodyHtml} />
           </Grid>
           <Grid item xs={12} lg={12} pt={1}>
             <div style={{ color: "#f44336" }}>{errModel.body}</div>

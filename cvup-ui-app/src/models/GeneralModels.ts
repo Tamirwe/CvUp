@@ -50,6 +50,8 @@ export interface ICand {
   hasDuplicates: boolean;
   folderCandId: number;
   posStages?: IPosStages[];
+  positionName?: string;
+  customerName?: string;
 }
 
 export interface IPosStages {
@@ -101,8 +103,8 @@ export interface ICvReview {
 }
 
 export interface IEmailsAddress {
-  email: string;
-  name: string;
+  Name: string;
+  Address: string;
   userTyped?: boolean;
 }
 

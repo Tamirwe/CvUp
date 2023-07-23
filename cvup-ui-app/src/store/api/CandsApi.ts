@@ -152,15 +152,15 @@ export default class CandsApi extends BaseApi {
   }
 
   async sendEmailToCandidate(
-    emailsToList: IEmailsAddress[],
+    ToAddresses: IEmailsAddress[],
     subject: string,
-    reviewHtml: string
+    body: string
   ) {
     return await this.apiWrapper2(async () => {
       return await this.http.post(`Cand/SendEmailToCandidate`, {
-        emailsToList,
+        ToAddresses,
         subject,
-        reviewHtml,
+        body,
       });
     });
   }

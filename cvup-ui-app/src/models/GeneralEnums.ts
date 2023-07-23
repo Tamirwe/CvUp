@@ -78,3 +78,10 @@ export enum CandsSourceEnum {
   Position,
   Folder,
 }
+
+export enum DynamicEmailDataEnum {
+  FirstName,
+  FullName,
+  CustomerName,
+  PositionName,
+}

@@ -1,4 +1,12 @@
-import { Box, Drawer, Grid } from "@mui/material";
+import {
+  Alert,
+  Backdrop,
+  Box,
+  CircularProgress,
+  Drawer,
+  Grid,
+  Snackbar,
+} from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { LeftListsWrapper } from "./LeftListsWrapper";
@@ -102,6 +110,28 @@ export const LayoutAuthWrapper = observer(() => {
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}
+
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        autoHideDuration={3500}
+        open={generalStore.alertSnackbarOpen}
+        onClose={() => (generalStore.alertSnackbarOpen = false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => (generalStore.alertSnackbarOpen = false)}
+          severity={generalStore.alertSnackbarType}
+          sx={{ width: "100%" }}
+        >
+          {generalStore.alertSnackbarMessage}
+        </Alert>
+      </Snackbar>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: 99999 }}
+        open={generalStore.backdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <BrowserView>
         <BrowserAuthLayout />
       </BrowserView>

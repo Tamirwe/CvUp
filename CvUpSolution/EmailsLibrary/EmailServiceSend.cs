@@ -40,15 +40,16 @@ namespace EmailsLibrary
 
             foreach (var item in eml.To)
             {
-                message.To.Add(new MailboxAddress(item.Name, item.Address));
+                //message.To.Add(new MailboxAddress(item.Name, item.Address));
+                message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
             }
             foreach (var item in eml.Cc)
             {
-                message.Cc.Add(new MailboxAddress(item.Name, item.Address));
+                //message.Cc.Add(new MailboxAddress(item.Name, item.Address));
             }
             foreach (var item in eml.Bcc)
             {
-                message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
+                //message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
             }
 
 

@@ -5,6 +5,7 @@ import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
 import { Grid, IconButton } from "@mui/material";
 import { CiEdit } from "react-icons/ci";
+import { MdSync } from "react-icons/md";
 
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore } = useStore();
@@ -40,10 +41,22 @@ export const Cv = observer(() => {
               </IconButton>
             </Grid>
             <Grid item xs="auto" lg="auto">
+              <IconButton
+                title="Replace between first and last names"
+                color="primary"
+                onClick={() => {
+                  candsStore.replaceFirstLastNames();
+                }}
+              >
+                <MdSync />
+              </IconButton>
+            </Grid>
+            <Grid item xs="auto" lg="auto">
               {(candsStore.candDisplay?.firstName || "") +
                 " " +
                 (candsStore.candDisplay?.lastName || "")}
             </Grid>
+
             <Grid item xs="auto" lg="auto">
               <div>{candsStore.candDisplay?.email}</div>
             </Grid>

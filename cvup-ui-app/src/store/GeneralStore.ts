@@ -10,6 +10,7 @@ import {
 import { IAppSettings } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
+import { AlertColor } from "@mui/material";
 
 export class GeneralStore {
   private generalApi;
@@ -28,6 +29,7 @@ export class GeneralStore {
   private isShowReviewCandDialog: boolean = false;
   private isShowEmailTemplatesDialog: boolean = false;
   private isShowCandFormDialog: boolean = false;
+  private isAlertSnackbarOpen: boolean = false;
   private isLeftDrawerOpen: boolean = false;
   private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
@@ -35,6 +37,8 @@ export class GeneralStore {
   alertConfirmDialogTitle: string = "";
   alertConfirmDialogMessage: string = "";
   private appModeType: AppModeEnum = AppModeEnum.HRCompany;
+  alertSnackbarType?: AlertColor = "success";
+  alertSnackbarMessage = "";
 
   get appMode() {
     return this.appModeType;
@@ -166,6 +170,15 @@ export class GeneralStore {
     this.isShowCandFormDialog = val;
   }
 
+  get alertSnackbarOpen() {
+    return this.isAlertSnackbarOpen;
+  }
+
+  set alertSnackbarOpen(val) {
+    this.isAlertSnackbarOpen = val;
+    this.alertSnackbarMessage = "";
+  }
+
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
     this.generalApi = new GeneralApi(appSettings);
@@ -204,6 +217,12 @@ export class GeneralStore {
         this.confirmDialogResolve(isOk);
       }
     });
+  }
+
+  alertSnackbar(alertType: AlertColor, message: string) {
+    this.alertSnackbarType = alertType;
+    this.alertSnackbarMessage = message;
+    this.isAlertSnackbarOpen = true;
   }
 
   async search() {

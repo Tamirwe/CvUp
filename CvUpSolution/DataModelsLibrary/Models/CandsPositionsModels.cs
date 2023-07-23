@@ -205,4 +205,14 @@ namespace DataModelsLibrary.Models
         public bool must_metch { get; set; }
     }
 
+    public class SendEmailModel
+    {
+        public int? companyId { get; set; }
+        public int? candId { get; set; }
+        public int? cvId { get; set; }
+        public List<EmailAddress>? ToAddresses { get; set; }
+        public string? subject { get; set; } = "";
+        public string? body { get; set; } = "";
+    }
+
 }

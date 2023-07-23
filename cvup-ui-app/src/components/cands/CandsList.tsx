@@ -114,7 +114,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                candsStore.displayCvMain(cand);
+                candsStore.displayCvMain(cand, candsSource);
               }}
             >
               <Box
@@ -163,7 +163,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
-                        candsStore.displayCvMain(cand);
+                        candsStore.displayCvMain(cand, candsSource);
                       }
 
                       if (

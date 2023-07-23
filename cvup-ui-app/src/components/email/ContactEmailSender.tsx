@@ -22,8 +22,8 @@ export const ContactEmailSender = (props: IProps) => {
     if (candsStore.candAllSelected) {
       const emailsList = [
         {
-          email: candsStore.candAllSelected?.email || "",
-          name:
+          Address: candsStore.candAllSelected?.email || "",
+          Name:
             (candsStore.candDisplay?.firstName || "") +
             " " +
             (candsStore.candDisplay?.lastName || ""),

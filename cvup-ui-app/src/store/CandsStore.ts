@@ -1,5 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { CvDisplayedListEnum, TabsCandsEnum } from "../models/GeneralEnums";
+import {
+  CandsSourceEnum,
+  CvDisplayedListEnum,
+  TabsCandsEnum,
+} from "../models/GeneralEnums";
 import {
   IAppSettings,
   ICand,
@@ -9,6 +13,7 @@ import {
   IPosStages,
   IEmailTemplate,
   IEmailsAddress,
+  IPosition,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -57,10 +62,18 @@ export class CandsStore {
     return this.tabDisplayCandsLists;
   }
 
-  async displayCvMain(cand: ICand) {
+  async displayCvMain(cand: ICand, candsSource: CandsSourceEnum) {
     runInAction(() => {
       this.candAllSelected = cand;
       this.candDisplay = this.candAllSelected;
+
+      if (candsSource === CandsSourceEnum.Position) {
+        this.candDisplay.positionName =
+          this.rootStore.positionsStore.selectedPosition?.name;
+        this.candDisplay.customerName =
+          this.rootStore.positionsStore.selectedPosition?.customerName;
+      }
+
       this.getPdf(cand.keyId);
     });
   }
@@ -68,7 +81,6 @@ export class CandsStore {
   async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {
     runInAction(() => {
       this.candDupSelected = candCv;
-      // this.candDisplay = this.candDupSelected;
 
       switch (listType) {
         case CvDisplayedListEnum.CandsList:
@@ -552,15 +564,29 @@ export class CandsStore {
   }
 
   async sendEmailToCandidate(
-    emailsToList: IEmailsAddress[],
+    ToAddresses: IEmailsAddress[],
     subject: string,
-    reviewHtml: string
+    body: string
   ) {
+    this.rootStore.generalStore.backdrop = true;
+
     const res = await this.cvsApi.sendEmailToCandidate(
-      emailsToList,
+      ToAddresses,
       subject,
-      reviewHtml
+      body
     );
+
+    this.rootStore.generalStore.backdrop = false;
+
     return res;
+  }
+
+  async replaceFirstLastNames() {
+    await this.saveCandDetails(
+      this.candDisplay?.lastName || "",
+      this.candDisplay?.firstName || "",
+      this.candDisplay?.email || "",
+      this.candDisplay?.phone || ""
+    );
   }
 }

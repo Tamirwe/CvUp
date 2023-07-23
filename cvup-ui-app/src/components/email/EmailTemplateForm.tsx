@@ -17,6 +17,7 @@ import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
   AlertConfirmDialogEnum,
+  DynamicEmailDataEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { IEmailTemplate } from "../../models/GeneralModels";
@@ -259,7 +260,8 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     value={formModel.body}
                   />
                 </Grid> */}
-
+              </Grid>
+              <Grid container gap={1} style={{ direction: "ltr" }}>
                 <Grid item xs={12} lg={12} sx={{ direction: "ltr" }}>
                   <div
                     style={{
@@ -270,49 +272,24 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                   >
                     Dynamic data to add:
                   </div>
-                  <div>
-                    <Link
-                      href="#"
-                      onClick={() => {
-                        copyToClipBoard("FirstName");
-                      }}
-                    >
-                      <MdContentCopy />
-                      FirstName
-                    </Link>
-                    &nbsp;&nbsp;
-                    <Link
-                      href="#"
-                      onClick={() => {
-                        copyToClipBoard("FullName");
-                      }}
-                    >
-                      <MdContentCopy />
-                      FullName
-                    </Link>
-                    &nbsp;&nbsp;
-                    <Link
-                      href="#"
-                      onClick={() => {
-                        copyToClipBoard("CompanyName");
-                      }}
-                    >
-                      <MdContentCopy />
-                      CompanyName
-                    </Link>
-                    &nbsp;&nbsp;
-                    <Link
-                      href="#"
-                      onClick={() => {
-                        copyToClipBoard("PositionName");
-                      }}
-                    >
-                      <MdContentCopy />
-                      PositionName
-                    </Link>
-                    &nbsp;&nbsp;
-                  </div>
                 </Grid>
+                {Object.keys(DynamicEmailDataEnum)
+                  .filter((x) => isNaN(Number(x)))
+                  .map((key, i) => {
+                    return (
+                      <Grid item xs="auto">
+                        <Link
+                          href="#"
+                          onClick={() => {
+                            copyToClipBoard(key);
+                          }}
+                        >
+                          <MdContentCopy />
+                          {key}
+                        </Link>
+                      </Grid>
+                    );
+                  })}
               </Grid>
 
               {submitError && (

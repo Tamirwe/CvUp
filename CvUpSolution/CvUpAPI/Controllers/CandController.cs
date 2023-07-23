@@ -1,6 +1,7 @@
 ﻿using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
+using EmailsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -166,6 +167,15 @@ namespace CvUpAPI.Controllers
         {
             candDetails.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandDetails(candDetails);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("SendEmailToCandidate")]
+        public async Task<IActionResult> SendEmailToCandidate(SendEmailModel emailData)
+        {
+            emailData.companyId = Globals.CompanyId;
+            await _candPosService.SendEmailToCandidate(emailData);
             return Ok();
         }
     }

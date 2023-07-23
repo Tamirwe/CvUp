@@ -29,7 +29,7 @@ export const EmailsToControl = (props: IProps) => {
 
   const filterEmailToList = (emailsPicked: IEmailsAddress[]) => {
     const options = props.listEmailsTo.filter((x) =>
-      emailsPicked.every((y) => y.email !== x.email)
+      emailsPicked.every((y) => y.Address !== x.Address)
     );
 
     setEmailsToList(options);
@@ -41,7 +41,7 @@ export const EmailsToControl = (props: IProps) => {
       id="tags-standard"
       options={emailsToList}
       getOptionLabel={(option) => {
-        return option ? (option.name ? option.name : option.email) : "";
+        return option ? (option.Name ? option.Name : option.Address) : "";
       }}
       value={vals}
       onChange={(event, newValue) => {
@@ -59,11 +59,11 @@ export const EmailsToControl = (props: IProps) => {
           setInputVal(newInputValue);
           if (isEmailValid(newInputValue)) {
             if (
-              emailsToList.findIndex((x) => x.email === newInputValue) === -1
+              emailsToList.findIndex((x) => x.Address === newInputValue) === -1
             ) {
               setEmailsToList((emailsToList) => [
                 ...emailsToList,
-                { email: newInputValue, name: "", userTyped: true },
+                { Address: newInputValue, Name: "", userTyped: true },
               ]);
             }
           }

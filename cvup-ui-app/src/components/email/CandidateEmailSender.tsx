@@ -18,7 +18,7 @@ import { useStore } from "../../Hooks/useStore";
 import {
   IEmailForm,
   IEmailTemplate,
-  IMailsList,
+  IEmailsAddress,
 } from "../../models/GeneralModels";
 import {
   emailValidte,
@@ -51,15 +51,18 @@ export const CandidateEmailSender = observer((props: IProps) => {
     name: "",
     subject: "",
   });
-  const [emailsToList, setEmailsToList] = useState<IMailsList[]>([]);
-  const [listDefaultEmails, setListDefaultEmails] = useState<IMailsList[]>([]);
+  const [emailsToList, setEmailsToList] = useState<IEmailsAddress[]>([]);
+  const [listDefaultEmails, setListDefaultEmails] = useState<IEmailsAddress[]>(
+    []
+  );
   const [reviewHtml, setReviewHtml] = useState("");
   const [formModel, setFormModel] = useState<IEmailForm>({
     subject: "",
-    review: "",
+    body: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     subject: "",
+    body: "",
   });
 
   useEffect(() => {
@@ -74,39 +77,60 @@ export const CandidateEmailSender = observer((props: IProps) => {
         },
       ];
 
-      var reviewLines = candsStore.candDisplay.review?.split("\n");
+      // var reviewLines = candsStore.candDisplay.review?.split("\n");
 
-      const reviewLinesHtml = reviewLines?.map((item, i) => {
-        return `<p style="text-align: right; direction: rtl;">${item}</p>`;
-      });
+      // const reviewLinesHtml = reviewLines?.map((item, i) => {
+      //   return `<p style="text-align: right; direction: rtl;">${item}</p>`;
+      // });
 
-      setReviewHtml(reviewLinesHtml?.join("") || "");
+      // setReviewHtml(reviewLinesHtml?.join("") || "");
       setEmailsToList(emailsList);
       setListDefaultEmails(emailsList);
     }
   }, []);
 
-  useEffect(() => {}, [emailTemplate]);
+  useEffect(() => {
+    setFormModel((currentProps) => ({
+      ...currentProps,
+      subject: emailTemplate.subject,
+    }));
+
+    setReviewHtml(emailTemplate.body);
+  }, [emailTemplate]);
 
   const validateForm = () => {
+    const quillEditor = refQuill.current as any;
+    const body = quillEditor.getText();
+
     let isFormValid = true,
       err = "";
 
-    err = validateTxt(formModel.subject, [TextValidateTypeEnum.notEmpty]);
-
+    err = validateTxt(formModel.subject, [
+      TextValidateTypeEnum.notEmpty,
+      TextValidateTypeEnum.twoCharsMin,
+    ]);
     isFormValid = updateFieldError("subject", err) && isFormValid;
+
+    err = validateTxt(body, [
+      TextValidateTypeEnum.notEmpty,
+      TextValidateTypeEnum.twoCharsMin,
+    ]);
+    isFormValid = updateFieldError("body", err) && isFormValid;
 
     return isFormValid;
   };
 
   const handleSend = async () => {
+    validateForm();
     const quillEditor = refQuill.current as any;
     const reviewText = quillEditor.getText();
     const reviewHtml = quillEditor.root.innerHTML;
-    // <p style="text-align: right; direction: rtl;">טל פון בישראל 0515405763</p>
-    // <p style="text-align: right; direction: rtl;">נמצא בבוסטון עם אשתו - נמצאת בהרווארד</p>
-    //await candsStore.saveCvReview(reviewText, reviewHtml);
-    props.onClose();
+    await candsStore.sendEmailToCandidate(
+      emailsToList,
+      formModel.subject,
+      reviewHtml
+    );
+    // props.onClose();
   };
 
   return (
@@ -126,7 +150,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
               listDefaultEmails={listDefaultEmails}
             />
           </Grid>
-          <Grid item xs={12} lg={8} pt={1}>
+          <Grid item xs={12} lg={8} pt={2}>
             <TextField
               sx={{
                 mt: 0,
@@ -151,7 +175,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
               value={formModel.subject}
             />
           </Grid>
-          <Grid item xs={12} lg={4} pt={1}>
+          <Grid item xs={12} lg={4} pt={2}>
             <Stack direction="row">
               <FormControl fullWidth sx={{ direction: "rtl" }}>
                 <InputLabel id="emailTemplatelabel">Email Template</InputLabel>
@@ -202,8 +226,13 @@ export const CandidateEmailSender = observer((props: IProps) => {
               </IconButton>
             </Stack>
           </Grid>
+          <Grid item xs={12} lg={12} pt={1}>
+            <QuillRte ref={refQuill} quillHtml={reviewHtml} />
+          </Grid>
+          <Grid item xs={12} lg={12} pt={1}>
+            <div style={{ color: "#f44336" }}>{errModel.body}</div>
+          </Grid>
         </Grid>
-        <QuillRte ref={refQuill} quillHtml={reviewHtml} />
         <Grid container>
           <Grid item xs={12} lg={12} pt={2}>
             <Stack direction="row" justifyContent="flex-end" gap={1}>

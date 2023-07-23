@@ -17,7 +17,7 @@ export const EmailTemplateFormDialog = ({ isOpen, onClose }: IProps) => {
       open={isOpen}
       onClose={() => onClose(false)}
       fullWidth
-      maxWidth={"sm"}
+      maxWidth={"md"}
     >
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>

@@ -40,34 +40,12 @@ Quill.register(IndentStyle, true);
 
 export const QuillRte = observer(
   forwardRef(({ quillHtml }: IProps, refQuill: any) => {
-    // const [quillRef, setQuillRef] = useState<any>(null);
-
-    // let quillRef: any = null;
-    // let reactQuillRef: any = null;
-    // const [quillHtml, setQuillHtml] = useState("");
-
-    // useEffect(() => {
-    //   setQuillHtml(candsStore.candSelected?.review || "");
-    // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // useEffect(() => {
-    //   if (quillRef) {
-    //     initQuillEditor();
-    //   }
-    // }, [quillRef]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // const initQuillEditor = () => {
-    //   if (typeof quillRef.getEditor !== "function") return;
-    //   const quillEditor = quillRef.getEditor();
-    //   quillEditor.format("direction", "rtl");
-    //   quillEditor.format("align", "right");
-    //   onInit(quillEditor);
-    // };
     const [Value, setValue] = useState("");
     const [ReadOnly, setReadOnly] = useState(true);
 
     useEffect(() => {
       setValue(quillHtml || "");
+
       if (quillHtml != null) {
         setReadOnly(false);
       }

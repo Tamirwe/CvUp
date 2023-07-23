@@ -100,7 +100,7 @@ export interface ICvReview {
   reviewText: string;
 }
 
-export interface IMailsList {
+export interface IEmailsAddress {
   email: string;
   name: string;
   userTyped?: boolean;
@@ -108,7 +108,7 @@ export interface IMailsList {
 
 export interface IEmailForm {
   subject: string;
-  review: string;
+  body: string;
 }
 
 export interface IEmailTemplate {

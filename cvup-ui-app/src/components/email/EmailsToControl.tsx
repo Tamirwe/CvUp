@@ -1,17 +1,17 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IMailsList } from "../../models/GeneralModels";
+import { IEmailsAddress } from "../../models/GeneralModels";
 import { isEmailValid } from "../../utils/Validation";
 
 interface IProps {
-  listEmailsTo: IMailsList[];
-  listDefaultEmails: IMailsList[];
+  listEmailsTo: IEmailsAddress[];
+  listDefaultEmails: IEmailsAddress[];
 }
 
 export const EmailsToControl = (props: IProps) => {
-  const [emailsToList, setEmailsToList] = useState<IMailsList[]>([]);
+  const [emailsToList, setEmailsToList] = useState<IEmailsAddress[]>([]);
   const [inputVal, setInputVal] = useState("");
-  const [vals, setVals] = useState<IMailsList[]>([]);
+  const [vals, setVals] = useState<IEmailsAddress[]>([]);
 
   useEffect(() => {
     setEmailsToList([...props.listEmailsTo]);
@@ -27,7 +27,7 @@ export const EmailsToControl = (props: IProps) => {
     }
   }, [props.listDefaultEmails, props.listEmailsTo]);
 
-  const filterEmailToList = (emailsPicked: IMailsList[]) => {
+  const filterEmailToList = (emailsPicked: IEmailsAddress[]) => {
     const options = props.listEmailsTo.filter((x) =>
       emailsPicked.every((y) => y.email !== x.email)
     );

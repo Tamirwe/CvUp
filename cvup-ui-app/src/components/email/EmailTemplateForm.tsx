@@ -10,26 +10,21 @@ import {
   Select,
   Stack,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
   AlertConfirmDialogEnum,
-  CrudTypesEnum,
-  PositionStatusEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { IEmailTemplate } from "../../models/GeneralModels";
 import { validateTxt } from "../../utils/Validation";
-import { format } from "date-fns";
-import { CiEdit } from "react-icons/ci";
 import { GoPlus } from "react-icons/go";
-import { classes } from "istanbul-lib-coverage";
 import { MdContentCopy } from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
+import { QuillRte } from "../rte/QuillRte";
 
 interface IProps {
   onSaved: () => void;
@@ -38,9 +33,10 @@ interface IProps {
 
 export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   const { candsStore, generalStore } = useStore();
+  const refQuill = useRef();
+
   // const [emailTemplate, setEmailTemplate] = useState( null  );
   const [submitError, setSubmitError] = useState("");
-  const [isDirty, setIsDirty] = useState(false);
   const [formModel, setFormModel] = useState<IEmailTemplate>({
     id: 0,
     name: "",
@@ -50,7 +46,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
     subject: "",
-    body: "",
+    // body: "",
   });
 
   useEffect(() => {
@@ -75,17 +71,20 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
     ]);
     isFormValid = updateFieldError("subject", err) && isFormValid;
 
-    err = validateTxt(formModel.body || "", [
-      TextValidateTypeEnum.notEmpty,
-      TextValidateTypeEnum.twoCharsMin,
-    ]);
-    isFormValid = updateFieldError("body", err) && isFormValid;
+    // err = validateTxt(formModel.body || "", [
+    //   TextValidateTypeEnum.notEmpty,
+    //   TextValidateTypeEnum.twoCharsMin,
+    // ]);
+    // isFormValid = updateFieldError("body", err) && isFormValid;
 
     return isFormValid;
   };
 
   const handleSubmit = async () => {
-    setIsDirty(false);
+    const quillEditor = refQuill.current as any;
+    //const reviewText = quillEditor.getText();
+    formModel.body = quillEditor.root.innerHTML;
+
     if (validateForm()) {
       let response;
 
@@ -156,7 +155,6 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                           name: e.target.value,
                         }));
                         clearError("name");
-                        setIsDirty(true);
                       }}
                       error={errModel.name !== ""}
                       helperText={errModel.name}
@@ -178,10 +176,13 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                         id="emailTemplate"
                         label="Email Template"
                         onChange={(e) => {
-                          setFormModel((currentProps) => ({
-                            ...currentProps,
-                            status: e.target.value as PositionStatusEnum,
-                          }));
+                          const template = candsStore.emailTemplates?.find(
+                            (x) => x.id === e.target.value
+                          );
+
+                          if (template) {
+                            setFormModel(template);
+                          }
                         }}
                         value={formModel.id}
                       >
@@ -214,14 +215,24 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                         subject: e.target.value,
                       }));
                       clearError("subject");
-                      setIsDirty(true);
                     }}
                     error={errModel.subject !== ""}
                     helperText={errModel.subject}
                     value={formModel.subject}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  pt={1}
+                  sx={{
+                    direction: "ltr",
+                  }}
+                >
+                  <QuillRte ref={refQuill} quillHtml={formModel.body} />
+                </Grid>
+                {/* <Grid item xs={12} lg={12}>
                   <TextField
                     sx={{
                       direction: "rtl",
@@ -247,7 +258,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     helperText={errModel.body}
                     value={formModel.body}
                   />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12} lg={12} sx={{ direction: "ltr" }}>
                   <div
@@ -263,41 +274,41 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     <Link
                       href="#"
                       onClick={() => {
-                        copyToClipBoard("<First Name>");
+                        copyToClipBoard("FirstName");
                       }}
                     >
                       <MdContentCopy />
-                      &lt;First Name&gt;
+                      FirstName
                     </Link>
                     &nbsp;&nbsp;
                     <Link
                       href="#"
                       onClick={() => {
-                        copyToClipBoard("<Full Name>");
+                        copyToClipBoard("FullName");
                       }}
                     >
                       <MdContentCopy />
-                      &lt;Full Name&gt;
+                      FullName
                     </Link>
                     &nbsp;&nbsp;
                     <Link
                       href="#"
                       onClick={() => {
-                        copyToClipBoard("<Company Name>");
+                        copyToClipBoard("CompanyName");
                       }}
                     >
                       <MdContentCopy />
-                      &lt;Company Name&gt;
+                      CompanyName
                     </Link>
                     &nbsp;&nbsp;
                     <Link
                       href="#"
                       onClick={() => {
-                        copyToClipBoard("<Position Name>");
+                        copyToClipBoard("PositionName");
                       }}
                     >
                       <MdContentCopy />
-                      &lt;Position Name&gt;
+                      PositionName
                     </Link>
                     &nbsp;&nbsp;
                   </div>
@@ -337,7 +348,6 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                       </Button>
 
                       <Button
-                        disabled={!isDirty}
                         fullWidth
                         color="secondary"
                         onClick={handleSubmit}

@@ -8,6 +8,7 @@ import {
   ICompanyStagesTypes,
   IPosStages,
   IEmailTemplate,
+  IEmailsAddress,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -547,6 +548,19 @@ export class CandsStore {
 
   async deleteEmailTemplate(id: number) {
     const res = await this.cvsApi.deleteEmailTemplate(id);
+    return res;
+  }
+
+  async sendEmailToCandidate(
+    emailsToList: IEmailsAddress[],
+    subject: string,
+    reviewHtml: string
+  ) {
+    const res = await this.cvsApi.sendEmailToCandidate(
+      emailsToList,
+      subject,
+      reviewHtml
+    );
     return res;
   }
 }

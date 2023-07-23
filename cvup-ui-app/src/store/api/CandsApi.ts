@@ -3,6 +3,7 @@ import {
   ICvReview,
   ICompanyStagesTypes,
   IEmailTemplate,
+  IEmailsAddress,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -147,6 +148,20 @@ export default class CandsApi extends BaseApi {
   async deleteEmailTemplate(id: number) {
     return await this.apiWrapper2(async () => {
       return await this.http.delete(`Cand/DeleteEmailTemplate?id=${id}`);
+    });
+  }
+
+  async sendEmailToCandidate(
+    emailsToList: IEmailsAddress[],
+    subject: string,
+    reviewHtml: string
+  ) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.post(`Cand/SendEmailToCandidate`, {
+        emailsToList,
+        subject,
+        reviewHtml,
+      });
     });
   }
 }

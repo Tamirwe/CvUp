@@ -20,7 +20,13 @@ namespace EmailsLibrary.Models
         public EmailAddress? From { get; set; } = new EmailAddress();
         public string? Subject { get; set; } = string.Empty;
         public string? Body { get; set; } = string.Empty;
-        public List<MemoryStream>? Attachments { get; set; }
+        public List<AttachmentModel>? Attachments { get; set; }
+    }
+
+    public class AttachmentModel
+    {
+        public string name { get; set; } = string.Empty;
+        public MemoryStream Attachment { get; set; } = new MemoryStream();
     }
 
     public class GMmailSettings

@@ -19,6 +19,7 @@ import {
   IEmailForm,
   IEmailTemplate,
   IEmailsAddress,
+  ISendEmail,
 } from "../../models/GeneralModels";
 import {
   emailValidte,
@@ -160,11 +161,14 @@ export const CandidateEmailSender = observer((props: IProps) => {
     if (isValid) {
       const quillEditor = refQuill.current as any;
       const emailBody = quillEditor.root.innerHTML;
-      var data = await candsStore.sendEmail(
-        emailsToList,
-        formModel.subject,
-        emailBody
-      );
+
+      const emailData: ISendEmail = {
+        toAddresses: emailsToList,
+        subject: formModel.subject,
+        body: emailBody,
+      };
+
+      var data = await candsStore.sendEmail(emailData);
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

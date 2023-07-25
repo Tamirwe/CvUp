@@ -14,6 +14,8 @@ import {
   IEmailTemplate,
   IEmailsAddress,
   IPosition,
+  IAttachCv,
+  ISendEmail,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -563,32 +565,10 @@ export class CandsStore {
     return res;
   }
 
-  async sendEmail(
-    ToAddresses: IEmailsAddress[],
-    subject: string,
-    body: string,
-    candId?: number,
-    cvId?: number,
-    cvKeys?: string[],
-    positionId?: number,
-    customerId?: number,
-    positionName?: string,
-    customerName?: string
-  ) {
+  async sendEmail(emailData: ISendEmail) {
     this.rootStore.generalStore.backdrop = true;
 
-    const res = await this.cvsApi.sendEmail(
-      ToAddresses,
-      subject,
-      body,
-      candId,
-      cvId,
-      cvKeys,
-      positionId,
-      customerId,
-      positionName,
-      customerName
-    );
+    const res = await this.cvsApi.sendEmail(emailData);
 
     this.rootStore.generalStore.backdrop = false;
 

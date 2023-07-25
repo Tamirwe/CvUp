@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { IEmailForm, IEmailsAddress } from "../../models/GeneralModels";
+import {
+  IAttachCv,
+  IEmailForm,
+  IEmailsAddress,
+  ISendEmail,
+} from "../../models/GeneralModels";
 import { QuillRte } from "../rte/QuillRte";
 import { EmailsToControl } from "./EmailsToControl";
 import { useFormErrors } from "../../Hooks/useFormErrors";
@@ -92,11 +97,19 @@ export const ContactEmailSender = (props: IProps) => {
     if (isValid) {
       const quillEditor = refQuill.current as any;
       const emailBody = quillEditor.root.innerHTML;
-      var data = await candsStore.sendEmail(
-        emailsToList,
-        formModel.subject,
-        emailBody
-      );
+      const attachment: IAttachCv = {
+        cvKey: candsStore.candDisplay?.keyId || "",
+        name: `${candsStore.candDisplay?.firstName} ${candsStore.candDisplay?.lastName}`,
+      };
+
+      const emailData: ISendEmail = {
+        toAddresses: emailsToList,
+        subject: formModel.subject,
+        body: emailBody,
+        attachCvs: [attachment],
+      };
+
+      var data = await candsStore.sendEmail(emailData);
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

@@ -76,6 +76,16 @@ namespace EmailsLibrary
 
             var builder = new BodyBuilder { HtmlBody = eml.Body };
 
+            if (eml.Attachments != null)
+            {
+                foreach (var item in eml.Attachments)
+                {
+                    builder.Attachments.Add($"{item.name.Replace(' ','_')}.pdf", item.Attachment);
+                }
+            }
+
+            message.Body = builder.ToMessageBody();
+
             //builder.Attachments.Add
             //Thread emailThread = new Thread(delegate ()
             //{

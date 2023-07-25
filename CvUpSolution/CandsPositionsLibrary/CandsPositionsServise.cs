@@ -1,4 +1,5 @@
-﻿using Database.models;
+﻿using CvFilesLibrary;
+using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
@@ -22,17 +23,17 @@ namespace CandsPositionsLibrary
         private ILuceneService _luceneService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
-        //private ICvsFilesService  _cvsFilesService;
+        private ICvsFilesService _cvsFilesService;
 
         public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService,
-            IEmailService emailService, IEmailQueries emailQueries)
+            IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService)
         {
             _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneService = luceneService;
             _emailService = emailService;
             _emailQueries = emailQueries;
-            //_cvsFilesService = cvsFilesService;
+            _cvsFilesService = cvsFilesService;
         }
 
         public async Task<int> AddCv(ImportCvModel importCv)
@@ -303,17 +304,18 @@ namespace CandsPositionsLibrary
 
         public async Task SendEmail(SendEmailModel emailData)
         {
-            //List<MemoryStream>? Attachments = new List<MemoryStream>();
-            //_cvsFilesService.AddPdfLogo(emailData.companyId, "");
+            List<AttachmentModel>? Attachments = new List<AttachmentModel>();
 
-            //foreach (var item in emailData.cvKeys)
-            //{
-            //    Attachments.Add(_cvsFilesService.AddPdfLogo(emailData.companyId, item));
+            if (emailData.attachCvs != null)
+            {
+                foreach (var item in emailData.attachCvs)
+                {
+                    var Attachment = _cvsFilesService.AddPdfLogo(emailData.companyId, item.cvKey);
+                    Attachments.Add(new AttachmentModel { Attachment = Attachment, name = item.name });
+                }
+            }
 
-
-            //}
-
-            await _emailService.Send(new EmailModel { To = emailData.ToAddresses, Subject = emailData.subject, Body = emailData.body });
+            await _emailService.Send(new EmailModel { To = emailData.toAddresses, Subject = emailData.subject, Body = emailData.body, Attachments= Attachments });
         }
 
     }

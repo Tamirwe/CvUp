@@ -34,7 +34,7 @@ namespace CvFilesLibrary
 
         public  MemoryStream AddPdfLogo(int companyId, string cvKey )
         {
-            CvFileDetailsModel CvFileDetails = GetCvFileDetails(cvKey);
+            CvFileDetailsModel cvFileDetails = GetCvFileDetails(cvKey);
 
             //using (MemoryStream memoryStream = new MemoryStream())
             //{
@@ -43,9 +43,22 @@ namespace CvFilesLibrary
             //}
 
             //Create a PdfDocument instance
-            PdfDocument pdf = new PdfDocument();
-            //pdf.LoadFromStream(stream);
-            pdf.LoadFromFile(CvFileDetails.cvFilePath);
+            PdfDocument pdf;
+
+            if (cvFileDetails.cvFileType == ".pdf")
+            {
+                //pdf.LoadFromStream(stream);
+                pdf = new PdfDocument();
+                pdf.LoadFromFile(cvFileDetails.cvFilePath);
+            }
+            else
+            {
+                Spire.Doc.Document document = new Spire.Doc.Document(cvFileDetails.cvFilePath);
+                var stream = new MemoryStream();
+                document.SaveToFile(stream, Spire.Doc.FileFormat.PDF);
+                stream.Seek(0, SeekOrigin.Begin);
+                pdf = new PdfDocument(stream);
+            }
 
             //Get the first page in the PDF document
             PdfPageBase page = pdf.Pages[0];
@@ -66,7 +79,7 @@ namespace CvFilesLibrary
 
             var pdfStream = pdf.SaveToStream(FileFormat.PDF);
             var memoryPdfStream = pdfStream.Cast<MemoryStream>().First();
-            //stream.Seek(0, SeekOrigin.Begin);
+            memoryPdfStream.Seek(0, SeekOrigin.Begin);
             return memoryPdfStream;
 
 

@@ -4,6 +4,8 @@ import {
   ICompanyStagesTypes,
   IEmailTemplate,
   IEmailsAddress,
+  IAttachCv,
+  ISendEmail,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -151,31 +153,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async sendEmail(
-    ToAddresses: IEmailsAddress[],
-    subject: string,
-    body: string,
-    candId?: number,
-    cvId?: number,
-    cvKeys?: string[],
-    positionId?: number,
-    customerId?: number,
-    positionName?: string,
-    customerName?: string
-  ) {
+  async sendEmail(emailData: ISendEmail) {
     return await this.apiWrapper2(async () => {
-      return await this.http.post(`Cand/SendEmail`, {
-        ToAddresses,
-        subject,
-        body,
-        candId,
-        cvId,
-        cvKeys,
-        positionId,
-        customerId,
-        positionName,
-        customerName,
-      });
+      return await this.http.post(`Cand/SendEmail`, emailData);
     });
   }
 }

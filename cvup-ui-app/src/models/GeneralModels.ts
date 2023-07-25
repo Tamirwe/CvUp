@@ -120,6 +120,24 @@ export interface IEmailTemplate {
   body: string;
 }
 
+export interface ISendEmail {
+  toAddresses: IEmailsAddress[];
+  subject: string;
+  body: string;
+  attachCvs?: IAttachCv[];
+  // candId?: number;
+  // cvId?: number;
+  // positionId?: number;
+  // customerId?: number;
+  // positionName?: string;
+  // customerName?: string;
+}
+
+export interface IAttachCv {
+  cvKey: string;
+  name: string;
+}
+
 export interface IContact {
   id: number;
   firstName: string;

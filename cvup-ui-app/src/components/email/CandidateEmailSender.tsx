@@ -160,7 +160,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
     if (isValid) {
       const quillEditor = refQuill.current as any;
       const emailBody = quillEditor.root.innerHTML;
-      var data = await candsStore.sendEmailToCandidate(
+      var data = await candsStore.sendEmail(
         emailsToList,
         formModel.subject,
         emailBody

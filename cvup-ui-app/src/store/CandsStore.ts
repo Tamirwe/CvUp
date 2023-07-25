@@ -563,17 +563,29 @@ export class CandsStore {
     return res;
   }
 
-  async sendEmailToCandidate(
+  async sendEmail(
     ToAddresses: IEmailsAddress[],
     subject: string,
-    body: string
+    body: string,
+    candId?: number,
+    cvId?: number,
+    positionId?: number,
+    customerId?: number,
+    positionName?: string,
+    customerName?: string
   ) {
     this.rootStore.generalStore.backdrop = true;
 
-    const res = await this.cvsApi.sendEmailToCandidate(
+    const res = await this.cvsApi.sendEmail(
       ToAddresses,
       subject,
-      body
+      body,
+      candId,
+      cvId,
+      positionId,
+      customerId,
+      positionName,
+      customerName
     );
 
     this.rootStore.generalStore.backdrop = false;

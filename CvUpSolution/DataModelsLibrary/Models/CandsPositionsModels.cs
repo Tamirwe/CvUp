@@ -210,6 +210,7 @@ namespace DataModelsLibrary.Models
         public int? companyId { get; set; }
         public int? candId { get; set; }
         public int? cvId { get; set; }
+        public List<string>? cvKeys { get; set; }
         public int? positionId { get; set; } = 0;
         public string? positionName { get; set; } = string.Empty;
         public string? customerName { get; set; } = string.Empty;
@@ -217,6 +218,12 @@ namespace DataModelsLibrary.Models
         public List<EmailAddress>? ToAddresses { get; set; }
         public string? subject { get; set; } = "";
         public string? body { get; set; } = "";
+    }
+
+    public class CvFileDetailsModel
+    {
+        public string cvFilePath { get; set; } = string.Empty;
+        public string cvFileType { get; set; } = string.Empty;
     }
 
 }

@@ -22,15 +22,19 @@ namespace CandsPositionsLibrary
         private ILuceneService _luceneService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
+        //private ICvsFilesService  _cvsFilesService;
 
-        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService, IEmailService emailService, IEmailQueries emailQueries)
+        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService,
+            IEmailService emailService, IEmailQueries emailQueries)
         {
             _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneService = luceneService;
             _emailService = emailService;
             _emailQueries = emailQueries;
+            //_cvsFilesService = cvsFilesService;
         }
+
         public async Task<int> AddCv(ImportCvModel importCv)
         {
             return await _cvsPositionsQueries.AddCv(importCv);
@@ -299,7 +303,17 @@ namespace CandsPositionsLibrary
 
         public async Task SendEmail(SendEmailModel emailData)
         {
-           await _emailService.Send(new EmailModel { To = emailData.ToAddresses, Subject = emailData.subject, Body = emailData.body });
+            //List<MemoryStream>? Attachments = new List<MemoryStream>();
+            //_cvsFilesService.AddPdfLogo(emailData.companyId, "");
+
+            //foreach (var item in emailData.cvKeys)
+            //{
+            //    Attachments.Add(_cvsFilesService.AddPdfLogo(emailData.companyId, item));
+
+
+            //}
+
+            await _emailService.Send(new EmailModel { To = emailData.ToAddresses, Subject = emailData.subject, Body = emailData.body });
         }
 
     }

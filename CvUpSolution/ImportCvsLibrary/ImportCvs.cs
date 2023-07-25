@@ -24,7 +24,7 @@ namespace ImportCvsLibrary
     {
 
         ICandsPositionsServise _cvsPositionsServise;
-        string _cvsRootFolder;
+        string _filesRootFolder;
         string _gmailUserName;
         string _mailPassword;
         string _cvFolderPath = "";
@@ -38,8 +38,8 @@ namespace ImportCvsLibrary
         {
             _cvsPositionsServise = cvsPositionsServise;
 
-            _cvsRootFolder = config["GlobalSettings:CvsFilesRootFolder"];
-            Directory.CreateDirectory(_cvsRootFolder);
+            _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
+            //Directory.CreateDirectory(_filesRootFolder);
             _gmailUserName = config["GlobalSettings:gmailUserName"];
             _mailPassword = config["GlobalSettings:gmailPassword"];
         }
@@ -133,11 +133,11 @@ namespace ImportCvsLibrary
         private void CreateCvFolder(int companyId)
         {
             _companyFolder = companyId.ToString();
-            Directory.CreateDirectory($"{_cvsRootFolder}\\{_companyFolder}");
-            _cvTempFolderPath = $"{_cvsRootFolder}\\{_companyFolder}\\temp";
+            Directory.CreateDirectory($"{_filesRootFolder}\\{_companyFolder}\\cvs");
+            _cvTempFolderPath = $"{_filesRootFolder}\\{_companyFolder}\\temp";
             Directory.CreateDirectory(_cvTempFolderPath);
-            Directory.CreateDirectory($"{_cvsRootFolder}\\{_companyFolder}\\{_yearFolder}");
-            _cvFolderPath = $"{_cvsRootFolder}\\{_companyFolder}\\{_yearFolder}\\{_monthFolder}";
+            Directory.CreateDirectory($"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}");
+            _cvFolderPath = $"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}";
             Directory.CreateDirectory(_cvFolderPath);
         }
 
@@ -385,7 +385,7 @@ namespace ImportCvsLibrary
         {
             cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{Utils.FileTypeKey(fileExtension)}-{cvId}";
             string fileName = cvKey + fileExtension;
-            var fileNamePath = $"{_cvsRootFolder}\\{_companyFolder}\\{_yearFolder}\\{_monthFolder}\\{fileName}";
+            var fileNamePath = $"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}\\{fileName}";
             return fileNamePath;
         }
 

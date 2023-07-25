@@ -27,39 +27,56 @@ namespace EmailsLibrary
 
         public async Task Send(EmailModel eml)
         {
+
             var message = new MimeMessage();
 
-            if (eml.From.Address == null)
+            if (eml.From != null)
             {
-                message.From.Add(new MailboxAddress(_mailFromName, _mailFromAddress));
-            }
-            else
-            {
-                message.From.Add(new MailboxAddress(eml.From.Name, eml.From.Address));
-            }
-
-            foreach (var item in eml.To)
-            {
-                //message.To.Add(new MailboxAddress(item.Name, item.Address));
-                message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
-            }
-            foreach (var item in eml.Cc)
-            {
-                //message.Cc.Add(new MailboxAddress(item.Name, item.Address));
-            }
-            foreach (var item in eml.Bcc)
-            {
-                //message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
+                if (eml.From.Address == null)
+                {
+                    message.From.Add(new MailboxAddress(_mailFromName, _mailFromAddress));
+                }
+                else
+                {
+                    message.From.Add(new MailboxAddress(eml.From.Name, eml.From.Address));
+                }
             }
 
+            if (eml.To != null)
+            {
+                foreach (var item in eml.To)
+                {
+                    //message.To.Add(new MailboxAddress(item.Name, item.Address));
+                    message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
+                }
+            }
+
+            if (eml.Cc != null)
+            {
+                foreach (var item in eml.Cc)
+                {
+                    //message.Cc.Add(new MailboxAddress(item.Name, item.Address));
+                }
+            }
+
+            if (eml.Bcc != null)
+            {
+                foreach (var item in eml.Bcc)
+                {
+                    //message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
+                }
+            }
 
             message.Subject = eml.Subject;
 
-            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-            {
-                Text = eml.Body
-            };
+            //message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            //{
+            //    Text = eml.Body
+            //};
 
+            var builder = new BodyBuilder { HtmlBody = eml.Body };
+
+            //builder.Attachments.Add
             //Thread emailThread = new Thread(delegate ()
             //{
             using (var client = new SmtpClient())

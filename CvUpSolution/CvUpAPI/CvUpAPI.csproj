@@ -29,6 +29,7 @@
     <ProjectReference Include="..\AuthLibrary\AuthLibrary.csproj" />
     <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
     <ProjectReference Include="..\CustomersContactsLibrary\CustomersContactsLibrary.csproj" />
+    <ProjectReference Include="..\CvFilesLibrary\CvFilesLibrary.csproj" />
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
     <ProjectReference Include="..\FoldersLibrary\FoldersLibrary.csproj" />
@@ -43,6 +44,10 @@
     <None Update="EmailTemplates\PasswordResetTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Images\" />
   </ItemGroup>
 
 </Project>

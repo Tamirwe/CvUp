@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomersContactsLibrary", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelsLibrary", "DataModelsLibrary\DataModelsLibrary.csproj", "{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CvFilesLibrary", "CvFilesLibrary\CvFilesLibrary.csproj", "{AE559FB1-F64D-4F64-98D7-16E4681330BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D58577-558A-4B26-B4AA-4B99EFDBAB1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

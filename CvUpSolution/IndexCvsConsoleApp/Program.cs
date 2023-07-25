@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using CandsPositionsLibrary;
 using DataModelsLibrary.Queries;
+using EmailsLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
     {
         services.AddTransient<ILuceneService, LuceneService>();
+        services.AddTransient<IEmailService, EmailService>();
+        services.AddTransient<IEmailQueries, EmailQueries>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
     })

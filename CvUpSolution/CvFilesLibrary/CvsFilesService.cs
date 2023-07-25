@@ -1,23 +1,93 @@
 ﻿using Database.models;
+using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using GeneralLibrary;
 using Microsoft.Extensions.Configuration;
+using Spire.Pdf;
+using Spire.Pdf.Graphics;
 
-namespace CandsPositionsLibrary.CvsFiles
+namespace CvFilesLibrary
 {
     public class CvsFilesService : ICvsFilesService
     {
         private ICandsPositionsQueries _cvsPositionsQueries;
-        string CvsRootFolder;
+        string _filesRootFolder;
 
         public CvsFilesService(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
-            CvsRootFolder = $"{config["GlobalSettings:CvsFilesRootFolder"]}";
+            _filesRootFolder = $"{config["GlobalSettings:CvUpFilesRootFolder"]}";
+        }
+
+        public CvFileDetailsModel GetCvFileDetails(string cvKey)
+        {
+            string[] secArr = cvKey.Split("-");
+            string companyFolder = secArr[0];
+            string yearFolder = secArr[1].Substring(0, 4);
+            string monthFolder = secArr[1].Substring(4, secArr[1].Length - 5);
+            string fileType = Utils.FileTypeName(secArr[1].Last());
+            string fileName = $"{companyFolder}-{yearFolder}{monthFolder}-{secArr[2]}{fileType}";
+            string[] pathArr = secArr[0].Split("_");
+            string path = $"{_filesRootFolder}\\_{companyFolder}\\cvs\\{yearFolder}\\{monthFolder}\\{fileName}";
+            return new CvFileDetailsModel { cvFilePath = path, cvFileType = fileType };
+        }
+
+        public  MemoryStream AddPdfLogo(int companyId, string cvKey )
+        {
+            CvFileDetailsModel CvFileDetails = GetCvFileDetails(cvKey);
+
+            //using (MemoryStream memoryStream = new MemoryStream())
+            //{
+            //    await emailRequest.Attachment.CopyToAsync(memoryStream);
+            //    builder.Attachments.Add(emailRequest.Attachment.FileName, memoryStream.ToArray());
+            //}
+
+            //Create a PdfDocument instance
+            PdfDocument pdf = new PdfDocument();
+            //pdf.LoadFromStream(stream);
+            pdf.LoadFromFile(CvFileDetails.cvFilePath);
+
+            //Get the first page in the PDF document
+            PdfPageBase page = pdf.Pages[0];
+
+            //Load an image
+            PdfImage image = PdfImage.FromFile($"{_filesRootFolder}\\_{companyId}\\logos\\logoForCv.png");
+
+            //Specify the width and height of the image area on the page
+            float width = image.Width * 0.50f;
+            float height = image.Height * 0.50f;
+
+            //Specify the X and Y coordinates to start drawing the image
+            float x = 5f;
+            float y = 5f;
+
+            //Draw the image at a specified location on the page
+            page.Canvas.DrawImage(image, x, y, width, height);
+
+            var pdfStream = pdf.SaveToStream(FileFormat.PDF);
+            var memoryPdfStream = pdfStream.Cast<MemoryStream>().First();
+            //stream.Seek(0, SeekOrigin.Begin);
+            return memoryPdfStream;
+
+
+
+            /*** FFU  (for future use)****/
+            //Save the result document
+            //pdf.SaveToFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\AddImage.pdf", FileFormat.PDF);
+
+            /***  Delete images ****/
+            //var pageImages = page.ExtractImages();
+
+            //foreach (var item in pageImages)
+            //{
+            //    page.DeleteImage(item);
+            //}
+            /********************/
         }
 
         public async Task ImportNewCvsExternalDisk(int companyId, string sourceFolder)
         {
-            string companyDirPathName = $"{CvsRootFolder}\\{companyId}_";
+            string companyDirPathName = $"{_filesRootFolder}\\_{companyId}\\cvs";
             List<cv> cvsIds = await _cvsPositionsQueries.GetCompanyCvs(companyId);
 
             var companyDir = new DirectoryInfo(sourceFolder);
@@ -76,7 +146,7 @@ namespace CandsPositionsLibrary.CvsFiles
 
         public void DeleteNotRelatedCvs(int companyId, List<string?> cvsIds)
         {
-            string companyDirPathName = $"{CvsRootFolder}\\{companyId}_";
+            string companyDirPathName = $"{_filesRootFolder}\\_{companyId}\\cvs";
 
             if (Directory.Exists(companyDirPathName))
             {
@@ -101,7 +171,7 @@ namespace CandsPositionsLibrary.CvsFiles
         public void DeleteNotRelatedCompaniesFolders(List<int> companiesIds)
         {
 
-            DirectoryInfo di = new DirectoryInfo(CvsRootFolder);
+            DirectoryInfo di = new DirectoryInfo(_filesRootFolder);
             DirectoryInfo[] arrDir = di.GetDirectories();
 
             foreach (var dir in arrDir)

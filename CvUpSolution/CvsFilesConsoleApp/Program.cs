@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CandsPositionsLibrary.CvsFiles;
+using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

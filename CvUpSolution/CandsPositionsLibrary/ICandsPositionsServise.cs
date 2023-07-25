@@ -44,6 +44,6 @@ namespace CandsPositionsLibrary
         Task DeleteEmailTemplate(int companyId, int id);
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
         Task UpdateCandDetails(CandDetailsModel candDetails);
-        Task SendEmailToCandidate(SendEmailModel emailData);
+        Task SendEmail(SendEmailModel emailData);
     }
 }

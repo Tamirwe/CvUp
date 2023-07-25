@@ -297,7 +297,7 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
         }
 
-        public async Task SendEmailToCandidate(SendEmailModel emailData)
+        public async Task SendEmail(SendEmailModel emailData)
         {
            await _emailService.Send(new EmailModel { To = emailData.ToAddresses, Subject = emailData.subject, Body = emailData.body });
         }

@@ -171,11 +171,11 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("SendEmailToCandidate")]
-        public async Task<IActionResult> SendEmailToCandidate(SendEmailModel emailData)
+        [Route("SendEmail")]
+        public async Task<IActionResult> SendEmail(SendEmailModel emailData)
         {
             emailData.companyId = Globals.CompanyId;
-            await _candPosService.SendEmailToCandidate(emailData);
+            await _candPosService.SendEmail(emailData);
             return Ok();
         }
     }

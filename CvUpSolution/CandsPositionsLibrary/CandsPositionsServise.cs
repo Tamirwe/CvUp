@@ -142,7 +142,7 @@ namespace CandsPositionsLibrary
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
         {
             List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
-            cvsList.RemoveAll(x => x.cvId == cvId);
+            //cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
 

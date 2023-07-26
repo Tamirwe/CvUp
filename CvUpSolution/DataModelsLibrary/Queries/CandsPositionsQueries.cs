@@ -337,6 +337,7 @@ namespace DataModelsLibrary.Queries
 
                 var query = from p in dbContext.positions
                             where p.id == positionId && p.company_id == companyId
+                            join c in dbContext.customers on p.customer_id equals c.id
                             orderby p.name
                             select new PositionModel
                             {
@@ -345,6 +346,7 @@ namespace DataModelsLibrary.Queries
                                 descr = p.descr ?? "",
                                 requirements = p.requirements ?? "",
                                 customerId = p.customer_id ?? 0,
+                                customerName = c.name,
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
                                 contactsIds = conts,

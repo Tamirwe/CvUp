@@ -67,6 +67,7 @@ export const Cv = observer(() => {
           <div className="qlCustom">
             <pre
               style={{
+                whiteSpace: "break-spaces",
                 direction: authStore.isRtl ? "rtl" : "ltr",
                 textAlign: authStore.isRtl ? "right" : "left",
                 fontFamily: "inherit",

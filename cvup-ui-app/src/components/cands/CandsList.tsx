@@ -34,6 +34,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
   const navigate = useNavigate();
 
   const listRef = useRef<any>(null);
+  const [dupOpenCandId, setDupOpenCandId] = useState(0);
   const [listCands, setListCands] = useState<ICand[]>([]);
 
   useEffect(() => {
@@ -94,7 +95,10 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
               flexDirection: "column",
               alignItems: "normal",
               direction: "rtl",
-              pl: 0,
+              pl: "2px",
+              "& .MuiButtonBase-root": {
+                pl: "1px",
+              },
             }}
           >
             <ListItemButton
@@ -105,7 +109,6 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
               onClick={(event) => {
                 event.stopPropagation();
                 event.preventDefault();
-                candsStore.duplicateCvId = 0;
 
                 if (isMobile) {
                   generalStore.rightDrawerOpen = false;
@@ -114,7 +117,8 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                candsStore.displayCvMain(cand, candsSource);
+
+                candsStore.displayCv(cand, candsSource);
               }}
             >
               <Box
@@ -159,22 +163,27 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                       event.stopPropagation();
                       event.preventDefault();
 
-                      if (!isMobile) {
-                        if (location.pathname !== "/cv") {
-                          navigate(`/cv`);
-                        }
-                        candsStore.displayCvMain(cand, candsSource);
+                      // if (!isMobile) {
+                      if (location.pathname !== "/cv") {
+                        navigate(`/cv`);
                       }
 
-                      if (
-                        !candsStore.duplicateCvId ||
-                        candsStore.duplicateCvId !== cand.cvId
-                      ) {
-                        candsStore.duplicateCvId = cand.cvId;
-                        candsStore.getDuplicatesCvsList(cand);
+                      candsStore.displayCv(cand, candsSource);
+                      candsStore.getDuplicatesCvsList(cand);
+
+                      if (dupOpenCandId !== cand.candidateId) {
+                        setDupOpenCandId(cand.candidateId);
                       } else {
-                        candsStore.duplicateCvId = 0;
+                        setDupOpenCandId(0);
                       }
+
+                      // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
+                      //   candsStore.duplicateCvsCandId = cand.candidateId;
+                      //   candsStore.getDuplicatesCvsList(cand);
+                      // } else {
+                      //   candsStore.duplicateCvsCandId = 0;
+                      // }
+                      //}
                     }}
                   >
                     <IconButton
@@ -182,8 +191,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
                       aria-label="upload picture"
                       component="label"
                     >
-                      {candsStore.duplicateCvId &&
-                      candsStore.duplicateCvId === cand.cvId ? (
+                      {dupOpenCandId === cand.candidateId ? (
                         <MdExpandLess />
                       ) : (
                         <MdExpandMore />
@@ -197,7 +205,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
               </Box>
             </ListItemButton>
             <Collapse
-              in={cand.cvId === candsStore.duplicateCvId}
+              in={dupOpenCandId === cand.candidateId}
               timeout="auto"
               unmountOnExit
             >

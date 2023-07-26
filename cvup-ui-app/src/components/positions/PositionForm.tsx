@@ -253,10 +253,14 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                         ...currentProps,
                         contactsIds: value,
                       }));
-                      setFormModel((currentProps) => ({
-                        ...currentProps,
-                        customerId: customerId,
-                      }));
+
+                      if (customerId && customerId > 0) {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          customerId: customerId,
+                        }));
+                      }
+
                       setIsDirty(true);
                     }}
                   />

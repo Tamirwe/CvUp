@@ -313,6 +313,17 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<int>> getPositionContactsIds(int companyId,int positionId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return await dbContext.position_contacts
+                     .Where(p => p.company_id == companyId && p.position_id == positionId)
+                     .Select(p => p.contact_id)
+                     .ToListAsync();
+            }
+        }
+
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
@@ -322,10 +333,7 @@ namespace DataModelsLibrary.Queries
                           .Select(p => p.user_id)
                           .ToArrayAsync();
 
-                var conts = await dbContext.position_contacts
-                       .Where(p => p.company_id == companyId && p.position_id == positionId)
-                       .Select(p => p.contact_id)
-                       .ToArrayAsync();
+                var conts = await getPositionContactsIds(companyId, positionId);
 
                 var query = from p in dbContext.positions
                             where p.id == positionId && p.company_id == companyId
@@ -339,7 +347,7 @@ namespace DataModelsLibrary.Queries
                                 customerId = p.customer_id ?? 0,
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
-                                contactsIds = conts.ToArray(),
+                                contactsIds = conts,
                                 emailsubjectAddon=p.customer_pos_num,
                                 updated=p.date_updated
                             };
@@ -502,13 +510,13 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds)
+        public async Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var conts = await (from i in dbContext.position_contacts
-                                           where i.company_id == companyId && i.position_id == positionId
-                                           select i).ToListAsync();
+                                   where i.company_id == companyId && i.position_id == positionId
+                                   select i).ToListAsync();
 
                 foreach (var id in contactsIds)
                 {
@@ -525,7 +533,9 @@ namespace DataModelsLibrary.Queries
 
                 foreach (var item in conts)
                 {
-                    if (Array.IndexOf(contactsIds, item.contact_id) == -1)
+                    int contId = contactsIds.Where(x => x == item.contact_id).FirstOrDefault();
+
+                    if (contId == 0)
                     {
                         dbContext.position_contacts.Remove(item);
                     }

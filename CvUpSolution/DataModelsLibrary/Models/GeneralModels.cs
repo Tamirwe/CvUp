@@ -24,7 +24,7 @@ namespace DataModelsLibrary.Models
         public PositionStatusEnum status { get; set; } = PositionStatusEnum.Active;
         public DateTime? updated { get; set; }
         public int? customerId { get; set; } = 0;
-        public int[] contactsIds { get; set; } = new int[] { };
+        public List<int>? contactsIds { get; set; }
         public int[] interviewersIds { get; set; } = new int[] { };
         public string? emailsubjectAddon { get; set; } = string.Empty;
 

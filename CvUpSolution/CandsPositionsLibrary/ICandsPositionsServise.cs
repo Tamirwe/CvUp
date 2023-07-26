@@ -21,6 +21,7 @@ namespace CandsPositionsLibrary
         Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
         Task DeletePosition(int companyId, int id);
+        Task<List<int>> getPositionContactsIds(int companyId, int positionId);
         Task<PositionModel> GetPosition(int companyId, int positionId);
         Task<List<ParserRulesModel>> GetParsersRules(int companyId);
         Task<CvModel?> GetCv(int cvId, int companyId);

@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   FormControl,
   FormHelperText,
@@ -13,7 +14,7 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { MdFormatAlignRight, MdFormatAlignLeft } from "react-icons/md";
+import { MdFormatAlignRight, MdFormatAlignLeft, MdAdd } from "react-icons/md";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
@@ -22,11 +23,12 @@ import {
   PositionStatusEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
-import { IPosition } from "../../models/GeneralModels";
-import { validateTxt } from "../../utils/Validation";
+import { IContact, IPosition } from "../../models/GeneralModels";
+import { validateSelect, validateTxt } from "../../utils/Validation";
 import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
 import { UsersAutoCompleteMulty } from "./UsersAutoCompleteMulty";
 import { format } from "date-fns";
+import { isMobile } from "react-device-detect";
 
 interface IProps {
   onSaved: (id: number) => void;
@@ -40,6 +42,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
 
   const [submitError, setSubmitError] = useState("");
+  const [contactsList, setContactsList] = useState<IContact[]>();
   const [isDirty, setIsDirty] = useState(false);
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
@@ -56,6 +59,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
+    customerId: "",
   });
 
   useEffect(() => {
@@ -64,14 +68,22 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       setFormModel({ ...positionsStore.editPosition });
     }
 
-    (async () => {
-      await Promise.all([
-        authStore.usersList.length === 0 && authStore.getUsersList(),
-        customersContactsStore.contactsListSorted.length === 0 &&
-          customersContactsStore.getContactsList(),
-      ]);
-    })();
+    // (async () => {
+    //   await Promise.all([
+    //     authStore.usersList.length === 0 && authStore.getUsersList(),
+    //     customersContactsStore.contactsListSorted.length === 0 &&
+    //       customersContactsStore.getContactsList(),
+    //   ]);
+    // })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const contList = customersContactsStore.getContactsByCustomerId(
+      formModel.customerId
+    );
+
+    setContactsList(contList);
+  }, [formModel?.customerId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (formModel) {
@@ -98,6 +110,11 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       TextValidateTypeEnum.startWithTwoLetters,
     ]);
     isFormValid = updateFieldError("name", err) && isFormValid;
+
+    err = validateSelect(formModel.customerId, [
+      TextValidateTypeEnum.notSelected,
+    ]);
+    isFormValid = updateFieldError("customerId", err) && isFormValid;
 
     return isFormValid;
   };
@@ -244,9 +261,89 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} lg={8} mt={2} sx={{ direction: "ltr" }}>
+
+                <Grid item xs={12} lg={3} mt={2} sx={{ direction: "ltr" }}>
+                  <Stack direction="row">
+                    <Autocomplete
+                      value={
+                        formModel.customerId > 0
+                          ? {
+                              id: formModel.customerId,
+                              label: formModel.customerName,
+                            }
+                          : null
+                      }
+                      inputValue={formModel.customerName}
+                      onInputChange={(event, newInputValue) => {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          customerName: newInputValue,
+                        }));
+                      }}
+                      disabled={crudType === CrudTypesEnum.Delete}
+                      onChange={(event, newValue) => {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          customerId: newValue?.id || 0,
+                          customerName: newValue?.label || "",
+                        }));
+
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          contactsIds: [],
+                        }));
+
+                        setContactsList(
+                          customersContactsStore.getContactsByCustomerId(
+                            newValue?.id || 0
+                          )
+                        );
+
+                        clearError("customerId");
+                        setIsDirty(true);
+                      }}
+                      id="dsfs"
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      options={customersContactsStore.customersList.map(
+                        (x) => ({
+                          id: x.id,
+                          label: x.name,
+                        })
+                      )}
+                      sx={{ width: "88%" }}
+                      renderInput={(params) => (
+                        <TextField
+                          helperText={errModel.customerId}
+                          error={errModel.customerId !== ""}
+                          {...params}
+                          label="Customer"
+                        />
+                      )}
+                    />
+                    <IconButton
+                      size="medium"
+                      aria-label="toggle password visibility"
+                      onClick={() =>
+                        (generalStore.showCustomersListDialog = true)
+                      }
+                      edge="end"
+                      sx={{
+                        marginTop: 1,
+                        marginLeft: 1,
+                        alignItems: "center",
+                        height: "40px",
+                        width: "40px",
+                      }}
+                    >
+                      <MdAdd />
+                    </IconButton>
+                  </Stack>
+                </Grid>
+                <Grid item xs={12} lg={6} mt={2} sx={{ direction: "ltr" }}>
                   <ContactsAutoCompleteMulty
-                    options={customersContactsStore.contactsListSorted}
+                    options={contactsList}
                     valueIds={formModel.contactsIds}
                     onChange={(value, customerId) => {
                       setFormModel((currentProps) => ({
@@ -254,19 +351,12 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                         contactsIds: value,
                       }));
 
-                      if (customerId && customerId > 0) {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          customerId: customerId,
-                        }));
-                      }
-
                       setIsDirty(true);
                     }}
                   />
                 </Grid>
 
-                <Grid item xs={12} lg={4}>
+                <Grid item xs={12} lg={3}>
                   <TextField
                     sx={{
                       direction: "rtl",
@@ -300,7 +390,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     }}
                     fullWidth
                     multiline
-                    rows={18}
+                    rows={isMobile ? 18 : 22}
                     margin="normal"
                     type="text"
                     id="description"
@@ -326,7 +416,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     }}
                     fullWidth
                     multiline
-                    rows={18}
+                    rows={isMobile ? 18 : 22}
                     margin="normal"
                     type="text"
                     id="requirements"

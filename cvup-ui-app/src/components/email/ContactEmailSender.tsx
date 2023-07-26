@@ -54,20 +54,20 @@ export const ContactEmailSender = (props: IProps) => {
 
       setBodyHtml(reviewLinesHtml?.join("") || "");
 
-      // const emailsList = candsStore.candDisplay.position?.contactsIds.map(
-      //   (id) => {
-      //     const contact = customersContactsStore.getContactById(id);
-      //     return {
-      //       Address: contact.email || "",
-      //       Name: (contact.firstName || "") + " " + (contact.lastName || ""),
-      //     };
-      //   }
-      // );
+      const emailsList = candsStore.candDisplay.position?.contactsIds.map(
+        (id) => {
+          const contact = customersContactsStore.getContactById(id);
+          return {
+            Address: contact.email || "",
+            Name: (contact.firstName || "") + " " + (contact.lastName || ""),
+          };
+        }
+      );
 
-      // if (emailsList) {
-      //   setEmailsToList(emailsList);
-      //   setListDefaultEmails(emailsList);
-      // }
+      if (emailsList) {
+        setEmailsToList(emailsList);
+        setListDefaultEmails(emailsList);
+      }
     }
   }, []);
 

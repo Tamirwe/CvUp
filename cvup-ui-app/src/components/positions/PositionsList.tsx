@@ -165,6 +165,10 @@ export const PositionsList = observer(() => {
                         positionsStore.selectedPosition?.id || 0
                       );
                       generalStore.showPositionFormDialog = true;
+                      
+                      if (isMobile) {
+                        generalStore.leftDrawerOpen = false;
+                      }
                     }}
                   >
                     <MdOutlineEdit />

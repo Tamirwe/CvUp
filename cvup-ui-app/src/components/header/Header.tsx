@@ -15,7 +15,8 @@ import { EmailTypeEnum } from "../../models/GeneralEnums";
 import { CiEdit, CiMail } from "react-icons/ci";
 
 export const Header = () => {
-  const { candsStore, generalStore, positionsStore } = useStore();
+  const { candsStore, generalStore, positionsStore, customersContactsStore } =
+    useStore();
   // const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,8 +24,8 @@ export const Header = () => {
       await Promise.all([
         candsStore.getCompanyStagesTypes(),
         positionsStore.getPositionsList(),
-        candsStore.getCandsList(),
         candsStore.getEmailTemplates(),
+        customersContactsStore.getCustomersList(),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

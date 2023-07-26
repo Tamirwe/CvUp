@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { IContact } from "../../models/GeneralModels";
 
 interface IProps {
-  options: IContact[];
+  options?: IContact[];
   valueIds: number[];
   onChange: (value: number[], customerId: number) => void;
 }
@@ -13,11 +13,16 @@ export const ContactsAutoCompleteMulty = (props: IProps) => {
   const [valuesList, setValuesList] = useState<IContact[]>([]);
 
   useEffect(() => {
-    setOptionsList([...props.options]);
+    if (props.options && props.options.length) {
+      setOptionsList([...props.options]);
+    } else {
+      setOptionsList([]);
+      setValuesList([]);
+    }
   }, [props.options]);
 
   useEffect(() => {
-    if (props.options.length) {
+    if (props.options && props.options.length) {
       setValuesList([
         ...props.options.filter((x) => props.valueIds.indexOf(x.id) > -1),
       ]);

@@ -12,11 +12,11 @@ interface IProps {
 export const CustomersList = observer((props: IProps) => {
   const { customersContactsStore } = useStore();
 
-  useEffect(() => {
-    (async () => {
-      await customersContactsStore.getCustomersList();
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   (async () => {
+  //     await customersContactsStore.getCustomersList();
+  //   })();
+  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <List

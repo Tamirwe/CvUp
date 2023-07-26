@@ -86,6 +86,11 @@ export class CandsStore {
     runInAction(() => {
       this.candDupSelected = candCv;
 
+      if (this.candDisplay) {
+        this.candDisplay!.cvId = candCv.cvId;
+        this.candDisplay!.keyId = candCv.keyId;
+      }
+     
       switch (listType) {
         case CvDisplayedListEnum.CandsList:
           this.candAllSelected = this.candsAllList.find(

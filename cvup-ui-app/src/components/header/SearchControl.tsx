@@ -76,7 +76,7 @@ interface IProps {
 
 export const SearchControl = ({ onSearch }: IProps) => {
   const [value, setValue] = useState("");
-  const debouncedValue = useDebounce<string>(value, 500);
+  const debouncedValue = useDebounce<string>(value, 700);
 
   useEffect(() => {
     onSearch(value);

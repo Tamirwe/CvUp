@@ -58,9 +58,9 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
       setFormModel({ ...customersContactsStore.selectedContact });
     }
 
-    (async () => {
-      await Promise.all([customersContactsStore.getCustomersList()]);
-    })();
+    // (async () => {
+    //   await Promise.all([customersContactsStore.getCustomersList()]);
+    // })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {

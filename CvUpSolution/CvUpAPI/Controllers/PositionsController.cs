@@ -20,6 +20,7 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+
         [Route("GetPosition")]
         public async Task<IActionResult> GetPosition(int id)
         {

@@ -15,6 +15,7 @@ namespace DataModelsLibrary.Queries
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
          Task<List<PositionModel>> GetPositionsList(int companyId);
          Task DeletePosition(int companyId, int id);
+         Task<List<int>> getPositionContactsIds(int companyId, int positionId);
          Task<PositionModel> GetPosition(int companyId, int positionId);
          Task<List<ParserRulesModel>> GetParsersRules(int companyId);
          Task<List<int>> GetCompaniesIds();
@@ -36,7 +37,7 @@ namespace DataModelsLibrary.Queries
         Task ActivatePosition(int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
-        Task AddUpdateContacts(int companyId, int positionId, int[] contactsIds);
+        Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
          Task<List<cv>> GetCompanyCvs(int companyId);
         Task SaveCandReview(CandReviewModel candReview);

@@ -151,6 +151,12 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId,  candsIds);
         }
 
+        public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
+        {
+            List<int> posContacts = await _cvsPositionsQueries.getPositionContactsIds(companyId, positionId);
+            return posContacts;
+        }
+
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
             PositionModel pos = await _cvsPositionsQueries.GetPosition(companyId, positionId);
@@ -161,16 +167,16 @@ namespace CandsPositionsLibrary
         {
             position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
             await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
-            await _cvsPositionsQueries.AddUpdateContacts(companyId, newRec.id, data.contactsIds);
+            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, newRec.id, data.contactsIds);
             return newRec.id;
         }
 
         public async Task<int> UpdatePosition(PositionModel data, int companyId, int userId)
         {
             position? updRec = await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
-            await _cvsPositionsQueries.AddUpdateInterviewers(companyId, data.id,data.interviewersIds);
-            await _cvsPositionsQueries.AddUpdateContacts(companyId, data.id, data.contactsIds);
-            return updRec.id;
+            //await _cvsPositionsQueries.AddUpdateInterviewers(companyId, data.id,data.interviewersIds);
+            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, data.id, data.contactsIds);
+            return data.id;
         }
 
         public async Task<List<PositionModel>> GetPositionsList(int companyId)

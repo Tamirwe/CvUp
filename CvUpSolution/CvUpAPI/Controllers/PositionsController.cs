@@ -20,11 +20,20 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+
         [Route("GetPosition")]
         public async Task<IActionResult> GetPosition(int id)
         {
             PositionModel position = await _cvsPosService.GetPosition(Globals.CompanyId, id);
             return Ok(position);
+        }
+
+        [HttpGet]
+        [Route("getPositionContactsIds")]
+        public async Task<IActionResult> getPositionContactsIds(int posId)
+        {
+            var positionContacts = await _cvsPosService.getPositionContactsIds(Globals.CompanyId, posId);
+            return Ok(positionContacts);
         }
 
         [HttpGet]

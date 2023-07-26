@@ -63,7 +63,7 @@ export class PositionsStore {
     return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
   };
 
-  setPosSelected(posId: number, candId?: number) {
+  setPosSelectedById(posId: number, candId?: number) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);
     this.positionCandIdSelected = candId;
   }
@@ -98,6 +98,18 @@ export class PositionsStore {
     runInAction(() => {
       this.positionEdit = res.data;
     });
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async getPositionContacts(posId: number) {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.positionApi.getPositionContactsIds(posId);
+
+    if (this.positionSelected) {
+      this.positionSelected!.contactsIds = res.data;
+    }
 
     this.rootStore.generalStore.backdrop = false;
   }

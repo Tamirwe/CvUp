@@ -99,8 +99,11 @@ export const CandidateEmailSender = observer((props: IProps) => {
         `${candsStore.candDisplay.firstName} ${candsStore.candDisplay.lastName}`
       );
 
-      dynamicDataMap.set("CustomerName", candsStore.candDisplay.customerName);
-      dynamicDataMap.set("PositionName", candsStore.candDisplay.positionName);
+      dynamicDataMap.set(
+        "CustomerName",
+        candsStore.candDisplay.position?.customerName
+      );
+      dynamicDataMap.set("PositionName", candsStore.candDisplay.position?.name);
 
       setDynamicData(dynamicDataMap);
     }

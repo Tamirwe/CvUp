@@ -1,4 +1,4 @@
-import { IPosition } from "../../models/GeneralModels";
+import { IContact, IPosition } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {
@@ -11,6 +11,14 @@ export default class PositionsApi extends BaseApi {
   async getPosition(positionId: number) {
     return await this.apiWrapper2<IPosition>(async () => {
       return await this.http.get(`Positions/GetPosition?id=${positionId}`);
+    });
+  }
+
+  async getPositionContactsIds(positionId: number) {
+    return await this.apiWrapper2<number[]>(async () => {
+      return await this.http.get(
+        `Positions/getPositionContactsIds?posId=${positionId}`
+      );
     });
   }
 

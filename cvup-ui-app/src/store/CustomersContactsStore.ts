@@ -57,6 +57,10 @@ export class CustomersContactsStore {
     );
   };
 
+  getContactById = (id: number) => {
+    return { ...this.contactsList.find((x) => x.id === id) };
+  };
+
   async addContact(contactModel: IContact) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.contactsApi.addContact(contactModel);

@@ -50,8 +50,7 @@ export interface ICand {
   hasDuplicates: boolean;
   folderCandId: number;
   posStages?: IPosStages[];
-  positionName?: string;
-  customerName?: string;
+  position?: IPosition;
 }
 
 export interface IPosStages {

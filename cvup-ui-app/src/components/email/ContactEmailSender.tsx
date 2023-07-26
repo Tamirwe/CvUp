@@ -27,7 +27,7 @@ interface IProps {
 }
 
 export const ContactEmailSender = (props: IProps) => {
-  const { candsStore, generalStore } = useStore();
+  const { candsStore, generalStore, customersContactsStore } = useStore();
   const refQuill = useRef();
   const [bodyHtml, setBodyHtml] = useState("");
 
@@ -46,16 +46,6 @@ export const ContactEmailSender = (props: IProps) => {
 
   useEffect(() => {
     if (candsStore.candDisplay) {
-      const emailsList = [
-        {
-          Address: candsStore.candAllSelected?.email || "",
-          Name:
-            (candsStore.candDisplay?.firstName || "") +
-            " " +
-            (candsStore.candDisplay?.lastName || ""),
-        },
-      ];
-
       var reviewLines = candsStore.candDisplay.review?.split("\n");
 
       const reviewLinesHtml = reviewLines?.map((item, i) => {
@@ -64,8 +54,20 @@ export const ContactEmailSender = (props: IProps) => {
 
       setBodyHtml(reviewLinesHtml?.join("") || "");
 
-      setEmailsToList(emailsList);
-      setListDefaultEmails(emailsList);
+      // const emailsList = candsStore.candDisplay.position?.contactsIds.map(
+      //   (id) => {
+      //     const contact = customersContactsStore.getContactById(id);
+      //     return {
+      //       Address: contact.email || "",
+      //       Name: (contact.firstName || "") + " " + (contact.lastName || ""),
+      //     };
+      //   }
+      // );
+
+      // if (emailsList) {
+      //   setEmailsToList(emailsList);
+      //   setListDefaultEmails(emailsList);
+      // }
     }
   }, []);
 

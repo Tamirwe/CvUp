@@ -10,8 +10,13 @@ export const usePositionClick = () => {
       candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands ||
       positionsStore.selectedPosition?.id !== posId
     ) {
-      positionsStore.setPosSelected(posId, candId);
+      positionsStore.setPosSelectedById(posId, candId);
       candsStore.getPositionCands();
+
+      Promise.all([
+        candsStore.getPositionCands(),
+        positionsStore.getPositionContacts(posId),
+      ]);
 
       if (isMobile) {
         generalStore.leftDrawerOpen = false;

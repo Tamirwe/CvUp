@@ -48,7 +48,7 @@ export const Header = () => {
       >
         <div
           style={{
-            backgroundColor: "#f3f4f5",
+            backgroundColor: "#eaf5ff",
             margin: "5px 10px",
             height: "100%",
             display: "flex",
@@ -119,16 +119,6 @@ export const Header = () => {
                   <MdOutlineMarkEmailRead />
                 </IconButton>
                 <IconButton
-                  title="Email to customer"
-                  sx={{ fontSize: "1.54rem" }}
-                  size="small"
-                  onClick={() =>
-                    (generalStore.showEmailDialog = EmailTypeEnum.Contact)
-                  }
-                >
-                  <MdOutlineMarkEmailUnread />
-                </IconButton>
-                <IconButton
                   title="Review"
                   sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
                   size="small"
@@ -143,6 +133,16 @@ export const Header = () => {
                   }}
                 >
                   <CiEdit />
+                </IconButton>
+                <IconButton
+                  title="Email to customer"
+                  sx={{ fontSize: "1.54rem" }}
+                  size="small"
+                  onClick={() =>
+                    (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+                  }
+                >
+                  <MdOutlineMarkEmailUnread />
                 </IconButton>
                 {/* <SearchCands /> */}
               </Stack>

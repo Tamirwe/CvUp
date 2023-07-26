@@ -29,7 +29,7 @@ export const PositionsList = observer(() => {
 
   const handleAttachPosCandCv = (posId: number) => {
     candsStore.attachPosCandCv(posId);
-    positionsStore.setPosSelected(posId);
+    positionsStore.setPosSelectedById(posId);
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
 

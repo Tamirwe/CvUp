@@ -34,7 +34,7 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
             await positionsStore.getPositionsList();
 
             if (posId > 0) {
-              positionsStore.setPosSelected(posId);
+              positionsStore.setPosSelectedById(posId);
             } else {
               positionsStore.selectedPosition = undefined;
             }

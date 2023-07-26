@@ -66,14 +66,16 @@ export class CandsStore {
 
   async displayCvMain(cand: ICand, candsSource: CandsSourceEnum) {
     runInAction(() => {
-      this.candAllSelected = cand;
-      this.candDisplay = this.candAllSelected;
+      // this.candAllSelected = cand;
+      this.candDisplay = cand;
+      cand.position = undefined;
 
       if (candsSource === CandsSourceEnum.Position) {
-        this.candDisplay.positionName =
-          this.rootStore.positionsStore.selectedPosition?.name;
-        this.candDisplay.customerName =
-          this.rootStore.positionsStore.selectedPosition?.customerName;
+        const selectedPosition = this.rootStore.positionsStore.selectedPosition;
+
+        if (selectedPosition && this.candDisplay) {
+          this.candDisplay.position = { ...selectedPosition };
+        }
       }
 
       this.getPdf(cand.keyId);
@@ -366,8 +368,10 @@ export class CandsStore {
     this.posCandsList = [];
 
     this.rootStore.generalStore.backdrop = true;
+    const posId= this.rootStore.positionsStore.selectedPosition?.id!;
+
     const res = await this.cvsApi.GetPosCandsList(
-      this.rootStore.positionsStore.selectedPosition?.id!
+      posId
     );
 
     const candsList = [...res.data];

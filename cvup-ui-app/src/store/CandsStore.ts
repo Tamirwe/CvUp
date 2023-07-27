@@ -377,21 +377,18 @@ export class CandsStore {
 
     const candsList = [...res.data];
 
-    if (this.rootStore.positionsStore.selectedPositionCandId) {
       const objIndex = candsList.findIndex(
-        (x) =>
-          x.candidateId === this.rootStore.positionsStore.selectedPositionCandId
+        (x) => x.candidateId === this.candDisplay?.candidateId
       );
 
       if (objIndex > -1) {
         const candSelected = candsList.splice(objIndex, 1);
         candsList.splice(0, 0, candSelected[0]);
       }
-    }
 
-    // runInAction(() => {
-    this.posCandsList = [...candsList];
-    // });
+      runInAction(() => {
+        this.posCandsList = [...candsList];
+      });
 
     this.rootStore.generalStore.backdrop = false;
   }

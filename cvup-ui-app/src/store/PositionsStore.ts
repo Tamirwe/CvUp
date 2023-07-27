@@ -2,6 +2,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { IAppSettings, IPosition } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
+import { isMobile } from "react-device-detect";
+import { TabsCandsEnum } from "../models/GeneralEnums";
 
 export class PositionsStore {
   private positionApi;
@@ -9,7 +11,6 @@ export class PositionsStore {
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
   private searchPhrase: string = "";
-  private positionCandIdSelected?: number;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -47,10 +48,6 @@ export class PositionsStore {
     return this.positionEdit;
   }
 
-  get selectedPositionCandId() {
-    return this.positionCandIdSelected;
-  }
-
   set editPosition(val: IPosition | undefined) {
     this.positionEdit = val;
   }
@@ -63,9 +60,25 @@ export class PositionsStore {
     return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
   };
 
-  setPosSelectedById(posId: number, candId?: number) {
+  // setPosSelectedById(posId: number, candId?: number) {
+  //   this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+  // }
+
+  async positionClick(posId: number) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);
-    this.positionCandIdSelected = candId;
+
+    await Promise.all([
+      this.rootStore.candsStore.getPositionCands(),
+      this.getPositionContacts(posId),
+    ]);
+
+    if (isMobile) {
+      this.rootStore.generalStore.leftDrawerOpen = false;
+      this.rootStore.generalStore.rightDrawerOpen = true;
+    }
+
+    this.rootStore.candsStore.currentTabCandsLists =
+      TabsCandsEnum.PositionCands;
   }
 
   async addPosition(position: IPosition) {
@@ -117,6 +130,11 @@ export class PositionsStore {
   async deletePosition(id: number) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.positionApi.deletePosition(id);
+
+    if (response.isSuccess) {
+      this.selectedPosition = undefined;
+    }
+
     this.rootStore.generalStore.backdrop = false;
     return response;
   }

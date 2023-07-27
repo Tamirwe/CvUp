@@ -28,6 +28,23 @@ export const Cv = observer(() => {
               gap: "0.71rem",
               color: "#0090d7",
               alignItems: "center",
+              fontWeight: 700,
+            }}
+          >
+            <Grid item xs="auto" lg="auto">
+              {(candsStore.candDisplay?.position?.name || "") +
+                " - " +
+                (candsStore.candDisplay?.position?.customerName || "")}
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              gap: "0.71rem",
+              color: "#0090d7",
+              alignItems: "center",
             }}
           >
             <Grid item xs="auto" lg="auto">

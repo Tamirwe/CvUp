@@ -5,7 +5,7 @@ import { PositionForm } from "./PositionForm";
 
 interface IProps {
   isOpen: boolean;
-  onClose: (isSaved: boolean) => void;
+  onClose: () => void;
 }
 
 export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
@@ -21,28 +21,10 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
   }, [isOpen]);
 
   return (
-    <Dialog
-      open={open}
-      onClose={() => onClose(false)}
-      fullWidth
-      maxWidth={"lg"}
-    >
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth={"lg"}>
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
-        <PositionForm
-          onSaved={async (posId) => {
-            await positionsStore.getPositionsList();
-
-            if (posId > 0) {
-              positionsStore.setPosSelectedById(posId);
-            } else {
-              positionsStore.selectedPosition = undefined;
-            }
-
-            onClose(true);
-          }}
-          onCancel={() => onClose(false)}
-        />
+        <PositionForm onClose={onClose} />
       </DialogContent>
     </Dialog>
   );

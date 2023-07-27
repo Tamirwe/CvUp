@@ -7,7 +7,6 @@ import { CandsSourceEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
 import styles from "./CandsList.module.scss";
 import classNames from "classnames";
-import { usePositionClick } from "../../Hooks/usePositionClick";
 import { isMobile } from "react-device-detect";
 
 interface IProps {
@@ -17,7 +16,6 @@ interface IProps {
 
 export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
   const { candsStore, positionsStore } = useStore();
-  const handlePositionClick = usePositionClick();
 
   return (
     <div
@@ -63,7 +61,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                   onClick: (event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    handlePositionClick(stage.id, cand.candidateId);
+                    positionsStore.positionClick(stage.id);
                   },
                 })}
               >

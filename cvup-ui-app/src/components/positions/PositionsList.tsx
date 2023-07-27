@@ -16,20 +16,18 @@ import styles from "./PositionsList.module.scss";
 import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IPosition } from "../../models/GeneralModels";
-import { usePositionClick } from "../../Hooks/usePositionClick";
 import classNames from "classnames";
 import { isMobile } from "react-device-detect";
 
 export const PositionsList = observer(() => {
   const { positionsStore, candsStore, generalStore } = useStore();
-  const handlePositionClick = usePositionClick();
 
   const listRef = useRef<any>(null);
   const [posList, setPosList] = useState<IPosition[]>([]);
 
   const handleAttachPosCandCv = (posId: number) => {
+    positionsStore.positionClick(posId);
     candsStore.attachPosCandCv(posId);
-    positionsStore.setPosSelectedById(posId);
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
 
@@ -123,7 +121,7 @@ export const PositionsList = observer(() => {
             <ListItemButton
               sx={{ pl: "4px" }}
               selected={pos.id === positionsStore.selectedPosition?.id}
-              onClick={() => handlePositionClick(pos.id)}
+              onClick={() => positionsStore.positionClick(pos.id)}
             >
               <div
                 className={classNames({
@@ -165,7 +163,7 @@ export const PositionsList = observer(() => {
                         positionsStore.selectedPosition?.id || 0
                       );
                       generalStore.showPositionFormDialog = true;
-                      
+
                       if (isMobile) {
                         generalStore.leftDrawerOpen = false;
                       }

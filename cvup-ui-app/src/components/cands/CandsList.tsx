@@ -87,7 +87,7 @@ export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
       {listCands.map((cand, i) => {
         return (
           <ListItem
-            key={cand.candidateId}
+            key={`${cand.candidateId}${i}`}
             dense
             disablePadding
             component="nav"

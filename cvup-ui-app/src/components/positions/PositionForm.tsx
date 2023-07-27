@@ -31,11 +31,10 @@ import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
 
 interface IProps {
-  onSaved: (id: number) => void;
-  onCancel: () => void;
+  onClose: () => void;
 }
 
-export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
+export const PositionForm = observer(({ onClose }: IProps) => {
   const { positionsStore, authStore, generalStore, customersContactsStore } =
     useStore();
   const [isRtlDirection, setIsRtlDirection] = useState(false);
@@ -131,7 +130,9 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       }
 
       if (response.isSuccess) {
-        onSaved(response.data);
+        await positionsStore.getPositionsList();
+
+        onClose();
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
@@ -149,7 +150,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
       const response = await positionsStore.deletePosition(formModel.id);
 
       if (response.isSuccess) {
-        onSaved(0);
+        onClose();
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
@@ -160,7 +161,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
     const response = await positionsStore.activatePosition(formModel);
 
     if (response.isSuccess) {
-      onSaved(formModel.id);
+      onClose();
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }
@@ -176,7 +177,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
         "Position Deactivated."
       );
 
-      onSaved(formModel.id);
+      onClose();
     } else {
       return setSubmitError("An Error Occurred Please Try Again Later.");
     }
@@ -492,7 +493,7 @@ export const PositionForm = observer(({ onSaved, onCancel }: IProps) => {
                     <Button
                       fullWidth
                       color="secondary"
-                      onClick={() => onCancel()}
+                      onClick={() => onClose()}
                     >
                       Cancel
                     </Button>

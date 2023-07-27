@@ -110,9 +110,7 @@ export const LoginForm = ({ loginType }: IProps) => {
     if (validateForm()) {
       const isSuccess = await authStore.login(formModel, loginType);
 
-      if (isSuccess) {
-        navigate("/");
-      } else {
+      if (!isSuccess) {
         setSubmitError("Incorrect email address or password.");
       }
     }

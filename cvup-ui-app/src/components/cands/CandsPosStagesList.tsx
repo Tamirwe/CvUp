@@ -61,7 +61,8 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                   onClick: (event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    positionsStore.positionClick(stage.id);
+
+                    positionsStore.positionClick(stage.id, cand);
                   },
                 })}
               >

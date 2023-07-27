@@ -3,12 +3,11 @@ import { PdfViewer } from "../components/pdfViewer/PdfViewer";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
-import { Grid, IconButton } from "@mui/material";
-import { CiEdit } from "react-icons/ci";
-import { MdSync } from "react-icons/md";
+import { Grid, Link } from "@mui/material";
+import { EmailTypeEnum } from "../models/GeneralEnums";
 
 export const Cv = observer(() => {
-  const { candsStore, authStore, generalStore } = useStore();
+  const { candsStore, authStore, generalStore, positionsStore } = useStore();
 
   return (
     <div className={styles.scrollCv}>
@@ -26,20 +25,33 @@ export const Cv = observer(() => {
             sx={{
               display: "flex",
               gap: "0.71rem",
-              color: "#0090d7",
+              color: "#7b84ff",
               alignItems: "center",
               fontWeight: 700,
             }}
           >
             <Grid item xs="auto" lg="auto">
-              {(candsStore.candDisplay?.position?.name || "") +
-                " - " +
-                (candsStore.candDisplay?.position?.customerName || "")}
+              {candsStore.candDisplay?.position && (
+                <Link
+                  href="#"
+                  onClick={() => {
+                    positionsStore.positionClick(
+                      candsStore.candDisplay!.position!.id,
+                      candsStore.candDisplay
+                    );
+                  }}
+                >
+                  {candsStore.candDisplay?.position?.name || ""}
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  {candsStore.candDisplay?.position?.customerName || ""}
+                </Link>
+              )}
             </Grid>
           </Grid>
 
           <Grid
             container
+            pt={1}
             sx={{
               display: "flex",
               gap: "0.71rem",
@@ -48,37 +60,29 @@ export const Cv = observer(() => {
             }}
           >
             <Grid item xs="auto" lg="auto">
-              <IconButton
-                color="primary"
+              <Link
+                href="#"
                 onClick={() => {
                   generalStore.showCandFormDialog = true;
                 }}
               >
-                <CiEdit />
-              </IconButton>
+                {(candsStore.candDisplay?.firstName || "") +
+                  " " +
+                  (candsStore.candDisplay?.lastName || "")}
+              </Link>
             </Grid>
             <Grid item xs="auto" lg="auto">
-              <IconButton
-                title="Replace between first and last names"
-                color="primary"
+              <Link
+                href="#"
                 onClick={() => {
-                  candsStore.replaceFirstLastNames();
+                  generalStore.showEmailDialog = EmailTypeEnum.Candidate;
                 }}
               >
-                <MdSync />
-              </IconButton>
+                {candsStore.candDisplay?.email}{" "}
+              </Link>
             </Grid>
             <Grid item xs="auto" lg="auto">
-              {(candsStore.candDisplay?.firstName || "") +
-                " " +
-                (candsStore.candDisplay?.lastName || "")}
-            </Grid>
-
-            <Grid item xs="auto" lg="auto">
-              <div>{candsStore.candDisplay?.email}</div>
-            </Grid>
-            <Grid item xs="auto" lg="auto">
-              <div>{candsStore.candDisplay?.phone}</div>
+              <a href="tel:+4733378901">{candsStore.candDisplay?.phone}</a>
             </Grid>
           </Grid>
           <div className="qlCustom">

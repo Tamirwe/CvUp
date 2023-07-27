@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, IPosition } from "../models/GeneralModels";
+import { IAppSettings, ICand, IPosition } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 import { isMobile } from "react-device-detect";
@@ -64,7 +64,7 @@ export class PositionsStore {
   //   this.selectedPosition = this.positionsList.find((x) => x.id === posId);
   // }
 
-  async positionClick(posId: number) {
+  async positionClick(posId: number, cand?: ICand) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);
 
     await Promise.all([
@@ -72,13 +72,17 @@ export class PositionsStore {
       this.getPositionContacts(posId),
     ]);
 
-    if (isMobile) {
-      this.rootStore.generalStore.leftDrawerOpen = false;
-      this.rootStore.generalStore.rightDrawerOpen = true;
+    if (cand) {
+      cand.position = this.selectedPosition;
     }
 
     this.rootStore.candsStore.currentTabCandsLists =
       TabsCandsEnum.PositionCands;
+
+    if (isMobile) {
+      this.rootStore.generalStore.leftDrawerOpen = false;
+      this.rootStore.generalStore.rightDrawerOpen = true;
+    }
   }
 
   async addPosition(position: IPosition) {

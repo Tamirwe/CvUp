@@ -73,8 +73,8 @@ export class CandsStore {
       if (candsSource === CandsSourceEnum.Position) {
         const selectedPosition = this.rootStore.positionsStore.selectedPosition;
 
-        if (selectedPosition && this.candDisplay) {
-          this.candDisplay.position = { ...selectedPosition };
+        if (this.candDisplay) {
+          this.candDisplay.position = selectedPosition;
         }
       }
 
@@ -575,14 +575,5 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
 
     return res;
-  }
-
-  async replaceFirstLastNames() {
-    await this.saveCandDetails(
-      this.candDisplay?.lastName || "",
-      this.candDisplay?.firstName || "",
-      this.candDisplay?.email || "",
-      this.candDisplay?.phone || ""
-    );
   }
 }

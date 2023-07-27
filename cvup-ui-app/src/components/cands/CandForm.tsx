@@ -1,7 +1,8 @@
-import { Button, Grid, Stack, TextField } from "@mui/material";
+import { Button, Grid, IconButton, Stack, TextField } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
+import { MdSync } from "react-icons/md";
 
 interface IProps {
   onSaved: () => void;
@@ -32,21 +33,34 @@ export const CandForm = observer(({ onSaved, onCancel }: IProps) => {
       <form noValidate spellCheck="false">
         <Grid container sx={{ direction: "rtl" }} gap={0}>
           <Grid item xs={6} lg={6}>
-            <TextField
-              sx={{
-                direction: "rtl",
-              }}
-              fullWidth
-              margin="dense"
-              type="text"
-              id="firstName"
-              label="First Name"
-              variant="outlined"
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
-              value={firstName}
-            />
+            <Stack direction="row" alignItems="center" gap={1}>
+              <IconButton
+                title="Replace between first and last names"
+                color="primary"
+                onClick={() => {
+                  const fn = firstName;
+                  setFirstName(lastName);
+                  setLastName(fn);
+                }}
+              >
+                <MdSync />
+              </IconButton>
+              <TextField
+                sx={{
+                  direction: "rtl",
+                }}
+                fullWidth
+                margin="dense"
+                type="text"
+                id="firstName"
+                label="First Name"
+                variant="outlined"
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
+                value={firstName}
+              />
+            </Stack>
           </Grid>
           <Grid item xs={6} lg={6}>
             <TextField

@@ -76,6 +76,13 @@ export const LoginForm = ({ loginType }: IProps) => {
           Object.freeze(serversApi);
         });
     }
+
+    if (
+      window.location.href.indexOf("10.100") === -1 &&
+      window.location.href.indexOf("localhost") === -1
+    ) {
+      setLocalStorageIP("http://" + window.location.hostname + ":8030/api/");
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
@@ -111,6 +118,14 @@ export const LoginForm = ({ loginType }: IProps) => {
     }
   };
 
+  const setLocalStorageIP = (ip: string) => {
+    const settingsObj: IAppSettings = JSON.parse(
+      localStorage.getItem("settings") || ""
+    );
+    settingsObj.apiUrl = ip;
+    localStorage.setItem("settings", JSON.stringify(settingsObj));
+  };
+
   return (
     <form noValidate spellCheck="false" autoComplete="off">
       <Grid container>
@@ -123,12 +138,8 @@ export const LoginForm = ({ loginType }: IProps) => {
               sx={{ width: "100%" }}
               onChange={(e) => {
                 setApiUrl(e.target.value);
+                setLocalStorageIP(e.target.value);
 
-                const settingsObj: IAppSettings = JSON.parse(
-                  localStorage.getItem("settings") || ""
-                );
-                settingsObj.apiUrl = e.target.value;
-                localStorage.setItem("settings", JSON.stringify(settingsObj));
                 window.location.reload();
               }}
               value={apiUrl}

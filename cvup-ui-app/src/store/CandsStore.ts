@@ -23,7 +23,7 @@ import { format } from "date-fns";
 
 export class CandsStore {
   private cvsApi;
-  private cvIdDuplicatesList: number = 0;
+  private candIdDuplicateCvs: number = 0;
   candsAllList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
@@ -43,12 +43,12 @@ export class CandsStore {
     this.cvsApi = new CandsApi(appSettings);
   }
 
-  get duplicateCvId() {
-    return this.cvIdDuplicatesList;
+  get duplicateCvsCandId() {
+    return this.candIdDuplicateCvs;
   }
 
-  set duplicateCvId(val) {
-    this.cvIdDuplicatesList = val;
+  set duplicateCvsCandId(val) {
+    this.candIdDuplicateCvs = val;
   }
 
   reset() {
@@ -64,7 +64,7 @@ export class CandsStore {
     return this.tabDisplayCandsLists;
   }
 
-  async displayCvMain(cand: ICand, candsSource: CandsSourceEnum) {
+  async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     runInAction(() => {
       // this.candAllSelected = cand;
       this.candDisplay = cand;
@@ -90,7 +90,7 @@ export class CandsStore {
         this.candDisplay!.cvId = candCv.cvId;
         this.candDisplay!.keyId = candCv.keyId;
       }
-     
+
       switch (listType) {
         case CvDisplayedListEnum.CandsList:
           this.candAllSelected = this.candsAllList.find(
@@ -110,15 +110,8 @@ export class CandsStore {
         default:
           break;
       }
-      this.getPdf(candCv.keyId);
-    });
-  }
 
-  async displayCvPosition(cand: ICand) {
-    runInAction(() => {
-      this.candPosSelected = cand;
-      this.candDisplay = this.candPosSelected;
-      this.getPdf(cand.keyId);
+      this.getPdf(candCv.keyId);
     });
   }
 
@@ -359,13 +352,18 @@ export class CandsStore {
 
   async getDuplicatesCvsList(cand: ICand) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.getDuplicatesCvsList(
-      cand.cvId,
-      cand.candidateId
-    );
-    runInAction(() => {
-      this.candDupCvsList = res.data;
-    });
+
+    if (this.duplicateCvsCandId !== cand.candidateId) {
+      const res = await this.cvsApi.getDuplicatesCvsList(
+        cand.cvId,
+        cand.candidateId
+      );
+
+      runInAction(() => {
+        this.duplicateCvsCandId = cand.candidateId;
+        this.candDupCvsList = res.data;
+      });
+    }
     this.rootStore.generalStore.backdrop = false;
   }
 
@@ -373,11 +371,9 @@ export class CandsStore {
     this.posCandsList = [];
 
     this.rootStore.generalStore.backdrop = true;
-    const posId= this.rootStore.positionsStore.selectedPosition?.id!;
+    const posId = this.rootStore.positionsStore.selectedPosition?.id!;
 
-    const res = await this.cvsApi.GetPosCandsList(
-      posId
-    );
+    const res = await this.cvsApi.GetPosCandsList(posId);
 
     const candsList = [...res.data];
 

@@ -110,7 +110,9 @@ export const LoginForm = ({ loginType }: IProps) => {
     if (validateForm()) {
       const isSuccess = await authStore.login(formModel, loginType);
 
-      if (!isSuccess) {
+      if (isSuccess) {
+        navigate("/");
+      } else {
         setSubmitError("Incorrect email address or password.");
       }
     }
@@ -137,8 +139,6 @@ export const LoginForm = ({ loginType }: IProps) => {
               onChange={(e) => {
                 setApiUrl(e.target.value);
                 setLocalStorageIP(e.target.value);
-
-                window.location.reload();
               }}
               value={apiUrl}
             >

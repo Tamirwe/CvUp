@@ -36,6 +36,24 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Refresh")]
+        public async Task<IActionResult> Refresh(TokenModel tokens)
+        {
+            if (tokens.refreshToken is null || tokens.token is null)
+                return BadRequest("Invalid client request");
+
+            TokenModel? newToken = await _authServise.RefreshToken(tokens.token, tokens.refreshToken);
+
+            if (newToken is null)
+            {
+                return Ok();
+            }
+
+            return Ok(newToken);
+
+        }
+
+        [HttpPost]
         [Route("CompleteRegistration")]
         public async Task<IActionResult> CompleteRegistration(UserLoginModel data)
         {
@@ -107,24 +125,6 @@ namespace CvUpAPI.Controllers
 
             return Ok("userNotFound");
             //return Ok(new { data = "userNotFound" } );
-
-        }
-
-        [HttpPost]
-        [Route("Refresh")]
-        public async Task<IActionResult> Refresh(TokenModel tokens)
-        {
-            if (tokens.refreshToken is null || tokens.token is null)
-                return BadRequest("Invalid client request");
-
-            TokenModel? newToken = await _authServise.RefreshToken(tokens.token, tokens.refreshToken);
-
-            if (newToken is null)
-            {
-                return Ok();
-            }
-
-            return Ok(newToken);
 
         }
 

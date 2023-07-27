@@ -52,6 +52,7 @@ export default function axiosService(
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         const newTokens = await refreshAccessToken();
+        originalRequest._retry = true;
 
         if (newTokens) {
           localStorage.setItem("jwt", newTokens.token);
@@ -60,11 +61,12 @@ export default function axiosService(
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + newTokens.token;
           return instance(originalRequest);
-        } else {
-          localStorage.removeItem("jwt");
-          localStorage.removeItem("refreshToken");
-          // document.location.href = "/";
         }
+        // else {
+        //   localStorage.removeItem("jwt");
+        //   localStorage.removeItem("refreshToken");
+        //   // document.location.href = "/";
+        // }
       }
 
       return Promise.reject(error);

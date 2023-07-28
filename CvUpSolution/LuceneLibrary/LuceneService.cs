@@ -8,11 +8,14 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using MailKit.Search;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Lucene.Net.Util.Packed.PackedInt32s;
 
@@ -32,15 +35,17 @@ namespace LuceneLibrary
         public LuceneService(IConfiguration config)
         {
             _filesRootFolder = $"{config["GlobalSettings:CvUpFilesRootFolder"]}";
-            System.IO.Directory.CreateDirectory($"{_filesRootFolder}//luceneIndex");
+            System.IO.Directory.CreateDirectory($"{_filesRootFolder}\\luceneIndex");
             mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
+            //mAnalyzer = new ClassicAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
+
             //_luceneIndexesRootFolder = config["GlobalSettings:LuceneIndexesRootFolder"];
             //_indexFolder = @"C:\KB\CvUp\CvUpSolution\LuceneLibrary\Index";
         }
 
         public async Task<List<SearchEntry>> Search(int companyId, string searchQuery)
         {
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}//luceneIndex";
+            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
             mIndexDirectory = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
@@ -55,14 +60,32 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                var query = mQueryParser.Parse(searchQuery.ToLower());
-                //var query = new WildcardQuery(new Term("CV", searchQuery));
+                //var query = mQueryParser.Parse(searchQuery.ToLower());
+                //var query = new WildcardQuery(new Term("CV", searchQuery.ToLower())) ;
+
+                BooleanQuery aggregateQuery = new BooleanQuery();
+
+
+                //PhraseQuery query = new PhraseQuery();
+                string pattern = @"\t|\n|\r|\p{P}";
+                string keyWords = Regex.Replace(searchQuery, pattern, " ");
+
+                string[] words = keyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var word in words)
+                {
+                    var query = mQueryParser.Parse(word.ToLower());
+                    aggregateQuery.Add(query, Occur.MUST);
+                    //query.Add(new Term("CV", word));
+                }
+
 
                 if (mIndexSearcher != null)
                 {
-                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 5000).ScoreDocs);
+                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(aggregateQuery, null, 5000).ScoreDocs);
+                    //ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 5000).ScoreDocs);
 
-                    for (int i = 0; i < hitIdxs.Length; i++)
+                    for ( int i = 0; i < hitIdxs.Length; i++)
                     {
                         var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
 
@@ -79,86 +102,74 @@ namespace LuceneLibrary
             return result;
         }
 
-        public async Task BuildCompanyIndex(int companyId, List<CvsToIndexModel> CompanyTextToIndexList)
+        public async Task CompanyIndexAddDocuments(int companyId, List<CvsToIndexModel> CompanyTextToIndexList, bool isDeleteAllDocuments)
         {
             try
             {
 
-            
-            //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-                string _indexFolder = $"{_filesRootFolder}\\_{companyId}//luceneIndex";
+
+                //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
+                string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
 
                 using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
-            {
-                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
-
-                using (var indexWriter = new IndexWriter(indexDir, config))
                 {
-                    indexWriter.DeleteAll();
+                    var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
 
-                    foreach (var item in CompanyTextToIndexList)
+                    using (var indexWriter = new IndexWriter(indexDir, config))
                     {
-                        //string txtToIndex = $"{item.email}~~~{item.phone}~~~{item.emailSubject}~~~{item.cvTxt}".ToLower();
-                        //var doc = new Document();
-                        //doc.Add(new TextField("Id", item.cvId.ToString(), Field.Store.YES));
-                        //doc.Add(new TextField("CAND_Id", item.candidateId.ToString(), Field.Store.YES));
-                        //doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
-                        await Task.Run(() => indexWriter.AddDocument(documentToIndex(item)));
+                        if (isDeleteAllDocuments)
+                        {
+                            indexWriter.DeleteAll();
+                        }
+
+                        foreach (var item in CompanyTextToIndexList)
+                        {
+                            await Task.Run(() => indexWriter.AddDocument(documentToIndex(item)));
+                        }
                     }
                 }
-            }
 
             }
             catch (Exception ex)
             {
 
-                throw ;
-            }
-        }
-
-        public async Task DocumentAdd(int companyId, CvsToIndexModel cvPropsToIndex)
-        {
-            //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}//luceneIndex";
-
-            using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
-            {
-                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
-
-                using (var indexWriter = new IndexWriter(indexDir, config))
-                {
-
-                    //string txtToIndex = $"{cvPropsToIndex.email}~~~{cvPropsToIndex.phone}~~~{cvPropsToIndex.emailSubject}~~~{cvPropsToIndex.cvTxt}";
-                    //var doc = new Document();
-                    //doc.Add(new TextField("Id", cvPropsToIndex.cvId.ToString(), Field.Store.YES));
-                    //doc.Add(new TextField("CAND_Id", cvPropsToIndex.candidateId.ToString(), Field.Store.YES));
-                    //doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
-                    await Task.Run(() => indexWriter.AddDocument(documentToIndex(cvPropsToIndex)));
-                }
+                throw;
             }
         }
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
-            string txtToIndex = $"{cvCand.email}~~~{cvCand.phone}~~~{cvCand.reviewText}~~~{cvCand.firstName}~~~{cvCand.lastName}~~~{cvCand.emailSubject}~~~{cvCand.cvTxt}".ToLower();
-            var doc = new Document();
-            doc.Add(new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES));
-            doc.Add(new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES));
-            doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
+            string pattern = @"\t|\n|\r|\p{P}";
+            string review = cvCand.reviewText == null ? "" : Regex.Replace(cvCand.reviewText, pattern, " ");
+            string cvTxt = cvCand.cvTxt == null ? "" : Regex.Replace(cvCand.cvTxt, pattern, " ");
+            string emailSubject = cvCand.emailSubject == null ? "" : Regex.Replace(cvCand.emailSubject, pattern, " ");
+            string lastName = cvCand.lastName == null ? "" : Regex.Replace(cvCand.lastName, pattern, " ");
+            string firstName = cvCand.firstName == null ? "" : Regex.Replace(cvCand.firstName, pattern, " ");
+            string phone = cvCand.phone == null ? "" : Regex.Replace(cvCand.phone, pattern, " ");
+
+            string txtToIndex = $"{cvCand.email} {phone} {review} {firstName} {lastName} {emailSubject} {cvTxt}".ToLower();
+
+            var doc = new Document() {{ new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES) },
+                {new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES) },
+                {new TextField("CV", txtToIndex, Field.Store.YES) }};
+
+            //doc.Add(new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES));
+            //doc.Add(new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES));
+            //doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
 
             return doc;
         }
 
-        public async Task DocumentUpdate(int companyId, CvsToIndexModel cvPropsToIndex)
+        public async Task DocumentUpdate(int companyId, List<CvsToIndexModel> cvPropsToIndex)
         {
-            await DocumentDelete(companyId, cvPropsToIndex.cvId);
-            await DocumentAdd(companyId, cvPropsToIndex);
+            await DocumentDelete(companyId, cvPropsToIndex.First().cvId);
+            await CompanyIndexAddDocuments(companyId, cvPropsToIndex,false);
         }
 
         private async Task DocumentDelete(int companyId, int cvId)
         {
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}//luceneIndex";
+            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
 
             using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
             {
@@ -175,7 +186,7 @@ namespace LuceneLibrary
         public void SearchBoolean(int companyId, long collectionId, string text)
         {
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}//luceneIndex";
+            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
             Console.WriteLine();
             Console.WriteLine("SEARCH EXAMPLE");
             Console.WriteLine("SEARCHING FOR: \"" + text + "\" IN COLLECTION " + collectionId);

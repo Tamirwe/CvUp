@@ -9,7 +9,7 @@ namespace DataModelsLibrary.Queries
          Task<int> AddCandidate(candidate importCv);
          Task UpdateCandidate(candidate cand);
          Task<candidate?> GetCandidateByEmail(string email);
-         Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId);
+         Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
          Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
          Task<position> AddPosition(PositionModel data, int companyId, int userId);
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
@@ -22,7 +22,6 @@ namespace DataModelsLibrary.Queries
          Task<List<string?>> GetCompanyCvsIds(int companyId);
          Task<CvModel?> GetCv(int cvId, int companyId);
          Task UpdateCvKeyId(ImportCvModel importCv);
-         Task SaveCvReview(CvReviewModel cvReview);
          Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
          Task UpdateCandidateLastCv(ImportCvModel importCv);
          Task UpdateSameCv(ImportCvModel importCv);
@@ -40,7 +39,7 @@ namespace DataModelsLibrary.Queries
         Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
          Task<List<cv>> GetCompanyCvs(int companyId);
-        Task SaveCandReview(CandReviewModel candReview);
+        Task SaveCandReview(int companyId, CandReviewModel candReview);
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);

@@ -46,23 +46,6 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateCvKeyId(importCv);
         }
 
-        public async Task AddCvToIndex(ImportCvModel importCv)
-        {
-            CvsToIndexModel cvPropsToIndex = new CvsToIndexModel
-            {
-                firstName = importCv.firstName,
-                lastName = importCv.lastName,
-                cvId = importCv.cvId,
-                candidateId = importCv.candidateId,
-                cvTxt = importCv.cvTxt,
-                email = importCv.emailAddress,
-                phone = importCv.phone,
-                emailSubject = importCv.subject,
-            };
-
-            await _luceneService.DocumentAdd(Convert.ToInt32(importCv.companyId), cvPropsToIndex);
-        }
-
         public async Task<candidate?> GetCandidateByEmail(string email)
         {
             return await _cvsPositionsQueries.GetCandidateByEmail(email);
@@ -129,8 +112,8 @@ namespace CandsPositionsLibrary
 
         public async Task IndexCompanyCvs(int companyId)
         {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId);
-            await _luceneService.BuildCompanyIndex(companyId, cvPropsToIndexList);
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId,0);
+            await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
         }
 
         public async Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds)
@@ -198,11 +181,6 @@ namespace CandsPositionsLibrary
         public async Task<CvModel?> GetCv(int cvId, int companyId)
         {
             return await _cvsPositionsQueries.GetCv(cvId, companyId);
-        }
-
-        public async Task SaveCvReview(CvReviewModel cvReview)
-        {
-            await _cvsPositionsQueries.SaveCvReview(cvReview);
         }
 
         public async Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
@@ -282,10 +260,17 @@ namespace CandsPositionsLibrary
             return true;
         }
 
-        public async Task<bool> SaveCandReview(CandReviewModel candReview)
+        public async Task<bool> SaveCandReview(int companyId ,CandReviewModel candReview)
         {
-            await _cvsPositionsQueries.SaveCandReview(candReview);
+            await _cvsPositionsQueries.SaveCandReview(companyId,candReview);
+            await SaveCandidateToIndex(companyId, candReview.candidateId);
             return true;
+        }
+
+        public async Task SaveCandidateToIndex(int companyId, int candidateId)
+        {
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, candidateId);
+            await _luceneService.DocumentUpdate(companyId, cvPropsToIndexList);
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)

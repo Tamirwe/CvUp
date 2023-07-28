@@ -295,11 +295,11 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void AddCvToIndex(ImportCvModel importCv)
+        private async void AddCvToIndex(ImportCvModel importCv)
         {
             if (!importCv.isDuplicate && !importCv.isSameCv)
             {
-                _cvsPositionsServise.AddCvToIndex(importCv);
+                await _cvsPositionsServise.SaveCandidateToIndex(importCv.companyId, importCv.candidateId);
             }
         }
 

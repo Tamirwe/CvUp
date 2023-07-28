@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using CandsPositionsLibrary;
+using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using LuceneLibrary;
@@ -19,6 +20,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ILuceneService, LuceneService>();
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IEmailQueries, EmailQueries>();
+        services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
     })

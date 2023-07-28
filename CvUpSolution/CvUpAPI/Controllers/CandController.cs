@@ -84,18 +84,11 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetCv(cvId, Globals.CompanyId);
         }
 
-        [HttpPost]
-        [Route("SaveCvReview")]
-        public void SaveCvReview(CvReviewModel cvReview)
-        {
-            _candPosService.SaveCvReview(cvReview);
-        }
-
         [HttpPut]
         [Route("SaveCandReview")]
         public async Task<IActionResult> SaveCandReview(CandReviewModel candReview)
         {
-            bool isSaved = await _candPosService.SaveCandReview(candReview);
+            bool isSaved = await _candPosService.SaveCandReview(Globals.CompanyId,candReview);
 
             if (isSaved) {
                 return Ok();

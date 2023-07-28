@@ -5,10 +5,12 @@ using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
@@ -202,7 +204,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId)
+        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId=0)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -213,8 +215,9 @@ namespace DataModelsLibrary.Queries
 	                            INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
 	                            INNER JOIN (SELECT MAX(cvs.id) cv_id
 		                             FROM cvs
-		                             WHERE cvs.company_id={companyId} 
-		                             GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
+		                             WHERE cvs.company_id={companyId}                
+                                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
+                    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
 
                 var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
                 return cvsResults;
@@ -618,23 +621,11 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task SaveCvReview(CvReviewModel cvReview)
+        public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
             using (var dbContext = new cvup00001Context())
             {
-                candidate? cand = dbContext.candidates.Where(x => x.id == cvReview.candidateId).First();
-                //cand.review_html = cvReview.reviewHtml;
-                cand.review_text = cvReview.reviewText;
-                var result = dbContext.candidates.Update(cand);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task SaveCandReview(CandReviewModel candReview)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                candidate? cand = dbContext.candidates.Where(x => x.id == candReview.candidateId).First();
+                candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candReview.candidateId).First();
                 cand.review_text = candReview.review;
                 var result = dbContext.candidates.Update(cand);
                 await dbContext.SaveChangesAsync();

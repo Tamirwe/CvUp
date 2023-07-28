@@ -11,7 +11,6 @@ namespace CandsPositionsLibrary
     public interface ICandsPositionsServise
     {
         Task<int> AddCv(ImportCvModel importCv);
-        Task AddCvToIndex(ImportCvModel item);
         Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         Task IndexCompanyCvs(int companyId);
         Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
@@ -26,7 +25,6 @@ namespace CandsPositionsLibrary
         Task<List<ParserRulesModel>> GetParsersRules(int companyId);
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task UpdateCvKeyId(ImportCvModel importCv);
-        Task SaveCvReview(CvReviewModel cvReview);
         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
         Task UpdateCandidateLastCv(ImportCvModel importCv);
         Task UpdateSameCv(ImportCvModel importCv);
@@ -40,7 +38,8 @@ namespace CandsPositionsLibrary
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
         Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
-        Task<bool> SaveCandReview(CandReviewModel candReview);
+        Task<bool> SaveCandReview(int companyId,CandReviewModel candReview);
+        Task SaveCandidateToIndex(int companyId, int candidateId);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);

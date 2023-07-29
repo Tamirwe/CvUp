@@ -39,24 +39,24 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("SearchCands")]
-        public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel search)
+        public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel searchVals)
         {
             List<CandModel?> candsList;
-            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, search.keyWords, search.isProximitySearch?? false);
+            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, searchVals);
 
-            if (search.folderId > 0)
+            if (searchVals.folderId > 0)
             {
-                candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, search.folderId, candsIds);
+                candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId, candsIds);
                 candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
             }
-            else if (search.positionId > 0)
+            else if (searchVals.positionId > 0)
             {
-                candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, search.positionId, candsIds);
+                candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, searchVals.positionId, candsIds);
                 candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else
             {
-                candsList = await _candPosService.GetCandsList(Globals.CompanyId, 1, 50, candsIds);
+                candsList = await _candPosService.GetCandsList(Globals.CompanyId, 1, 300, candsIds);
             }
 
             var sortedCands = candsList.OrderBy(x => candsIds.IndexOf(x.candidateId)).ToList();

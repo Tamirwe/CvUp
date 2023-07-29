@@ -374,7 +374,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const posId = this.rootStore.positionsStore.selectedPosition?.id!;
 
-    const res = await this.cvsApi.GetPosCandsList(posId);
+    const res = await this.cvsApi.getPosCandsList(posId);
 
     const candsList = [...res.data];
 

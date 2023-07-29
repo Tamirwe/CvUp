@@ -52,18 +52,22 @@ export const CandsListsWrapper = observer(() => {
   };
 
   const handlePositionCandsSearch = (searchVals: ISearchModel) => {
-    if (searchVals.value) {
-      candsStore.searchPositionCands(searchVals);
-    } else {
-      candsStore.getPositionCands();
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands) {
+      if (searchVals.value) {
+        candsStore.searchPositionCands(searchVals);
+      } else {
+        candsStore.getPositionCands();
+      }
     }
   };
 
   const handleFolderCandsSearch = (searchVals: ISearchModel) => {
-    if (searchVals.value) {
-      candsStore.searchFolderCands(searchVals);
-    } else {
-      candsStore.getFolderCandsList();
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands) {
+      if (searchVals.value) {
+        candsStore.searchFolderCands(searchVals);
+      } else {
+        candsStore.getFolderCandsList();
+      }
     }
   };
 

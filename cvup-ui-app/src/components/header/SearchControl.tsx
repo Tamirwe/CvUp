@@ -108,7 +108,7 @@ export const SearchControl = ({
     exact: false,
     advancedValue: "",
   });
-  const debouncedValue = useDebounce<ISearchModel>(searchVals, 700);
+  const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
   useEffect(() => {
     onSearch(searchVals);

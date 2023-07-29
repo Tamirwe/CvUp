@@ -142,10 +142,11 @@ namespace DataModelsLibrary.Models
 
     public class searchCandCvModel
     {
-        public string keyWords { get; set; } = "";
+        public string value { get; set; } = "";
+        public bool exact { get; set; }
+        public string advancedValue { get; set; } = "";
         public int folderId { get; set; }
         public int positionId { get; set; }
-        public bool? isProximitySearch { get; } = false;
     }
 
     public class AttachePosCandCvModel

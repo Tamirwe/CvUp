@@ -45,7 +45,7 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async GetPosCandsList(positionId: number) {
+  async getPosCandsList(positionId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
         `Cand/GetPosCandsList?positionId=${positionId}`

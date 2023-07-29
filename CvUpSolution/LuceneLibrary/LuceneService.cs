@@ -44,7 +44,7 @@ namespace LuceneLibrary
             //_indexFolder = @"C:\KB\CvUp\CvUpSolution\LuceneLibrary\Index";
         }
 
-        public async Task<List<SearchEntry>> Search(int companyId, string searchQuery, bool isProximitySearch)
+        public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
             string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
@@ -61,7 +61,7 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                string keyWords = txtIndexMange(searchQuery);
+                string keyWords = txtIndexMange(searchVals.value);
 
                 //var query = mQueryParser.Parse(searchQuery.ToLower());
 
@@ -87,14 +87,14 @@ namespace LuceneLibrary
 
                 foreach (var word in words)
                 {
-                    if (isProximitySearch)
-                    {
-                        aggregateQuery.Add(new WildcardQuery(new Term("CV", "*" + word.ToLower() + "*")), Occur.MUST);
-                    }
-                    else
+                    if (searchVals.exact)
                     {
                         var query = mQueryParser.Parse(word.ToLower());
                         aggregateQuery.Add(query, Occur.MUST);
+                    }
+                    else
+                    {
+                        aggregateQuery.Add(new WildcardQuery(new Term("CV", "*" + word.ToLower() + "*")), Occur.MUST);
                     }
                 }
 
@@ -115,8 +115,13 @@ namespace LuceneLibrary
                         });
                     }
 
-                    //string secondSearch = "מכירות";
-                    //result = result.Where(x => x.CV.Contains(secondSearch.ToLower())).ToList();
+                    string advancedKeyWords = txtIndexMange(searchVals.advancedValue);
+                    string[] advancedWords = advancedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var word in advancedWords)
+                    {
+                        result = result.Where(x => x.CV.Contains(word)).ToList();
+                    }
                 }
             };
 

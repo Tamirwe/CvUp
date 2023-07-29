@@ -18,6 +18,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Lucene.Net.Util.Packed.PackedInt32s;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LuceneLibrary
 {
@@ -60,8 +61,7 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                string pattern = @"\t|\n|\r|\p{P}";
-                string keyWords = Regex.Replace(searchQuery, pattern, " ");
+                string keyWords = txtIndexMange(searchQuery);
 
                 //var query = mQueryParser.Parse(searchQuery.ToLower());
 
@@ -127,9 +127,6 @@ namespace LuceneLibrary
         {
             try
             {
-
-
-                //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
                 string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
 
                 using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
@@ -149,36 +146,36 @@ namespace LuceneLibrary
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
-            string pattern = @"\t|\n|\r|\p{P}";
-            string review = cvCand.reviewText == null ? "" : Regex.Replace(cvCand.reviewText, pattern, " ");
-            string cvTxt = cvCand.cvTxt == null ? "" : Regex.Replace(cvCand.cvTxt, pattern, " ");
-            string emailSubject = cvCand.emailSubject == null ? "" : Regex.Replace(cvCand.emailSubject, pattern, " ");
-            string lastName = cvCand.lastName == null ? "" : Regex.Replace(cvCand.lastName, pattern, " ");
-            string firstName = cvCand.firstName == null ? "" : Regex.Replace(cvCand.firstName, pattern, " ");
-            string phone = cvCand.phone == null ? "" : Regex.Replace(cvCand.phone, pattern, " ");
-
-            string txtToIndex = $"{cvCand.email} {phone} {review} {firstName} {lastName} {emailSubject} {cvTxt}".ToLower();
+            string txtToIndex = $"{nn(cvCand.email)} {nn(cvCand.phone)} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.emailSubject)} {nn(cvCand.cvTxt)}";
+            txtToIndex = txtIndexMange(txtToIndex);
 
             var doc = new Document() {{ new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES) },
                 {new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES) },
                 {new TextField("CV", txtToIndex, Field.Store.YES) }};
 
-            //doc.Add(new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES));
-            //doc.Add(new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES));
-            //doc.Add(new TextField("CV", txtToIndex, Field.Store.YES));
-
             return doc;
+        }
+
+        private string txtIndexMange(string txt)
+        {
+            string manageTxt = txt.Replace("'", "").Replace("\"", "").Replace("ך", "כ").Replace("ם", "מ").Replace("ף", "פ").Replace("ץ", "צ").ToLower();
+            string pattern = @"\t|\n|\r|\p{P}";
+            manageTxt = Regex.Replace(manageTxt, pattern, " ");
+            return manageTxt;
+        }
+
+        private string nn(string? str)
+        {
+            return str == null ? "" : str;
         }
 
         public async Task DocumentUpdate(int companyId, List<CvsToIndexModel> cvPropsToIndex)

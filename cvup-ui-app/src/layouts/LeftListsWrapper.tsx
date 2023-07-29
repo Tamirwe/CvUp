@@ -12,6 +12,7 @@ import { CrudTypesEnum, TabsGeneralEnum } from "../models/GeneralEnums";
 import { SearchControl } from "../components/header/SearchControl";
 import { ContactsList } from "../components/contacts/ContactsList";
 import { FoldersList } from "../components/folders/FoldersList";
+import { ISearchModel } from "../models/GeneralModels";
 
 export const LeftListsWrapper = observer(() => {
   const navigate = useNavigate();
@@ -55,16 +56,16 @@ export const LeftListsWrapper = observer(() => {
     }
   };
 
-  const handlePositionsSearch = (val: string) => {
-    positionsStore.searchPositions(val);
+  const handlePositionsSearch = (searchVals: ISearchModel) => {
+    positionsStore.searchPositions(searchVals);
   };
 
-  const handleFoldersSearch = (val: string) => {
-    foldersStore.searchFolders(val);
+  const handleFoldersSearch = (searchVals: ISearchModel) => {
+    foldersStore.searchFolders(searchVals);
   };
 
-  const handleContactsSearch = (val: string) => {
-    customersContactsStore.searchContacts(val);
+  const handleContactsSearch = (searchVals: ISearchModel) => {
+    customersContactsStore.searchContacts(searchVals);
   };
 
   return (

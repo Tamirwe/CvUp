@@ -1,5 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, IFolder, IFolderNode } from "../models/GeneralModels";
+import {
+  IAppSettings,
+  IFolder,
+  IFolderNode,
+  ISearchModel,
+} from "../models/GeneralModels";
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
 
@@ -8,7 +13,7 @@ export class FoldersStore {
   private foldersList: IFolder[] = [];
   private folderSelected?: IFolder;
   private editFolder?: IFolder;
-  private searchPhrase: string = "";
+  private searchPhrase?: ISearchModel;
   rootFolder: IFolder = {
     id: 0,
     name: "Folders",
@@ -16,9 +21,9 @@ export class FoldersStore {
   };
 
   get foldersListSorted() {
-    if (this.searchPhrase) {
+    if (this.searchPhrase && this.searchPhrase.value) {
       return this.foldersList.filter((x) =>
-        x.name.toLowerCase().includes(this.searchPhrase.toLowerCase())
+        x.name.toLowerCase().includes(this.searchPhrase!.value.toLowerCase())
       );
     } else {
       return this.foldersList.slice();
@@ -48,8 +53,8 @@ export class FoldersStore {
 
   reset() {}
 
-  searchFolders(val: string) {
-    this.searchPhrase = val;
+  searchFolders(searchVals: ISearchModel) {
+    this.searchPhrase = searchVals;
   }
 
   async addFolder(folderModel: IFolder) {

@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
-import { IAppSettings, IContact } from "../models/GeneralModels";
+import { IAppSettings, IContact, ISearchModel } from "../models/GeneralModels";
 import ContactsApi from "./api/CustomersContactsApi";
 import { RootStore } from "./RootStore";
 
@@ -9,7 +9,7 @@ export class CustomersContactsStore {
   private contactSelected?: IContact;
   private customerSelected?: IIdName;
   private contactsList: IContact[] = [];
-  private searchPhrase: string = "";
+  private searchPhrase?: ISearchModel;
   customersList: IIdName[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -20,9 +20,11 @@ export class CustomersContactsStore {
   reset() {}
 
   get contactsListSorted() {
-    if (this.searchPhrase) {
+    if (this.searchPhrase && this.searchPhrase.value) {
       return this.contactsList.filter((x) =>
-        this.searchStringContacts(x).includes(this.searchPhrase.toLowerCase())
+        this.searchStringContacts(x).includes(
+          this.searchPhrase!.value.toLowerCase()
+        )
       );
     } else {
       return this.contactsList.slice();
@@ -45,8 +47,8 @@ export class CustomersContactsStore {
     this.customerSelected = val;
   }
 
-  searchContacts(val: string) {
-    this.searchPhrase = val;
+  searchContacts(searchVals: ISearchModel) {
+    this.searchPhrase = searchVals;
   }
 
   searchStringContacts = (x: IContact) => {

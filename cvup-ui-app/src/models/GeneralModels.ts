@@ -162,5 +162,4 @@ export interface ISearchModel {
   value: string;
   exact: boolean;
   advancedValue: string;
-  advancedExact: boolean;
 }

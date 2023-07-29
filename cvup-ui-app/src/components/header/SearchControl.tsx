@@ -107,7 +107,6 @@ export const SearchControl = ({
     value: "",
     exact: false,
     advancedValue: "",
-    advancedExact: false,
   });
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 700);
 
@@ -252,34 +251,6 @@ export const SearchControl = ({
               </IconWrapper>
             )}
           </Search>
-          {showAdvancedSearch && (
-            <ToggleButtonGroup
-              sx={{
-                direction: "ltr",
-                "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
-              }}
-              color="primary"
-              value={searchVals.advancedExact ? "exact" : "approximate"}
-              exclusive
-              size="small"
-              onChange={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                setSearchVals((currentProps) => ({
-                  ...currentProps,
-                  advancedExact: !searchVals.advancedExact,
-                }));
-              }}
-              aria-label="Platform"
-            >
-              <ToggleButton value="approximate" title="Approximate Search">
-                AP
-              </ToggleButton>
-              <ToggleButton value="exact" title="Exact Search">
-                Ex
-              </ToggleButton>
-            </ToggleButtonGroup>
-          )}
         </Stack>
       )}
     </Stack>

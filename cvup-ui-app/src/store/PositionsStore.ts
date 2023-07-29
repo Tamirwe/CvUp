@@ -1,5 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, ICand, IPosition } from "../models/GeneralModels";
+import {
+  IAppSettings,
+  ICand,
+  IPosition,
+  ISearchModel,
+} from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 import { isMobile } from "react-device-detect";
@@ -10,7 +15,7 @@ export class PositionsStore {
   private positionsList: IPosition[] = [];
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
-  private searchPhrase: string = "";
+  private searchPhrase?: ISearchModel;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -22,9 +27,11 @@ export class PositionsStore {
   }
 
   get positionsSorted() {
-    if (this.searchPhrase) {
+    if (this.searchPhrase && this.searchPhrase.value) {
       return this.positionsList.filter((x) =>
-        this.searchStringPositions(x).includes(this.searchPhrase.toLowerCase())
+        this.searchStringPositions(x).includes(
+          this.searchPhrase!.value!.toLowerCase()
+        )
       );
     } else {
       return this.positionsList
@@ -52,8 +59,8 @@ export class PositionsStore {
     this.positionEdit = val;
   }
 
-  searchPositions(val: string) {
-    this.searchPhrase = val;
+  searchPositions(searchVals: ISearchModel) {
+    this.searchPhrase = searchVals;
   }
 
   searchStringPositions = (x: IPosition) => {

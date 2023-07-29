@@ -123,8 +123,12 @@ export const CandsListsWrapper = observer(() => {
       </Box>
 
       <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}>
-        <Box mt={1} mr={2}>
-          <SearchControl onSearch={handleAllCandsSearch} />
+        <Box mt={1} mr={1} ml={1}>
+          <SearchControl
+            onSearch={handleAllCandsSearch}
+            advancedSearch={true}
+            exactButtons={true}
+          />
         </Box>
         <CandsList
           candsListData={candsAllList}
@@ -136,7 +140,11 @@ export const CandsListsWrapper = observer(() => {
       >
         <Box mt={1} mr={2}>
           <Stack direction="row" gap={1}>
-            <SearchControl onSearch={handlePositionCandsSearch} />
+            <SearchControl
+              onSearch={handlePositionCandsSearch}
+              advancedSearch={true}
+              exactButtons={true}
+            />
           </Stack>
         </Box>
         <CandsList
@@ -148,7 +156,11 @@ export const CandsListsWrapper = observer(() => {
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
       >
         <Box mt={1} mr={2}>
-          <SearchControl onSearch={handleFolderCandsSearch} />
+          <SearchControl
+            onSearch={handleFolderCandsSearch}
+            advancedSearch={true}
+            exactButtons={true}
+          />
         </Box>
         <CandsList
           candsListData={candsFolderList}

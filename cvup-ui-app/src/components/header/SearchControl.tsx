@@ -1,8 +1,27 @@
-import { InputBase } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  InputBase,
+  Link,
+  MenuItem,
+  Select,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { MdOutlineClose, MdOutlineSearch } from "react-icons/md";
+import {
+  MdAdjust,
+  MdFilterTiltShift,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdOutlineClose,
+  MdOutlineSearch,
+} from "react-icons/md";
 import useDebounce from "../../Hooks/useDebounce";
+import { ISearchModel } from "../../models/GeneralModels";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -34,7 +53,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   zIndex: 999,
 }));
 
-const CancelIconWrapper = styled("div")(({ theme }) => ({
+const IconWrapper = styled("div")(({ theme }) => ({
   cursor: "pointer",
   padding: theme.spacing(0, 2),
   right: 0,
@@ -71,19 +90,46 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface IProps {
+  advancedSearch?: boolean;
+  exactButtons?: boolean;
   onSearch: (value: string) => void;
 }
 
-export const SearchControl = ({ onSearch }: IProps) => {
+export const SearchControl = ({
+  onSearch,
+  advancedSearch = false,
+  exactButtons = false,
+}: IProps) => {
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
   const [value, setValue] = useState("");
-  const debouncedValue = useDebounce<string>(value, 700);
+  const [searchVals, setSearchVals] = useState<ISearchModel>({
+    value: "",
+    exact: true,
+    advancedValue: "",
+    advancedExact: true,
+  });
+  const debouncedValue = useDebounce<ISearchModel>(searchVals, 700);
 
   useEffect(() => {
     onSearch(value);
   }, [debouncedValue]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchVals((currentProps) => ({
+      ...currentProps,
+      value: event.target.value,
+    }));
+    //setValue(event.target.value);
+  };
+
+  const handleAdvancedValueChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchVals((currentProps) => ({
+      ...currentProps,
+      advancedValue: event.target.value,
+    }));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -97,21 +143,117 @@ export const SearchControl = ({ onSearch }: IProps) => {
   };
 
   return (
-    <Search sx={{ direction: "rtl" }}>
-      <SearchIconWrapper>
-        <MdOutlineSearch onClick={search} />
-      </SearchIconWrapper>
-      <StyledInputBase
-        placeholder="Search…"
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
-      {value && (
-        <CancelIconWrapper>
-          <MdOutlineClose onClick={() => setValue("")} />
-        </CancelIconWrapper>
+    <Stack>
+      <Stack direction="row" alignItems={"center"}>
+        <Search sx={{ direction: "rtl" }}>
+          <SearchIconWrapper>
+            <MdOutlineSearch onClick={search} />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            value={searchVals.value}
+            onChange={handleValueChange}
+            onKeyDown={handleKeyDown}
+          />
+
+          {value && (
+            <IconWrapper sx={{ padding: "0 4px" }}>
+              <MdOutlineClose onClick={() => setValue("")} />
+            </IconWrapper>
+          )}
+          {advancedSearch && (
+            <IconWrapper sx={{ padding: "0 4px" }}>
+              {showAdvancedSearch ? (
+                <MdKeyboardArrowUp
+                  onClick={() => setShowAdvancedSearch(false)}
+                />
+              ) : (
+                <MdKeyboardArrowDown
+                  onClick={() => setShowAdvancedSearch(true)}
+                />
+              )}
+            </IconWrapper>
+          )}
+        </Search>
+
+        {exactButtons && (
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
+            }}
+            color="primary"
+            value={searchVals.exact ? "exact" : "approximate"}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSearchVals((currentProps) => ({
+                ...currentProps,
+                exact: !searchVals.exact,
+              }));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="approximate" title="Approximate Search">
+              AP
+            </ToggleButton>
+            <ToggleButton value="exact" title="Exact Search">
+              Ex
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
+      </Stack>
+      {showAdvancedSearch && (
+        <Stack direction="row" pt={1} alignItems={"center"}>
+          <Search sx={{ direction: "rtl" }}>
+            <SearchIconWrapper>
+              <MdOutlineSearch onClick={search} />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search in results…"
+              value={value}
+              onChange={handleAdvancedValueChange}
+              onKeyDown={handleKeyDown}
+            />
+
+            {value && (
+              <IconWrapper sx={{ padding: "0 4px" }}>
+                <MdOutlineClose onClick={() => setValue("")} />
+              </IconWrapper>
+            )}
+          </Search>
+          {exactButtons && (
+            <ToggleButtonGroup
+              sx={{
+                direction: "ltr",
+                "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
+              }}
+              color="primary"
+              value={searchVals.advancedExact ? "exact" : "approximate"}
+              exclusive
+              size="small"
+              onChange={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+                setSearchVals((currentProps) => ({
+                  ...currentProps,
+                  advancedExact: !searchVals.advancedExact,
+                }));
+              }}
+              aria-label="Platform"
+            >
+              <ToggleButton value="approximate" title="Approximate Search">
+                AP
+              </ToggleButton>
+              <ToggleButton value="exact" title="Exact Search">
+                Ex
+              </ToggleButton>
+            </ToggleButtonGroup>
+          )}
+        </Stack>
       )}
-    </Search>
+    </Stack>
   );
 };

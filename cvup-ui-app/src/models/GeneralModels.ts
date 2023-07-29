@@ -157,3 +157,10 @@ export interface IFolderNode {
   folder: IFolder;
   children: IFolder[];
 }
+
+export interface ISearchModel {
+  value: string;
+  exact: boolean;
+  advancedValue: string;
+  advancedExact: boolean;
+}

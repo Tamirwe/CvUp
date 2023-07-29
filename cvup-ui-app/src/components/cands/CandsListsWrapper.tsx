@@ -13,6 +13,9 @@ export const CandsListsWrapper = observer(() => {
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
   const [candsAllList, setCandsAllList] = useState<ICand[]>([]);
+  const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
+  const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
+  const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
   useEffect(() => {
     setCandsAllList(candsStore.candsAllList);
@@ -126,30 +129,32 @@ export const CandsListsWrapper = observer(() => {
         <Box mt={1} mr={1} ml={1}>
           <SearchControl
             onSearch={handleAllCandsSearch}
-            onShowAdvanced={handleShowAdvanced}
+            onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
             shoeAdvancedIcon={true}
           />
         </Box>
         <CandsList
           candsListData={candsAllList}
           candsSource={CandsSourceEnum.AllCands}
+          advancedOpen={candsAdvancedOpen}
         />
       </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
       >
         <Box mt={1} mr={2}>
-          <Stack direction="row" gap={1}>
-            <SearchControl
-              onSearch={handlePositionCandsSearch}
-              onShowAdvanced={handleShowAdvanced}
-              shoeAdvancedIcon={true}
-            />
-          </Stack>
+          <SearchControl
+            onSearch={handlePositionCandsSearch}
+            onShowAdvanced={() =>
+              setPositionsAdvancedOpen(!positionsAdvancedOpen)
+            }
+            shoeAdvancedIcon={true}
+          />
         </Box>
         <CandsList
           candsListData={candsPosList}
           candsSource={CandsSourceEnum.Position}
+          advancedOpen={positionsAdvancedOpen}
         />
       </div>
       <div
@@ -158,13 +163,14 @@ export const CandsListsWrapper = observer(() => {
         <Box mt={1} mr={2}>
           <SearchControl
             onSearch={handleFolderCandsSearch}
-            onShowAdvanced={handleShowAdvanced}
+            onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}
             shoeAdvancedIcon={true}
           />
         </Box>
         <CandsList
           candsListData={candsFolderList}
           candsSource={CandsSourceEnum.Folder}
+          advancedOpen={foldersAdvancedOpen}
         />
       </div>
     </Box>

@@ -26,194 +26,200 @@ import classNames from "classnames";
 interface IProps {
   candsListData: ICand[];
   candsSource: CandsSourceEnum;
+  advancedOpen?: boolean;
 }
 
-export const CandsList = observer(({ candsListData, candsSource }: IProps) => {
-  const { candsStore, generalStore } = useStore();
-  let location = useLocation();
-  const navigate = useNavigate();
+export const CandsList = observer(
+  ({ candsListData, candsSource, advancedOpen }: IProps) => {
+    const { candsStore, generalStore } = useStore();
+    let location = useLocation();
+    const navigate = useNavigate();
 
-  const listRef = useRef<any>(null);
-  const [dupOpenCandId, setDupOpenCandId] = useState(0);
-  const [listCands, setListCands] = useState<ICand[]>([]);
+    const listRef = useRef<any>(null);
+    const [dupOpenCandId, setDupOpenCandId] = useState(0);
+    const [listCands, setListCands] = useState<ICand[]>([]);
 
-  useEffect(() => {
-    if (candsListData) {
-      setListCands([...candsListData?.slice(0, 50)]);
-      listRef.current.scrollTop = 0;
-    }
-  }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const onScroll = useCallback(() => {
-    const instance = listRef.current;
-
-    if (
-      instance.scrollHeight - instance.clientHeight <
-      instance.scrollTop + 150
-    ) {
-      if (listCands) {
-        const numRecords = listCands.length;
-
-        const newPosList = listCands.concat(
-          candsListData?.slice(numRecords, numRecords + 50)
-        );
-
-        setListCands(newPosList);
+    useEffect(() => {
+      if (candsListData) {
+        setListCands([...candsListData?.slice(0, 50)]);
+        listRef.current.scrollTop = 0;
       }
+    }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      console.log(instance.scrollTop);
-    }
-  }, [listCands, setListCands]);
+    const onScroll = useCallback(() => {
+      const instance = listRef.current;
 
-  useEffect(() => {
-    const instance = listRef.current;
+      if (
+        instance.scrollHeight - instance.clientHeight <
+        instance.scrollTop + 150
+      ) {
+        if (listCands) {
+          const numRecords = listCands.length;
 
-    instance.addEventListener("scroll", onScroll);
+          const newPosList = listCands.concat(
+            candsListData?.slice(numRecords, numRecords + 50)
+          );
 
-    return () => {
-      instance.removeEventListener("scroll", onScroll);
-    };
-  }, [onScroll]);
+          setListCands(newPosList);
+        }
 
-  return (
-    <List
-      ref={listRef}
-      dense={true}
-      className={classNames({
-        [styles.candList]: true,
-        [styles.isMobile]: isMobile,
-      })}
-    >
-      {listCands.map((cand, i) => {
-        return (
-          <ListItem
-            key={`${cand.candidateId}${i}`}
-            dense
-            disablePadding
-            component="nav"
-            sx={{
-              flexDirection: "column",
-              alignItems: "normal",
-              direction: "rtl",
-              pl: "2px",
-              "& .MuiButtonBase-root": {
-                pl: "1px",
-              },
-            }}
-          >
-            <ListItemButton
-              sx={{ pl: 0 }}
-              selected={
-                cand.candidateId === candsStore.candDisplay?.candidateId
-              }
-              onClick={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
+        console.log(instance.scrollTop);
+      }
+    }, [listCands, setListCands]);
 
-                if (isMobile) {
-                  generalStore.rightDrawerOpen = false;
-                }
+    useEffect(() => {
+      const instance = listRef.current;
 
-                if (location.pathname !== "/cv") {
-                  navigate(`/cv`);
-                }
+      instance.addEventListener("scroll", onScroll);
 
-                candsStore.displayCv(cand, candsSource);
+      return () => {
+        instance.removeEventListener("scroll", onScroll);
+      };
+    }, [onScroll]);
+
+    return (
+      <List
+        ref={listRef}
+        dense={true}
+        sx={{
+          height: advancedOpen ? "calc(100vh - 156px)" : "calc(100vh - 107px)",
+        }}
+        className={classNames({
+          [styles.candList]: true,
+          [styles.isMobile]: isMobile,
+        })}
+      >
+        {listCands.map((cand, i) => {
+          return (
+            <ListItem
+              key={`${cand.candidateId}${i}`}
+              dense
+              disablePadding
+              component="nav"
+              sx={{
+                flexDirection: "column",
+                alignItems: "normal",
+                direction: "rtl",
+                pl: "2px",
+                "& .MuiButtonBase-root": {
+                  pl: "1px",
+                },
               }}
             >
-              <Box
-                sx={{
-                  width: "100%",
+              <ListItemButton
+                sx={{ pl: 0 }}
+                selected={
+                  cand.candidateId === candsStore.candDisplay?.candidateId
+                }
+                onClick={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+
+                  if (isMobile) {
+                    generalStore.rightDrawerOpen = false;
+                  }
+
+                  if (location.pathname !== "/cv") {
+                    navigate(`/cv`);
+                  }
+
+                  candsStore.displayCv(cand, candsSource);
                 }}
               >
-                <div style={{ display: "flex" }}>
-                  <div
-                    style={{
-                      width: "87%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
+                <Box
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  <div style={{ display: "flex" }}>
                     <div
-                      className={classNames({
-                        [styles.listItemText]: true,
-                        [styles.isMobile]: isMobile,
-                      })}
+                      style={{
+                        width: "87%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
                     >
-                      {cand.emailSubject}
+                      <div
+                        className={classNames({
+                          [styles.listItemText]: true,
+                          [styles.isMobile]: isMobile,
+                        })}
+                      >
+                        {cand.emailSubject}
+                      </div>
+                      <div
+                        className={classNames({
+                          [styles.listItemDate]: true,
+                          [styles.isMobile]: isMobile,
+                        })}
+                      >
+                        {candsSource === CandsSourceEnum.Position
+                          ? format(new Date(cand.dateAttached), "MMM d, yyyy")
+                          : format(new Date(cand.cvSent), "MMM d, yyyy")}
+                      </div>
                     </div>
-                    <div
-                      className={classNames({
-                        [styles.listItemDate]: true,
-                        [styles.isMobile]: isMobile,
-                      })}
+
+                    <ListItemIcon
+                      sx={{
+                        visibility: !cand.hasDuplicates ? "hidden" : "visible",
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+
+                        // if (!isMobile) {
+                        if (location.pathname !== "/cv") {
+                          navigate(`/cv`);
+                        }
+
+                        candsStore.displayCv(cand, candsSource);
+                        candsStore.getDuplicatesCvsList(cand);
+
+                        if (dupOpenCandId !== cand.candidateId) {
+                          setDupOpenCandId(cand.candidateId);
+                        } else {
+                          setDupOpenCandId(0);
+                        }
+
+                        // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
+                        //   candsStore.duplicateCvsCandId = cand.candidateId;
+                        //   candsStore.getDuplicatesCvsList(cand);
+                        // } else {
+                        //   candsStore.duplicateCvsCandId = 0;
+                        // }
+                        //}
+                      }}
                     >
-                      {candsSource === CandsSourceEnum.Position
-                        ? format(new Date(cand.dateAttached), "MMM d, yyyy")
-                        : format(new Date(cand.cvSent), "MMM d, yyyy")}
-                    </div>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="label"
+                      >
+                        {dupOpenCandId === cand.candidateId ? (
+                          <MdExpandLess />
+                        ) : (
+                          <MdExpandMore />
+                        )}
+                      </IconButton>
+                    </ListItemIcon>
                   </div>
-
-                  <ListItemIcon
-                    sx={{
-                      visibility: !cand.hasDuplicates ? "hidden" : "visible",
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-
-                      // if (!isMobile) {
-                      if (location.pathname !== "/cv") {
-                        navigate(`/cv`);
-                      }
-
-                      candsStore.displayCv(cand, candsSource);
-                      candsStore.getDuplicatesCvsList(cand);
-
-                      if (dupOpenCandId !== cand.candidateId) {
-                        setDupOpenCandId(cand.candidateId);
-                      } else {
-                        setDupOpenCandId(0);
-                      }
-
-                      // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
-                      //   candsStore.duplicateCvsCandId = cand.candidateId;
-                      //   candsStore.getDuplicatesCvsList(cand);
-                      // } else {
-                      //   candsStore.duplicateCvsCandId = 0;
-                      // }
-                      //}
-                    }}
-                  >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                    >
-                      {dupOpenCandId === cand.candidateId ? (
-                        <MdExpandLess />
-                      ) : (
-                        <MdExpandMore />
-                      )}
-                    </IconButton>
-                  </ListItemIcon>
-                </div>
-                {cand.posStages?.length && (
-                  <CandsPosStagesList cand={cand} candsSource={candsSource} />
-                )}
-              </Box>
-            </ListItemButton>
-            <Collapse
-              in={dupOpenCandId === cand.candidateId}
-              timeout="auto"
-              unmountOnExit
-            >
-              <CandDupCvsList />
-            </Collapse>
-          </ListItem>
-        );
-      })}
-    </List>
-  );
-});
+                  {cand.posStages?.length && (
+                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
+                  )}
+                </Box>
+              </ListItemButton>
+              <Collapse
+                in={dupOpenCandId === cand.candidateId}
+                timeout="auto"
+                unmountOnExit
+              >
+                <CandDupCvsList />
+              </Collapse>
+            </ListItem>
+          );
+        })}
+      </List>
+    );
+  }
+);

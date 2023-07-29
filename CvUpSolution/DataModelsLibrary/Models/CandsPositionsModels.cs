@@ -145,6 +145,7 @@ namespace DataModelsLibrary.Models
         public string keyWords { get; set; } = "";
         public int folderId { get; set; }
         public int positionId { get; set; }
+        public bool? isProximitySearch { get; } = false;
     }
 
     public class AttachePosCandCvModel

@@ -214,9 +214,9 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetCompaniesEmails();
         }
 
-        public async Task<List<int>> SearchCands(int companyId, string searchKeyWords)
+        public async Task<List<int>> SearchCands(int companyId, string searchKeyWords, bool isProximitySearch=false)
         {
-            var results = await _luceneService.Search(companyId, searchKeyWords);
+            var results = await _luceneService.Search(companyId, searchKeyWords, isProximitySearch);
             var distinctCandsList = results.Select(e => e.CandId).Distinct().ToList();
             return distinctCandsList;
         }

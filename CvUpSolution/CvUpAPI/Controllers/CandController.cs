@@ -42,7 +42,7 @@ namespace CvUpAPI.Controllers
         public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel search)
         {
             List<CandModel?> candsList;
-            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, search.keyWords);
+            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, search.keyWords, search.isProximitySearch?? false);
 
             if (search.folderId > 0)
             {

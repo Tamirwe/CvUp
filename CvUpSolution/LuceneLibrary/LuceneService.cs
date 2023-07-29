@@ -43,7 +43,7 @@ namespace LuceneLibrary
             //_indexFolder = @"C:\KB\CvUp\CvUpSolution\LuceneLibrary\Index";
         }
 
-        public async Task<List<SearchEntry>> Search(int companyId, string searchQuery)
+        public async Task<List<SearchEntry>> Search(int companyId, string searchQuery, bool isProximitySearch)
         {
             string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
@@ -60,25 +60,43 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                //var query = mQueryParser.Parse(searchQuery.ToLower());
-                //var query = new WildcardQuery(new Term("CV", searchQuery.ToLower())) ;
-
-                BooleanQuery aggregateQuery = new BooleanQuery();
-
-
-                //PhraseQuery query = new PhraseQuery();
                 string pattern = @"\t|\n|\r|\p{P}";
                 string keyWords = Regex.Replace(searchQuery, pattern, " ");
+
+                //var query = mQueryParser.Parse(searchQuery.ToLower());
+
+
+                //string[] words = keyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                //string wildcardphrase = "";
+
+                //foreach (var word in words)
+                //{
+                //    wildcardphrase += word + "* ";
+                //}
+
+                //wildcardphrase.Trim();
+
+                //var query = new WildcardQuery(new Term("CV", wildcardphrase.ToLower()));
+
+
+
+
+                BooleanQuery aggregateQuery = new BooleanQuery();
 
                 string[] words = keyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var word in words)
                 {
-                    var query = mQueryParser.Parse(word.ToLower());
-                    aggregateQuery.Add(query, Occur.MUST);
-                    //query.Add(new Term("CV", word));
+                    if (isProximitySearch)
+                    {
+                        aggregateQuery.Add(new WildcardQuery(new Term("CV", "*" + word.ToLower() + "*")), Occur.MUST);
+                    }
+                    else
+                    {
+                        var query = mQueryParser.Parse(word.ToLower());
+                        aggregateQuery.Add(query, Occur.MUST);
+                    }
                 }
-
 
                 if (mIndexSearcher != null)
                 {
@@ -96,6 +114,9 @@ namespace LuceneLibrary
                             CV = doc.Get("CV")
                         });
                     }
+
+                    string secondSearch = "אוג";
+                    result = result.Where(x => x.CV.Contains(secondSearch.ToLower())).ToList();
                 }
             };
 

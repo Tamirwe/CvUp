@@ -31,7 +31,7 @@ namespace CandsPositionsLibrary
         Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
         Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
         Task<List<company_cvs_email>> GetCompaniesEmails();
-        Task<List<int>> SearchCands(int companyId, string searchKeyWords);
+        Task<List<int>> SearchCands(int companyId, string searchKeyWords, bool isProximitySearch);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
         Task ActivatePosition( int companyId, PositionModel data);
         Task DactivatePosition(int companyId, PositionModel data);

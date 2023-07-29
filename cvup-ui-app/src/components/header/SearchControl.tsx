@@ -90,29 +90,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface IProps {
-  advancedSearch?: boolean;
-  exactButtons?: boolean;
-  onSearch: (value: string) => void;
+  shoeAdvancedIcon?: boolean;
+  onSearch: (value: ISearchModel) => void;
+  onShowAdvanced?: (isShow: boolean) => void;
 }
 
 export const SearchControl = ({
   onSearch,
-  advancedSearch = false,
-  exactButtons = false,
+  onShowAdvanced,
+  shoeAdvancedIcon = false,
 }: IProps) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
-  const [value, setValue] = useState("");
+  //const [value, setValue] = useState("");
   const [searchVals, setSearchVals] = useState<ISearchModel>({
     value: "",
-    exact: true,
+    exact: false,
     advancedValue: "",
-    advancedExact: true,
+    advancedExact: false,
   });
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 700);
 
   useEffect(() => {
-    onSearch(value);
+    onSearch(searchVals);
   }, [debouncedValue]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +139,7 @@ export const SearchControl = ({
   };
 
   const search = () => {
-    onSearch(value);
+    onSearch(searchVals);
   };
 
   return (
@@ -156,27 +156,48 @@ export const SearchControl = ({
             onKeyDown={handleKeyDown}
           />
 
-          {value && (
+          {searchVals.value && (
             <IconWrapper sx={{ padding: "0 4px" }}>
-              <MdOutlineClose onClick={() => setValue("")} />
+              <MdOutlineClose
+                onClick={() => {
+                  setSearchVals((currentProps) => ({
+                    ...currentProps,
+                    value: "",
+                  }));
+                  setSearchVals((currentProps) => ({
+                    ...currentProps,
+                    advancedValue: "",
+                  }));
+                }}
+              />
             </IconWrapper>
           )}
-          {advancedSearch && (
+          {shoeAdvancedIcon && (
             <IconWrapper sx={{ padding: "0 4px" }}>
               {showAdvancedSearch ? (
                 <MdKeyboardArrowUp
-                  onClick={() => setShowAdvancedSearch(false)}
+                  onClick={() => {
+                    setShowAdvancedSearch(false);
+                    onShowAdvanced && onShowAdvanced(false);
+                    setSearchVals((currentProps) => ({
+                      ...currentProps,
+                      advancedValue: "",
+                    }));
+                  }}
                 />
               ) : (
                 <MdKeyboardArrowDown
-                  onClick={() => setShowAdvancedSearch(true)}
+                  onClick={() => {
+                    setShowAdvancedSearch(true);
+                    onShowAdvanced && onShowAdvanced(false);
+                  }}
                 />
               )}
             </IconWrapper>
           )}
         </Search>
 
-        {exactButtons && (
+        {showAdvancedSearch && (
           <ToggleButtonGroup
             sx={{
               direction: "ltr",
@@ -213,18 +234,25 @@ export const SearchControl = ({
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search in results…"
-              value={value}
+              value={searchVals.advancedValue}
               onChange={handleAdvancedValueChange}
               onKeyDown={handleKeyDown}
             />
 
-            {value && (
+            {searchVals.advancedValue && (
               <IconWrapper sx={{ padding: "0 4px" }}>
-                <MdOutlineClose onClick={() => setValue("")} />
+                <MdOutlineClose
+                  onClick={() => {
+                    setSearchVals((currentProps) => ({
+                      ...currentProps,
+                      advancedValue: "",
+                    }));
+                  }}
+                />
               </IconWrapper>
             )}
           </Search>
-          {exactButtons && (
+          {showAdvancedSearch && (
             <ToggleButtonGroup
               sx={{
                 direction: "ltr",

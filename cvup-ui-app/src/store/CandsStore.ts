@@ -16,6 +16,7 @@ import {
   IPosition,
   IAttachCv,
   ISendEmail,
+  ISearchModel,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -307,19 +308,19 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async searchAllCands(value: string) {
+  async searchAllCands(searchVals: ISearchModel) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(value, 0, 0);
+    const res = await this.cvsApi.searchCands(searchVals, 0, 0);
     runInAction(() => {
       this.candsAllList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async searchPositionCands(value: string) {
+  async searchPositionCands(searchVals: ISearchModel) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(
-      value,
+      searchVals,
       this.rootStore.positionsStore.selectedPosition?.id
     );
     runInAction(() => {
@@ -328,10 +329,10 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async searchFolderCands(value: string) {
+  async searchFolderCands(searchVals: ISearchModel) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(
-      value,
+      searchVals,
       0,
       this.rootStore.foldersStore.selectedFolder?.id
     );
@@ -377,18 +378,18 @@ export class CandsStore {
 
     const candsList = [...res.data];
 
-      const objIndex = candsList.findIndex(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
+    const objIndex = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
 
-      if (objIndex > -1) {
-        const candSelected = candsList.splice(objIndex, 1);
-        candsList.splice(0, 0, candSelected[0]);
-      }
+    if (objIndex > -1) {
+      const candSelected = candsList.splice(objIndex, 1);
+      candsList.splice(0, 0, candSelected[0]);
+    }
 
-      runInAction(() => {
-        this.posCandsList = [...candsList];
-      });
+    runInAction(() => {
+      this.posCandsList = [...candsList];
+    });
 
     this.rootStore.generalStore.backdrop = false;
   }

@@ -6,6 +6,7 @@ import {
   IEmailsAddress,
   IAttachCv,
   ISendEmail,
+  ISearchModel,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -16,10 +17,14 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async searchCands(value: string, posId?: number, folderId?: number) {
+  async searchCands(
+    searchVals: ISearchModel,
+    posId?: number,
+    folderId?: number
+  ) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.post(`Cand/SearchCands?searchKeyWords`, {
-        keyWords: value,
+        ...searchVals,
         positionId: posId,
         folderId: folderId,
       });

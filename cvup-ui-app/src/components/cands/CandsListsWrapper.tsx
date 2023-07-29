@@ -5,7 +5,7 @@ import { CandsList } from "./CandsList";
 import { observer } from "mobx-react";
 import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { SearchControl } from "../header/SearchControl";
-import { ICand } from "../../models/GeneralModels";
+import { ICand, ISearchModel } from "../../models/GeneralModels";
 
 export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
@@ -43,35 +43,31 @@ export const CandsListsWrapper = observer(() => {
     candsStore.currentTabCandsLists = newValue;
   };
 
-  const handleAllCandsSearch = (val: string) => {
-    if (candsStore.currentTabCandsLists === TabsCandsEnum.AllCands) {
-      if (val) {
-        candsStore.searchAllCands(val);
-      } else {
-        candsStore.getCandsList();
-      }
+  const handleAllCandsSearch = (searchVals: ISearchModel) => {
+    if (searchVals.value) {
+      candsStore.searchAllCands(searchVals);
+    } else {
+      candsStore.getCandsList();
     }
   };
 
-  const handlePositionCandsSearch = (val: string) => {
-    if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionCands) {
-      if (val) {
-        candsStore.searchPositionCands(val);
-      } else {
-        candsStore.getPositionCands();
-      }
+  const handlePositionCandsSearch = (searchVals: ISearchModel) => {
+    if (searchVals.value) {
+      candsStore.searchPositionCands(searchVals);
+    } else {
+      candsStore.getPositionCands();
     }
   };
 
-  const handleFolderCandsSearch = (val: string) => {
-    if (candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands) {
-      if (val) {
-        candsStore.searchFolderCands(val);
-      } else {
-        candsStore.getFolderCandsList();
-      }
+  const handleFolderCandsSearch = (searchVals: ISearchModel) => {
+    if (searchVals.value) {
+      candsStore.searchFolderCands(searchVals);
+    } else {
+      candsStore.getFolderCandsList();
     }
   };
+
+  const handleShowAdvanced = (val: boolean) => {};
 
   return (
     <Box sx={{ marginTop: "0", backgroundColor: "white" }}>
@@ -126,8 +122,8 @@ export const CandsListsWrapper = observer(() => {
         <Box mt={1} mr={1} ml={1}>
           <SearchControl
             onSearch={handleAllCandsSearch}
-            advancedSearch={true}
-            exactButtons={true}
+            onShowAdvanced={handleShowAdvanced}
+            shoeAdvancedIcon={true}
           />
         </Box>
         <CandsList
@@ -142,8 +138,8 @@ export const CandsListsWrapper = observer(() => {
           <Stack direction="row" gap={1}>
             <SearchControl
               onSearch={handlePositionCandsSearch}
-              advancedSearch={true}
-              exactButtons={true}
+              onShowAdvanced={handleShowAdvanced}
+              shoeAdvancedIcon={true}
             />
           </Stack>
         </Box>
@@ -158,8 +154,8 @@ export const CandsListsWrapper = observer(() => {
         <Box mt={1} mr={2}>
           <SearchControl
             onSearch={handleFolderCandsSearch}
-            advancedSearch={true}
-            exactButtons={true}
+            onShowAdvanced={handleShowAdvanced}
+            shoeAdvancedIcon={true}
           />
         </Box>
         <CandsList

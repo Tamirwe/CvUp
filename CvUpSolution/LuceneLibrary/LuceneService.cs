@@ -115,8 +115,8 @@ namespace LuceneLibrary
                         });
                     }
 
-                    string secondSearch = "אוג";
-                    result = result.Where(x => x.CV.Contains(secondSearch.ToLower())).ToList();
+                    //string secondSearch = "מכירות";
+                    //result = result.Where(x => x.CV.Contains(secondSearch.ToLower())).ToList();
                 }
             };
 

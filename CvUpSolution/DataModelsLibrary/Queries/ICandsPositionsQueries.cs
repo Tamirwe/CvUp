@@ -10,8 +10,11 @@ namespace DataModelsLibrary.Queries
          Task UpdateCandidate(candidate cand);
          Task<candidate?> GetCandidateByEmail(string email);
          Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
-         Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
-         Task<position> AddPosition(PositionModel data, int companyId, int userId);
+        Task<CandModel?> GetCandidate(int companyId, int candId);
+        Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
+        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
+        Task<position> AddPosition(PositionModel data, int companyId, int userId);
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
          Task<List<PositionModel>> GetPositionsList(int companyId);
          Task DeletePosition(int companyId, int id);
@@ -28,13 +31,9 @@ namespace DataModelsLibrary.Queries
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
          Task UpdateCvsAsciiSum(int companyId);
-         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
-         Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv);
-         Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv);
+         Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCv);
+         Task<List<int>> DetachPosCand(AttachePosCandCvModel posCv);
          Task<List<company_cvs_email>> GetCompaniesEmails();
-        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
-        Task ActivatePosition(int companyId, PositionModel data);
-        Task DactivatePosition(int companyId, PositionModel data);
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
         Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
@@ -44,5 +43,6 @@ namespace DataModelsLibrary.Queries
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task UpdateCandDetails(CandDetailsModel candDetails);
+        Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
     }
 }

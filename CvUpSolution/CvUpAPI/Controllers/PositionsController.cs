@@ -67,21 +67,5 @@ namespace CvUpAPI.Controllers
             await _cvsPosService.DeletePosition(Globals.CompanyId, id);
             return Ok();
         }
-
-        [HttpPut]
-        [Route("ActivatePosition")]
-        public async Task<IActionResult> ActivatePosition(PositionModel data)
-        {
-            await _cvsPosService.ActivatePosition( Globals.CompanyId, data);
-            return Ok();
-        }
-
-        [HttpPut]
-        [Route("DactivatePosition")]
-        public async Task<IActionResult> DactivatePosition(PositionModel data)
-        {
-            await _cvsPosService.DactivatePosition(Globals.CompanyId, data);
-            return Ok();
-        }
     }
 }

@@ -84,11 +84,7 @@ namespace DataModelsLibrary.Models
         public bool hasDuplicates { get; set; }
         public DateTime cvSent { get; set; }
         public int[]? candPosIds { get; set; } 
-        public int[]? cvPosIds { get; set; }
         public CandPosStageModel[]? posStages { get; set; }
-        public int? stageId { get; set; }
-        public DateTime dateAttached { get; set; }
-        public List<PosCandCvsModel>? candCvs { get; set; }
         public int[]? candFoldersIds { get; set; }
     }
 
@@ -158,6 +154,14 @@ namespace DataModelsLibrary.Models
         public string? keyId { get; set; } = "";
     }
 
+    public class CandPosStatusUpdateCvModel
+    {
+        public int companyId { get; set; }
+        public int positionId { get; set; }
+        public int candidateId { get; set; }
+        public string stageType { get; set; } = "";
+    }
+
     public class EmailToCandModel
     {
         public int companyId { get; set; }
@@ -182,12 +186,6 @@ namespace DataModelsLibrary.Models
         public int cvId { get; set; }
         public string keyId { get; set; } = "";
         public bool isSentByEmail { get; set; } = false;
-    }
-
-    public class CandPosModel
-    {
-        public List<int> candPosIds { get; set; }=new List<int> { };
-        public List<int> cvPosIds { get; set; } = new List<int> { };
     }
 
     public class CvModel

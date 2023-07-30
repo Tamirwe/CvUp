@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.Design;
 
 namespace CvUpAPI.Controllers
 {
@@ -101,18 +102,30 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("AttachPosCandCv")]
-        public async Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv)
+        public async Task<CandModel?> AttachPosCandCv(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            return await _candPosService.AttachPosCandCv(posCv);
+             await _candPosService.AttachPosCandCv(posCv);
+            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
+
         }
 
         [HttpPost]
         [Route("DetachPosCand")]
-        public async Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv)
+        public async Task<CandModel?> DetachPosCand(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            return await _candPosService.DetachPosCand(posCv);
+            await _candPosService.DetachPosCand(posCv);
+            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
+        }
+
+        [HttpPost]
+        [Route("UpdateCandPositionStatus")]
+        public async Task<CandModel?> UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
+        {
+            posStatus.companyId = Globals.CompanyId;
+            await _candPosService.UpdateCandPositionStatus(posStatus);
+            return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
         }
 
         [HttpGet]

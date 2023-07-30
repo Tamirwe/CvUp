@@ -54,14 +54,16 @@ namespace FoldersLibrary
             return await _foldersQueries.GetFolders(companyId);
         }
 
-        public async Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data)
+        public async Task AttachCandidate(int companyId, FolderCandidateModel data)
         {
-            return await _foldersQueries.AttachCandidate(companyId, data);
+            await _foldersQueries.AttachCandidate(companyId, data);
+            await _foldersQueries.UpdateCandidateFolders(companyId, data.candidateId);
         }
 
-        public async Task<folders_cand> DetachCandidate(int companyId,int id)
+        public async Task DetachCandidate(int companyId, FolderCandidateModel data)
         {
-            return await _foldersQueries.DetachCandidate(companyId, id);
+            await _foldersQueries.DetachCandidate(companyId, data);
+            await _foldersQueries.UpdateCandidateFolders(companyId, data.candidateId);
         }
 
     }

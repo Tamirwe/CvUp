@@ -5,7 +5,7 @@ import { useStore } from "../../Hooks/useStore";
 import { CrudTypesEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
-import { MdPersonAddAlt1 } from "react-icons/md";
+import { MdPersonAddAlt1, MdPersonRemove } from "react-icons/md";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 
@@ -78,22 +78,42 @@ export const FoldersList = observer(() => {
         >
           <CiEdit />
         </IconButton>
-        <IconButton
-          size="small"
-          sx={{ color: "#dfdfdf" }}
-          onClick={async (event) => {
-            event.stopPropagation();
-            event.preventDefault();
+        {candsStore.candDisplay &&
+        candsStore.candDisplay?.candFoldersIds.indexOf(folder.id) > -1 ? (
+          <IconButton
+            size="small"
+            sx={{ color: "#ff8d00" }}
+            onClick={async (event) => {
+              event.stopPropagation();
+              event.preventDefault();
 
-            if (isMobile) {
-              generalStore.leftDrawerOpen = false;
-            }
+              if (isMobile) {
+                generalStore.leftDrawerOpen = false;
+              }
 
-            await foldersStore.attachCandidate(folder.id);
-          }}
-        >
-          <MdPersonAddAlt1 />
-        </IconButton>
+              await foldersStore.detachCandidate(folder.id);
+            }}
+          >
+            <MdPersonRemove />
+          </IconButton>
+        ) : (
+          <IconButton
+            size="small"
+            sx={{ color: "#dfdfdf" }}
+            onClick={async (event) => {
+              event.stopPropagation();
+              event.preventDefault();
+
+              if (isMobile) {
+                generalStore.leftDrawerOpen = false;
+              }
+
+              await foldersStore.attachCandidate(folder.id);
+            }}
+          >
+            <MdPersonAddAlt1 />
+          </IconButton>
+        )}
       </div>
     );
   };

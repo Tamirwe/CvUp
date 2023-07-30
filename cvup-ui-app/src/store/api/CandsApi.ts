@@ -87,14 +87,6 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async detachFolderCand(folderCandId: number) {
-    return await this.apiWrapper2(async () => {
-      return await this.http.delete(
-        `Folders/DetachCandidate?id=${folderCandId}`
-      );
-    });
-  }
-
   async getCv() {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.get("Cand/getCv");

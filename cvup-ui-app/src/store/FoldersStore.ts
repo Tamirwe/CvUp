@@ -92,7 +92,16 @@ export class FoldersStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.foldersApi.attachCandidate(
       folderId,
-      this.rootStore.candsStore.candAllSelected?.candidateId
+      this.rootStore.candsStore.candDisplay?.candidateId
+    );
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async detachCandidate(folderId: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.foldersApi.detachCandidate(
+      folderId,
+      this.rootStore.candsStore.candDisplay?.candidateId
     );
     this.rootStore.generalStore.backdrop = false;
   }

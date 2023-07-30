@@ -487,12 +487,6 @@ export class CandsStore {
     }
   }
 
-  async detachFolderCand(detachCand: ICand, index: number) {
-    await this.cvsApi.detachFolderCand(detachCand.folderCandId);
-
-    this.folderCandsList.splice(index, 1);
-  }
-
   updateCandPosArrays(candTarget: ICand, candSource: ICand) {
     candTarget.candPosIds = [...candSource.candPosIds];
 

@@ -42,13 +42,13 @@ export interface ICand {
   reviewTct: string;
   fileType: string;
   cvSent: Date;
+  candFoldersIds: number[];
   candPosIds: number[];
   cvPosIds: number[];
   stageId: number;
   dateAttached: Date;
   candCvs: IPosCandCvs[];
   hasDuplicates: boolean;
-  folderCandId: number;
   posStages?: IPosStages[];
   position?: IPosition;
 }

@@ -7,6 +7,7 @@ import {
 } from "../models/GeneralModels";
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
+import { numArrRemoveItem } from "../utils/GeneralUtils";
 
 export class FoldersStore {
   private foldersApi;
@@ -94,6 +95,18 @@ export class FoldersStore {
       folderId,
       this.rootStore.candsStore.candDisplay?.candidateId
     );
+
+    if (
+      res.isSuccess &&
+      this.rootStore.candsStore.candDisplay?.candFoldersIds
+    ) {
+      const foldersIdsArr = [
+        ...this.rootStore.candsStore.candDisplay?.candFoldersIds,
+      ];
+      foldersIdsArr.push(folderId);
+      this.rootStore.candsStore.updateCandFoldersIds(foldersIdsArr);
+    }
+
     this.rootStore.generalStore.backdrop = false;
   }
 
@@ -103,6 +116,18 @@ export class FoldersStore {
       folderId,
       this.rootStore.candsStore.candDisplay?.candidateId
     );
+
+    if (
+      res.isSuccess &&
+      this.rootStore.candsStore.candDisplay?.candFoldersIds
+    ) {
+      const foldersIdsArr = [
+        ...this.rootStore.candsStore.candDisplay?.candFoldersIds,
+      ];
+      numArrRemoveItem(folderId, foldersIdsArr);
+      this.rootStore.candsStore.updateCandFoldersIds(foldersIdsArr);
+    }
+
     this.rootStore.generalStore.backdrop = false;
   }
 }

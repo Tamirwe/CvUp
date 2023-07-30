@@ -3,16 +3,9 @@ import {
   Backdrop,
   Box,
   CircularProgress,
-  Drawer,
-  Grid,
   Snackbar,
 } from "@mui/material";
-import { Outlet } from "react-router-dom";
-import { Header } from "../components/header/Header";
-import { LeftListsWrapper } from "./LeftListsWrapper";
 import { observer } from "mobx-react";
-import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
-import { CandReview } from "../components/cands/CandReview";
 import { useStore } from "../Hooks/useStore";
 import { CrudTypesEnum, EmailTypeEnum } from "../models/GeneralEnums";
 import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
@@ -36,7 +29,6 @@ export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {generalStore.cvReviewDialogOpen && <CandReview />}
       {generalStore.showEmailDialog === EmailTypeEnum.Candidate && (
         <CandidateEmailSender
           onClose={() => (generalStore.showEmailDialog = EmailTypeEnum.None)}

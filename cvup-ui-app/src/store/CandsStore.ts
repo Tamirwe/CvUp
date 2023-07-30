@@ -21,6 +21,7 @@ import {
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
 import { format } from "date-fns";
+import { numArrRemoveItem } from "../utils/GeneralUtils";
 
 export class CandsStore {
   private cvsApi;
@@ -118,47 +119,6 @@ export class CandsStore {
 
   async getPdf(keyId: string) {
     this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
-  }
-
-  async saveCvReview(reviewText: any, reviewHtml: any) {
-    if (this.candAllSelected?.candidateId) {
-      const cvReview: ICvReview = {
-        candidateId: this.candAllSelected?.candidateId,
-        reviewText,
-        reviewHtml,
-      };
-      await this.cvsApi.saveCvReview(cvReview);
-    }
-
-    runInAction(() => {
-      if (this.candDisplay) {
-        this.candDisplay.review = reviewHtml;
-
-        let cand = this.candsAllList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.review = reviewHtml;
-        }
-
-        cand = this.posCandsList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.review = reviewHtml;
-        }
-
-        cand = this.folderCandsList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.review = reviewHtml;
-        }
-      }
-    });
   }
 
   async saveCandReview(review: string) {
@@ -262,47 +222,6 @@ export class CandsStore {
           }
         }
       });
-    }
-
-    this.rootStore.generalStore.backdrop = false;
-  }
-
-  async SendEmailToCand(
-    subject: string,
-    addresses: string[],
-    review: string,
-    reviewHtml: string
-  ) {
-    this.rootStore.generalStore.backdrop = true;
-
-    if (this.candDisplay) {
-      // const data = await this.cvsApi.SendEmailToCand(
-      //   review,
-      //   this.candDisplay?.candidateId
-      // );
-      // runInAction(() => {
-      //   if (this.candDisplay) {
-      //     this.candDisplay.review = review;
-      //     let cand = this.candsAllList.find(
-      //       (x) => x.candidateId === this.candDisplay?.candidateId
-      //     );
-      //     if (cand) {
-      //       cand.review = review;
-      //     }
-      //     cand = this.posCandsList.find(
-      //       (x) => x.candidateId === this.candDisplay?.candidateId
-      //     );
-      //     if (cand) {
-      //       cand.review = review;
-      //     }
-      //     cand = this.folderCandsList.find(
-      //       (x) => x.candidateId === this.candDisplay?.candidateId
-      //     );
-      //     if (cand) {
-      //       cand.review = review;
-      //     }
-      //   }
-      // });
     }
 
     this.rootStore.generalStore.backdrop = false;
@@ -449,6 +368,38 @@ export class CandsStore {
     // });
   }
 
+  async updateCandFoldersIds(candFoldersIdsArr: number[]) {
+    runInAction(() => {
+      if (this.candDisplay) {
+        this.candDisplay.candFoldersIds = candFoldersIdsArr;
+
+        let cand = this.candsAllList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (cand) {
+          cand.candFoldersIds = candFoldersIdsArr;
+        }
+
+        cand = this.posCandsList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (cand) {
+          cand.candFoldersIds = candFoldersIdsArr;
+        }
+
+        cand = this.folderCandsList.find(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (cand) {
+          cand.candFoldersIds = candFoldersIdsArr;
+        }
+      }
+    });
+  }
+
   async detachPosCand(detachCand: ICand, positionId: number, index: number) {
     // const positionId = this.rootStore.positionsStore.selectedPosition?.id;
 
@@ -459,8 +410,8 @@ export class CandsStore {
         positionId
       );
 
-      this.numArrRemoveItem(positionId, detachCand.candPosIds);
-      this.numArrRemoveItem(positionId, detachCand.cvPosIds);
+      numArrRemoveItem(positionId, detachCand.candPosIds);
+      numArrRemoveItem(positionId, detachCand.cvPosIds);
       this.objArrRemoveItem(positionId, detachCand.posStages, "id");
 
       if (this.candDisplay?.candidateId === detachCand.candidateId) {
@@ -492,16 +443,6 @@ export class CandsStore {
 
     if (candTarget.cvId === candSource.cvId) {
       candTarget.cvPosIds = [...candSource.cvPosIds];
-    }
-  }
-
-  numArrRemoveItem(id: number, numArr?: number[]) {
-    if (numArr) {
-      let index = numArr.indexOf(id);
-
-      if (index > -1) {
-        numArr.splice(index, 1);
-      }
     }
   }
 

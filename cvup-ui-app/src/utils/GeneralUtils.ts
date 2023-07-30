@@ -30,3 +30,13 @@ export const copyToClipBoard = async (copyMe: string) => {
     return false;
   }
 };
+
+export const numArrRemoveItem = (id: number, numArr?: number[]) => {
+  if (numArr) {
+    let index = numArr.indexOf(id);
+
+    if (index > -1) {
+      numArr.splice(index, 1);
+    }
+  }
+};

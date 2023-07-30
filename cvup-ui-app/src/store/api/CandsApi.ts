@@ -93,12 +93,6 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async saveCvReview(cvReview: ICvReview) {
-    return await this.apiWrapper2(async () => {
-      return await this.http.post("Cand/SaveCvReview", cvReview);
-    });
-  }
-
   async saveCandReview(review: string, candidateId: number) {
     return await this.apiWrapper2<boolean>(async () => {
       return await this.http.put("Cand/SaveCandReview", {

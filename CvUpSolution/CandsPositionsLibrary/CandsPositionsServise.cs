@@ -116,10 +116,26 @@ namespace CandsPositionsLibrary
             await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
         }
 
+        public async Task<CandModel?> GetCandidate(int companyId, int candId)
+        {
+            var result = await _cvsPositionsQueries.GetCandidate(companyId, candId);
+            return result;
+        }
+
         public async Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds)
         {
             var result = await _cvsPositionsQueries.GetCandsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, candsIds);
             return result;
+        }
+
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
+        {
+            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId, candsIds);
+        }
+
+        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
+        {
+            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId,  candsIds);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
@@ -127,11 +143,6 @@ namespace CandsPositionsLibrary
             List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
             //cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
-        }
-
-        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
-        {
-            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId,  candsIds);
         }
 
         public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
@@ -199,14 +210,19 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateSameCv(importCv);
         }
 
-        public async Task<CandPosModel> AttachPosCandCv(AttachePosCandCvModel posCv)
+        public async Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCv)
         {
             return await _cvsPositionsQueries.AttachPosCandCv(posCv);
         }
 
-        public async Task<CandPosModel> DetachPosCand(AttachePosCandCvModel posCv)
+        public async Task<List<int>> DetachPosCand(AttachePosCandCvModel posCv)
         {
             return await _cvsPositionsQueries.DetachPosCand(posCv);
+        }
+
+        public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
+        {
+            await _cvsPositionsQueries.UpdateCandPositionStatus(posStatus);
         }
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
@@ -219,21 +235,6 @@ namespace CandsPositionsLibrary
             var results = await _luceneService.Search(companyId, searchVals);
             var distinctCandsList = results.Select(e => e.CandId).Distinct().ToList();
             return distinctCandsList;
-        }
-
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
-        {
-            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId,  candsIds);
-        }
-
-        public async Task ActivatePosition( int companyId, PositionModel data)
-        {
-             await _cvsPositionsQueries.ActivatePosition(companyId, data);
-        }
-
-        public async Task DactivatePosition(int companyId, PositionModel data)
-        {
-             await _cvsPositionsQueries.DactivatePosition(companyId, data);
         }
 
         public async Task UpdateCvsAsciiSum(int companyId)

@@ -5,11 +5,6 @@ namespace Database.models
 {
     public partial class position_candidate
     {
-        public position_candidate()
-        {
-            position_candidate_stages = new HashSet<position_candidate_stage>();
-        }
-
         public int id { get; set; }
         public int company_id { get; set; }
         public int position_id { get; set; }
@@ -34,6 +29,5 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual cv cv { get; set; } = null!;
         public virtual position position { get; set; } = null!;
-        public virtual ICollection<position_candidate_stage> position_candidate_stages { get; set; }
     }
 }

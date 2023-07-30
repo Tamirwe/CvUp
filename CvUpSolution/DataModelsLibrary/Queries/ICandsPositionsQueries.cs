@@ -31,8 +31,9 @@ namespace DataModelsLibrary.Queries
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
          Task UpdateCvsAsciiSum(int companyId);
-         Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCv);
-         Task<List<int>> DetachPosCand(AttachePosCandCvModel posCv);
+         Task AttachPosCandCv(AttachePosCandCvModel posCv);
+         Task DetachPosCand(AttachePosCandCvModel posCv);
+        Task UpdateCandPosArrays(int companyId, int candidateId);
          Task<List<company_cvs_email>> GetCompaniesEmails();
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
         Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds);

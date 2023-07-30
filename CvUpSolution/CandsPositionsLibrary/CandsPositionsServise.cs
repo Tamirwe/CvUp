@@ -210,19 +210,22 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateSameCv(importCv);
         }
 
-        public async Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCv)
+        public async Task AttachPosCandCv(AttachePosCandCvModel posCv)
         {
-            return await _cvsPositionsQueries.AttachPosCandCv(posCv);
+            await _cvsPositionsQueries.AttachPosCandCv(posCv);
+            await _cvsPositionsQueries.UpdateCandPosArrays(posCv.companyId, posCv.candidateId);
         }
 
-        public async Task<List<int>> DetachPosCand(AttachePosCandCvModel posCv)
+        public async Task DetachPosCand(AttachePosCandCvModel posCv)
         {
-            return await _cvsPositionsQueries.DetachPosCand(posCv);
+             await _cvsPositionsQueries.DetachPosCand(posCv);
+             await _cvsPositionsQueries.UpdateCandPosArrays(posCv.companyId, posCv.candidateId);
         }
 
         public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
         {
             await _cvsPositionsQueries.UpdateCandPositionStatus(posStatus);
+             await _cvsPositionsQueries.UpdateCandPosArrays(posStatus.companyId, posStatus.candidateId);
         }
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()

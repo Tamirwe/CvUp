@@ -45,7 +45,7 @@ interface IProps {
 }
 
 export const CandidateEmailSender = observer((props: IProps) => {
-  const { candsStore, generalStore } = useStore();
+  const { candsStore, generalStore, positionsStore } = useStore();
   const refQuill = useRef();
   const [dynamicData, setDynamicData] = useState<Map<string, string>>();
 
@@ -101,9 +101,12 @@ export const CandidateEmailSender = observer((props: IProps) => {
 
       dynamicDataMap.set(
         "CustomerName",
-        candsStore.candDisplay.position?.customerName
+        positionsStore.candDisplayPosition?.customerName
       );
-      dynamicDataMap.set("PositionName", candsStore.candDisplay.position?.name);
+      dynamicDataMap.set(
+        "PositionName",
+        positionsStore.candDisplayPosition?.name
+      );
 
       setDynamicData(dynamicDataMap);
     }

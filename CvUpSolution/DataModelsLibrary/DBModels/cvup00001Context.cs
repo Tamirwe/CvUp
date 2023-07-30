@@ -34,7 +34,6 @@ namespace Database.models
         public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
-        public virtual DbSet<position_candidate_stage> position_candidate_stages { get; set; } = null!;
         public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
@@ -494,34 +493,6 @@ namespace Database.models
                     .WithMany(p => p.position_candidates)
                     .HasForeignKey(d => d.position_id)
                     .HasConstraintName("fk_position_candidates_position_id_positions_id");
-            });
-
-            modelBuilder.Entity<position_candidate_stage>(entity =>
-            {
-                entity.HasIndex(e => e.candidate_id, "position_candidate_stages_candidate_id_candidates_id");
-
-                entity.HasIndex(e => e.company_id, "position_candidate_stages_company_id_companies_id");
-
-                entity.HasIndex(e => e.position_candidate_id, "position_candidate_stages_pos_candidate_id_pos_candidates_id");
-
-                entity.Property(e => e.stage_date).HasColumnType("datetime");
-
-                entity.Property(e => e.stage_type).HasMaxLength(50);
-
-                entity.HasOne(d => d.candidate)
-                    .WithMany(p => p.position_candidate_stages)
-                    .HasForeignKey(d => d.candidate_id)
-                    .HasConstraintName("position_candidate_stages_candidate_id_candidates_id");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.position_candidate_stages)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("position_candidate_stages_company_id_companies_id");
-
-                entity.HasOne(d => d.position_candidate)
-                    .WithMany(p => p.position_candidate_stages)
-                    .HasForeignKey(d => d.position_candidate_id)
-                    .HasConstraintName("position_candidate_stages_pos_candidate_id_pos_candidates_id");
             });
 
             modelBuilder.Entity<position_contact>(entity =>

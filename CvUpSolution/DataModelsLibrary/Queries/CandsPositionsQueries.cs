@@ -663,7 +663,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCandCv)
+        public async Task AttachPosCandCv(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -700,11 +700,9 @@ namespace DataModelsLibrary.Queries
                 dbContext.position_candidates.Add(newPosCv);
                 await dbContext.SaveChangesAsync();
             }
-
-            return await UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        public async Task<List<int>> DetachPosCand(AttachePosCandCvModel posCandCv)
+        public async Task DetachPosCand(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -719,11 +717,9 @@ namespace DataModelsLibrary.Queries
                     await dbContext.SaveChangesAsync();
                 }
             }
-
-            return await UpdateCandPosCv(posCandCv.companyId, posCandCv.candidateId, posCandCv.cvId);
         }
 
-        private async Task<List<int>> UpdateCandPosCv(int companyId, int candidateId, int cvId)
+        public async Task UpdateCandPosArrays(int companyId, int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -732,17 +728,11 @@ namespace DataModelsLibrary.Queries
 
                 List<CandPosStageModel> candPosStages = new List<CandPosStageModel>();
                 List<int> candPos = new List<int>();
-                List<int> cvPos = new List<int>();
 
                 foreach (var pcv in candPosList)
                 {
                     candPos.Add(pcv.position_id);
                     candPosStages.Add(new CandPosStageModel { d = pcv.stage_date?.ToString("yyyy-MM-dd"), t = pcv.stage_type, id = pcv.position_id });
-
-                    if (pcv.cv_id == cvId)
-                    {
-                        cvPos.Add(pcv.position_id);
-                    }
                 }
 
                 var candPosStagesJson = JsonConvert.SerializeObject(candPosStages);
@@ -756,19 +746,8 @@ namespace DataModelsLibrary.Queries
                     var result = dbContext.candidates.Update(cand);
                 }
 
-                //cv? cv = dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.id == cvId).FirstOrDefault();
-
-                //if (cv != null)
-                //{
-                //    cv.pos_ids = $"[{string.Join(",", cvPos)}]";
-                //    var result = dbContext.cvs.Update(cv);
-                //}
-
                 await dbContext.SaveChangesAsync();
-
-                return  candPos;
             }
-
         }
 
         public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)

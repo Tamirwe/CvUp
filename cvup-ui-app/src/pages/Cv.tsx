@@ -22,7 +22,7 @@ export const Cv = observer(() => {
     }
   }, [
     candsStore.candDisplay,
-    candsStore.candDisplay?.position,
+    positionsStore.candDisplayPosition,
     positionsStore.selectedPosition,
   ]);
 
@@ -50,19 +50,18 @@ export const Cv = observer(() => {
             }}
           >
             <Grid item xs="auto" lg="auto">
-              {candsStore.candDisplay?.position && (
+              {positionsStore.candDisplayPosition && (
                 <Link
                   href="#"
                   onClick={() => {
-                    positionsStore.positionClick(
-                      candsStore.candDisplay!.position!.id,
-                      candsStore.candDisplay
+                    positionsStore.candDisplayPositionClick(
+                      positionsStore.candDisplayPosition!.id
                     );
                   }}
                 >
-                  {candsStore.candDisplay?.position?.name || ""}
+                  {positionsStore.candDisplayPosition?.name || ""}
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  {candsStore.candDisplay?.position?.customerName || ""}
+                  {positionsStore.candDisplayPosition?.customerName || ""}
                 </Link>
               )}
             </Grid>

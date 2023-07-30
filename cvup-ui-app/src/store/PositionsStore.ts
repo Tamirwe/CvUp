@@ -9,7 +9,7 @@ import {
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 import { isMobile } from "react-device-detect";
-import { TabsCandsEnum } from "../models/GeneralEnums";
+import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
 
 export class PositionsStore {
   private positionApi;
@@ -17,6 +17,7 @@ export class PositionsStore {
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
   private searchPhrase?: ISearchModel;
+  candDisplayPosition: IPosition | undefined;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -68,9 +69,22 @@ export class PositionsStore {
     return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
   };
 
+  updateCandDisplayPosition(candsSource: CandsSourceEnum) {
+    this.candDisplayPosition = undefined;
+
+    if (candsSource === CandsSourceEnum.Position) {
+      this.candDisplayPosition = Object.assign({}, this.selectedPosition);
+    }
+  }
+
   // setPosSelectedById(posId: number, candId?: number) {
   //   this.selectedPosition = this.positionsList.find((x) => x.id === posId);
   // }
+
+  async candDisplayPositionClick(posId: number) {
+    await this.positionClick(posId);
+    this.updateCandDisplayPosition(CandsSourceEnum.Position);
+  }
 
   async positionClick(posId: number, cand?: ICand) {
     this.selectedPosition = this.positionsList.find((x) => x.id === posId);
@@ -79,10 +93,6 @@ export class PositionsStore {
       this.rootStore.candsStore.getPositionCands(),
       this.getPositionContacts(posId),
     ]);
-
-    if (cand) {
-      cand.position = this.selectedPosition;
-    }
 
     this.rootStore.candsStore.currentTabCandsLists =
       TabsCandsEnum.PositionCands;
@@ -157,7 +167,7 @@ export class PositionsStore {
   findPosName(posId: number) {
     const pos = this.positionsList.find((x) => x.id === posId);
     if (pos) {
-      return `${pos?.customerName} - ${pos?.name}`;
+      return `${pos?.name} - ${pos?.customerName}`;
     }
 
     return null;

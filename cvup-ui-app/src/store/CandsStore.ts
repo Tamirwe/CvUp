@@ -69,15 +69,16 @@ export class CandsStore {
     runInAction(() => {
       // this.candAllSelected = cand;
       this.candDisplay = cand;
-      cand.position = undefined;
+      this.rootStore.positionsStore.updateCandDisplayPosition(candsSource);
+      // cand.position = undefined;
 
-      if (candsSource === CandsSourceEnum.Position) {
-        const selectedPosition = this.rootStore.positionsStore.selectedPosition;
+      // if (candsSource === CandsSourceEnum.Position) {
+      //   const selectedPosition = this.rootStore.positionsStore.selectedPosition;
 
-        if (this.candDisplay) {
-          this.candDisplay.position = selectedPosition;
-        }
-      }
+      //   if (this.candDisplay) {
+      //     this.rootStore.positionsStore.updateCandDisplayPosition(candsSource)  ;
+      //   }
+      // }
 
       this.getPdf(cand.keyId);
     });
@@ -337,14 +338,16 @@ export class CandsStore {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
           this.updateCandAllList(res.data);
-          this.updatePosCandList(res.data);
           this.updateFolderCandList(res.data);
+          this.updatePosCandList(res.data);
 
-          if (
-            this.rootStore.positionsStore.selectedPosition?.id === positionId
-          ) {
-            this.addPosCandList(res.data);
-          }
+          // if (
+          //   this.rootStore.positionsStore.selectedPosition?.id === positionId
+          // ) {
+          //   this.addPosCandList(res.data);
+          // } else {
+          //   this.updatePosCandList(res.data);
+          // }
         }
       });
     }
@@ -460,12 +463,14 @@ export class CandsStore {
 
   async updateCandPositionStatus(stageType: string | ICompanyStagesTypes) {
     this.rootStore.generalStore.backdrop = true;
+    const candDisplayPosition =
+      this.rootStore.positionsStore.candDisplayPosition;
 
-    if (this.candDisplay?.candidateId && this.candDisplay?.position?.id) {
+    if (this.candDisplay?.candidateId && candDisplayPosition?.id) {
       const res = await this.cvsApi.updateCandPositionStatus(
         stageType.toString(),
         this.candDisplay?.candidateId,
-        this.candDisplay?.position?.id
+        candDisplayPosition?.id
       );
 
       runInAction(() => {

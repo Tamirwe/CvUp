@@ -27,7 +27,8 @@ interface IProps {
 }
 
 export const ContactEmailSender = (props: IProps) => {
-  const { candsStore, generalStore, customersContactsStore } = useStore();
+  const { candsStore, generalStore, customersContactsStore, positionsStore } =
+    useStore();
   const refQuill = useRef();
   const [bodyHtml, setBodyHtml] = useState("");
 
@@ -54,7 +55,7 @@ export const ContactEmailSender = (props: IProps) => {
 
       setBodyHtml(reviewLinesHtml?.join("") || "");
 
-      const emailsList = candsStore.candDisplay.position?.contactsIds.map(
+      const emailsList = positionsStore.candDisplayPosition?.contactsIds.map(
         (id) => {
           const contact = customersContactsStore.getContactById(id);
           return {

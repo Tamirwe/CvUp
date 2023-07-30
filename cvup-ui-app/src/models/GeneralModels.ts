@@ -47,7 +47,6 @@ export interface ICand {
   cvPosIds: number[];
   hasDuplicates: boolean;
   posStages?: IPosStages[];
-  position?: IPosition;
 }
 
 export interface IPosStages {

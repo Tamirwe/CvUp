@@ -25,9 +25,9 @@ export const PositionsList = observer(() => {
   const listRef = useRef<any>(null);
   const [posList, setPosList] = useState<IPosition[]>([]);
 
-  const handleAttachPosCandCv = (posId: number) => {
-    positionsStore.positionClick(posId, candsStore.candDisplay);
-    candsStore.attachPosCandCv(posId);
+  const handleAttachPosCandCv = async (posId: number) => {
+    await candsStore.attachPosCandCv(posId);
+    await positionsStore.candDisplayPositionClick(posId);
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
 

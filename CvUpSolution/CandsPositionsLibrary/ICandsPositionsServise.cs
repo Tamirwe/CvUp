@@ -30,8 +30,8 @@ namespace CandsPositionsLibrary
         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
         Task UpdateCandidateLastCv(ImportCvModel importCv);
         Task UpdateSameCv(ImportCvModel importCv);
-        Task<List<int>> AttachPosCandCv(AttachePosCandCvModel posCv);
-        Task<List<int>> DetachPosCand(AttachePosCandCvModel posCv);
+        Task AttachPosCandCv(AttachePosCandCvModel posCv);
+        Task DetachPosCand(AttachePosCandCvModel posCv);
         Task<List<company_cvs_email>> GetCompaniesEmails();
         Task<List<int>> SearchCands(int companyId, searchCandCvModel searchVals);
         Task UpdateCvsAsciiSum(int companyId);

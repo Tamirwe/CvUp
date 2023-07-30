@@ -3,11 +3,28 @@ import { PdfViewer } from "../components/pdfViewer/PdfViewer";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
-import { Grid, Link } from "@mui/material";
+import { FormControl, Grid, Link, MenuItem, Select } from "@mui/material";
 import { EmailTypeEnum } from "../models/GeneralEnums";
+import { useEffect, useState } from "react";
+import { IPosStages } from "../models/GeneralModels";
 
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
+  const [posStage, setPosStage] = useState<IPosStages | undefined>();
+
+  useEffect(() => {
+    if (candsStore.candDisplay?.posStages) {
+      setPosStage(
+        candsStore.candDisplay?.posStages.find(
+          (x) => x.id === positionsStore.selectedPosition?.id
+        )
+      );
+    }
+  }, [
+    candsStore.candDisplay,
+    candsStore.candDisplay?.position,
+    positionsStore.selectedPosition,
+  ]);
 
   return (
     <div className={styles.scrollCv}>
@@ -28,6 +45,8 @@ export const Cv = observer(() => {
               color: "#7b84ff",
               alignItems: "center",
               fontWeight: 700,
+              justifyContent: "center",
+              fontSize: "1.2rem",
             }}
           >
             <Grid item xs="auto" lg="auto">
@@ -82,8 +101,50 @@ export const Cv = observer(() => {
               </Link>
             </Grid>
             <Grid item xs="auto" lg="auto">
-              <a href="tel:+4733378901">{candsStore.candDisplay?.phone}</a>
+              <a href={"tel:" + candsStore.candDisplay?.phone}>
+                {candsStore.candDisplay?.phone}
+              </a>
             </Grid>
+            {posStage?.t && (
+              <Grid
+                item
+                xs="auto"
+                lg="auto"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <Select
+                    sx={{
+                      direction: "ltr",
+                      "& .MuiSelect-select": {
+                        color: candsStore.stagesTypes?.find(
+                          (x) => x.stageType === posStage?.t
+                        )?.color,
+                        fontWeight: "bold",
+                      },
+                    }}
+                    value={posStage?.t}
+                    onChange={async (e) => {
+                      await candsStore.updateCandPositionStatus(e.target.value);
+                    }}
+                  >
+                    {candsStore.stagesTypes?.map((item, ind) => {
+                      // console.log(key, index);
+                      return (
+                        <MenuItem
+                          sx={{ color: item.color }}
+                          key={ind}
+                          value={item.stageType}
+                        >
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+                <span style={{ direction: "ltr" }}>Status:</span>
+              </Grid>
+            )}
           </Grid>
           <div className="qlCustom">
             <pre

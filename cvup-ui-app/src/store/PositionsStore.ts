@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   IAppSettings,
   ICand,
+  ICompanyStagesTypes,
   IPosition,
   ISearchModel,
 } from "../models/GeneralModels";
@@ -140,9 +141,12 @@ export class PositionsStore {
 
   async deletePosition(id: number) {
     this.rootStore.generalStore.backdrop = true;
+    const posIndex = this.positionsList.findIndex((x) => x.id === id);
     const response = await this.positionApi.deletePosition(id);
 
     if (response.isSuccess) {
+      this.positionsList.splice(posIndex, 1);
+      this.rootStore.candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
       this.selectedPosition = undefined;
     }
 
@@ -150,22 +154,12 @@ export class PositionsStore {
     return response;
   }
 
-  async activatePosition(position: IPosition) {
-    this.rootStore.generalStore.backdrop = true;
-    const response = await this.positionApi.activatePosition(position);
-    this.rootStore.generalStore.backdrop = false;
-    return response;
-  }
-
-  async dactivatePosition(position: IPosition) {
-    this.rootStore.generalStore.backdrop = true;
-    const response = await this.positionApi.dactivatePosition(position);
-    this.rootStore.generalStore.backdrop = false;
-    return response;
-  }
-
   findPosName(posId: number) {
     const pos = this.positionsList.find((x) => x.id === posId);
-    return `${pos?.customerName} - ${pos?.name}`;
+    if (pos) {
+      return `${pos?.customerName} - ${pos?.name}`;
+    }
+
+    return null;
   }
 }

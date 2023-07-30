@@ -45,9 +45,6 @@ export interface ICand {
   candFoldersIds: number[];
   candPosIds: number[];
   cvPosIds: number[];
-  stageId: number;
-  dateAttached: Date;
-  candCvs: IPosCandCvs[];
   hasDuplicates: boolean;
   posStages?: IPosStages[];
   position?: IPosition;

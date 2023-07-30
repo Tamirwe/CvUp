@@ -8,6 +8,7 @@ import {
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
 import { numArrRemoveItem } from "../utils/GeneralUtils";
+import { TabsCandsEnum } from "../models/GeneralEnums";
 
 export class FoldersStore {
   private foldersApi;
@@ -74,9 +75,16 @@ export class FoldersStore {
 
   async deleteFolder(id: number) {
     this.rootStore.generalStore.backdrop = true;
+    const folderIndex = this.foldersList.findIndex((x) => x.id === id);
     const response = await this.foldersApi.deleteFolder(id);
+
+    if (response.isSuccess) {
+      this.foldersList.splice(folderIndex, 1);
+      this.rootStore.candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
+      this.selectedFolder = undefined;
+    }
+
     this.rootStore.generalStore.backdrop = false;
-    this.selectedFolder = undefined;
     return response;
   }
 

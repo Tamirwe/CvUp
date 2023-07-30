@@ -1,4 +1,8 @@
-import { IContact, IPosition } from "../../models/GeneralModels";
+import {
+  ICompanyStagesTypes,
+  IContact,
+  IPosition,
+} from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {
@@ -43,18 +47,6 @@ export default class PositionsApi extends BaseApi {
   async deletePosition(id: number) {
     return await this.apiWrapper2(async () => {
       return await this.http.delete(`Positions/DeletePosition?id=${id}`);
-    });
-  }
-
-  async activatePosition(position: IPosition) {
-    return await this.apiWrapper2(async () => {
-      return await this.http.put("Auth/ActivatePosition", position);
-    });
-  }
-
-  async dactivatePosition(position: IPosition) {
-    return await this.apiWrapper2(async () => {
-      return await this.http.put("Auth/DactivatePosition", position);
     });
   }
 }

@@ -154,9 +154,7 @@ export const CandsList = observer(
                           [styles.isMobile]: isMobile,
                         })}
                       >
-                        {candsSource === CandsSourceEnum.Position
-                          ? format(new Date(cand.dateAttached), "MMM d, yyyy")
-                          : format(new Date(cand.cvSent), "MMM d, yyyy")}
+                        {format(new Date(cand.cvSent), "MMM d, yyyy")}
                       </div>
                     </div>
 
@@ -204,7 +202,7 @@ export const CandsList = observer(
                       </IconButton>
                     </ListItemIcon>
                   </div>
-                  {cand.posStages?.length && (
+                  {cand.posStages && cand.posStages?.length > 0 && (
                     <CandsPosStagesList cand={cand} candsSource={candsSource} />
                   )}
                 </Box>

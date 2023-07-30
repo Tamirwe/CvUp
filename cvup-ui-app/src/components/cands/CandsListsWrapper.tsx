@@ -74,8 +74,6 @@ export const CandsListsWrapper = observer(() => {
     }
   };
 
-  const handleShowAdvanced = (val: boolean) => {};
-
   return (
     <Box sx={{ marginTop: "0", backgroundColor: "white" }}>
       <Box>

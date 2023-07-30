@@ -11,7 +11,7 @@ import { CrudTypesEnum, EmailTypeEnum } from "../models/GeneralEnums";
 import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
 import { ContactEmailSender } from "../components/email/ContactEmailSender";
 import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
-import { FormFolderDialog } from "../components/folders/FormFolderDialog";
+import { FolderFormDialog } from "../components/folders/FolderFormDialog";
 import { useState } from "react";
 import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
@@ -43,7 +43,7 @@ export const LayoutAuthWrapper = observer(() => {
       )}
       {(generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
         CrudTypesEnum.None && (
-        <FormFolderDialog
+        <FolderFormDialog
           isOpen={
             (generalStore.openModeFolderFormDialog as CrudTypesEnum) !==
             CrudTypesEnum.None

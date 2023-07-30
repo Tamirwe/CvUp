@@ -7,12 +7,12 @@ import { textFieldValidte } from "../../utils/Validation";
 import { FolderSettingsMenu } from "./FolderSettingsMenu";
 
 interface IProps {
-  onAddChild: () => void;
+  onAddFolderChild: () => void;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
+export const FolderForm = ({ onAddFolderChild, onSaved, onCancel }: IProps) => {
   const { foldersStore, generalStore } = useStore();
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -52,7 +52,7 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
     }
   };
 
-  const deleteRecord = async () => {
+  const deleteFolder = async () => {
     const isDelete = await generalStore.alertConfirmDialog(
       AlertConfirmDialogEnum.Confirm,
       "Delete Folder",
@@ -73,10 +73,10 @@ export const FormUpdateDelete = ({ onAddChild, onSaved, onCancel }: IProps) => {
   const handleMenuSelected = async (menuItem: string) => {
     switch (menuItem) {
       case "delete":
-        await deleteRecord();
+        await deleteFolder();
         break;
       case "addChild":
-        onAddChild();
+        onAddFolderChild();
         break;
       default:
         break;

@@ -23,6 +23,12 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
     >
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
+          const posNameCompany = positionsStore.findPosName(stage.id);
+
+          if (!posNameCompany) {
+            return;
+          }
+
           return (
             <div
               key={i}
@@ -90,7 +96,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                         : "none",
                   }}
                 >
-                  {positionsStore.findPosName(stage.id)}
+                  {posNameCompany}
                 </div>
               </div>
             </div>

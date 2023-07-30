@@ -8,7 +8,6 @@ import {
   IAppSettings,
   ICand,
   ICandCv,
-  ICvReview,
   ICompanyStagesTypes,
   IPosStages,
   IEmailTemplate,
@@ -327,45 +326,104 @@ export class CandsStore {
 
   async attachPosCandCv(positionId: number) {
     if (this.candDisplay) {
-      await this.cvsApi.attachPosCandCv(
+      const res = await this.cvsApi.attachPosCandCv(
         this.candDisplay.candidateId,
         this.candDisplay.cvId,
         positionId,
         this.candDisplay.keyId
       );
-    }
 
-    // runInAction(() => {
-    if (this.candDisplay) {
-      this.candDisplay.candPosIds.push(positionId);
-      this.candDisplay.cvPosIds.push(positionId);
-      this.candDisplay.posStages?.push({
-        d: format(new Date(), "yyyy-MM-dd"),
-        id: positionId,
-        t: "attached_to_position",
+      runInAction(() => {
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateCandAllList(res.data);
+          this.updatePosCandList(res.data);
+          this.updateFolderCandList(res.data);
+
+          if (
+            this.rootStore.positionsStore.selectedPosition?.id === positionId
+          ) {
+            this.addPosCandList(res.data);
+          }
+        }
       });
-
-      let cand = this.candsAllList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
-
-      if (cand) {
-        this.updateCandPosArrays(cand, this.candDisplay);
-      }
-
-      cand = this.folderCandsList.find(
-        (x) => x.candidateId === this.candDisplay?.candidateId
-      );
-
-      if (cand) {
-        this.updateCandPosArrays(cand, this.candDisplay);
-      }
-
-      if (this.rootStore.positionsStore.selectedPosition?.id === positionId) {
-        this.getPositionCands();
-      }
     }
-    // });
+  }
+
+  async detachPosCand(detachCand: ICand, positionId: number, index: number) {
+    if (positionId) {
+      const res = await this.cvsApi.detachPosCand(
+        detachCand.candidateId,
+        detachCand.cvId,
+        positionId
+      );
+
+      runInAction(() => {
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateCandAllList(res.data);
+          this.updatePosCandList(res.data);
+          this.updateFolderCandList(res.data);
+
+          if (
+            this.rootStore.positionsStore.selectedPosition?.id === positionId
+          ) {
+            this.removePosCandList(res.data);
+          }
+        }
+      });
+    }
+  }
+
+  updateCandAllList(cand: ICand) {
+    const candsList = [...this.candsAllList];
+    const index = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+
+    if (index > -1) {
+      candsList[index] = { ...cand };
+      this.candsAllList = candsList;
+    }
+  }
+
+  updatePosCandList(cand: ICand) {
+    const candsList = [...this.posCandsList];
+    const index = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+
+    if (index > -1) {
+      candsList[index] = { ...cand };
+      this.posCandsList = candsList;
+    }
+  }
+
+  updateFolderCandList(cand: ICand) {
+    const candsList = [...this.posCandsList];
+    const index = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+
+    if (index > -1) {
+      candsList[index] = { ...cand };
+      this.posCandsList = candsList;
+    }
+  }
+
+  addPosCandList(cand: ICand) {
+    const candsList = [...this.posCandsList];
+    candsList.unshift({ ...cand });
+    this.posCandsList = candsList;
+  }
+
+  removePosCandList(cand: ICand) {
+    const candsList = [...this.posCandsList];
+    const index = this.posCandsList.findIndex(
+      (x) => x.candidateId === cand.candidateId
+    );
+    candsList.splice(index, 1);
+    this.posCandsList = candsList;
   }
 
   async updateCandFoldersIds(candFoldersIdsArr: number[]) {
@@ -400,50 +458,27 @@ export class CandsStore {
     });
   }
 
-  async detachPosCand(detachCand: ICand, positionId: number, index: number) {
-    // const positionId = this.rootStore.positionsStore.selectedPosition?.id;
+  async updateCandPositionStatus(stageType: string | ICompanyStagesTypes) {
+    this.rootStore.generalStore.backdrop = true;
 
-    if (positionId) {
-      await this.cvsApi.detachPosCand(
-        detachCand.candidateId,
-        detachCand.cvId,
-        positionId
+    if (this.candDisplay?.candidateId && this.candDisplay?.position?.id) {
+      const res = await this.cvsApi.updateCandPositionStatus(
+        stageType.toString(),
+        this.candDisplay?.candidateId,
+        this.candDisplay?.position?.id
       );
 
-      numArrRemoveItem(positionId, detachCand.candPosIds);
-      numArrRemoveItem(positionId, detachCand.cvPosIds);
-      this.objArrRemoveItem(positionId, detachCand.posStages, "id");
-
-      if (this.candDisplay?.candidateId === detachCand.candidateId) {
-        this.updateCandPosArrays(this.candDisplay, detachCand);
-      }
-
-      let cand = this.candsAllList.find(
-        (x) => x.candidateId === detachCand.candidateId
-      );
-
-      if (cand) {
-        this.updateCandPosArrays(cand, detachCand);
-      }
-
-      cand = this.folderCandsList.find(
-        (x) => x.candidateId === detachCand.candidateId
-      );
-
-      if (cand) {
-        this.updateCandPosArrays(cand, detachCand);
-      }
-
-      this.posCandsList.splice(index, 1);
+      runInAction(() => {
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateCandAllList(res.data);
+          this.updatePosCandList(res.data);
+          this.updateFolderCandList(res.data);
+        }
+      });
     }
-  }
 
-  updateCandPosArrays(candTarget: ICand, candSource: ICand) {
-    candTarget.candPosIds = [...candSource.candPosIds];
-
-    if (candTarget.cvId === candSource.cvId) {
-      candTarget.cvPosIds = [...candSource.cvPosIds];
-    }
+    this.rootStore.generalStore.backdrop = false;
   }
 
   objArrRemoveItem(id: number, objArr: any, col: string) {

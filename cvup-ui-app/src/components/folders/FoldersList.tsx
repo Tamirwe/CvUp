@@ -65,8 +65,8 @@ export const FoldersList = observer(() => {
           size="small"
           sx={{ color: "#dfdfdf" }}
           onClick={async (event) => {
-            event.stopPropagation();
-            event.preventDefault();
+            // event.stopPropagation();
+            // event.preventDefault();
 
             if (isMobile) {
               generalStore.leftDrawerOpen = false;

@@ -10,11 +10,10 @@ import {
   Select,
   Stack,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { MdFormatAlignRight, MdFormatAlignLeft, MdAdd } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
@@ -26,7 +25,6 @@ import {
 import { IContact, IPosition } from "../../models/GeneralModels";
 import { validateSelect, validateTxt } from "../../utils/Validation";
 import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
-import { UsersAutoCompleteMulty } from "./UsersAutoCompleteMulty";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
 
@@ -66,14 +64,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
       setCrudType(CrudTypesEnum.Update);
       setFormModel({ ...positionsStore.editPosition });
     }
-
-    // (async () => {
-    //   await Promise.all([
-    //     authStore.usersList.length === 0 && authStore.getUsersList(),
-    //     customersContactsStore.contactsListSorted.length === 0 &&
-    //       customersContactsStore.getContactsList(),
-    //   ]);
-    // })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -154,32 +144,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
       }
-    }
-  };
-
-  const activatePosition = async () => {
-    const response = await positionsStore.activatePosition(formModel);
-
-    if (response.isSuccess) {
-      onClose();
-    } else {
-      return setSubmitError("An Error Occurred Please Try Again Later.");
-    }
-  };
-
-  const dactivatePosition = async () => {
-    const response = await positionsStore.dactivatePosition(formModel);
-
-    if (response.isSuccess) {
-      await generalStore.alertConfirmDialog(
-        AlertConfirmDialogEnum.Confirm,
-        "Deactivate Position",
-        "Position Deactivated."
-      );
-
-      onClose();
-    } else {
-      return setSubmitError("An Error Occurred Please Try Again Later.");
     }
   };
 
@@ -385,9 +349,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                   <TextField
                     sx={{
                       direction: "rtl",
-                      // "& textarea": {
-                      //   direction: isRtlDirection ? "rtl" : "ltr",
-                      // },
                     }}
                     fullWidth
                     multiline
@@ -411,9 +372,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                   <TextField
                     sx={{
                       direction: "rtl",
-                      // "& textarea": {
-                      //   direction: isRtlDirection ? "rtl" : "ltr",
-                      // },
                     }}
                     fullWidth
                     multiline
@@ -437,11 +395,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
             </Grid>
             <Grid item xs={12}>
               <Grid container>
-                {/* {generalStore.appMode === AppModeEnum.HRCompany ? ( */}
-
-                {/* ) : ( */}
-
-                {/* )} */}
                 <Grid item xs={12} mt={3}></Grid>
               </Grid>
             </Grid>
@@ -468,23 +421,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                         >
                           Delete
                         </Button>
-                        <Button
-                          fullWidth
-                          color="warning"
-                          onClick={() => {
-                            if (
-                              formModel.status === PositionStatusEnum.Not_Active
-                            ) {
-                              activatePosition();
-                            } else {
-                              dactivatePosition();
-                            }
-                          }}
-                        >
-                          {formModel.status === PositionStatusEnum.Not_Active
-                            ? "Activate"
-                            : "Deactivate"}
-                        </Button>
                       </Stack>
                     )}
                 </Grid>
@@ -510,64 +446,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
-            {/* <Grid item xs={12} lg={10} mt={2}>
-                  <UsersAutoCompleteMulty
-                    options={authStore.usersList}
-                    valueIds={formModel.interviewersIds}
-                    onChange={(value) => {
-                      setFormModel((currentProps) => ({
-                        ...currentProps,
-                        interviewersIds: value,
-                      }));
-                      setIsDirty(true);
-                    }}
-                  />
-                </Grid> */}
-            {/* <Grid item xs={12} sx={{ mt: 2 }}>
-              <Grid container>
-                <Grid item xs={0} lg={10}></Grid>
-                <Grid item xs={12} lg={2}>
-                  <Stack direction="row" alignItems="center" gap={1}>
-                    <Button
-                      disabled={!isDirty}
-                      fullWidth
-                      size="large"
-                      variant="contained"
-                      color="secondary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-
-                        setIsDirty(false);
-                        if (validateForm()) {
-                          submitForm();
-                        }
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      disabled={!isDirty}
-                      fullWidth
-                      size="large"
-                      variant="contained"
-                      color="secondary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-
-                        setIsDirty(false);
-                        if (validateForm()) {
-                          submitForm();
-                        }
-                      }}
-                    >
-                      Save
-                    </Button>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Grid> */}
           </Grid>
         </form>
       )}

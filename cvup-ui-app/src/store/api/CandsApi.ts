@@ -67,7 +67,7 @@ export default class CandsApi extends BaseApi {
     positionId: number,
     keyId: string
   ) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post(`Cand/AttachPosCandCv`, {
         candidateId,
         cvId,
@@ -78,7 +78,7 @@ export default class CandsApi extends BaseApi {
   }
 
   async detachPosCand(candidateId: number, cvId: number, positionId: number) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post(`Cand/DetachPosCand`, {
         candidateId,
         cvId,
@@ -147,6 +147,20 @@ export default class CandsApi extends BaseApi {
   async sendEmail(emailData: ISendEmail) {
     return await this.apiWrapper2(async () => {
       return await this.http.post(`Cand/SendEmail`, emailData);
+    });
+  }
+
+  async updateCandPositionStatus(
+    stageType: string,
+    candidateId: number,
+    positionId: number
+  ) {
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.post(`Cand/UpdateCandPositionStatus`, {
+        stageType,
+        candidateId,
+        positionId,
+      });
     });
   }
 }

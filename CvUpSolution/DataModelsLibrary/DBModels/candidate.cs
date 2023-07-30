@@ -31,6 +31,7 @@ namespace Database.models
         public string? pos_ids { get; set; }
         public string? pos_stages { get; set; }
         public int? cvdbid { get; set; }
+        public string? folders_ids { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<cv> cvs { get; set; }

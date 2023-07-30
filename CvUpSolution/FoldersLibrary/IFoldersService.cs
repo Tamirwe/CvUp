@@ -6,8 +6,8 @@ namespace FoldersLibrary
     public interface IFoldersService
     {
         Task<folder> AddFolder( int companyId, FolderModel data);
-        Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data);
-        Task<folders_cand> DetachCandidate(int companyId, int id);
+        Task AttachCandidate(int companyId, FolderCandidateModel data);
+        Task DetachCandidate(int companyId, FolderCandidateModel data);
         Task DeleteFolder(int companyId, int id);
         Task<List<FolderModel>> GetFolders(int companyId);
         Task<folder> UpdateFolder(int companyId, FolderModel data);

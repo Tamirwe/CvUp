@@ -79,6 +79,8 @@ namespace Database.models
 
                 entity.Property(e => e.first_name).HasMaxLength(50);
 
+                entity.Property(e => e.folders_ids).HasColumnType("json");
+
                 entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.last_cv_sent)

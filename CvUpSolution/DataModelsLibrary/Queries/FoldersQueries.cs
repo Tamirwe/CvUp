@@ -86,7 +86,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data)
+        public async Task AttachCandidate(int companyId, FolderCandidateModel data)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -99,25 +99,49 @@ namespace DataModelsLibrary.Queries
 
                 dbContext.folders_cands.Add(fdr);
                 await dbContext.SaveChangesAsync();
-                return fdr;
             }
         }
 
-        public async Task<folders_cand> DetachCandidate(int companyId,int id)
+        public async Task DetachCandidate(int companyId, FolderCandidateModel data)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var fdr = new folders_cand
-                {
-                    id= id,
-                    company_id = companyId,
-                };
+                folders_cand? candFolder = await dbContext.folders_cands.Where(x => x.company_id == companyId
+                    && x.folder_id == data.folderId && x.candidate_id == data.candidateId).FirstOrDefaultAsync();
 
-                dbContext.folders_cands.Remove(fdr);
-                await dbContext.SaveChangesAsync();
-                return fdr;
+                if (candFolder != null)
+                {
+                    dbContext.folders_cands.Remove(candFolder);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
 
+        public async Task UpdateCandidateFolders(int companyId, int candidateId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<folders_cand>? foldersCandList = await dbContext.folders_cands.Where(x => x.company_id == companyId
+                   && x.candidate_id == candidateId).ToListAsync();
+
+                List<int> candFoldersIds = new List<int>();
+
+                foreach (var item in foldersCandList)
+                {
+                    candFoldersIds.Add(item.folder_id);
+                }
+
+
+                candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
+
+                if (cand != null)
+                {
+                    cand.folders_ids = $"[{string.Join(",", candFoldersIds)}]";
+                    var result = dbContext.candidates.Update(cand);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+       
     }
 }

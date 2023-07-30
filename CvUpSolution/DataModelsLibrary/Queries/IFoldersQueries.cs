@@ -11,10 +11,11 @@ namespace DataModelsLibrary.Queries
     public interface IFoldersQueries
     {
         Task<folder> AddFolder(int companyId, FolderModel data);
-        Task<folders_cand> AttachCandidate(int companyId, FolderCandidateModel data);
-        Task<folders_cand> DetachCandidate(int companyId, int id);
+        Task AttachCandidate(int companyId, FolderCandidateModel data);
+        Task DetachCandidate(int companyId, FolderCandidateModel data);
         Task DeleteFolder(int companyId, List<int> ids);
         Task<List<FolderModel>> GetFolders(int companyId);
         Task<folder> UpdateFolder(int companyId, FolderModel data);
+        Task UpdateCandidateFolders(int companyId, int candidateId);
     }
 }

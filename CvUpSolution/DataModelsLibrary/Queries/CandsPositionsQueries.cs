@@ -44,6 +44,7 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = Convert.ToDateTime(cand.last_cv_sent),
+                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
@@ -77,6 +78,7 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
+                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
@@ -112,10 +114,10 @@ namespace DataModelsLibrary.Queries
                                  phone = cand.phone,
                                  hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
                                  cvSent = cvs.date_created,
+                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  cvPosIds = cvs.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cvs.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 folderCandId = fc.id
                              });
 
                 return await query.ToListAsync();

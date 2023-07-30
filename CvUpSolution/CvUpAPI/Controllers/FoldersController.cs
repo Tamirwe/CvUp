@@ -59,7 +59,7 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("DetachCandidate")]
         public async Task<IActionResult> DetachCandidate(FolderCandidateModel data)
         {

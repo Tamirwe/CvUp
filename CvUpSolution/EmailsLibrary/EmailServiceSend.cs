@@ -20,9 +20,9 @@ namespace EmailsLibrary
         public EmailService(IConfiguration config)
         {
             _mailFromName = config["GlobalSettings:MailFromName"];
-            _mailFromAddress = config["GlobalSettings:MailFromAddress"];
-            _mailUserName = config["GlobalSettings:gmailUserName"];
-            _mailPassword = config["GlobalSettings:gmailPassword"];
+            _mailFromAddress = config["GlobalSettings:GmailPassword"];
+            _mailUserName = config["GlobalSettings:GmailUserName"];
+            _mailPassword = config["GlobalSettings:GmailPassword"];
         }
 
         public async Task Send(EmailModel eml)

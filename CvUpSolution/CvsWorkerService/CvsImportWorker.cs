@@ -19,7 +19,7 @@ namespace CvsWorkerService
             {
                 //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 _importCvs.ImportFromGmail();
-                await Task.Delay(60000, stoppingToken);
+                await Task.Delay(6000000, stoppingToken);
             }
         }
     }

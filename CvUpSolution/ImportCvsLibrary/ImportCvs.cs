@@ -33,6 +33,9 @@ namespace ImportCvsLibrary
         string _monthFolder = DateTime.Now.Month.ToString("00");
         string _companyFolder = "";
         List<company_cvs_email>? _companiesEmail;
+        List<ParserRulesModel> _parsersRulesAllCompanies;
+        List<ParserRulesModel> _parsersRules;
+        ImportCvModel _importCv = new ImportCvModel();
 
         public ImportCvs(IConfiguration config, ICandsPositionsServise cvsPositionsServise)
         {
@@ -40,13 +43,14 @@ namespace ImportCvsLibrary
 
             _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
             //Directory.CreateDirectory(_filesRootFolder);
-            _gmailUserName = config["GlobalSettings:gmailUserName"];
-            _mailPassword = config["GlobalSettings:gmailPassword"];
+            _gmailUserName = config["GlobalSettings:GmailUserName"];
+            _mailPassword = config["GlobalSettings:GmailPassword"];
         }
 
         public async void ImportFromGmail()
         {
             _companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
+            _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
 
             using (var client = new ImapClient())
             {
@@ -58,9 +62,6 @@ namespace ImportCvsLibrary
 
                 foreach (var uid in uids)
                 {
-                    //try
-                    //{
-
                     var message = inbox.GetMessage(uid);
                     Console.WriteLine("Subject: {0}", message.Subject);
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
@@ -69,6 +70,7 @@ namespace ImportCvsLibrary
                     if (companyId > 0)
                     {
                         CreateCvFolder(companyId);
+                        _parsersRules = _parsersRulesAllCompanies.Where(x=>x.company_id == companyId).ToList();
 
                         foreach (MimeEntity attachment in message.Attachments)
                         {
@@ -77,7 +79,7 @@ namespace ImportCvsLibrary
 
                             if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                             {
-                                ImportCvModel importCv = new ImportCvModel
+                                _importCv = new ImportCvModel
                                 {
                                     companyId = companyId,
                                     emailId = message.MessageId,
@@ -86,17 +88,11 @@ namespace ImportCvsLibrary
                                     fileExtension = fileExtension,
                                 };
 
-                                SaveAttachmentToTemporaryFile(importCv, attachment);
-                                ParseEmailSubject(importCv);
-                                CvExtractDataAndSave(importCv);
+                                SaveAttachmentToTemporaryFile( attachment);
+                                ParseEmailSubject();
+                                await CvExtractDataAndSave();
                             }
                         }
-
-                        //}
-                        //catch (Exception)
-                        //{
-                        //    //log
-                        //}
                     }
                 }
 
@@ -104,49 +100,49 @@ namespace ImportCvsLibrary
             }
         }
 
-        private async Task CvExtractDataAndSave(ImportCvModel importCv)
+        private async Task CvExtractDataAndSave()
         {
-            ExtractCvProps(importCv);
-            CandidateFindOrCreate(importCv);
-            GetCvAsciiSum(importCv);
-            CheckIsCvDuplicate(importCv);
-            AddCvToDb(importCv);
-            RenameAndMoveAttachmentToFolder(importCv);
-            await UpdateCvKeyId(importCv);
-            await UpdateCandidateLastCv(importCv);
-            AddCvToIndex(importCv);
+            ExtractCvProps();
+            await CandidateFindOrCreate();
+            GetCvAsciiSum();
+            await CheckIsCvDuplicate();
+            await AddCvToDb();
+            RenameAndMoveAttachmentToFolder();
+            await UpdateCvKeyId();
+            await UpdateCandidateLastCv();
+            await AddCvToIndex();
         }
 
-        private async Task UpdateCandidateLastCv(ImportCvModel importCv)
+        private async Task UpdateCandidateLastCv()
         {
-            await _cvsPositionsServise.UpdateCandidateLastCv(importCv);
+            await _cvsPositionsServise.UpdateCandidateLastCv(_importCv);
         }
 
-        private async Task UpdateCvKeyId(ImportCvModel importCv)
+        private async Task UpdateCvKeyId()
         {
-            if (!importCv.isSameCv)
+            if (!_importCv.isSameCv)
             {
-                await _cvsPositionsServise.UpdateCvKeyId(importCv);
+                await _cvsPositionsServise.UpdateCvKeyId(_importCv);
             }
         }
 
         private void CreateCvFolder(int companyId)
         {
             _companyFolder = companyId.ToString();
-            Directory.CreateDirectory($"{_filesRootFolder}\\{_companyFolder}\\cvs");
-            _cvTempFolderPath = $"{_filesRootFolder}\\{_companyFolder}\\temp";
+            Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs");
+            _cvTempFolderPath = $"{_filesRootFolder}\\_{_companyFolder}\\temp";
             Directory.CreateDirectory(_cvTempFolderPath);
-            Directory.CreateDirectory($"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}");
-            _cvFolderPath = $"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}";
+            Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}");
+            _cvFolderPath = $"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}";
             Directory.CreateDirectory(_cvFolderPath);
         }
 
-        private void SaveAttachmentToTemporaryFile(ImportCvModel importCv, MimeEntity attachment)
+        private void SaveAttachmentToTemporaryFile( MimeEntity attachment)
         {
-            var myUniqueFileName = $@"{DateTime.Now.Ticks}{importCv.fileExtension}";
-            importCv.tempFilePath = $"{_cvTempFolderPath}\\{myUniqueFileName}";
+            var myUniqueFileName = $@"{DateTime.Now.Ticks}{_importCv.fileExtension}";
+            _importCv.tempFilePath = $"{_cvTempFolderPath}\\{myUniqueFileName}";
 
-            using (var stream = File.Create(importCv.tempFilePath))
+            using (var stream = File.Create(_importCv.tempFilePath))
             {
                 if (attachment is MessagePart)
                 {
@@ -161,50 +157,50 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void RenameAndMoveAttachmentToFolder(ImportCvModel importCv)
+        private void RenameAndMoveAttachmentToFolder()
         {
-            if (!importCv.isSameCv)
+            if (!_importCv.isSameCv)
             {
-                string fileNamePath = GetAttachmentFileNamePath(importCv.cvId, importCv.fileExtension, out string cvKey);
-                importCv.cvKey = cvKey;
-                File.Move(importCv.tempFilePath, fileNamePath);
+                string fileNamePath = GetAttachmentFileNamePath(_importCv.cvId, _importCv.fileExtension, out string cvKey);
+                _importCv.cvKey = cvKey;
+                File.Move(_importCv.tempFilePath, fileNamePath);
             }
         }
 
-        private void ExtractCvProps(ImportCvModel importCv)
+        private void ExtractCvProps()
         {
-            if (importCv.fileExtension == PDF_EXTENSION)
+            if (_importCv.fileExtension == PDF_EXTENSION)
             {
-                importCv.cvTxt = GetCvTxtPdf(importCv.tempFilePath);
+                _importCv.cvTxt = GetCvTxtPdf(_importCv.tempFilePath);
             }
             else
             {
-                importCv.cvTxt = GetCvTxtWord(importCv.tempFilePath);
+                _importCv.cvTxt = GetCvTxtWord(_importCv.tempFilePath);
             }
 
-            GetCandidateEmail(importCv);
-            GetCandidatePhone(importCv);
+            GetCandidateEmail();
+            GetCandidatePhone();
         }
 
-        private async void CheckIsCvDuplicate(ImportCvModel importCv)
+        private async Task CheckIsCvDuplicate()
         {
-            if (!importCv.isNewCandidate)
+            if (!_importCv.isNewCandidate)
             {
-                List<cv> cvs = await _cvsPositionsServise.CheckIsCvDuplicate(importCv.companyId, importCv.candidateId, importCv.cvAsciiSum);
+                List<cv> cvs = await _cvsPositionsServise.CheckIsCvDuplicate(_importCv.companyId, _importCv.candidateId, _importCv.cvAsciiSum);
 
                 if (cvs.Count > 0)
                 {
-                    importCv.isDuplicate = true;
-                    importCv.duplicateCvId = cvs.First().id;
+                    _importCv.isDuplicate = true;
+                    _importCv.duplicateCvId = cvs.First().id;
 
                     foreach (var cv in cvs)
                     {
-                        if (cv.subject == importCv.subject && cv.date_created.AddDays(30) > DateTime.Now && cv.from == importCv.from)
+                        if (cv.subject == _importCv.subject && cv.date_created.AddDays(30) > DateTime.Now && cv.from == _importCv.from)
                         {
-                            importCv.isSameCv = true;
-                            importCv.cvId = cv.id;
-                            importCv.duplicateCvId = 0;
-                            importCv.isDuplicate = false;
+                            _importCv.isSameCv = true;
+                            _importCv.cvId = cv.id;
+                            _importCv.duplicateCvId = 0;
+                            _importCv.isDuplicate = false;
                             break;
                         }
                     }
@@ -212,19 +208,17 @@ namespace ImportCvsLibrary
             }
         }
 
-        private async void ParseEmailSubject(ImportCvModel cv)
+        private async void ParseEmailSubject()
         {
-            List<ParserRulesModel> parsersRules = await _cvsPositionsServise.GetParsersRules(cv.companyId);
-
-            if (parsersRules.Count > 0)
+            if (_parsersRules.Count > 0)
             {
-                List<int> parsersIds = parsersRules.DistinctBy(x => x.parser_id).Select(x => x.parser_id).ToList();
+                List<int> parsersIds = _parsersRules.DistinctBy(x => x.parser_id).Select(x => x.parser_id).ToList();
                 string seperator = "~~";
 
                 foreach (int id in parsersIds)
                 {
-                    List<ParserRulesModel> parserRules = parsersRules.Where(x => x.parser_id == id).OrderBy(x => x.order).ToList();
-                    string subject = cv.subject;
+                    List<ParserRulesModel> parserRules = _parsersRules.Where(x => x.parser_id == id).OrderBy(x => x.order).ToList();
+                    string subject = _importCv.subject;
                     bool isCorrectParser = false;
 
                     foreach (var rule in parserRules)
@@ -255,13 +249,13 @@ namespace ImportCvsLibrary
                             {
                                 case nameof(ParserValueType.Name):
                                     //to be check
-                                    var nameParts = subjectArr[i].Split(' ');
-                                    cv.firstName = nameParts[nameParts.Length - 1].Trim();
-                                    cv.lastName = subjectArr[i].Replace(cv.firstName, "").Trim();
-                                    cv.candidateName = subjectArr[i];
+                                    var nameParts = subjectArr[i].Split(' ',StringSplitOptions.RemoveEmptyEntries);
+                                    _importCv.firstName = nameParts[nameParts.Length - 1].Trim();
+                                    _importCv.lastName = subjectArr[i].Replace(_importCv.firstName, "").Trim();
+                                    _importCv.candidateName = subjectArr[i];
                                     break;
                                 case nameof(ParserValueType.Position):
-                                    cv.positionRelated = subjectArr[i];
+                                    _importCv.positionRelated = subjectArr[i];
                                     break;
                                 case nameof(ParserValueType.CompanyType):
 
@@ -278,52 +272,52 @@ namespace ImportCvsLibrary
             }
         }
 
-        private void CandidateFindOrCreate(ImportCvModel importCv)
+        private async Task CandidateFindOrCreate()
         {
-            _cvsPositionsServise.AddUpdateCandidateFromCvImport(importCv);
+           await _cvsPositionsServise.AddUpdateCandidateFromCvImport(_importCv);
         }
 
-        private async void AddCvToDb(ImportCvModel importCv)
+        private async Task AddCvToDb()
         {
-            if (importCv.isSameCv)
+            if (_importCv.isSameCv)
             {
-                _cvsPositionsServise.UpdateSameCv(importCv);
+                await _cvsPositionsServise.UpdateSameCv(_importCv);
             }
             else
             {
-                importCv.cvId = await _cvsPositionsServise.AddCv(importCv);
+                _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
             }
         }
 
-        private async void AddCvToIndex(ImportCvModel importCv)
+        private async Task AddCvToIndex()
         {
-            if (!importCv.isDuplicate && !importCv.isSameCv)
+            if (!_importCv.isDuplicate && !_importCv.isSameCv)
             {
-                await _cvsPositionsServise.SaveCandidateToIndex(importCv.companyId, importCv.candidateId);
+                await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
             }
         }
 
-        private void GetCandidatePhone(ImportCvModel item)
+        private void GetCandidatePhone()
         {
             const string MatchPhonePattern = @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}";
             Regex rx = new Regex(MatchPhonePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            MatchCollection matches = rx.Matches(item.cvTxt);
+            MatchCollection matches = rx.Matches(_importCv.cvTxt);
 
             if (matches.Count > 0)
             {
-                item.phone = matches[0].Value;
+                _importCv.phone = matches[0].Value;
             }
         }
 
-        private void GetCandidateEmail(ImportCvModel item)
+        private void GetCandidateEmail()
         {
             Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*",
             RegexOptions.IgnoreCase);
-            MatchCollection emailMatches = emailRegex.Matches(item.cvTxt);
+            MatchCollection emailMatches = emailRegex.Matches(_importCv.cvTxt);
 
             if (emailMatches.Count > 0)
             {
-                item.emailAddress = emailMatches[0].Value;
+                _importCv.emailAddress = emailMatches[0].Value;
             }
         }
 
@@ -365,11 +359,11 @@ namespace ImportCvsLibrary
             return txt;
         }
 
-        private void GetCvAsciiSum(ImportCvModel importCv)
+        private void GetCvAsciiSum()
         {
             int docAsciiSum = 0;
 
-            foreach (char c in importCv.cvTxt)
+            foreach (char c in _importCv.cvTxt)
             {
                 try
                 {
@@ -378,14 +372,18 @@ namespace ImportCvsLibrary
                 catch (Exception) { }
             }
 
-            importCv.cvAsciiSum = docAsciiSum;
+            _importCv.cvAsciiSum = docAsciiSum;
         }
 
         private string GetAttachmentFileNamePath(int cvId, string fileExtension, out string cvKey)
         {
-            cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{Utils.FileTypeKey(fileExtension)}-{cvId}";
-            string fileName = cvKey + fileExtension;
-            var fileNamePath = $"{_filesRootFolder}\\{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}\\{fileName}";
+            int fileTypeKey = Utils.FileTypeKey(fileExtension);
+            cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{fileTypeKey}-{cvId}";
+
+            string fileName = $"{_companyFolder}-{_yearFolder}{_monthFolder}-{cvId}{fileExtension}";
+
+            //string fileName = cvKey + fileExtension;
+            var fileNamePath = $"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}\\{fileName}";
             return fileNamePath;
         }
 

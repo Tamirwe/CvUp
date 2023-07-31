@@ -24,7 +24,7 @@ namespace CandsPositionsLibrary
         Task DeletePosition(int companyId, int id);
         Task<List<int>> getPositionContactsIds(int companyId, int positionId);
         Task<PositionModel> GetPosition(int companyId, int positionId);
-        Task<List<ParserRulesModel>> GetParsersRules(int companyId);
+        Task<List<ParserRulesModel>> GetParsersRules();
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task UpdateCvKeyId(ImportCvModel importCv);
         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);

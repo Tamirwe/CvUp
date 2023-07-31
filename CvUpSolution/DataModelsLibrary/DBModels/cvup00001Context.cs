@@ -587,7 +587,11 @@ namespace Database.models
 
                 entity.Property(e => e.first_name).HasMaxLength(20);
 
+                entity.Property(e => e.first_name_en).HasMaxLength(20);
+
                 entity.Property(e => e.last_name).HasMaxLength(20);
+
+                entity.Property(e => e.last_name_en).HasMaxLength(20);
 
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 

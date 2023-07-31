@@ -12,6 +12,7 @@ namespace DataModelsLibrary.Queries
         Task<user?> GetUser(int userId);
         Task<user?> GetUser(int companyId, string email);
         Task<List<user>> GetUsers(string email, int? companyId);
+        Task<UserDataModel?> GetUserData(int companyId, int userId);
         Task<List<UserModel>> GetUsers(int companyId);
         Task<company?> GetCompany(int companyId);
         Task<company> AddCompany(string companyName, string? companyDescr, CompanyActiveStatus status);

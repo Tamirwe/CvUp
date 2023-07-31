@@ -65,6 +65,15 @@ namespace DataModelsLibrary.Models
         public string addedByName { get; set; } = string.Empty;
         public string addedById { get; set; } = string.Empty;
 
+    }
 
+    public class UserDataModel
+    {
+        public string firstName { get; set; } = string.Empty;
+        public string lastName { get; set; } = string.Empty;
+        public string? firstNameEn { get; set; } = string.Empty;
+        public string? lastNameEn { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string? phone { get; set; } = string.Empty;
     }
 }

@@ -27,6 +27,8 @@ namespace Database.models
         public string active_status { get; set; } = null!;
         public string? phone { get; set; }
         public int? cvdbid { get; set; }
+        public string? first_name_en { get; set; }
+        public string? last_name_en { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<emails_sent> emails_sents { get; set; }

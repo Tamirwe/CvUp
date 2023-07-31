@@ -32,7 +32,12 @@ namespace AuthLibrary
             return depList;
         }
 
-       
+        public async Task<UserDataModel?> GetUserData(int companyId, int userId)
+        {
+            UserDataModel? userData = await _authQueries.GetUserData(companyId, userId);
+            return userData;
+        }
+
 
     }
 }

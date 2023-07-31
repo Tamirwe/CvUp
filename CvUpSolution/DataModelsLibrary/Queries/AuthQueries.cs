@@ -349,7 +349,27 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-       
+        public async Task<UserDataModel?> GetUserData(int companyId, int userId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from u in dbContext.users
+                            where u.company_id == companyId && u.id == userId
+                            orderby u.first_name, u.last_name
+                            select new UserDataModel
+                            {
+                                firstName = u.first_name,
+                                lastName = u.last_name,
+                                firstNameEn = u.first_name_en,
+                                lastNameEn = u.last_name_en,
+                                email = u.email,
+                                phone = u.phone,
+                            };
+
+                return await query.FirstOrDefaultAsync();
+            }
+        }
+
         public async Task UpdateCompanyUser(UserModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())

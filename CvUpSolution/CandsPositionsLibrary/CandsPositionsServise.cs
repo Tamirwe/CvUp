@@ -264,11 +264,10 @@ namespace CandsPositionsLibrary
             return true;
         }
 
-        public async Task<bool> SaveCandReview(int companyId ,CandReviewModel candReview)
+        public async Task SaveCandReview(int companyId ,CandReviewModel candReview)
         {
             await _cvsPositionsQueries.SaveCandReview(companyId,candReview);
             await SaveCandidateToIndex(companyId, candReview.candidateId);
-            return true;
         }
 
         public async Task SaveCandidateToIndex(int companyId, int candidateId)

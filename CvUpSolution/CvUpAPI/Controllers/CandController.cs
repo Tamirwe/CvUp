@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Org.BouncyCastle.Asn1.Cmp;
 using System.ComponentModel.Design;
 
 namespace CvUpAPI.Controllers
@@ -87,17 +88,10 @@ namespace CvUpAPI.Controllers
 
         [HttpPut]
         [Route("SaveCandReview")]
-        public async Task<IActionResult> SaveCandReview(CandReviewModel candReview)
+        public async Task<CandModel?> SaveCandReview(CandReviewModel candReview)
         {
-            bool isSaved = await _candPosService.SaveCandReview(Globals.CompanyId,candReview);
-
-            if (isSaved) {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            await _candPosService.SaveCandReview(Globals.CompanyId, candReview);
+            return await _candPosService.GetCandidate(Globals.CompanyId, candReview.candidateId);
         }
 
         [HttpPost]
@@ -169,11 +163,11 @@ namespace CvUpAPI.Controllers
 
         [HttpPut]
         [Route("UpdateCandDetails")]
-        public async Task<IActionResult> UpdateCandDetails(CandDetailsModel candDetails)
+        public async Task<CandModel?> UpdateCandDetails(CandDetailsModel candDetails)
         {
             candDetails.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandDetails(candDetails);
-            return Ok();
+            return await _candPosService.GetCandidate(candDetails.companyId, candDetails.candidateId);
         }
 
         [HttpPost]

@@ -177,6 +177,14 @@ namespace CvUpAPI.Controllers
             return Ok(users);
         }
 
+        [HttpGet]
+        [Route("GetLoggedinUserData")]
+        public async Task<IActionResult> GetLoggedinUserData()
+        {
+            UserDataModel? userData = await _authServise.GetUserData(Globals.CompanyId, Globals.UserId);
+            return Ok(userData);
+        }
+
         [HttpPost]
         [Route("AddCompanyUser")]
         public async Task<IActionResult> AddCompanyUser(UserModel data)

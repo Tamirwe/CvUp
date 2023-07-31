@@ -37,7 +37,7 @@ namespace CandsPositionsLibrary
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
         Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
-        Task<bool> SaveCandReview(int companyId,CandReviewModel candReview);
+        Task SaveCandReview(int companyId,CandReviewModel candReview);
         Task SaveCandidateToIndex(int companyId, int candidateId);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);

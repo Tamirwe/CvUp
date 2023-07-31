@@ -4,6 +4,7 @@ import {
   IForgotPassword,
   IInterviewer,
   IUser,
+  IUserData,
   IUserLogin,
   IUserRegistration,
 } from "../models/AuthModels";
@@ -25,6 +26,7 @@ export class AuthStore {
   userRole: UserRoleEnum = UserRoleEnum.User;
   interviewersList: IInterviewer[] = [];
   usersList: IUser[] = [];
+  currentUserData?: IUserData;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -176,5 +178,10 @@ export class AuthStore {
     const response = await this.authApi.resendRegistrationEmail(user);
     this.rootStore.generalStore.backdrop = false;
     return response;
+  }
+
+  async getLoggedinUserData() {
+    const response = await this.authApi.getLoggedinUserData();
+    this.currentUserData = response.data;
   }
 }

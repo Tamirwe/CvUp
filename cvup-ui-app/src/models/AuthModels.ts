@@ -11,6 +11,16 @@ export interface IUser {
   addedByName?: string;
   addedById?: string;
 }
+
+export interface IUserData {
+  firstName: string;
+  lastName: string;
+  firstNameEn?: string;
+  lastNameEn?: string;
+  email: string;
+  phone: string;
+}
+
 export interface IUserRegistration {
   firstName: string;
   lastName: string;

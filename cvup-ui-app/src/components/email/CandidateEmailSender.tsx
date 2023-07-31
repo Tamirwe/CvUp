@@ -69,7 +69,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
     body: "",
   });
 
-  useEffect(() => {
+  const filterEmailContacts = () => {
     if (candsStore.candDisplay) {
       const emailsList = [
         {
@@ -81,16 +81,13 @@ export const CandidateEmailSender = observer((props: IProps) => {
         },
       ];
 
-      // var reviewLines = candsStore.candDisplay.review?.split("\n");
-
-      // const reviewLinesHtml = reviewLines?.map((item, i) => {
-      //   return `<p style="text-align: right; direction: rtl;">${item}</p>`;
-      // });
-
-      // setReviewHtml(reviewLinesHtml?.join("") || "");
       setEmailsToList(emailsList);
       setListDefaultEmails(emailsList);
+    }
+  };
 
+  const generateDynamicDataForEmailTemplate = () => {
+    if (candsStore.candDisplay) {
       const dynamicDataMap = new Map();
 
       dynamicDataMap.set("FirstName", candsStore.candDisplay.firstName);
@@ -110,6 +107,11 @@ export const CandidateEmailSender = observer((props: IProps) => {
 
       setDynamicData(dynamicDataMap);
     }
+  };
+
+  useEffect(() => {
+    filterEmailContacts();
+    generateDynamicDataForEmailTemplate();
   }, []);
 
   useEffect(() => {

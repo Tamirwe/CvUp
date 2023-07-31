@@ -182,6 +182,10 @@ export const SearchControl = ({
                       ...currentProps,
                       advancedValue: "",
                     }));
+                    setSearchVals((currentProps) => ({
+                      ...currentProps,
+                      exact: false,
+                    }));
                   }}
                 />
               ) : (

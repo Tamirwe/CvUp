@@ -94,7 +94,7 @@ export default class CandsApi extends BaseApi {
   }
 
   async saveCandReview(review: string, candidateId: number) {
-    return await this.apiWrapper2<boolean>(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.put("Cand/SaveCandReview", {
         review,
         candidateId,
@@ -109,7 +109,7 @@ export default class CandsApi extends BaseApi {
     email: string,
     phone: string
   ) {
-    return await this.apiWrapper2<boolean>(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.put("Cand/UpdateCandDetails", {
         candidateId,
         firstName,

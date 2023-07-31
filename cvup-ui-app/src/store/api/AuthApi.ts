@@ -5,6 +5,7 @@ import {
   IUserRegistration,
   IInterviewer,
   IUser,
+  IUserData,
 } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
@@ -104,6 +105,12 @@ export default class AuthApi extends BaseApi {
   async dactivateUser(userModel: IUser) {
     return await this.apiWrapper2(async () => {
       return await this.http.put("Auth/DactivateCompanyUser", userModel);
+    });
+  }
+
+  async getLoggedinUserData() {
+    return await this.apiWrapper2<IUserData>(async () => {
+      return await this.http.get("Auth/GetLoggedinUserData");
     });
   }
 }

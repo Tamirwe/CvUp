@@ -45,7 +45,44 @@ export const ContactEmailSender = (props: IProps) => {
     body: "",
   });
 
-  useEffect(() => {
+  const filterEmailContacts = () => {
+    if (candsStore.candDisplay) {
+      let contacts = customersContactsStore.contactsListSorted;
+
+      if (positionsStore.candDisplayPosition) {
+        contacts = customersContactsStore.contactsListSorted.filter(
+          (x) => x.customerId === positionsStore.candDisplayPosition?.customerId
+        );
+      }
+
+      const emailsOptionsList = contacts.map((item) => {
+        return {
+          Address: item.email || "",
+          Name: `${item.firstName || ""} ${item.lastName || ""} - ${
+            item.customerName || ""
+          }`,
+        };
+      });
+
+      setEmailsToList(emailsOptionsList || []);
+
+      const emailsToList = positionsStore.candDisplayPosition?.contactsIds.map(
+        (id) => {
+          const contact = customersContactsStore.getContactById(id);
+          return {
+            Address: contact.email || "",
+            Name: `${contact.firstName || ""} ${contact.lastName || ""} - ${
+              contact.customerName || ""
+            }`,
+          };
+        }
+      );
+
+      setListDefaultEmails(emailsToList || []);
+    }
+  };
+
+  const generateBodyHtml = () => {
     if (candsStore.candDisplay) {
       var reviewLines = candsStore.candDisplay.review?.split("\n");
 
@@ -54,22 +91,12 @@ export const ContactEmailSender = (props: IProps) => {
       });
 
       setBodyHtml(reviewLinesHtml?.join("") || "");
-
-      const emailsList = positionsStore.candDisplayPosition?.contactsIds.map(
-        (id) => {
-          const contact = customersContactsStore.getContactById(id);
-          return {
-            Address: contact.email || "",
-            Name: (contact.firstName || "") + " " + (contact.lastName || ""),
-          };
-        }
-      );
-
-      if (emailsList) {
-        setEmailsToList(emailsList);
-        setListDefaultEmails(emailsList);
-      }
     }
+  };
+
+  useEffect(() => {
+    generateBodyHtml();
+    filterEmailContacts();
   }, []);
 
   const validateForm = () => {

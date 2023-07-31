@@ -125,38 +125,17 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
 
     if (this.candDisplay) {
-      const data = await this.cvsApi.saveCandReview(
+      const res = await this.cvsApi.saveCandReview(
         review,
         this.candDisplay?.candidateId
       );
 
       runInAction(() => {
-        if (this.candDisplay) {
-          this.candDisplay.review = review;
-
-          let cand = this.candsAllList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.review = review;
-          }
-
-          cand = this.posCandsList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.review = review;
-          }
-
-          cand = this.folderCandsList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.review = review;
-          }
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateCandAllList(res.data);
+          this.updatePosCandList(res.data);
+          this.updateFolderCandList(res.data);
         }
       });
     }
@@ -173,7 +152,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
 
     if (this.candDisplay) {
-      const data = await this.cvsApi.saveCandDetails(
+      const res = await this.cvsApi.saveCandDetails(
         this.candDisplay?.candidateId,
         firstName,
         lastName,
@@ -182,44 +161,11 @@ export class CandsStore {
       );
 
       runInAction(() => {
-        if (this.candDisplay) {
-          this.candDisplay.firstName = firstName;
-          this.candDisplay.lastName = lastName;
-          this.candDisplay.email = email;
-          this.candDisplay.phone = phone;
-
-          let cand = this.candsAllList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.firstName = firstName;
-            cand.lastName = lastName;
-            cand.email = email;
-            cand.phone = phone;
-          }
-
-          cand = this.posCandsList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.firstName = firstName;
-            cand.lastName = lastName;
-            cand.email = email;
-            cand.phone = phone;
-          }
-
-          cand = this.folderCandsList.find(
-            (x) => x.candidateId === this.candDisplay?.candidateId
-          );
-
-          if (cand) {
-            cand.firstName = firstName;
-            cand.lastName = lastName;
-            cand.email = email;
-            cand.phone = phone;
-          }
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateCandAllList(res.data);
+          this.updatePosCandList(res.data);
+          this.updateFolderCandList(res.data);
         }
       });
     }

@@ -16,15 +16,11 @@ export const Cv = observer(() => {
     if (candsStore.candDisplay?.posStages) {
       setPosStage(
         candsStore.candDisplay?.posStages.find(
-          (x) => x.id === positionsStore.selectedPosition?.id
+          (x) => x.id === positionsStore.candDisplayPosition?.id
         )
       );
     }
-  }, [
-    candsStore.candDisplay,
-    positionsStore.candDisplayPosition,
-    positionsStore.selectedPosition,
-  ]);
+  }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
   return (
     <div className={styles.scrollCv}>

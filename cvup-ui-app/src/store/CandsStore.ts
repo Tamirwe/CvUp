@@ -11,16 +11,11 @@ import {
   ICompanyStagesTypes,
   IPosStages,
   IEmailTemplate,
-  IEmailsAddress,
-  IPosition,
-  IAttachCv,
   ISendEmail,
   ISearchModel,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
-import { format } from "date-fns";
-import { numArrRemoveItem } from "../utils/GeneralUtils";
 
 export class CandsStore {
   private cvsApi;
@@ -81,6 +76,10 @@ export class CandsStore {
       // }
 
       this.getPdf(cand.keyId);
+
+      if (!cand.isSeen) {
+        this.cvsApi.updateIsSeen(cand.cvId);
+      }
     });
   }
 

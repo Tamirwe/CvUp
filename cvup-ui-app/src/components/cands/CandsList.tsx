@@ -141,6 +141,7 @@ export const CandsList = observer(
                       }}
                     >
                       <div
+                        style={{ color: cand.isSeen ? "unset" : "green" }}
                         className={classNames({
                           [styles.listItemText]: true,
                           [styles.isMobile]: isMobile,

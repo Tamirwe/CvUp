@@ -184,9 +184,9 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeletePosition(companyId, id);
         }
 
-        public async Task<List<ParserRulesModel>> GetParsersRules(int companyId)
+        public async Task<List<ParserRulesModel>> GetParsersRules()
         {
-            return await _cvsPositionsQueries.GetParsersRules(companyId);
+            return await _cvsPositionsQueries.GetParsersRules();
         }
 
         public async Task<CvModel?> GetCv(int cvId, int companyId)

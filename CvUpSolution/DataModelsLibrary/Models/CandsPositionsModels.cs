@@ -198,6 +198,7 @@ namespace DataModelsLibrary.Models
 
     public class ParserRulesModel
     {
+        public int company_id { get; set; }
         public int parser_id { get; set; }
         public string delimiter { get; set; } = "";
         public string value_type { get; set; } = "";

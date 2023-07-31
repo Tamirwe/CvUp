@@ -20,7 +20,7 @@ namespace DataModelsLibrary.Queries
          Task DeletePosition(int companyId, int id);
          Task<List<int>> getPositionContactsIds(int companyId, int positionId);
          Task<PositionModel> GetPosition(int companyId, int positionId);
-         Task<List<ParserRulesModel>> GetParsersRules(int companyId);
+         Task<List<ParserRulesModel>> GetParsersRules();
          Task<List<int>> GetCompaniesIds();
          Task<List<string?>> GetCompanyCvsIds(int companyId);
          Task<CvModel?> GetCv(int cvId, int companyId);

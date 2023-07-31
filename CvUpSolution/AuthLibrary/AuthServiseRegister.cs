@@ -36,7 +36,7 @@ namespace AuthLibrary
 
         private async Task GenerateCompanyEmail(int companyId)
         {
-            string mailFromAddress = _configuration["GlobalSettings:MailFromAddress"];
+            string mailFromAddress = _configuration["GlobalSettings:GmailAddress"];
             string[] mailFromParts = mailFromAddress.Split("@");
             company_cvs_email? companyEmail;
             string generatedCompanyEmail;

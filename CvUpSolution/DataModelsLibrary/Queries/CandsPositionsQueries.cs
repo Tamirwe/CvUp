@@ -546,15 +546,15 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<ParserRulesModel>> GetParsersRules(int companyId)
+        public async Task<List<ParserRulesModel>> GetParsersRules()
         {
             using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.company_parsers
                             join r in dbContext.parser_rules on p.parser_id equals r.parser_id
-                            where p.company_id == companyId
                             select new ParserRulesModel
                             {
+                                company_id = p.company_id,
                                 parser_id = r.parser_id,
                                 delimiter = r.delimiter,
                                 value_type = r.value_type,

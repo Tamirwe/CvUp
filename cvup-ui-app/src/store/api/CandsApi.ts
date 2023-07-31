@@ -164,11 +164,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  updateIsSeen(cvId: number) {
-    return this.apiWrapper2<ICand>(async () => {
-      return this.http.put(`Cand/UpdateIsSeen`, {
-        cvId,
-      });
+  async updateIsSeen(cvId: number) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.get(`Cand/UpdateIsSeen?cvId=${cvId}`);
     });
   }
 }

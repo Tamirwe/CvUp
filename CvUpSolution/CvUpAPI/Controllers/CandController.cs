@@ -179,12 +179,13 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("UpdateIsSeen")]
-        public async Task UpdateIsSeen(int cvId)
+        public async Task<IActionResult> UpdateIsSeen(int cvId)
         {
             await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
+            return Ok();
         }
-
+       
     }
 }

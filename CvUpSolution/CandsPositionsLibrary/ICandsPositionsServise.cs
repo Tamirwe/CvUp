@@ -45,5 +45,6 @@ namespace CandsPositionsLibrary
         Task UpdateCandDetails(CandDetailsModel candDetails);
         Task SendEmail(SendEmailModel emailData);
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
+        Task UpdateIsSeen(int companyId, int cvId);
     }
 }

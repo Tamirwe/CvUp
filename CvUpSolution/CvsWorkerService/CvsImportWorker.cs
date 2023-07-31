@@ -7,7 +7,7 @@ namespace CvsWorkerService
         private readonly IImportCvs _importCvs;
         private readonly ILogger<CvsImportWorker> _logger;
 
-        public CvsImportWorker(IImportCvs importCvs,ILogger<CvsImportWorker> logger)
+        public CvsImportWorker(IImportCvs importCvs, ILogger<CvsImportWorker> logger)
         {
             _importCvs = importCvs;
             _logger = logger;
@@ -18,8 +18,15 @@ namespace CvsWorkerService
             while (!stoppingToken.IsCancellationRequested)
             {
                 //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+
                 _importCvs.ImportFromGmail();
-                await Task.Delay(6000000, stoppingToken);
+
+                if (DateTime.Now.Hour == 3 || DateTime.Now.Hour == 16)
+                {
+                    _importCvs.BackupDataBase();
+                }
+
+                await Task.Delay(60000, stoppingToken);
             }
         }
     }

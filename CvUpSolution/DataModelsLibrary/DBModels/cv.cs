@@ -26,6 +26,7 @@ namespace Database.models
         public int? cvdbid { get; set; }
         public string? file_extension { get; set; }
         public int? file_type { get; set; }
+        public bool? is_seen { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }

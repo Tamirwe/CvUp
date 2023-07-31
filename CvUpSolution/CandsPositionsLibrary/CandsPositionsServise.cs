@@ -312,5 +312,9 @@ namespace CandsPositionsLibrary
             await _emailService.Send(new EmailModel { To = emailData.toAddresses, Subject = emailData.subject, Body = emailData.body, Attachments= Attachments });
         }
 
+        public async Task UpdateIsSeen(int companyId, int cvId)
+        {
+            await _cvsPositionsQueries.UpdateIsSeen(companyId, cvId);
+        }
     }
 }

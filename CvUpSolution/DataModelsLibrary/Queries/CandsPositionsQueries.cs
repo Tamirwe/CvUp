@@ -45,6 +45,7 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
                              }).Take(300);
 
                 var result = await query.FirstOrDefaultAsync();
@@ -77,6 +78,7 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
                              }).Take(300);
 
                 var result = await query.ToListAsync();
@@ -110,6 +112,7 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
                              });
 
                 return await query.ToListAsync();
@@ -142,6 +145,7 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
                              });
 
                 return await query.ToListAsync();
@@ -181,6 +185,18 @@ namespace DataModelsLibrary.Queries
                 return newCv.id;
             }
         }
+
+        public async Task UpdateSameCv(ImportCvModel importCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
+                cv.date_created = DateTime.Now;
+                var result = dbContext.cvs.Update(cv);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
 
         public async Task UpdateCvKeyId(ImportCvModel importCv)
         {
@@ -652,17 +668,6 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateSameCv(ImportCvModel importCv)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
-                cv.date_created = DateTime.Now;
-                var result = dbContext.cvs.Update(cv);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
         public async Task AttachPosCandCv(AttachePosCandCvModel posCandCv)
         {
             using (var dbContext = new cvup00001Context())
@@ -868,5 +873,19 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task UpdateIsSeen(int companyId, int cvId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                cv? candCv = dbContext.cvs.Where(x => x.company_id == companyId && x.id == cvId).FirstOrDefault();
+
+                if (candCv != null)
+                {
+                    candCv.is_seen = true;
+                    var result = dbContext.cvs.Update(candCv);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
     }
 }

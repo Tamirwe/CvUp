@@ -86,6 +86,8 @@ namespace DataModelsLibrary.Models
         public int[]? candPosIds { get; set; } 
         public CandPosStageModel[]? posStages { get; set; }
         public int[]? candFoldersIds { get; set; }
+        public bool isSeen { get; set; }
+
     }
 
     public class CandDetailsModel

@@ -178,5 +178,13 @@ namespace CvUpAPI.Controllers
             await _candPosService.SendEmail(emailData);
             return Ok();
         }
+
+        [HttpPut]
+        [Route("UpdateIsSeen")]
+        public async Task UpdateIsSeen(int cvId)
+        {
+            await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
+        }
+
     }
 }

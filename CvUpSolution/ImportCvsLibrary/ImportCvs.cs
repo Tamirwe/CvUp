@@ -20,7 +20,7 @@ using CandsPositionsLibrary;
 
 namespace ImportCvsLibrary
 {
-    public class ImportCvs : IImportCvs
+    public partial class ImportCvs : IImportCvs
     {
 
         ICandsPositionsServise _cvsPositionsServise;
@@ -65,7 +65,10 @@ namespace ImportCvsLibrary
                     var message = inbox.GetMessage(uid);
                     Console.WriteLine("Subject: {0}", message.Subject);
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
-                    int companyId = GetCompanyIdFromAddress(message.To);
+
+                    // no need because app is only for bella
+                    //int companyId = GetCompanyIdFromAddress(message.To);
+                    int companyId = 154;
 
                     if (companyId > 0)
                     {
@@ -208,7 +211,7 @@ namespace ImportCvsLibrary
             }
         }
 
-        private async void ParseEmailSubject()
+        private  void ParseEmailSubject()
         {
             if (_parsersRules.Count > 0)
             {

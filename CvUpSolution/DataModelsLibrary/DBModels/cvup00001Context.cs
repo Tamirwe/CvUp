@@ -237,6 +237,8 @@ namespace Database.models
 
                 entity.Property(e => e.from).HasMaxLength(200);
 
+                entity.Property(e => e.is_seen).HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.key_id).HasMaxLength(30);
 
                 entity.Property(e => e.pos_ids).HasColumnType("json");

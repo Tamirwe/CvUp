@@ -44,54 +44,48 @@ namespace CvUpAPI.Controllers
             return await Task.Run(() => File(stream, "application/pdf", $"{id}.pdf"));
         }
 
-        public static MemoryStream AddPdfLogo(MemoryStream stream)
-        {
-            //Create a PdfDocument instance
-            PdfDocument pdf = new PdfDocument();
-            pdf.LoadFromStream(stream);
-            //pdf.LoadFromFile("Input.pdf");
+        //public static MemoryStream AddPdfLogo(MemoryStream stream)
+        //{
+        //    //Create a PdfDocument instance
+        //    PdfDocument pdf = new PdfDocument();
+        //    pdf.LoadFromStream(stream);
+        //    //pdf.LoadFromFile("Input.pdf");
 
+        //    //Get the first page in the PDF document
+        //    PdfPageBase page = pdf.Pages[0];
 
-            //Get the first page in the PDF document
-            PdfPageBase page = pdf.Pages[0];
+        //    //Load an image
+        //    PdfImage image = PdfImage.FromFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\logoForCv.png");
 
-            
+        //    //Specify the width and height of the image area on the page
+        //    float width = image.Width * 0.50f;
+        //    float height = image.Height * 0.50f;
 
-            //Load an image
-            PdfImage image = PdfImage.FromFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\logoForCv.png");
+        //    //Specify the X and Y coordinates to start drawing the image
+        //    float x = 5f;
+        //    float y = 5f;
 
-            //Specify the width and height of the image area on the page
-            float width = image.Width * 0.50f;
-            float height = image.Height * 0.50f;
+        //    //Draw the image at a specified location on the page
+        //    page.Canvas.DrawImage(image, x, y, width, height);
 
-            //Specify the X and Y coordinates to start drawing the image
-            float x = 5f;
-            float y = 5f;
+        //    var pdfStream = pdf.SaveToStream(FileFormat.PDF);
+        //    var memoryPdfStream = pdfStream.Cast<MemoryStream>().First();
+        //    stream.Seek(0, SeekOrigin.Begin);
+        //    return memoryPdfStream;
 
-            //Draw the image at a specified location on the page
-            page.Canvas.DrawImage(image, x, y, width, height);
+        //    /*** FFU  (for future use)****/
+        //    //Save the result document
+        //    //pdf.SaveToFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\AddImage.pdf", FileFormat.PDF);
 
-            var pdfStream = pdf.SaveToStream(FileFormat.PDF);
-            var memoryPdfStream = pdfStream.Cast<MemoryStream>().First();
-            stream.Seek(0, SeekOrigin.Begin);
-            return memoryPdfStream;
+        //    /***  Delete images ****/
+        //    //var pageImages = page.ExtractImages();
 
-
-
-            /*** FFU  (for future use)****/
-            //Save the result document
-            //pdf.SaveToFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\AddImage.pdf", FileFormat.PDF);
-
-            /***  Delete images ****/
-            //var pageImages = page.ExtractImages();
-
-            //foreach (var item in pageImages)
-            //{
-            //    page.DeleteImage(item);
-            //}
-            /********************/
-        }
-
+        //    //foreach (var item in pageImages)
+        //    //{
+        //    //    page.DeleteImage(item);
+        //    //}
+        //    /********************/
+        //}
 
         //[HttpGet]
         //public IActionResult? Get(string id)
@@ -115,9 +109,7 @@ namespace CvUpAPI.Controllers
         //        var stream = new MemoryStream();
         //        document.SaveToFile(stream, Spire.Doc.FileFormat.PDF);
 
-
         //        stream.Position= 0;
-
 
         //        //var pdfFile =  File(stream, MediaTypeNames.Application.Pdf, $"bb.pdf");
         //        var pdfFile = File(stream, "application/pdf", $"{secArr[0]}.pdf");

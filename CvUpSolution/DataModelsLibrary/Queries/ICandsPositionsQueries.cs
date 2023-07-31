@@ -45,5 +45,6 @@ namespace DataModelsLibrary.Queries
         Task DeleteEmailTemplate(int companyId, int id);
         Task UpdateCandDetails(CandDetailsModel candDetails);
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
+        Task UpdateIsSeen(int companyId, int cvId);
     }
 }

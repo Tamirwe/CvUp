@@ -94,7 +94,7 @@ namespace CandsPositionsLibrary
 
             if (importCv.candidateId == 0)
             {
-                string email = importCv.emailAddress.Length > 0 ? importCv.emailAddress : "Not Found";
+                string email = importCv.emailAddress.Length > 0 ? importCv.emailAddress : "";
 
                 var newCand = new candidate
                 {

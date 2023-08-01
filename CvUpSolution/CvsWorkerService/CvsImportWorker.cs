@@ -23,7 +23,9 @@ namespace CvsWorkerService
 
                 if (DateTime.Now.Hour == 3 || DateTime.Now.Hour == 16)
                 {
+#if !DEBUG
                     _importCvs.BackupDataBase();
+#endif
                 }
 
                 await Task.Delay(60000, stoppingToken);

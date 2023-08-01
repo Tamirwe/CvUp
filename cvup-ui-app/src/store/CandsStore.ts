@@ -240,9 +240,12 @@ export class CandsStore {
   }
 
   async getPositionCands() {
-    this.posCandsList = [];
-
     this.rootStore.generalStore.backdrop = true;
+
+    runInAction(() => {
+      this.posCandsList = [];
+    });
+
     const posId = this.rootStore.positionsStore.selectedPosition?.id!;
 
     const res = await this.cvsApi.getPosCandsList(posId);
@@ -343,19 +346,26 @@ export class CandsStore {
   }
 
   updatePosCandList(cand: ICand) {
+    const updatedCand = { ...cand };
     const candsList = [...this.posCandsList];
     const index = candsList.findIndex(
       (x) => x.candidateId === this.candDisplay?.candidateId
     );
 
     if (index > -1) {
-      candsList[index] = { ...cand };
+      const listCand = candsList[index];
+      updatedCand.cvId = listCand.cvId;
+      updatedCand.emailSubject = listCand.emailSubject;
+      updatedCand.keyId = listCand.keyId;
+      updatedCand.isSeen = listCand.isSeen;
+
+      candsList[index] = updatedCand;
       this.posCandsList = candsList;
     }
   }
 
   updateFolderCandList(cand: ICand) {
-    const candsList = [...this.posCandsList];
+    const candsList = [...this.folderCandsList];
     const index = candsList.findIndex(
       (x) => x.candidateId === this.candDisplay?.candidateId
     );
@@ -381,34 +391,42 @@ export class CandsStore {
     this.posCandsList = candsList;
   }
 
+  candsAllListCand(candidateId: number) {
+    const varToPreventTsError: any = {};
+
+    const cand = this.candsAllList.find(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+    return cand ? cand : varToPreventTsError;
+  }
+
+  candsPosListCand(candidateId: number) {
+    const varToPreventTsError: any = {};
+
+    const cand = this.posCandsList.find(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+    return cand ? cand : varToPreventTsError;
+  }
+
+  candsFolderListCand(candidateId: number) {
+    const varToPreventTsError: any = {};
+
+    const cand = this.folderCandsList.find(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+    return cand ? cand : varToPreventTsError;
+  }
+
   async updateCandFoldersIds(candFoldersIdsArr: number[]) {
     runInAction(() => {
       if (this.candDisplay) {
         this.candDisplay.candFoldersIds = candFoldersIdsArr;
 
-        let cand = this.candsAllList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.candFoldersIds = candFoldersIdsArr;
-        }
-
-        cand = this.posCandsList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.candFoldersIds = candFoldersIdsArr;
-        }
-
-        cand = this.folderCandsList.find(
-          (x) => x.candidateId === this.candDisplay?.candidateId
-        );
-
-        if (cand) {
-          cand.candFoldersIds = candFoldersIdsArr;
-        }
+        const candId = this.candDisplay?.candidateId;
+        this.candsAllListCand(candId).candFoldersIds = candFoldersIdsArr;
+        this.candsPosListCand(candId).candFoldersIds = candFoldersIdsArr;
+        this.candsFolderListCand(candId).candFoldersIds = candFoldersIdsArr;
       }
     });
   }

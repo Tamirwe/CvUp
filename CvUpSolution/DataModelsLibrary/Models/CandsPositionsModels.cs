@@ -79,6 +79,7 @@ namespace DataModelsLibrary.Models
         public string? email { get; set; } = "";
         public string? emailSubject { get; set; } = "";
         public string? review { get; set; } = "";
+        public DateTime? reviewDate { get; set; }
         public string? firstName { get; set; } = "";
         public string? lastName { get; set; } = "";
         public bool hasDuplicates { get; set; }

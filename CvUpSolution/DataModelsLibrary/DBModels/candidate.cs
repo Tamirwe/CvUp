@@ -23,8 +23,8 @@ namespace Database.models
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
         public sbyte? has_duplicates_cvs { get; set; }
-        public byte[]? review_html { get; set; }
-        public string? review_text { get; set; }
+        public string? review { get; set; }
+        public DateTime? review_date { get; set; }
         public DateTime? last_cv_sent { get; set; }
         public int? last_cv_id { get; set; }
         public string? pos_ids { get; set; }

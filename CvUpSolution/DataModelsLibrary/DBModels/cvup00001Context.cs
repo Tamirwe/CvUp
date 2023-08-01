@@ -125,9 +125,9 @@ namespace Database.models
 
                 entity.Property(e => e.pos_stages).HasColumnType("json");
 
-                entity.Property(e => e.review_html).HasColumnType("blob");
+                entity.Property(e => e.review).HasMaxLength(14000);
 
-                entity.Property(e => e.review_text).HasMaxLength(14000);
+                entity.Property(e => e.review_date).HasColumnType("datetime");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)
@@ -605,7 +605,7 @@ namespace Database.models
 
                 entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");
 
-                entity.Property(e => e.signature).HasMaxLength(1000);
+                entity.Property(e => e.signature).HasMaxLength(10000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users)

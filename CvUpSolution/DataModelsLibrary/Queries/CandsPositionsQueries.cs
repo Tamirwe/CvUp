@@ -32,7 +32,8 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_text,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -65,7 +66,8 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_text,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -99,7 +101,8 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_text,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -132,7 +135,8 @@ namespace DataModelsLibrary.Queries
                              select new CandModel
                              {
                                  cvId = cvs.id,
-                                 review = cand.review_text,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -251,7 +255,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
-                        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review_text reviewText
+                        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
 	                            FROM candidates cnd 
 	                            INNER JOIN cvs ON cnd.id = cvs.candidate_id
 	                            INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
@@ -638,7 +642,8 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candReview.candidateId).First();
-                cand.review_text = candReview.review;
+                cand.review = candReview.review;
+                cand.review_date = DateTime.Now;
                 var result = dbContext.candidates.Update(cand);
                 await dbContext.SaveChangesAsync();
             }

@@ -48,6 +48,7 @@ export interface ICand {
   hasDuplicates: boolean;
   posStages?: IPosStages[];
   isSeen: boolean;
+  reviewDate?: Date;
 }
 
 export interface IPosStages {

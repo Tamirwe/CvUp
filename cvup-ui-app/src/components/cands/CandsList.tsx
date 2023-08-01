@@ -31,7 +31,7 @@ interface IProps {
 
 export const CandsList = observer(
   ({ candsListData, candsSource, advancedOpen }: IProps) => {
-    const { candsStore, generalStore } = useStore();
+    const { candsStore, generalStore, positionsStore } = useStore();
     let location = useLocation();
     const navigate = useNavigate();
 
@@ -42,9 +42,14 @@ export const CandsList = observer(
     useEffect(() => {
       if (candsListData) {
         setListCands([...candsListData?.slice(0, 50)]);
-        listRef.current.scrollTop = 0;
       }
     }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+      setTimeout(() => {
+        listRef.current.scrollTop = 0;
+      }, 200);
+    }, [positionsStore.selectedPosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const onScroll = useCallback(() => {
       const instance = listRef.current;
@@ -141,6 +146,7 @@ export const CandsList = observer(
                       }}
                     >
                       <div
+                        title="Email subject"
                         style={{ color: cand.isSeen ? "unset" : "green" }}
                         className={classNames({
                           [styles.listItemText]: true,
@@ -150,6 +156,7 @@ export const CandsList = observer(
                         {cand.emailSubject}
                       </div>
                       <div
+                        title="Cv sent date"
                         className={classNames({
                           [styles.listItemDate]: true,
                           [styles.isMobile]: isMobile,

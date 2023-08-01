@@ -61,7 +61,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 style={{
                   color: candsStore.findStageColor(stage.t),
                 }}
-                title={candsStore.findStageName(stage.t)}
+                title={`Status: ${candsStore.findStageName(stage.t)}`}
                 {...(cand.candidateId ===
                   candsStore.candDisplay?.candidateId && {
                   onClick: (event) => {
@@ -78,7 +78,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {format(new Date(stage.d), "dd/MM/yyyy")}
+                  {format(new Date(stage.d), "MMM d, yyyy")}
                 </div>
                 <div>&nbsp;-&nbsp;</div>
                 <div

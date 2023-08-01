@@ -7,6 +7,7 @@ import { FormControl, Grid, Link, MenuItem, Select } from "@mui/material";
 import { EmailTypeEnum } from "../models/GeneralEnums";
 import { useEffect, useState } from "react";
 import { IPosStages } from "../models/GeneralModels";
+import { format } from "date-fns";
 
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -141,6 +142,20 @@ export const Cv = observer(() => {
               </Grid>
             )}
           </Grid>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row-reverse",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+            }}
+          >
+            {candsStore.candDisplay?.reviewDate &&
+              format(
+                new Date(candsStore.candDisplay?.reviewDate),
+                "MMM d, yyyy"
+              )}{" "}
+          </div>
           <div className="qlCustom">
             <pre
               style={{
@@ -148,6 +163,7 @@ export const Cv = observer(() => {
                 direction: authStore.isRtl ? "rtl" : "ltr",
                 textAlign: authStore.isRtl ? "right" : "left",
                 fontFamily: "inherit",
+                margin: 0,
               }}
               dangerouslySetInnerHTML={{
                 __html: candsStore.candDisplay?.review || "",

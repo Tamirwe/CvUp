@@ -31,7 +31,8 @@
 .listItemDate {
   white-space: nowrap;
   font-size: 0.7rem;
-  
+  text-align: right;
+  min-width: 4.2rem;
   &.isMobile {
     font-size: 0.6rem;
   }

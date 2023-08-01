@@ -67,7 +67,7 @@ export const CandDupCvsList = observer(() => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {format(new Date(dupCv.cvSent), "dd/MM/yyyy")}
+                  {format(new Date(dupCv.cvSent), "MMM d, yyyy")}
                 </div>
                 <div>&nbsp;-&nbsp;</div>
                 <div

@@ -4,12 +4,15 @@ export interface IUser {
   id: number;
   firstName: string;
   lastName: string;
+  firstNameEn?: string;
+  lastNameEn?: string;
   email: string;
   phone: string;
   permissionType: PermissionTypeEnum;
   activeStatus: UserActiveEnum;
   addedByName?: string;
   addedById?: string;
+  signature?: string;
 }
 
 export interface IUserData {

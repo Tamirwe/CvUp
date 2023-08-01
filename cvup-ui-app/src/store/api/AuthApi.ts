@@ -108,9 +108,9 @@ export default class AuthApi extends BaseApi {
     });
   }
 
-  async getLoggedinUserData() {
+  async getUser() {
     return await this.apiWrapper2<IUserData>(async () => {
-      return await this.http.get("Auth/GetLoggedinUserData");
+      return await this.http.get("Auth/GetUser");
     });
   }
 }

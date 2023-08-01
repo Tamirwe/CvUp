@@ -31,7 +31,7 @@ export const Header = () => {
         positionsStore.getPositionsList(),
         candsStore.getEmailTemplates(),
         customersContactsStore.getCustomersList(),
-        authStore.getLoggedinUserData(),
+        authStore.getUser(),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

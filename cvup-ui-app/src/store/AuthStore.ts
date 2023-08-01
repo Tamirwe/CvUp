@@ -180,8 +180,8 @@ export class AuthStore {
     return response;
   }
 
-  async getLoggedinUserData() {
-    const response = await this.authApi.getLoggedinUserData();
+  async getUser() {
+    const response = await this.authApi.getUser();
     this.currentUserData = response.data;
   }
 }

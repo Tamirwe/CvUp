@@ -16,7 +16,7 @@ namespace DataModelsLibrary.Queries
         Task<List<UserModel>> GetUsers(int companyId);
         Task<company?> GetCompany(int companyId);
         Task<company> AddCompany(string companyName, string? companyDescr, CompanyActiveStatus status);
-        Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, string firstNameEn, string lastNameEn, UserActiveStatus status, UserPermission permission, string log);
+        Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, string? firstNameEn, string? lastNameEn, UserActiveStatus status, UserPermission permission, string log);
         Task<company> UpdateCompany(company newCompany);
         Task AddRegistrationKey(string key, user user);
         Task DeleteOldRegistrationsKeys();

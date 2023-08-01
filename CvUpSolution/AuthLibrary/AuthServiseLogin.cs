@@ -39,25 +39,27 @@ namespace AuthLibrary
 
                 if (user is not null)
                 {
-                    bool isVerify = SecretHasher.Verify(data.password, user.passwaord ?? "");
-
-                    if (isVerify)
+                    if (string.IsNullOrEmpty(user.passwaord))
                     {
-                        if (user.active_status != UserActiveStatus.Active.ToString())
-                        {
-                            user.active_status = UserActiveStatus.Active.ToString();
-                            await _authQueries.UpdateUser(user);
-                            var company = await _authQueries.GetCompany(user.company_id);
-
-                            if (company is not null && company.active_status == CompanyActiveStatus.Waite_Complete_Registration.ToString())
-                            {
-                                company.active_status = CompanyActiveStatus.Active.ToString();
-                                await _authQueries.UpdateCompany(company);
-                            }
-                        }
-
-                        return user;
+                        string hashPassword = SecretHasher.Hash(data.password);
+                        user.passwaord = hashPassword;
                     }
+
+                    if (user.active_status != UserActiveStatus.Active.ToString())
+                    {
+                        user.active_status = UserActiveStatus.Active.ToString();
+                        await _authQueries.UpdateUser(user);
+                        var company = await _authQueries.GetCompany(user.company_id);
+
+                        if (company is not null && company.active_status == CompanyActiveStatus.Waite_Complete_Registration.ToString())
+                        {
+                            company.active_status = CompanyActiveStatus.Active.ToString();
+                            await _authQueries.UpdateCompany(company);
+                        }
+                    }
+
+                    return user;
+
                 }
             }
 

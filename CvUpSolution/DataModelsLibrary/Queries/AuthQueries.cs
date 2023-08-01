@@ -150,7 +150,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName,  string firstNameEn, string lastNameEn, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName,  string? firstNameEn, string? lastNameEn, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {

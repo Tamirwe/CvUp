@@ -5,14 +5,7 @@ using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using EmailsLibrary.Models;
 using LuceneLibrary;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandsPositionsLibrary
 {
@@ -250,18 +243,34 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetCompanyStagesTypes(companyId);
         }
 
-        public async Task<bool> SendEmailToCand(EmailToCandModel emailToCand)
+        public async Task SendEmail(SendEmailModel emailData, UserModel? user)
         {
-            var email = new EmailModel
+            if (user != null)
             {
-                To = emailToCand.addresses,
-                Subject = emailToCand.emailSubject,
-                Body = emailToCand.emailBody
-            };
+                EmailAddress from = new EmailAddress { Address = user.email, Name = $"{user.firstName} {user.lastName}" };
 
-            await _emailService.Send(email);
+                List<AttachmentModel>? Attachments = new List<AttachmentModel>();
 
-            return true;
+                if (emailData.attachCvs != null)
+                {
+                    foreach (var item in emailData.attachCvs)
+                    {
+                        var Attachment = _cvsFilesService.AddPdfLogo(emailData.companyId, item.cvKey);
+                        Attachments.Add(new AttachmentModel { Attachment = Attachment, name = item.name });
+                    }
+                }
+
+                var email = new EmailModel
+                {
+                    To = emailData.toAddresses,
+                    Subject = emailData.subject,
+                    From = from,
+                    Body = $"{emailData.body} {user.signature} ",
+                    Attachments = Attachments
+                };
+
+                await _emailService.Send(email);
+            }
         }
 
         public async Task SaveCandReview(int companyId ,CandReviewModel candReview)
@@ -294,22 +303,6 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandDetails(CandDetailsModel candDetails)
         {
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
-        }
-
-        public async Task SendEmail(SendEmailModel emailData)
-        {
-            List<AttachmentModel>? Attachments = new List<AttachmentModel>();
-
-            if (emailData.attachCvs != null)
-            {
-                foreach (var item in emailData.attachCvs)
-                {
-                    var Attachment = _cvsFilesService.AddPdfLogo(emailData.companyId, item.cvKey);
-                    Attachments.Add(new AttachmentModel { Attachment = Attachment, name = item.name });
-                }
-            }
-
-            await _emailService.Send(new EmailModel { To = emailData.toAddresses, Subject = emailData.subject, Body = emailData.body, Attachments= Attachments });
         }
 
         public async Task UpdateIsSeen(int companyId, int cvId)

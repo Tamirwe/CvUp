@@ -1,4 +1,5 @@
-﻿using CandsPositionsLibrary;
+﻿using AuthLibrary;
+using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using EmailsLibrary.Models;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ComponentModel.Design;
 
+
 namespace CvUpAPI.Controllers
 {
     [Authorize]
@@ -16,13 +18,13 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class CandController : ControllerBase
     {
-        private IConfiguration _configuration;
         private ICandsPositionsServise _candPosService;
+        private IAuthServise _authServise;
 
-        public CandController(IConfiguration config, ICandsPositionsServise candPosService)
+        public CandController( ICandsPositionsServise candPosService, IAuthServise authServise)
         {
-            _configuration = config;
             _candPosService = candPosService;
+            _authServise = authServise;
         }
 
         [HttpGet]
@@ -130,11 +132,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("SendEmailToCand")]
-        public async Task<bool> SendEmailToCand(EmailToCandModel emailToCand)
+        [Route("SendEmail")]
+        public async Task<IActionResult> SendEmail(SendEmailModel emailData)
         {
-            emailToCand.companyId = Globals.CompanyId;
-            return await _candPosService.SendEmailToCand(emailToCand);
+            emailData.companyId = Globals.CompanyId;
+            UserModel? user = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
+            await _candPosService.SendEmail(emailData, user);
+            return Ok();
         }
 
         [HttpGet]
@@ -168,15 +172,6 @@ namespace CvUpAPI.Controllers
             candDetails.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandDetails(candDetails);
             return await _candPosService.GetCandidate(candDetails.companyId, candDetails.candidateId);
-        }
-
-        [HttpPost]
-        [Route("SendEmail")]
-        public async Task<IActionResult> SendEmail(SendEmailModel emailData)
-        {
-            emailData.companyId = Globals.CompanyId;
-            await _candPosService.SendEmail(emailData);
-            return Ok();
         }
 
         [HttpGet]

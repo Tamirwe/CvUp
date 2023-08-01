@@ -28,6 +28,6 @@ namespace AuthLibrary
         Task DeleteUser(int companyId, int id);
         Task ActivateCompanyUser(string? origin, int companyId, UserModel data);
         Task DactivateCompanyUser( int companyId, UserModel data);
-        Task<UserDataModel?> GetUserData(int companyId, int userId);
+        Task<UserModel?> GetUser(int companyId, int userId);
     }
 }

@@ -2,6 +2,7 @@
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
+using MimeKit.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,13 +70,9 @@ namespace EmailsLibrary
 
             message.Subject = eml.Subject;
 
-            //message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-            //{
-            //    Text = eml.Body
-            //};
 
             var builder = new BodyBuilder { HtmlBody = eml.Body };
-
+       
             if (eml.Attachments != null)
             {
                 foreach (var item in eml.Attachments)
@@ -86,9 +83,6 @@ namespace EmailsLibrary
 
             message.Body = builder.ToMessageBody();
 
-            //builder.Attachments.Add
-            //Thread emailThread = new Thread(delegate ()
-            //{
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 587);

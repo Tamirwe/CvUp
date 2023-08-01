@@ -58,22 +58,15 @@ namespace DataModelsLibrary.Models
         public int id { get; set; } = 0;
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-        public string? phone { get; set; } = string.Empty;
-        public UserPermission permissionType { get; set; } = UserPermission.User;
-        public UserActiveStatus activeStatus { get; set; } = UserActiveStatus.Not_Active;
-        public string addedByName { get; set; } = string.Empty;
-        public string addedById { get; set; } = string.Empty;
-
-    }
-
-    public class UserDataModel
-    {
-        public string firstName { get; set; } = string.Empty;
-        public string lastName { get; set; } = string.Empty;
         public string? firstNameEn { get; set; } = string.Empty;
         public string? lastNameEn { get; set; } = string.Empty;
         public string email { get; set; } = string.Empty;
         public string? phone { get; set; } = string.Empty;
+        public UserPermission permissionType { get; set; } = UserPermission.User;
+        public UserActiveStatus activeStatus { get; set; } = UserActiveStatus.Not_Active;
+        public string? addedByName { get; set; } = string.Empty;
+        public string? addedById { get; set; } = string.Empty;
+        public string? signature { get; set; } = string.Empty;
+
     }
 }

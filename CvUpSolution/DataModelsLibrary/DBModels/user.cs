@@ -7,7 +7,7 @@ namespace Database.models
     {
         public user()
         {
-            emails_sents = new HashSet<emails_sent>();
+            auth_out_emails = new HashSet<auth_out_email>();
             position_interviewers = new HashSet<position_interviewer>();
             positionopeners = new HashSet<position>();
             positionupdaters = new HashSet<position>();
@@ -29,9 +29,10 @@ namespace Database.models
         public int? cvdbid { get; set; }
         public string? first_name_en { get; set; }
         public string? last_name_en { get; set; }
+        public string? signature { get; set; }
 
         public virtual company company { get; set; } = null!;
-        public virtual ICollection<emails_sent> emails_sents { get; set; }
+        public virtual ICollection<auth_out_email> auth_out_emails { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<position> positionopeners { get; set; }
         public virtual ICollection<position> positionupdaters { get; set; }

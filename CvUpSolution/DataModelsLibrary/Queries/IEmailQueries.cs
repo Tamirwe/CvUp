@@ -5,6 +5,6 @@ namespace DataModelsLibrary.Queries
 {
     public interface IEmailQueries
     {
-        public Task<emails_sent> AddEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body);
+        public Task<auth_out_email> AddAuthOutEmail(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body);
     }
 }

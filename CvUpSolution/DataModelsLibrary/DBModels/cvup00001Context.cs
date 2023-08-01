@@ -16,6 +16,7 @@ namespace Database.models
         {
         }
 
+        public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
@@ -26,7 +27,6 @@ namespace Database.models
         public virtual DbSet<cv> cvs { get; set; } = null!;
         public virtual DbSet<cvs_ascii_sum> cvs_ascii_sums { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
-        public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
         public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
@@ -53,6 +53,35 @@ namespace Database.models
         {
             modelBuilder.UseCollation("utf8mb4_general_ci")
                 .HasCharSet("utf8mb4");
+
+            modelBuilder.Entity<auth_out_email>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_emails_sent_company_id_companies_id");
+
+                entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
+
+                entity.Property(e => e.body).HasMaxLength(1500);
+
+                entity.Property(e => e.email_type).HasColumnType("enum('Registration_Approved','Confirm_Registration')");
+
+                entity.Property(e => e.from_address).HasMaxLength(250);
+
+                entity.Property(e => e.sent_date).HasColumnType("datetime");
+
+                entity.Property(e => e.subject).HasMaxLength(500);
+
+                entity.Property(e => e.to_address).HasMaxLength(500);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.auth_out_emails)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_auth_out_emails_company_id_companies_id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.auth_out_emails)
+                    .HasForeignKey(d => d.user_id)
+                    .HasConstraintName("fk_auth_out_emails_user_id_users_id");
+            });
 
             modelBuilder.Entity<candidate>(entity =>
             {
@@ -280,37 +309,6 @@ namespace Database.models
                     .WithMany(p => p.cvs_txts)
                     .HasForeignKey(d => d.cv_id)
                     .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
-            });
-
-            modelBuilder.Entity<emails_sent>(entity =>
-            {
-                entity.ToTable("emails_sent");
-
-                entity.HasIndex(e => e.company_id, "fk_emails_sent_company_id_companies_id");
-
-                entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
-
-                entity.Property(e => e.body).HasMaxLength(1500);
-
-                entity.Property(e => e.email_type).HasColumnType("enum('Registration_Approved','Confirm_Registration')");
-
-                entity.Property(e => e.from_address).HasMaxLength(250);
-
-                entity.Property(e => e.sent_date).HasColumnType("datetime");
-
-                entity.Property(e => e.subject).HasMaxLength(500);
-
-                entity.Property(e => e.to_address).HasMaxLength(500);
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.emails_sents)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_emails_sent_company_id_companies_id");
-
-                entity.HasOne(d => d.user)
-                    .WithMany(p => p.emails_sents)
-                    .HasForeignKey(d => d.user_id)
-                    .HasConstraintName("fk_emails_sent_user_id_users_id");
             });
 
             modelBuilder.Entity<emails_template>(entity =>
@@ -606,6 +604,8 @@ namespace Database.models
                 entity.Property(e => e.refresh_token).HasMaxLength(100);
 
                 entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");
+
+                entity.Property(e => e.signature).HasMaxLength(1000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users)

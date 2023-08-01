@@ -164,14 +164,25 @@ namespace DataModelsLibrary.Models
         public string stageType { get; set; } = "";
     }
 
-    public class EmailToCandModel
+    public class SendEmailModel
     {
         public int companyId { get; set; }
-        public int positionId { get; set; }
-        public int candidateId { get; set; }
-        public List<EmailAddress> addresses { get; set; }= new List<EmailAddress>();
-        public string emailSubject { get; set; } = "";
-        public string emailBody { get; set; } = "";
+        public int userId { get; set; }
+        public int? candidateId { get; set; }
+        public int cvId { get; set; }
+        public int? positionId { get; set; }
+        public List<EmailAddress>? toAddresses { get; set; }
+        public string? subject { get; set; } = "";
+        public string? body { get; set; } = "";
+        public List<EmailCvAttachmentModel>? attachCvs { get; set; }
+
+        //public int? candId { get; set; }
+        //public int? cvId { get; set; }
+        //public int? positionId { get; set; } = 0;
+        //public string? positionName { get; set; } = string.Empty;
+        //public string? customerName { get; set; } = string.Empty;
+        //public int? customerId { get; set; } = 0;
+
     }
 
     public class EmailTemplateModel
@@ -206,23 +217,6 @@ namespace DataModelsLibrary.Models
         public string value_type { get; set; } = "";
         public int order { get; set; }
         public bool must_metch { get; set; }
-    }
-
-    public class SendEmailModel
-    {
-        public int companyId { get; set; }
-        public List<EmailAddress>? toAddresses { get; set; }
-        public string? subject { get; set; } = "";
-        public string? body { get; set; } = "";
-        public List<EmailCvAttachmentModel>? attachCvs { get; set; }
-
-        //public int? candId { get; set; }
-        //public int? cvId { get; set; }
-        //public int? positionId { get; set; } = 0;
-        //public string? positionName { get; set; } = string.Empty;
-        //public string? customerName { get; set; } = string.Empty;
-        //public int? customerId { get; set; } = 0;
-        
     }
 
     public class EmailCvAttachmentModel

@@ -150,7 +150,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName,  string firstNameEn, string lastNameEn, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -161,6 +161,8 @@ namespace DataModelsLibrary.Queries
                     passwaord = password,
                     first_name = firstName,
                     last_name = lastName,
+                    first_name_en = firstNameEn,
+                    last_name_en = lastNameEn,
                     active_status = status.ToString(),
                     permission_type = permission.ToString(),
                     log_info = log
@@ -342,28 +344,33 @@ namespace DataModelsLibrary.Queries
                                 email = u.email,
                                 phone = u.phone,
                                 permissionType = Enum.Parse<UserPermission>(u.permission_type),
-                                activeStatus = Enum.Parse<UserActiveStatus>(u.active_status)
+                                activeStatus = Enum.Parse<UserActiveStatus>(u.active_status),
+                                firstNameEn = u.first_name_en,
+                                lastNameEn = u.last_name_en,
+                                signature = u.signature,
                             };
 
                 return await query.ToListAsync();
             }
         }
 
-        public async Task<UserDataModel?> GetUserData(int companyId, int userId)
+        public async Task<UserModel?> GetUser(int companyId, int userId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var query = from u in dbContext.users
                             where u.company_id == companyId && u.id == userId
                             orderby u.first_name, u.last_name
-                            select new UserDataModel
+                            select new UserModel
                             {
+                                id = u.id,
                                 firstName = u.first_name,
                                 lastName = u.last_name,
-                                firstNameEn = u.first_name_en,
-                                lastNameEn = u.last_name_en,
                                 email = u.email,
                                 phone = u.phone,
+                                firstNameEn = u.first_name_en,
+                                lastNameEn = u.last_name_en,
+                                signature = u.signature,
                             };
 
                 return await query.FirstOrDefaultAsync();
@@ -381,6 +388,9 @@ namespace DataModelsLibrary.Queries
                     user.phone = data.phone;
                     user.first_name = data.firstName;
                     user.last_name = data.lastName;
+                    user.first_name_en = data.firstNameEn;
+                    user.last_name_en = data.lastNameEn;
+                    user.signature = data.signature;
                     user.permission_type = data.permissionType.ToString();
 
                     var result = dbContext.users.Update(user);

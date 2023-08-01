@@ -17,13 +17,14 @@ namespace AuthLibrary
             //{
             company newCompany = await AddCompany(data.companyName, data.companyDescr);
             string hashPassword = SecretHasher.Hash(data.password);
-            user newUser = await _authQueries.AddUser(newCompany.id, data.email, hashPassword, data.firstName, data.lastName, UserActiveStatus.Waite_Complete_Registration, UserPermission.Admin, "Registered");
+            user newUser = await _authQueries.AddUser(newCompany.id, data.email, hashPassword, data.firstName, data.lastName, "", "",
+                UserActiveStatus.Waite_Complete_Registration, UserPermission.Admin, "Registered");
             await GenerateCompanyEmail(newCompany.id);
             AddCompanySatrterData(newCompany.id);
             string key = generateSecretKey();
             await _authQueries.AddRegistrationKey(key, newUser);
             EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
-            await AddEmailSent(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
+            await AddAuthOutEmail(EmailType.Confirm_Registration, newCompany.id, newUser, sentEmail);
             //scope.Complete();
             //}
 
@@ -68,9 +69,9 @@ namespace AuthLibrary
             return finalString;
         }
 
-        private async Task<emails_sent> AddEmailSent(EmailType emailType, int companyId, user user, EmailModel sentEmail)
+        private async Task<auth_out_email> AddAuthOutEmail(EmailType emailType, int companyId, user user, EmailModel sentEmail)
         {
-            return await _emailQueries.AddEmailSent(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
+            return await _emailQueries.AddAuthOutEmail(user.id, companyId, emailType, user.email, sentEmail.From.Address, sentEmail.Subject, sentEmail.Body);
         }
 
         //private async Task<user> RegisterUser(int companyId, string email, string password, string firstName, string lastName, UserPermission permission, string log)
@@ -113,7 +114,7 @@ namespace AuthLibrary
                 string key = generateSecretKey();
                 await _authQueries.AddRegistrationKey(key, usr);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, usr);
-                await AddEmailSent(EmailType.Confirm_Registration, companyId, usr, sentEmail);
+                await AddAuthOutEmail(EmailType.Confirm_Registration, companyId, usr, sentEmail);
             }
         }
 
@@ -129,7 +130,7 @@ namespace AuthLibrary
                 string key = generateSecretKey();
                 await _authQueries.AddRegistrationKey(key, usr);
                 EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, usr);
-                await AddEmailSent(EmailType.Confirm_Registration, companyId, usr, sentEmail);
+                await AddAuthOutEmail(EmailType.Confirm_Registration, companyId, usr, sentEmail);
             }
         }
 
@@ -146,11 +147,11 @@ namespace AuthLibrary
 
         public async Task AddCompanyUser(string? origin, UserModel data, int companyId)
         {
-            user newUser = await _authQueries.AddUser(companyId, data.email, null, data.firstName, data.lastName, UserActiveStatus.Waite_Complete_Registration, data.permissionType, $"addedBy:{data.addedById}-{data.addedByName}");
+            user newUser = await _authQueries.AddUser(companyId, data.email, null, data.firstName, data.lastName, data.firstNameEn, data.lastNameEn, UserActiveStatus.Waite_Complete_Registration, data.permissionType, $"addedBy:{data.addedById}-{data.addedByName}");
             string key = generateSecretKey();
             await _authQueries.AddRegistrationKey(key, newUser);
             EmailModel sentEmail = SendRegistrationConfitmationEmail(origin, key, newUser);
-            await AddEmailSent(EmailType.Confirm_Registration, companyId, newUser, sentEmail);
+            await AddAuthOutEmail(EmailType.Confirm_Registration, companyId, newUser, sentEmail);
         }
 
         public async Task UpdateCompanyUser(UserModel data, int companyId)

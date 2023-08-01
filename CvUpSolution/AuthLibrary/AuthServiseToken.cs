@@ -44,7 +44,7 @@ namespace AuthLibrary
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(1),
+                expires: DateTime.UtcNow.AddMinutes(60),
                 signingCredentials: signinCredentials
             );
 

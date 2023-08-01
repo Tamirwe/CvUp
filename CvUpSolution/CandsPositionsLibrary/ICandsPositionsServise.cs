@@ -36,14 +36,13 @@ namespace CandsPositionsLibrary
         Task<List<int>> SearchCands(int companyId, searchCandCvModel searchVals);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
-        Task<bool> SendEmailToCand(EmailToCandModel emailToCand);
         Task SaveCandReview(int companyId,CandReviewModel candReview);
         Task SaveCandidateToIndex(int companyId, int candidateId);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
         Task UpdateCandDetails(CandDetailsModel candDetails);
-        Task SendEmail(SendEmailModel emailData);
+        Task SendEmail(SendEmailModel emailData, UserModel? user);
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
     }

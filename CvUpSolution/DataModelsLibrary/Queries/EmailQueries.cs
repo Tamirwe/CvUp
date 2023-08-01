@@ -9,11 +9,11 @@ namespace DataModelsLibrary.Queries
         {
         }
 
-        public async Task<emails_sent> AddEmailSent(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
+        public async Task<auth_out_email> AddAuthOutEmail(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var email = new emails_sent
+                var email = new auth_out_email
                 {
                     user_id = userId,
                     company_id = companyId,
@@ -25,7 +25,7 @@ namespace DataModelsLibrary.Queries
                     body = body
                 };
 
-                dbContext.emails_sents.Add(email);
+                dbContext.auth_out_emails.Add(email);
                 await dbContext.SaveChangesAsync();
                 return email;
             }

@@ -12,11 +12,11 @@ namespace DataModelsLibrary.Queries
         Task<user?> GetUser(int userId);
         Task<user?> GetUser(int companyId, string email);
         Task<List<user>> GetUsers(string email, int? companyId);
-        Task<UserDataModel?> GetUserData(int companyId, int userId);
+        Task<UserModel?> GetUser(int companyId, int userId);
         Task<List<UserModel>> GetUsers(int companyId);
         Task<company?> GetCompany(int companyId);
         Task<company> AddCompany(string companyName, string? companyDescr, CompanyActiveStatus status);
-        Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, UserActiveStatus status, UserPermission permission, string log);
+        Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, string firstNameEn, string lastNameEn, UserActiveStatus status, UserPermission permission, string log);
         Task<company> UpdateCompany(company newCompany);
         Task AddRegistrationKey(string key, user user);
         Task DeleteOldRegistrationsKeys();

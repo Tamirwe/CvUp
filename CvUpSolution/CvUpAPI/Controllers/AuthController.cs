@@ -178,10 +178,10 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetLoggedinUserData")]
-        public async Task<IActionResult> GetLoggedinUserData()
+        [Route("GetUser")]
+        public async Task<IActionResult> GetUser()
         {
-            UserDataModel? userData = await _authServise.GetUserData(Globals.CompanyId, Globals.UserId);
+            UserModel? userData = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
             return Ok(userData);
         }
 

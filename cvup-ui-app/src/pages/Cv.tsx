@@ -41,8 +41,8 @@ export const Cv = observer(() => {
               color: "#7b84ff",
               alignItems: "center",
               fontWeight: 700,
-              justifyContent: "center",
-              fontSize: "1.2rem",
+              // justifyContent: "center",
+              fontSize: "1.1rem",
             }}
           >
             <Grid item xs="auto" lg="auto">

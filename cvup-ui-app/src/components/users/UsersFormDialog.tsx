@@ -27,7 +27,7 @@ export const UsersFormDialog = ({ isOpen, onClose }: IProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => onClose()} fullWidth maxWidth={"sm"}>
+    <Dialog open={open} onClose={() => onClose()} fullWidth maxWidth={"md"}>
       <DialogTitle>{formTitle}</DialogTitle>
       <DialogContent>
         <UserForm onSaved={handleSave} onCancel={() => onClose()} />

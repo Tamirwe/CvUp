@@ -79,6 +79,13 @@ export class CandsStore {
 
       if (!cand.isSeen) {
         this.cvsApi.updateIsSeen(cand.cvId);
+        cand.isSeen = true;
+
+        //not must but any way
+        const updatedCand = Object.assign({}, cand);
+        this.updateCandAllList(updatedCand);
+        this.updatePosCandList(updatedCand);
+        this.updateFolderCandList(updatedCand);
       }
     });
   }

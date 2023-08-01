@@ -37,7 +37,6 @@ interface IProps {
 export const UserForm = ({ onSaved, onCancel }: IProps) => {
   const { generalStore, authStore } = useStore();
   const [permissionsList, setPermissionsList] = useState<IIdName[]>([]);
-  const [activationList, setActivationList] = useState<IIdName[]>([]);
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
@@ -45,10 +44,13 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
     id: 0,
     firstName: "",
     lastName: "",
+    firstNameEn: "",
+    lastNameEn: "",
     email: "",
     phone: "",
     permissionType: PermissionTypeEnum.User,
     activeStatus: UserActiveEnum.Not_Active,
+    signature: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     firstName: "",
@@ -59,7 +61,6 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
 
   useEffect(() => {
     setPermissionsList(enumToArrays(PermissionTypeEnum));
-    setActivationList(enumToArrays(UserActiveEnum));
 
     if (authStore.selectedUser) {
       setCrudType(CrudTypesEnum.Update);
@@ -230,6 +231,46 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
           <TextField
             fullWidth
             required
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="firstNameEn"
+            label="First Name EN"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                firstNameEn: e.target.value,
+              }));
+              setIsDirty(true);
+            }}
+            value={formModel.firstNameEn || ""}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            required
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="lastNameEn"
+            label="Last Name EN"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                lastNameEn: e.target.value,
+              }));
+              setIsDirty(true);
+            }}
+            value={formModel.lastNameEn || ""}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            fullWidth
+            required
             InputLabelProps={{ shrink: true }}
             disabled={formModel.id > 0}
             margin="normal"
@@ -250,13 +291,13 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             value={formModel.email}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             fullWidth
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="emailInp"
+            id="phone"
             label="Phone"
             variant="outlined"
             onChange={(e) => {
@@ -272,7 +313,7 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             value={formModel.phone}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel id="permissionlabel">Permission Type</InputLabel>
             <Select
@@ -300,21 +341,45 @@ export const UserForm = ({ onSaved, onCancel }: IProps) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid
-          item
-          xs={6}
-          sx={{ display: "flex", justifyContent: "end", alignItems: "end" }}
-        >
-          <Link
-            href="#"
-            variant="body2"
-            onClick={() => {
-              authStore.resendRegistrationEmail(formModel);
-            }}
-          >
-            Resend registration email
-          </Link>
-        </Grid>
+
+        {crudType !== CrudTypesEnum.Insert && (
+          <Grid item xs={12} lg={12}>
+            <TextField
+              sx={{
+                direction: "ltr",
+              }}
+              fullWidth
+              multiline
+              rows={10}
+              margin="normal"
+              type="text"
+              id="signature"
+              label="Signature"
+              variant="outlined"
+              onChange={(e) => {
+                setFormModel((currentProps) => ({
+                  ...currentProps,
+                  signature: e.target.value.replace(/ +(?= )/g, ""),
+                }));
+                setIsDirty(true);
+              }}
+              value={formModel.signature || ""}
+            />
+          </Grid>
+        )}
+        {crudType !== CrudTypesEnum.Insert && (
+          <Grid item pt={1}>
+            <Link
+              href="#"
+              variant="body2"
+              onClick={() => {
+                authStore.resendRegistrationEmail(formModel);
+              }}
+            >
+              Resend registration email
+            </Link>
+          </Grid>
+        )}
         <Grid item xs={12} pt={3}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>

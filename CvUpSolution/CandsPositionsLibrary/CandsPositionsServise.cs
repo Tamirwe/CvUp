@@ -238,9 +238,9 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateCvsAsciiSum(companyId);
         }
 
-        public async Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId)
+        public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)
         {
-            return await _cvsPositionsQueries.GetCompanyStagesTypes(companyId);
+            return await _cvsPositionsQueries.GetCandPosStagesTypes(companyId);
         }
 
         public async Task SendEmail(SendEmailModel emailData, UserModel? user)

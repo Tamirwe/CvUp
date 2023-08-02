@@ -8,10 +8,11 @@ namespace Database.models
         public company()
         {
             auth_out_emails = new HashSet<auth_out_email>();
+            cand_pos_stages = new HashSet<cand_pos_stage>();
+            cand_stage_events = new HashSet<cand_stage_event>();
             candidates = new HashSet<candidate>();
             company_cvs_emails = new HashSet<company_cvs_email>();
             company_parsers = new HashSet<company_parser>();
-            company_stages_types = new HashSet<company_stages_type>();
             contacts = new HashSet<contact>();
             customers = new HashSet<customer>();
             folders = new HashSet<folder>();
@@ -31,10 +32,11 @@ namespace Database.models
         public string active_status { get; set; } = null!;
 
         public virtual ICollection<auth_out_email> auth_out_emails { get; set; }
+        public virtual ICollection<cand_pos_stage> cand_pos_stages { get; set; }
+        public virtual ICollection<cand_stage_event> cand_stage_events { get; set; }
         public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<company_cvs_email> company_cvs_emails { get; set; }
         public virtual ICollection<company_parser> company_parsers { get; set; }
-        public virtual ICollection<company_stages_type> company_stages_types { get; set; }
         public virtual ICollection<contact> contacts { get; set; }
         public virtual ICollection<customer> customers { get; set; }
         public virtual ICollection<folder> folders { get; set; }

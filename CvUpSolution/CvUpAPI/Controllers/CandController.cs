@@ -115,20 +115,11 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
         }
 
-        [HttpPost]
-        [Route("UpdateCandPositionStatus")]
-        public async Task<CandModel?> UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
-        {
-            posStatus.companyId = Globals.CompanyId;
-            await _candPosService.UpdateCandPositionStatus(posStatus);
-            return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
-        }
-
         [HttpGet]
-        [Route("GetCompanyStagesTypes")]
-        public async Task<List<companyStagesTypesModel>> GetCompanyStagesTypes()
+        [Route("GetCandPosStagesTypes")]
+        public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes()
         {
-            return await _candPosService.GetCompanyStagesTypes(Globals.CompanyId);
+            return await _candPosService.GetCandPosStagesTypes(Globals.CompanyId);
         }
 
         [HttpPost]
@@ -139,6 +130,15 @@ namespace CvUpAPI.Controllers
             UserModel? user = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
             await _candPosService.SendEmail(emailData, user);
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("UpdateCandPositionStatus")]
+        public async Task<CandModel?> UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
+        {
+            posStatus.companyId = Globals.CompanyId;
+            await _candPosService.UpdateCandPositionStatus(posStatus);
+            return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
         }
 
         [HttpGet]

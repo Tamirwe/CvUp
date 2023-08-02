@@ -64,7 +64,6 @@ namespace ImportCvsLibrary
                 {
                     var message = inbox.GetMessage(uid);
                     Console.WriteLine("Subject: {0}", message.Subject);
-                    inbox.SetFlags(uid, MessageFlags.Seen, true);
 
                     // no need because app is only for bella
                     //int companyId = GetCompanyIdFromAddress(message.To);
@@ -97,6 +96,8 @@ namespace ImportCvsLibrary
                             }
                         }
                     }
+
+                    inbox.SetFlags(uid, MessageFlags.Seen, true);
                 }
 
                 client.Disconnect(true);

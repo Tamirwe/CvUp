@@ -94,6 +94,17 @@ export class PositionsStore {
       this.getPositionContacts(posId),
     ]);
 
+    // const posList = [...this.positionsList];
+
+    // const objIndex = posList.findIndex(
+    //   (x) => x.id === this.selectedPosition?.id
+    // );
+
+    // if (objIndex > -1) {
+    //   const posArr = posList.splice(objIndex, 1);
+    //   posList.splice(0, 0, posArr[0]);
+    // }
+
     this.rootStore.candsStore.currentTabCandsLists =
       TabsCandsEnum.PositionCands;
 

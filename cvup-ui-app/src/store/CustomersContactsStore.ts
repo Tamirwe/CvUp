@@ -126,4 +126,13 @@ export class CustomersContactsStore {
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
+
+  findCustomerName(customerId: number) {
+    const customer = this.customersList.find((x) => x.id === customerId);
+    if (customer) {
+      return customer?.name;
+    }
+
+    return "";
+  }
 }

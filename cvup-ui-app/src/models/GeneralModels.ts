@@ -162,3 +162,14 @@ export interface ISearchModel {
   exact: boolean;
   advancedValue: string;
 }
+
+export interface ICandsReport {
+  candidateId: number;
+  firstName: string;
+  lastName: string;
+  positionId?: number;
+  customerId?: number;
+  positionName?: string;
+  stageDate?: Date;
+}
+

@@ -12,10 +12,12 @@ import { format } from "date-fns";
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
   const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
+  const [candidateName, setCandidateName] = useState("");
   const scrollRef = useRef<any>(null);
 
   useEffect(() => {
     scrollRef.current.scrollTop = 0;
+    getCandName();
   }, [candsStore.candDisplay]);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export const Cv = observer(() => {
     }
   }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
-  const candidateName = () => {
+  const getCandName = () => {
     let fullName = `${candsStore.candDisplay?.firstName || ""} ${
       candsStore.candDisplay?.lastName || ""
     }`;
@@ -37,7 +39,7 @@ export const Cv = observer(() => {
       fullName = "Name not found";
     }
 
-    return fullName;
+    setCandidateName(fullName);
   };
 
   return (
@@ -98,7 +100,7 @@ export const Cv = observer(() => {
                   generalStore.showCandFormDialog = true;
                 }}
               >
-                {candidateName()}
+                {candidateName}
               </Link>
             </Grid>
             <Grid item xs="auto" lg="auto">

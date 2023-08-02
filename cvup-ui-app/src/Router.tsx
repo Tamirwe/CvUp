@@ -26,7 +26,7 @@ const Router = () => {
     <Routes>
       <Route element={<AuthRoutes />}>
         <Route element={<LayoutAuthWrapper />}>
-          <Route path="/" element={<Cv />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/cv" element={<Cv />} />
           <Route path="/position/:pid" element={<Position />} />
           {/* <Route path="/h1" element={<Home />} /> */}

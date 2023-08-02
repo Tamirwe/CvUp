@@ -4,6 +4,7 @@ import {
   IEmailTemplate,
   ISendEmail,
   ISearchModel,
+  ICandsReport,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -164,6 +165,12 @@ export default class CandsApi extends BaseApi {
   async updateIsSeen(cvId: number) {
     return await this.apiWrapper2(async () => {
       return await this.http.get(`Cand/UpdateIsSeen?cvId=${cvId}`);
+    });
+  }
+
+  async getCandsReport(stageType: string) {
+    return await this.apiWrapper2<ICandsReport[]>(async () => {
+      return await this.http.get(`Cand/CandsReport?stageType=${stageType}`);
     });
   }
 }

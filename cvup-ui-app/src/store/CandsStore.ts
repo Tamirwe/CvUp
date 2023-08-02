@@ -512,9 +512,16 @@ export class CandsStore {
     return res;
   }
 
-  async sendEmailToCandidate(emailData: ISendEmail) {
+  async sendEmailToCandidate(
+    emailData: ISendEmail,
+    emailTemplate: IEmailTemplate
+  ) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.sendEmail(emailData);
+
+    if (res.isSuccess && emailTemplate && emailTemplate.stageToUpdate) {
+      this.updateCandPositionStatus(emailTemplate.stageToUpdate);
+    }
 
     this.rootStore.generalStore.backdrop = false;
 

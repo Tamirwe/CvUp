@@ -195,7 +195,10 @@ export const CandidateEmailSender = observer((props: IProps) => {
         body: emailBody,
       };
 
-      var data = await candsStore.sendEmailToCandidate(emailData);
+      var data = await candsStore.sendEmailToCandidate(
+        emailData,
+        emailTemplate
+      );
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

@@ -18,7 +18,6 @@ namespace Database.models
 
         public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
         public virtual DbSet<cand_pos_stage> cand_pos_stages { get; set; } = null!;
-        public virtual DbSet<cand_stage_event> cand_stage_events { get; set; } = null!;
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
@@ -97,26 +96,6 @@ namespace Database.models
                     .WithMany(p => p.cand_pos_stages)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_cand_pos_stages_company_id_companies_id");
-            });
-
-            modelBuilder.Entity<cand_stage_event>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_cand_stage_events_company_id_companies_id");
-
-                entity.HasIndex(e => e.cand_pos_new_stage_id, "fk_candidate_email_templates_stage_id_stages_types_id");
-
-                entity.HasIndex(e => e.template_id, "fk_candidate_email_templates_template_id_emails_templates_id");
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.cand_stage_events)
-                    .HasForeignKey(d => d.company_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_cand_stage_events_company_id_companies_id");
-
-                entity.HasOne(d => d.template)
-                    .WithMany(p => p.cand_stage_events)
-                    .HasForeignKey(d => d.template_id)
-                    .HasConstraintName("fk_candidate_email_templates_template_id_emails_templates_id");
             });
 
             modelBuilder.Entity<candidate>(entity =>
@@ -337,9 +316,9 @@ namespace Database.models
 
                 entity.Property(e => e.name).HasMaxLength(50);
 
-                entity.Property(e => e.subject).HasMaxLength(300);
+                entity.Property(e => e.stage_to_update).HasMaxLength(50);
 
-                entity.Property(e => e.template_type).HasColumnType("enum('candidate_no_pos','candidate_with_pos','candidate')");
+                entity.Property(e => e.subject).HasMaxLength(300);
             });
 
             modelBuilder.Entity<folder>(entity =>

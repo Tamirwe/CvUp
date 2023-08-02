@@ -9,7 +9,6 @@ namespace Database.models
         {
             auth_out_emails = new HashSet<auth_out_email>();
             cand_pos_stages = new HashSet<cand_pos_stage>();
-            cand_stage_events = new HashSet<cand_stage_event>();
             candidates = new HashSet<candidate>();
             company_cvs_emails = new HashSet<company_cvs_email>();
             company_parsers = new HashSet<company_parser>();
@@ -33,7 +32,6 @@ namespace Database.models
 
         public virtual ICollection<auth_out_email> auth_out_emails { get; set; }
         public virtual ICollection<cand_pos_stage> cand_pos_stages { get; set; }
-        public virtual ICollection<cand_stage_event> cand_stage_events { get; set; }
         public virtual ICollection<candidate> candidates { get; set; }
         public virtual ICollection<company_cvs_email> company_cvs_emails { get; set; }
         public virtual ICollection<company_parser> company_parsers { get; set; }

@@ -13,6 +13,7 @@ import {
   IEmailTemplate,
   ISendEmail,
   ISearchModel,
+  ICandsReport,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -33,6 +34,7 @@ export class CandsStore {
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
   posStages?: IPosStagesType[];
   emailTemplates?: IEmailTemplate[];
+  candsReportData?: ICandsReport[];
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -262,7 +264,7 @@ export class CandsStore {
     }
 
     runInAction(() => {
-      this.posCandsList = [...candsList];
+      this.posCandsList = candsList;
     });
 
     this.rootStore.generalStore.backdrop = false;
@@ -536,5 +538,16 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
 
     return res;
+  }
+
+  async getCandsReport(stageType: string) {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.cvsApi.getCandsReport(stageType);
+
+    runInAction(() => {
+      this.candsReportData = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
   }
 }

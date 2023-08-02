@@ -55,7 +55,8 @@ export const Header = () => {
       >
         <div
           style={{
-            backgroundColor: "#eaf5ff",
+            backgroundColor: "rgb(249 252 255)",
+            border: "1px solid #f3f3f3",
             margin: "5px 10px",
             height: "100%",
             display: "flex",
@@ -115,42 +116,46 @@ export const Header = () => {
                 )}
 
                 <SettingsMenu />
-                <IconButton
-                  title="Email to candidate"
-                  sx={{ fontSize: "1.56rem" }}
-                  size="medium"
-                  onClick={() =>
-                    (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
-                  }
-                >
-                  <MdOutlineMarkEmailRead />
-                </IconButton>
-                <IconButton
-                  title="Review"
-                  sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
-                  size="small"
-                  onClick={() => {
-                    if (generalStore.cvReviewDialogOpen) {
-                      localStorage.setItem("rteX", "50");
-                      localStorage.setItem("rteY", "50");
-                    }
+                {candsStore.candDisplay && (
+                  <>
+                    <IconButton
+                      title="Email to candidate"
+                      sx={{ fontSize: "1.56rem" }}
+                      size="medium"
+                      onClick={() =>
+                        (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
+                      }
+                    >
+                      <MdOutlineMarkEmailRead />
+                    </IconButton>
+                    <IconButton
+                      title="Review"
+                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                      size="small"
+                      onClick={() => {
+                        if (generalStore.cvReviewDialogOpen) {
+                          localStorage.setItem("rteX", "50");
+                          localStorage.setItem("rteY", "50");
+                        }
 
-                    generalStore.showReviewCandDialog =
-                      !generalStore.showReviewCandDialog;
-                  }}
-                >
-                  <CiEdit />
-                </IconButton>
-                <IconButton
-                  title="Email to customer"
-                  sx={{ fontSize: "1.54rem" }}
-                  size="small"
-                  onClick={() =>
-                    (generalStore.showEmailDialog = EmailTypeEnum.Contact)
-                  }
-                >
-                  <MdOutlineMarkEmailUnread />
-                </IconButton>
+                        generalStore.showReviewCandDialog =
+                          !generalStore.showReviewCandDialog;
+                      }}
+                    >
+                      <CiEdit />
+                    </IconButton>
+                    <IconButton
+                      title="Email to customer"
+                      sx={{ fontSize: "1.54rem" }}
+                      size="small"
+                      onClick={() =>
+                        (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+                      }
+                    >
+                      <MdOutlineMarkEmailUnread />
+                    </IconButton>
+                  </>
+                )}
                 {/* <SearchCands /> */}
               </Stack>
             </Grid>

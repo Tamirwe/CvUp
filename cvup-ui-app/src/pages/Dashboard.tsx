@@ -1,7 +1,152 @@
-export const Dashboard = () => {
+import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
+import { useStore } from "../Hooks/useStore";
+import {
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Link,
+} from "@mui/material";
+import { format } from "date-fns";
+
+export const Dashboard = observer(() => {
+  const { candsStore, positionsStore, customersContactsStore } = useStore();
+
+  const [stageType, setStageType] = useState<string>("accepted");
+  const [totalRows, setTotalRows] = useState<string>("");
+
+  useEffect(() => {
+    candsStore.getCandsReport(stageType);
+  }, []);
+
+  useEffect(() => {
+    setTotalRows("");
+
+    const total = candsStore.candsReportData?.length;
+
+    if (candsStore.candsReportData && total) {
+      if (total === 500) {
+        setTotalRows("More then 500 candidate");
+      } else {
+        setTotalRows(`Total: ${total} candidate`);
+      }
+    }
+  }, [candsStore.candsReportData]);
+
   return (
-    <div>
-      <div>dashboard</div>
-    </div>
+    <Grid container>
+      <Grid item xs={12} lg={12} m={1} mt={5}>
+        <h1>Candidates Report</h1>
+      </Grid>
+      <Grid item xs={12} lg={12} m={1} mt={3}>
+        <FormControl
+          fullWidth
+          // variant="standard"
+          // sx={{ minWidth: 250 }}
+        >
+          <InputLabel id="stageSelectlabel">
+            Candidate status after send
+          </InputLabel>
+          <Select
+            sx={{
+              direction: "ltr",
+              "& .MuiSelect-select": {
+                color: candsStore.posStages?.find(
+                  (x) => x.stageType === stageType
+                )?.color,
+                fontWeight: "bold",
+              },
+            }}
+            id="stageSelect"
+            label="Candidate status after send"
+            value={stageType || ""}
+            onChange={async (e) => {
+              setStageType(e.target.value);
+              await candsStore.getCandsReport(e.target.value);
+            }}
+          >
+            <MenuItem value="" key="0"></MenuItem>
+            {candsStore.posStages?.map((item, ind) => {
+              // console.log(key, index);
+              return (
+                <MenuItem
+                  sx={{ color: item.color }}
+                  key={ind}
+                  value={item.stageType}
+                >
+                  {item.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={12} lg={12} m={1}>
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer sx={{ maxHeight: 440 }}>
+            <Table
+              stickyHeader
+              aria-label="sticky table"
+              sx={{ direction: "rtl" }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 700 }} align="right">
+                    Candidate Name
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="right">
+                    Position
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="right">
+                    Date
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {candsStore.candsReportData?.map((row, i) => (
+                  <TableRow
+                    key={i}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="right">{`${row.firstName} ${row.lastName}`}</TableCell>
+                    <TableCell align="right">
+                      <Link
+                        href="#"
+                        variant="body2"
+                        onClick={() =>
+                          positionsStore.positionClick(row.positionId!)
+                        }
+                      >
+                        {`${
+                          row.positionName
+                        } - ${customersContactsStore.findCustomerName(
+                          row.customerId || 0
+                        )}`}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.stageDate &&
+                        format(new Date(row.stageDate), "MMM d, yyyy")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} lg={12} m={1} mt={0}>
+        <h5> {totalRows}</h5>
+      </Grid>
+    </Grid>
   );
-};
+});

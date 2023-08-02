@@ -10,10 +10,11 @@ import {
 import { useState } from "react";
 
 import { CiLogout, CiSettings } from "react-icons/ci";
-import { MdGroup } from "react-icons/md";
+import { MdGroup, MdOutlineTextSnippet } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { UserRoleEnum } from "../../models/GeneralEnums";
+import { green } from "@mui/material/colors";
 
 export const SettingsMenu = () => {
   const { generalStore, authStore } = useStore();
@@ -27,6 +28,11 @@ export const SettingsMenu = () => {
   };
 
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleReports = () => {
+    navigate(`/`);
     setAnchorEl(null);
   };
 
@@ -72,11 +78,18 @@ export const SettingsMenu = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+          <Avatar />{" "}
+          {`${authStore.currentUser?.firstName} ${authStore.currentUser?.lastName}`}
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleReports}>
+          <Avatar sx={{ bgcolor: green[400] }}>
+            <MdOutlineTextSnippet style={{ color: "#fff" }} />
+          </Avatar>{" "}
+          Reports
+        </MenuItem>
+        {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
 
         {authStore.userRole === UserRoleEnum.Admin && (

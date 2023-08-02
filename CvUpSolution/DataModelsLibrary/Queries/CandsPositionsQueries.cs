@@ -27,7 +27,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
-                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
                              where cand.company_id == companyId && cand.id == candId
                              select new CandModel
                              {

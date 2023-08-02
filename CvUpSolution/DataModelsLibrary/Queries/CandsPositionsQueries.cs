@@ -807,7 +807,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async  Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -817,8 +817,9 @@ namespace DataModelsLibrary.Queries
                              {
                                  id = et.id,
                                  name = et.name,
-                                  subject= et.subject,
-                                   body= et.body,
+                                 subject = et.subject,
+                                 body = et.body,
+                                 stageToUpdate = et.stage_to_update
                              });
 
                 return await query.ToListAsync();
@@ -831,21 +832,29 @@ namespace DataModelsLibrary.Queries
             {
                 if (emailTemplate.id == 0)
                 {
-                    dbContext.emails_templates.Add(new emails_template { name= emailTemplate.name, subject= emailTemplate.subject, body= emailTemplate.body});
+                    dbContext.emails_templates.Add(new emails_template
+                    {
+                        name = emailTemplate.name,
+                        subject = emailTemplate.subject,
+                        stage_to_update = emailTemplate.stageToUpdate,
+                        body = emailTemplate.body,
+                    });
                     await dbContext.SaveChangesAsync();
                 }
                 else
                 {
                     emails_template? etm = dbContext.emails_templates.Where(x => x.id == emailTemplate.id).First();
-                    etm.name= emailTemplate.name;
-                    etm.subject= emailTemplate.subject;
-                    etm.body= emailTemplate.body;
+                    etm.name = emailTemplate.name;
+                    etm.subject = emailTemplate.subject;
+                    etm.stage_to_update = emailTemplate.stageToUpdate;
+                    etm.body = emailTemplate.body;
 
                     var result = dbContext.emails_templates.Update(etm);
                     await dbContext.SaveChangesAsync();
                 }
             }
         }
+
         public async Task DeleteEmailTemplate(int companyId, int id)
         {
             using (var dbContext = new cvup00001Context())

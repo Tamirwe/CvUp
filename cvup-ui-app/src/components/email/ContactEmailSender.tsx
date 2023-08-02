@@ -139,7 +139,7 @@ export const ContactEmailSender = (props: IProps) => {
         attachCvs: [attachment],
       };
 
-      var data = await candsStore.sendEmail(emailData);
+      var data = await candsStore.sendEmailTocontact(emailData);
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

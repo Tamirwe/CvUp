@@ -123,6 +123,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
       name: "",
       subject: "",
       body: "",
+      stageToUpdate: "",
     });
   };
 
@@ -134,69 +135,124 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
             <Grid item xs={12} lg={12} sx={{ direction: "rtl" }}>
               <Grid container>
                 <Grid item xs={12} lg={12} pt={1}>
-                  <Stack direction="row">
-                    <IconButton color="primary" onClick={handleAddTemplate}>
-                      <GoPlus />
-                    </IconButton>
-                    <TextField
-                      sx={{
-                        direction: "rtl",
-                        display: formModel.id === 0 ? "block" : "none",
-                      }}
-                      fullWidth
-                      required
-                      margin="normal"
-                      type="text"
-                      id="title"
-                      label="Template Name"
-                      variant="outlined"
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          name: e.target.value,
-                        }));
-                        clearError("name");
-                      }}
-                      error={errModel.name !== ""}
-                      helperText={errModel.name}
-                      value={formModel.name}
-                    />
-                    <FormControl
-                      fullWidth
-                      sx={{
-                        direction: "ltr",
-                        display: formModel.id === 0 ? "none" : "block",
-                      }}
-                    >
-                      <InputLabel id="emailTemplatelabel">
-                        Email Template
-                      </InputLabel>
-                      <Select
-                        fullWidth
-                        labelId="emailTemplate"
-                        id="emailTemplate"
-                        label="Email Template"
-                        onChange={(e) => {
-                          const template = candsStore.emailTemplates?.find(
-                            (x) => x.id === e.target.value
-                          );
+                  <Grid container>
+                    <Grid item xs={12} lg={7}>
+                      <Stack direction="row">
+                        <IconButton color="primary" onClick={handleAddTemplate}>
+                          <GoPlus />
+                        </IconButton>
 
-                          if (template) {
-                            setFormModel(template);
-                          }
-                        }}
-                        value={formModel.id}
+                        <TextField
+                          sx={{
+                            direction: "rtl",
+                            display: formModel.id === 0 ? "block" : "none",
+                          }}
+                          fullWidth
+                          required
+                          margin="none"
+                          type="text"
+                          id="title"
+                          label="Template Name"
+                          variant="outlined"
+                          onChange={(e) => {
+                            setFormModel((currentProps) => ({
+                              ...currentProps,
+                              name: e.target.value,
+                            }));
+                            clearError("name");
+                          }}
+                          error={errModel.name !== ""}
+                          helperText={errModel.name}
+                          value={formModel.name}
+                        />
+                        <FormControl
+                          fullWidth
+                          sx={{
+                            direction: "rtl",
+                            display: formModel.id === 0 ? "none" : "block",
+                          }}
+                        >
+                          <InputLabel id="emailTemplatelabel">
+                            Email Template
+                          </InputLabel>
+                          <Select
+                            fullWidth
+                            labelId="emailTemplate"
+                            id="emailTemplate"
+                            label="Email Template"
+                            onChange={(e) => {
+                              const template = candsStore.emailTemplates?.find(
+                                (x) => x.id === e.target.value
+                              );
+
+                              if (template) {
+                                setFormModel(template);
+                              }
+                            }}
+                            value={formModel.id}
+                          >
+                            {candsStore.emailTemplates?.map((item) => {
+                              return (
+                                <MenuItem
+                                  key={item.id}
+                                  value={item.id}
+                                  sx={{ direction: "rtl" }}
+                                >
+                                  {item.name}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        </FormControl>
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={12} lg={5}>
+                      <FormControl
+                        fullWidth
+                        // variant="standard"
+                        // sx={{ minWidth: 250 }}
                       >
-                        {candsStore.emailTemplates?.map((item) => {
-                          return (
-                            <MenuItem key={item.id} value={item.id}>
-                              {item.name}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
-                  </Stack>
+                        <InputLabel id="stageSelectlabel">
+                          Candidate status after send
+                        </InputLabel>
+                        <Select
+                          sx={{
+                            direction: "ltr",
+                            "& .MuiSelect-select": {
+                              color: candsStore.posStages?.find(
+                                (x) => x.stageType === formModel.stageToUpdate
+                              )?.color,
+                              fontWeight: "bold",
+                            },
+                          }}
+                          id="stageSelect"
+                          label="Candidate status after send"
+                          value={formModel.stageToUpdate || ""}
+                          onChange={async (e) => {
+                            setFormModel((currentProps) => ({
+                              ...currentProps,
+                              stageToUpdate: e.target.value,
+                            }));
+                          }}
+                        >
+                          <MenuItem value="" key="0"></MenuItem>
+                          {candsStore.posStages?.map((item, ind) => {
+                            // console.log(key, index);
+                            return (
+                              <MenuItem
+                                sx={{ color: item.color }}
+                                key={ind}
+                                value={item.stageType}
+                              >
+                                {item.name}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <TextField
@@ -281,11 +337,11 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                         <Link
                           href="#"
                           onClick={() => {
-                            copyToClipBoard(key);
+                            copyToClipBoard(`[${key}]`);
                           }}
                         >
                           <MdContentCopy />
-                          {key}
+                          {`[${key}]`}
                         </Link>
                       </Grid>
                     );

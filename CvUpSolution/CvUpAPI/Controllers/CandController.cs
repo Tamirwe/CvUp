@@ -181,6 +181,13 @@ namespace CvUpAPI.Controllers
             await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
             return Ok();
         }
-       
+
+        [HttpGet]
+        [Route("CandsReport")]
+        public async Task<List<CandReportModel?>> CandsReport(string stageType)
+        {
+           return await _candPosService.CandsReport(Globals.CompanyId, stageType);
+        }
+
     }
 }

@@ -37,7 +37,7 @@ namespace DataModelsLibrary.Queries
          Task<List<company_cvs_email>> GetCompaniesEmails();
         Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds);
         Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds);
-        Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId);
+        Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId);
          Task<List<cv>> GetCompanyCvs(int companyId);
         Task SaveCandReview(int companyId, CandReviewModel candReview);
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);

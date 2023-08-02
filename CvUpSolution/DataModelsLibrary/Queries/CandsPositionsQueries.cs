@@ -787,14 +787,14 @@ namespace DataModelsLibrary.Queries
             }
         }
       
-        public async  Task<List<companyStagesTypesModel>> GetCompanyStagesTypes(int companyId)
+        public async  Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = (from st in dbContext.company_stages_types
+                var query = (from st in dbContext.cand_pos_stages
                              where st.company_id == companyId
                              orderby st.order
-                             select new companyStagesTypesModel
+                             select new CandPosStageTypeModel
                              {
                                  name = st.name,
                                  stageType = st.stage_Type,

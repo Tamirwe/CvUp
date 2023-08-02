@@ -17,11 +17,12 @@ namespace Database.models
         }
 
         public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
+        public virtual DbSet<cand_pos_stage> cand_pos_stages { get; set; } = null!;
+        public virtual DbSet<cand_stage_event> cand_stage_events { get; set; } = null!;
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
-        public virtual DbSet<company_stages_type> company_stages_types { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<customer> customers { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
@@ -37,7 +38,6 @@ namespace Database.models
         public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
-        public virtual DbSet<stages_type> stages_types { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -81,6 +81,42 @@ namespace Database.models
                     .WithMany(p => p.auth_out_emails)
                     .HasForeignKey(d => d.user_id)
                     .HasConstraintName("fk_auth_out_emails_user_id_users_id");
+            });
+
+            modelBuilder.Entity<cand_pos_stage>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
+
+                entity.Property(e => e.color).HasMaxLength(20);
+
+                entity.Property(e => e.name).HasMaxLength(50);
+
+                entity.Property(e => e.stage_Type).HasMaxLength(50);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.cand_pos_stages)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_cand_pos_stages_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<cand_stage_event>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_cand_stage_events_company_id_companies_id");
+
+                entity.HasIndex(e => e.cand_pos_new_stage_id, "fk_candidate_email_templates_stage_id_stages_types_id");
+
+                entity.HasIndex(e => e.template_id, "fk_candidate_email_templates_template_id_emails_templates_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.cand_stage_events)
+                    .HasForeignKey(d => d.company_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_cand_stage_events_company_id_companies_id");
+
+                entity.HasOne(d => d.template)
+                    .WithMany(p => p.cand_stage_events)
+                    .HasForeignKey(d => d.template_id)
+                    .HasConstraintName("fk_candidate_email_templates_template_id_emails_templates_id");
             });
 
             modelBuilder.Entity<candidate>(entity =>
@@ -179,22 +215,6 @@ namespace Database.models
                     .WithMany(p => p.company_parsers)
                     .HasForeignKey(d => d.parser_id)
                     .HasConstraintName("fk_company_parsers_parser_id_parsers_id");
-            });
-
-            modelBuilder.Entity<company_stages_type>(entity =>
-            {
-                entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
-
-                entity.Property(e => e.color).HasMaxLength(20);
-
-                entity.Property(e => e.name).HasMaxLength(50);
-
-                entity.Property(e => e.stage_Type).HasMaxLength(50);
-
-                entity.HasOne(d => d.company)
-                    .WithMany(p => p.company_stages_types)
-                    .HasForeignKey(d => d.company_id)
-                    .HasConstraintName("fk_position_candidate_stages_company_id_companies_id");
             });
 
             modelBuilder.Entity<contact>(entity =>
@@ -318,6 +338,8 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.subject).HasMaxLength(300);
+
+                entity.Property(e => e.template_type).HasColumnType("enum('candidate_no_pos','candidate_with_pos','candidate')");
             });
 
             modelBuilder.Entity<folder>(entity =>
@@ -559,15 +581,6 @@ namespace Database.models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email).HasMaxLength(250);
-            });
-
-            modelBuilder.Entity<stages_type>(entity =>
-            {
-                entity.Property(e => e.color).HasMaxLength(20);
-
-                entity.Property(e => e.name).HasMaxLength(50);
-
-                entity.Property(e => e.stage_type).HasMaxLength(50);
             });
 
             modelBuilder.Entity<user>(entity =>

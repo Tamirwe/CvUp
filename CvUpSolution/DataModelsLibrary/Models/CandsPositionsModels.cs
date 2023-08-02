@@ -101,7 +101,7 @@ namespace DataModelsLibrary.Models
         public string? phone { get; set; } = "";
     }
 
-    public class companyStagesTypesModel
+    public class CandPosStageTypeModel
     {
         public string stageType { get; set; } = "";
         public int? order { get; set; }

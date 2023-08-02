@@ -84,4 +84,10 @@ export enum DynamicEmailDataEnum {
   FullName,
   CustomerName,
   PositionName,
+  MyFirstName,
+  MyFullname,
+  MyPhoneNumber,
+  MyEmail,
+  MyFirstNameEn,
+  MyFullnameEn,
 }

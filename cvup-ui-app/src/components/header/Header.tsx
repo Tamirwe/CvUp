@@ -27,7 +27,7 @@ export const Header = () => {
   useEffect(() => {
     (async () => {
       await Promise.all([
-        candsStore.getCompanyStagesTypes(),
+        candsStore.getCandPosStages(),
         positionsStore.getPositionsList(),
         candsStore.getEmailTemplates(),
         customersContactsStore.getCustomersList(),

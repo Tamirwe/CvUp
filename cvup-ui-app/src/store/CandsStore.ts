@@ -8,8 +8,8 @@ import {
   IAppSettings,
   ICand,
   ICandCv,
-  ICompanyStagesTypes,
-  IPosStages,
+  ICandPosStage,
+  IPosStagesType,
   IEmailTemplate,
   ISendEmail,
   ISearchModel,
@@ -31,7 +31,7 @@ export class CandsStore {
   candFolderSelected?: ICand;
   candDisplay?: ICand;
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
-  stagesTypes?: ICompanyStagesTypes[];
+  posStages?: IPosStagesType[];
   emailTemplates?: IEmailTemplate[];
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
@@ -431,7 +431,7 @@ export class CandsStore {
     });
   }
 
-  async updateCandPositionStatus(stageType: string | ICompanyStagesTypes) {
+  async updateCandPositionStatus(stageType: string | ICandPosStage) {
     this.rootStore.generalStore.backdrop = true;
     const candDisplayPosition =
       this.rootStore.positionsStore.candDisplayPosition;
@@ -464,33 +464,32 @@ export class CandsStore {
     }
   }
 
-  async getCompanyStagesTypes() {
-    const res = await this.cvsApi.getCompanyStagesTypes();
+  async getCandPosStages() {
+    const res = await this.cvsApi.getCandPosStages();
     runInAction(() => {
-      this.stagesTypes = res.data;
+      this.posStages = res.data;
     });
   }
 
   findStageName(stageType: string) {
-    if (this.stagesTypes) {
-      return this.stagesTypes.find((x) => x.stageType === stageType)?.name;
+    if (this.posStages) {
+      return this.posStages.find((x) => x.stageType === stageType)?.name;
     }
 
     return "";
   }
 
   findStageColor(stageType: string) {
-    if (this.stagesTypes) {
+    if (this.posStages) {
       return (
-        this.stagesTypes.find((x) => x.stageType === stageType)?.color ||
-        "black"
+        this.posStages.find((x) => x.stageType === stageType)?.color || "black"
       );
     }
 
     return "";
   }
 
-  sortPosStage(posStages: IPosStages[]) {
+  sortPosStage(posStages: ICandPosStage[]) {
     return posStages
       .slice()
       .sort((a, b) => (a.d < b.d ? 1 : b.d < a.d ? -1 : 0));
@@ -513,7 +512,16 @@ export class CandsStore {
     return res;
   }
 
-  async sendEmail(emailData: ISendEmail) {
+  async sendEmailToCandidate(emailData: ISendEmail) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.sendEmail(emailData);
+
+    this.rootStore.generalStore.backdrop = false;
+
+    return res;
+  }
+
+  async sendEmailTocontact(emailData: ISendEmail) {
     this.rootStore.generalStore.backdrop = true;
 
     const res = await this.cvsApi.sendEmail(emailData);

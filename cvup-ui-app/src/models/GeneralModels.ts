@@ -46,18 +46,18 @@ export interface ICand {
   candPosIds: number[];
   cvPosIds: number[];
   hasDuplicates: boolean;
-  posStages?: IPosStages[];
+  posStages?: ICandPosStage[];
   isSeen: boolean;
   reviewDate?: Date;
 }
 
-export interface IPosStages {
+export interface ICandPosStage {
   id: number;
   t: string;
   d: string;
 }
 
-export interface ICompanyStagesTypes {
+export interface IPosStagesType {
   stageType: string;
   order: number;
   name: string;
@@ -115,6 +115,7 @@ export interface IEmailTemplate {
   name: string;
   subject: string;
   body: string;
+  stageToUpdate?: string;
 }
 
 export interface ISendEmail {

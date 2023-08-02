@@ -1,8 +1,4 @@
-import {
-  ICompanyStagesTypes,
-  IContact,
-  IPosition,
-} from "../../models/GeneralModels";
+import { IPosition } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {

@@ -1,10 +1,7 @@
 import {
   ICand,
-  ICvReview,
-  ICompanyStagesTypes,
+  IPosStagesType,
   IEmailTemplate,
-  IEmailsAddress,
-  IAttachCv,
   ISendEmail,
   ISearchModel,
 } from "../../models/GeneralModels";
@@ -120,9 +117,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async getCompanyStagesTypes() {
-    return await this.apiWrapper2<ICompanyStagesTypes[]>(async () => {
-      return await this.http.get("Cand/GetCompanyStagesTypes");
+  async getCandPosStages() {
+    return await this.apiWrapper2<IPosStagesType[]>(async () => {
+      return await this.http.get("Cand/GetCandPosStagesTypes");
     });
   }
 

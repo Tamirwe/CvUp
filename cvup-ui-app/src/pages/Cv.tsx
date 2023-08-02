@@ -5,13 +5,18 @@ import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
 import { FormControl, Grid, Link, MenuItem, Select } from "@mui/material";
 import { EmailTypeEnum } from "../models/GeneralEnums";
-import { useEffect, useState } from "react";
-import { IPosStages } from "../models/GeneralModels";
+import { useEffect, useRef, useState } from "react";
+import { ICandPosStage } from "../models/GeneralModels";
 import { format } from "date-fns";
 
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
-  const [posStage, setPosStage] = useState<IPosStages | undefined>();
+  const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
+  const scrollRef = useRef<any>(null);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = 0;
+  }, [candsStore.candDisplay]);
 
   useEffect(() => {
     if (candsStore.candDisplay?.posStages) {
@@ -23,8 +28,20 @@ export const Cv = observer(() => {
     }
   }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
+  const candidateName = () => {
+    let fullName = `${candsStore.candDisplay?.firstName || ""} ${
+      candsStore.candDisplay?.lastName || ""
+    }`;
+
+    if (!fullName.trim()) {
+      fullName = "Name not found";
+    }
+
+    return fullName;
+  };
+
   return (
-    <div className={styles.scrollCv}>
+    <div ref={scrollRef} className={styles.scrollCv}>
       <Grid
         container
         sx={{
@@ -81,9 +98,7 @@ export const Cv = observer(() => {
                   generalStore.showCandFormDialog = true;
                 }}
               >
-                {(candsStore.candDisplay?.firstName || "") +
-                  " " +
-                  (candsStore.candDisplay?.lastName || "")}
+                {candidateName()}
               </Link>
             </Grid>
             <Grid item xs="auto" lg="auto">
@@ -113,7 +128,7 @@ export const Cv = observer(() => {
                     sx={{
                       direction: "ltr",
                       "& .MuiSelect-select": {
-                        color: candsStore.stagesTypes?.find(
+                        color: candsStore.posStages?.find(
                           (x) => x.stageType === posStage?.t
                         )?.color,
                         fontWeight: "bold",
@@ -124,7 +139,7 @@ export const Cv = observer(() => {
                       await candsStore.updateCandPositionStatus(e.target.value);
                     }}
                   >
-                    {candsStore.stagesTypes?.map((item, ind) => {
+                    {candsStore.posStages?.map((item, ind) => {
                       // console.log(key, index);
                       return (
                         <MenuItem

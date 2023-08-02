@@ -45,7 +45,7 @@ interface IProps {
 }
 
 export const CandidateEmailSender = observer((props: IProps) => {
-  const { candsStore, generalStore, positionsStore } = useStore();
+  const { candsStore, generalStore, positionsStore, authStore } = useStore();
   const refQuill = useRef();
   const [dynamicData, setDynamicData] = useState<Map<string, string>>();
 
@@ -90,20 +90,39 @@ export const CandidateEmailSender = observer((props: IProps) => {
     if (candsStore.candDisplay) {
       const dynamicDataMap = new Map();
 
-      dynamicDataMap.set("FirstName", candsStore.candDisplay.firstName);
+      dynamicDataMap.set("[FirstName]", candsStore.candDisplay.firstName);
       dynamicDataMap.set(
-        "FullName",
+        "[FullName]",
         `${candsStore.candDisplay.firstName} ${candsStore.candDisplay.lastName}`
       );
 
       dynamicDataMap.set(
-        "CustomerName",
+        "[CustomerName]",
         positionsStore.candDisplayPosition?.customerName
       );
+
       dynamicDataMap.set(
-        "PositionName",
+        "[PositionName]",
         positionsStore.candDisplayPosition?.name
       );
+
+      dynamicDataMap.set("[MyFirstName]", authStore.currentUser?.firstName);
+
+      dynamicDataMap.set(
+        "[MyFullname]",
+        `${authStore.currentUser?.firstName} ${authStore.currentUser?.lastName}`
+      );
+
+      dynamicDataMap.set("[MyFirstNameEn]", authStore.currentUser?.firstNameEn);
+
+      dynamicDataMap.set(
+        "[MyFullnameEn]",
+        `${authStore.currentUser?.firstNameEn} ${authStore.currentUser?.lastNameEn}`
+      );
+
+      dynamicDataMap.set("[MyEmail]", authStore.currentUser?.email);
+
+      dynamicDataMap.set("[MyPhoneNumber]", authStore.currentUser?.phone);
 
       setDynamicData(dynamicDataMap);
     }
@@ -133,8 +152,8 @@ export const CandidateEmailSender = observer((props: IProps) => {
       .filter((x) => isNaN(Number(x)))
       .forEach((item) => {
         strReplaced = strReplaced.replaceAll(
-          item,
-          dynamicData?.get(item) || ""
+          `[${item}]`,
+          dynamicData?.get(`[${item}]`) || ""
         );
       });
 
@@ -176,7 +195,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
         body: emailBody,
       };
 
-      var data = await candsStore.sendEmail(emailData);
+      var data = await candsStore.sendEmailToCandidate(emailData);
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

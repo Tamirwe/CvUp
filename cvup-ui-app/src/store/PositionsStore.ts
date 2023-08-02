@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   IAppSettings,
   ICand,
-  ICompanyStagesTypes,
+  IPosStagesType,
   IPosition,
   ISearchModel,
 } from "../models/GeneralModels";

@@ -26,7 +26,7 @@ export class AuthStore {
   userRole: UserRoleEnum = UserRoleEnum.User;
   interviewersList: IInterviewer[] = [];
   usersList: IUser[] = [];
-  currentUserData?: IUserData;
+  currentUser?: IUserData;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -182,6 +182,6 @@ export class AuthStore {
 
   async getUser() {
     const response = await this.authApi.getUser();
-    this.currentUserData = response.data;
+    this.currentUser = response.data;
   }
 }

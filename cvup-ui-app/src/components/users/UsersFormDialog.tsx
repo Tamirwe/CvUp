@@ -2,6 +2,7 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { UserForm } from "./UserForm";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   isOpen: boolean;
@@ -27,8 +28,10 @@ export const UsersFormDialog = ({ isOpen, onClose }: IProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => onClose()} fullWidth maxWidth={"md"}>
-      <DialogTitle>{formTitle}</DialogTitle>
+    <Dialog open={open} fullWidth maxWidth={"md"}>
+      <BootstrapDialogTitle id="dialog-title" onClose={() => onClose()}>
+        {formTitle}
+      </BootstrapDialogTitle>
       <DialogContent>
         <UserForm onSaved={handleSave} onCancel={() => onClose()} />
       </DialogContent>

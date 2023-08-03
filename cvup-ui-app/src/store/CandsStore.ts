@@ -123,25 +123,24 @@ export class CandsStore {
   }
 
   async saveCandReview(review: string) {
-    this.rootStore.generalStore.backdrop = true;
+      this.rootStore.generalStore.backdrop = true;
 
-    if (this.candDisplay) {
       const res = await this.cvsApi.saveCandReview(
         review,
-        this.candDisplay?.candidateId
+        this.candDisplay?.candidateId!
       );
 
-      runInAction(() => {
-        if (res.isSuccess && res.data) {
+      if (res.isSuccess && res.data) {
+        runInAction(() => {
           this.candDisplay = { ...res.data };
           this.updateCandAllList(res.data);
           this.updatePosCandList(res.data);
           this.updateFolderCandList(res.data);
-        }
-      });
-    }
+        });
+      }
 
-    this.rootStore.generalStore.backdrop = false;
+      this.rootStore.generalStore.backdrop = false;
+      return res;
   }
 
   async saveCandDetails(

@@ -901,5 +901,30 @@ namespace DataModelsLibrary.Queries
                 }
             }
         }
+
+        public async Task<List<CandReportModel?>> CandsReport(int companyId, string stageType)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from pcs in dbContext.position_candidates
+                             join cn in dbContext.candidates on pcs.candidate_id equals cn.id
+                             join pos in dbContext.positions on pcs.position_id equals pos.id
+                             where cn.company_id == companyId
+                                    && pcs.stage_type == stageType
+                             orderby pcs.stage_date descending
+                             select new CandReportModel
+                             {
+                                 candidateId = cn.id,
+                                 firstName = cn.first_name,
+                                 lastName = cn.last_name,
+                                 positionId=pos.id,
+                                 positionName=pos.name,
+                                 customerId = pos.customer_id,
+                                 stageDate=pcs.stage_date,
+                             }).Take(500); ;
+
+                return await query.ToListAsync();
+            }
+        }
     }
 }

@@ -91,6 +91,17 @@ namespace DataModelsLibrary.Models
 
     }
 
+    public class CandReportModel
+    {
+        public int candidateId { get; set; }
+        public string? firstName { get; set; } = "";
+        public string? lastName { get; set; } = "";
+        public int positionId { get; set; }
+        public int? customerId { get; set; } = 0;
+        public string? positionName { get; set; }
+        public DateTime? stageDate { get; set; }
+    }
+
     public class CandDetailsModel
     {
         public int candidateId { get; set; }

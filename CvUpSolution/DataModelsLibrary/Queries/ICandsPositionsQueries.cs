@@ -46,5 +46,6 @@ namespace DataModelsLibrary.Queries
         Task UpdateCandDetails(CandDetailsModel candDetails);
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
+        Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
     }
 }

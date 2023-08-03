@@ -105,7 +105,7 @@ namespace CandsPositionsLibrary
 
         public async Task IndexCompanyCvs(int companyId)
         {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId,0);
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, 0);
             await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
         }
 
@@ -128,7 +128,7 @@ namespace CandsPositionsLibrary
 
         public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
         {
-            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId,  candsIds);
+            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, candsIds);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
@@ -211,14 +211,14 @@ namespace CandsPositionsLibrary
 
         public async Task DetachPosCand(AttachePosCandCvModel posCv)
         {
-             await _cvsPositionsQueries.DetachPosCand(posCv);
-             await _cvsPositionsQueries.UpdateCandPosArrays(posCv.companyId, posCv.candidateId);
+            await _cvsPositionsQueries.DetachPosCand(posCv);
+            await _cvsPositionsQueries.UpdateCandPosArrays(posCv.companyId, posCv.candidateId);
         }
 
         public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
         {
             await _cvsPositionsQueries.UpdateCandPositionStatus(posStatus);
-             await _cvsPositionsQueries.UpdateCandPosArrays(posStatus.companyId, posStatus.candidateId);
+            await _cvsPositionsQueries.UpdateCandPosArrays(posStatus.companyId, posStatus.candidateId);
         }
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
@@ -273,9 +273,9 @@ namespace CandsPositionsLibrary
             }
         }
 
-        public async Task SaveCandReview(int companyId ,CandReviewModel candReview)
+        public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
-            await _cvsPositionsQueries.SaveCandReview(companyId,candReview);
+            await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
             await SaveCandidateToIndex(companyId, candReview.candidateId);
         }
 
@@ -308,6 +308,10 @@ namespace CandsPositionsLibrary
         public async Task UpdateIsSeen(int companyId, int cvId)
         {
             await _cvsPositionsQueries.UpdateIsSeen(companyId, cvId);
+        }
+        public async Task<List<CandReportModel?>> CandsReport(int companyId, string stageType)
+        {
+            return await _cvsPositionsQueries.CandsReport(companyId, stageType);
         }
     }
 }

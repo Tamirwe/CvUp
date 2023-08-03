@@ -95,15 +95,15 @@ export class PositionsStore {
 
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
     return new Promise((resolve) => {
+      this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+
       runInAction(async () => {
         if (posId) {
           await Promise.all([
-            this.rootStore.candsStore.getPositionCandsList(posId),
             this.getPositionContacts(posId),
+            this.rootStore.candsStore.getPositionCandsList(posId),
           ]);
         }
-
-        this.selectedPosition = this.positionsList.find((x) => x.id === posId);
 
         this.rootStore.candsStore.currentTabCandsLists =
           TabsCandsEnum.PositionCands;
@@ -159,7 +159,7 @@ export class PositionsStore {
     const res = await this.positionApi.getPositionContactsIds(posId);
 
     if (this.positionSelected) {
-      this.positionSelected!.contactsIds = res.data;
+      this.positionSelected!.contactsIds = [...res.data];
     }
 
     this.rootStore.generalStore.backdrop = false;

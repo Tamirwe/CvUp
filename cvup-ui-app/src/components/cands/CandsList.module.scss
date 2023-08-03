@@ -22,7 +22,8 @@
   text-align: right;
   padding-left: 1rem;
   direction: rtl;
-
+  display: flex;
+  align-items: center;
   // &.isMobile{
   //   padding-right: 3rem;
   // }
@@ -40,9 +41,20 @@
 
 .listItemSelected {
   text-decoration: underline;
-  font-weight: bold;
 }
 
 .listItemSelected:hover {
   color: rgb(35, 112, 226) !important;
+}
+
+.listItemPosStages {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.listItemPosStagesCurrent {
+  font-weight: 700;
+  text-decoration: underline;
+  font-size: 0.9rem;
 }

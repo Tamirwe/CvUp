@@ -17,7 +17,10 @@ export const Cv = observer(() => {
 
   useEffect(() => {
     scrollRef.current.scrollTop = 0;
-    getCandName();
+
+    if (candsStore.candDisplay) {
+      getCandName();
+    }
   }, [candsStore.candDisplay]);
 
   useEffect(() => {

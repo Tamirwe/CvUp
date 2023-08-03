@@ -123,24 +123,24 @@ export class CandsStore {
   }
 
   async saveCandReview(review: string) {
-      this.rootStore.generalStore.backdrop = true;
+    this.rootStore.generalStore.backdrop = true;
 
-      const res = await this.cvsApi.saveCandReview(
-        review,
-        this.candDisplay?.candidateId!
-      );
+    const res = await this.cvsApi.saveCandReview(
+      review,
+      this.candDisplay?.candidateId!
+    );
 
-      if (res.isSuccess && res.data) {
-        runInAction(() => {
-          this.candDisplay = { ...res.data };
-          this.updateCandAllList(res.data);
-          this.updatePosCandList(res.data);
-          this.updateFolderCandList(res.data);
-        });
-      }
+    if (res.isSuccess && res.data) {
+      runInAction(() => {
+        this.candDisplay = { ...res.data };
+        this.updateCandAllList(res.data);
+        this.updatePosCandList(res.data);
+        this.updateFolderCandList(res.data);
+      });
+    }
 
-      this.rootStore.generalStore.backdrop = false;
-      return res;
+    this.rootStore.generalStore.backdrop = false;
+    return res;
   }
 
   async saveCandDetails(
@@ -510,10 +510,14 @@ export class CandsStore {
     return res;
   }
 
-  async sendEmailTocontact(emailData: ISendEmail) {
+  async sendEmailToContact(emailData: ISendEmail) {
     this.rootStore.generalStore.backdrop = true;
 
     const res = await this.cvsApi.sendEmail(emailData);
+
+    if (res.isSuccess) {
+      this.updateCandPositionStatus("cv_sent_to_customer");
+    }
 
     this.rootStore.generalStore.backdrop = false;
 

@@ -56,18 +56,21 @@ export const ContactEmailSender = (props: IProps) => {
         );
       }
 
-      const emailsOptionsList = contacts.map((item) => {
-        return {
-          Address: item.email || "",
+      const emailsOptionsList = contacts.map((item, ind) => {
+        const emailAddress: IEmailsAddress = {
+          id: ind,
           Name: `${item.firstName || ""} ${item.lastName || ""} - ${
             item.customerName || ""
           }`,
+          Address: item.email || "",
         };
+
+        return emailAddress;
       });
 
       setEmailsToList(emailsOptionsList || []);
 
-      const emailsToList = positionsStore.candDisplayPosition?.contactsIds.map(
+      const emailsToList = positionsStore.candDisplayPosition?.contactsIds?.map(
         (id) => {
           const contact = customersContactsStore.getContactById(id);
           return {
@@ -140,7 +143,7 @@ export const ContactEmailSender = (props: IProps) => {
         attachCvs: [attachment],
       };
 
-      var data = await candsStore.sendEmailTocontact(emailData);
+      var data = await candsStore.sendEmailToContact(emailData);
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");

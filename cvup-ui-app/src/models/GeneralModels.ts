@@ -100,8 +100,9 @@ export interface ICvReview {
 }
 
 export interface IEmailsAddress {
-  Name: string;
-  Address: string;
+  id?: number;
+  Name?: string;
+  Address?: string;
   userTyped?: boolean;
 }
 

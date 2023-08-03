@@ -1,7 +1,7 @@
 import { IconButton } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
-import { MdRemove } from "react-icons/md";
+import { MdOutlineMarkEmailUnread, MdRemove } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
@@ -24,6 +24,9 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
           const posNameCompany = positionsStore.findPosName(stage.id);
+          const isCurrentPosition =
+            candsSource === CandsSourceEnum.Position &&
+            positionsStore.selectedPosition?.id === stage.id;
 
           if (!posNameCompany) {
             return;
@@ -32,12 +35,10 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
           return (
             <div
               key={i}
-              style={{
-                display: "flex",
-                flexDirection: "row-reverse",
-                // paddingRight: "2.5rem",
-                alignItems: "center",
-              }}
+              className={classNames({
+                [styles.listItemPosStages]: true,
+                [styles.listItemPosStagesCurrent]: isCurrentPosition,
+              })}
             >
               {cand.candidateId === candsStore.candDisplay?.candidateId && (
                 <IconButton
@@ -91,15 +92,13 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                     paddingLeft: "1rem",
-
-                    textDecoration:
-                      candsSource === CandsSourceEnum.Position &&
-                      stage.id === positionsStore.selectedPosition?.id
-                        ? "underline"
-                        : "none",
                   }}
                 >
                   {posNameCompany}
+                </div>
+
+                <div>
+                  <MdOutlineMarkEmailUnread />
                 </div>
               </div>
             </div>

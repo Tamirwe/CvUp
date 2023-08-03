@@ -74,6 +74,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
     if (candsStore.candDisplay) {
       const emailsList = [
         {
+          id: 1,
           Address: candsStore.candAllSelected?.email || "",
           Name:
             (candsStore.candDisplay?.firstName || "") +

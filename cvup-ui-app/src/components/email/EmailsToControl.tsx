@@ -41,7 +41,7 @@ export const EmailsToControl = (props: IProps) => {
       id="tags-standard"
       options={emailsToList}
       getOptionLabel={(option) => {
-        return option ? (option.Name ? option.Name : option.Address) : "";
+        return option ? (option.Name ? option.Name : option.Address!) : "";
       }}
       value={vals}
       onChange={(event, newValue) => {

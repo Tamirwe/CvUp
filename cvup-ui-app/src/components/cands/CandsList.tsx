@@ -153,7 +153,9 @@ export const CandsList = observer(
                           [styles.isMobile]: isMobile,
                         })}
                       >
-                        {cand.emailSubject}
+                        {candsSource === CandsSourceEnum.AllCands
+                          ? cand.emailSubject
+                          : `${cand.firstName} ${cand.lastName}`}
                       </div>
                       <div
                         title="Cv sent date"

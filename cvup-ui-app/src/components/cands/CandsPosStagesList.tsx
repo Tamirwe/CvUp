@@ -64,11 +64,14 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 title={`Status: ${candsStore.findStageName(stage.t)}`}
                 {...(cand.candidateId ===
                   candsStore.candDisplay?.candidateId && {
-                  onClick: (event) => {
+                  onClick: async (event) => {
                     event.stopPropagation();
                     event.preventDefault();
 
-                    positionsStore.candDisplayPositionClick(stage.id);
+                    const posId = stage.id;
+                    await positionsStore.positionClick(posId, true);
+                    positionsStore.setRelatedPositionToCandDisplay();
+                    candsStore.setDisplayCandOntopPCList();
                   },
                 })}
               >

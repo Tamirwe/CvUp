@@ -13,8 +13,12 @@ import {
 } from "react-icons/md";
 import { EmailTypeEnum } from "../../models/GeneralEnums";
 import { CiEdit, CiMail } from "react-icons/ci";
+import { observer } from "mobx-react";
+import { useLocation } from "react-router-dom";
 
-export const Header = () => {
+export const Header = observer(() => {
+  const location = useLocation();
+
   const {
     candsStore,
     generalStore,
@@ -116,7 +120,7 @@ export const Header = () => {
                 )}
 
                 <SettingsMenu />
-                {candsStore.candDisplay && (
+                {candsStore.candDisplay && location.pathname === "/cv" && (
                   <>
                     <IconButton
                       title="Email to candidate"
@@ -174,4 +178,4 @@ export const Header = () => {
       </div>
     </div>
   );
-};
+});

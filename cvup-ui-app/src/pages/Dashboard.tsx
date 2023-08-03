@@ -15,10 +15,16 @@ import {
   MenuItem,
   Select,
   Link,
+  Button,
 } from "@mui/material";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { CandsSourceEnum } from "../models/GeneralEnums";
+import { ICandsReport } from "../models/GeneralModels";
 
 export const Dashboard = observer(() => {
+  const navigate = useNavigate();
+
   const { candsStore, positionsStore, customersContactsStore } = useStore();
 
   const [stageType, setStageType] = useState<string>("accepted");
@@ -42,12 +48,30 @@ export const Dashboard = observer(() => {
     }
   }, [candsStore.candsReportData]);
 
+  const handleCandClick = async (row: ICandsReport) => {
+    await positionsStore.positionClick(row.positionId!, true);
+
+    const cand = candsStore.posCandsList.find(
+      (x) => x.candidateId === row.candidateId
+    );
+
+    if (cand) {
+      if (window.location.pathname !== "/cv") {
+        navigate(`/cv`);
+      }
+
+      candsStore.displayCv(cand, CandsSourceEnum.Position);
+      positionsStore.setRelatedPositionToCandDisplay();
+      candsStore.setDisplayCandOntopPCList();
+    }
+  };
+
   return (
     <Grid container>
       <Grid item xs={12} lg={12} m={1} mt={5}>
         <h1>Candidates Report</h1>
       </Grid>
-      <Grid item xs={12} lg={12} m={1} mt={3}>
+      <Grid item xs={12} lg={6} m={1} mt={3}>
         <FormControl
           fullWidth
           // variant="standard"
@@ -92,7 +116,7 @@ export const Dashboard = observer(() => {
       </Grid>
       <Grid item xs={12} lg={12} m={1}>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
+          <TableContainer sx={{ maxHeight: "60vh" }}>
             <Table
               stickyHeader
               aria-label="sticky table"
@@ -101,7 +125,7 @@ export const Dashboard = observer(() => {
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 700 }} align="right">
-                    Candidate Name
+                    Candidate
                   </TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align="right">
                     Position
@@ -114,16 +138,23 @@ export const Dashboard = observer(() => {
               <TableBody>
                 {candsStore.candsReportData?.map((row, i) => (
                   <TableRow
+                    hover
                     key={i}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="right">{`${row.firstName} ${row.lastName}`}</TableCell>
                     <TableCell align="right">
-                      <Link
-                        href="#"
-                        variant="body2"
+                      <Button
+                        sx={{ textTransform: "none" }}
+                        onClick={() => handleCandClick(row)}
+                      >
+                        {`${row.firstName} ${row.lastName}`}
+                      </Button>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        sx={{ textTransform: "none" }}
                         onClick={() =>
-                          positionsStore.positionClick(row.positionId!)
+                          positionsStore.positionClick(row.positionId!, true)
                         }
                       >
                         {`${
@@ -131,7 +162,7 @@ export const Dashboard = observer(() => {
                         } - ${customersContactsStore.findCustomerName(
                           row.customerId || 0
                         )}`}
-                      </Link>
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
                       {row.stageDate &&

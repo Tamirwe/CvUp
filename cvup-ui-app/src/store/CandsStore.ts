@@ -21,7 +21,7 @@ import { RootStore } from "./RootStore";
 export class CandsStore {
   private cvsApi;
   private candIdDuplicateCvs: number = 0;
-  candsAllList: ICand[] = [];
+  allCandsList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
   folderCandsList: ICand[] = [];
@@ -50,7 +50,7 @@ export class CandsStore {
   }
 
   reset() {
-    this.candsAllList = [];
+    this.allCandsList = [];
     this.candAllSelected = undefined;
   }
 
@@ -66,16 +66,9 @@ export class CandsStore {
     runInAction(() => {
       // this.candAllSelected = cand;
       this.candDisplay = cand;
-      this.rootStore.positionsStore.updateCandDisplayPosition(candsSource);
-      // cand.position = undefined;
-
-      // if (candsSource === CandsSourceEnum.Position) {
-      //   const selectedPosition = this.rootStore.positionsStore.selectedPosition;
-
-      //   if (this.candDisplay) {
-      //     this.rootStore.positionsStore.updateCandDisplayPosition(candsSource)  ;
-      //   }
-      // }
+      this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+        candsSource
+      );
 
       this.getPdf(cand.keyId);
 
@@ -103,7 +96,7 @@ export class CandsStore {
 
       switch (listType) {
         case CvDisplayedListEnum.CandsList:
-          this.candAllSelected = this.candsAllList.find(
+          this.candAllSelected = this.allCandsList.find(
             (x) => x.candidateId === candCv.candidateId
           );
           break;
@@ -185,7 +178,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(searchVals, 0, 0);
     runInAction(() => {
-      this.candsAllList = res.data;
+      this.allCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -219,7 +212,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getCandsList();
     runInAction(() => {
-      this.candsAllList = res.data;
+      this.allCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -241,33 +234,35 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getPositionCands() {
+  async getPositionCandsList(posId: number) {
     this.rootStore.generalStore.backdrop = true;
 
-    runInAction(() => {
+    runInAction(async () => {
       this.posCandsList = [];
-    });
 
-    const posId = this.rootStore.positionsStore.selectedPosition?.id!;
-
-    const res = await this.cvsApi.getPosCandsList(posId);
-
-    const candsList = [...res.data];
-
-    const objIndex = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
-    );
-
-    if (objIndex > -1) {
-      const candSelected = candsList.splice(objIndex, 1);
-      candsList.splice(0, 0, candSelected[0]);
-    }
-
-    runInAction(() => {
-      this.posCandsList = candsList;
+      const res = await this.cvsApi.getPosCandsList(posId);
+      this.posCandsList = res.data;
     });
 
     this.rootStore.generalStore.backdrop = false;
+  }
+
+  async setDisplayCandOntopPCList() {
+    runInAction(async () => {
+      if (this.candDisplay?.candidateId) {
+        const candsList = [...this.posCandsList];
+
+        const objIndex = candsList.findIndex(
+          (x) => x.candidateId === this.candDisplay?.candidateId
+        );
+
+        if (objIndex > -1) {
+          const candSelected = candsList.splice(objIndex, 1);
+          candsList.splice(0, 0, candSelected[0]);
+          this.posCandsList = candsList;
+        }
+      }
+    });
   }
 
   async getFolderCandsList() {
@@ -297,14 +292,6 @@ export class CandsStore {
           this.updateCandAllList(res.data);
           this.updateFolderCandList(res.data);
           this.updatePosCandList(res.data);
-
-          // if (
-          //   this.rootStore.positionsStore.selectedPosition?.id === positionId
-          // ) {
-          //   this.addPosCandList(res.data);
-          // } else {
-          //   this.updatePosCandList(res.data);
-          // }
         }
       });
     }
@@ -336,14 +323,14 @@ export class CandsStore {
   }
 
   updateCandAllList(cand: ICand) {
-    const candsList = [...this.candsAllList];
+    const candsList = [...this.allCandsList];
     const index = candsList.findIndex(
       (x) => x.candidateId === this.candDisplay?.candidateId
     );
 
     if (index > -1) {
       candsList[index] = { ...cand };
-      this.candsAllList = candsList;
+      this.allCandsList = candsList;
     }
   }
 
@@ -378,12 +365,6 @@ export class CandsStore {
     }
   }
 
-  addPosCandList(cand: ICand) {
-    const candsList = [...this.posCandsList];
-    candsList.unshift({ ...cand });
-    this.posCandsList = candsList;
-  }
-
   removePosCandList(cand: ICand) {
     const candsList = [...this.posCandsList];
     const index = this.posCandsList.findIndex(
@@ -393,10 +374,10 @@ export class CandsStore {
     this.posCandsList = candsList;
   }
 
-  candsAllListCand(candidateId: number) {
+  allCandsListCand(candidateId: number) {
     const varToPreventTsError: any = {};
 
-    const cand = this.candsAllList.find(
+    const cand = this.allCandsList.find(
       (x) => x.candidateId === this.candDisplay?.candidateId
     );
     return cand ? cand : varToPreventTsError;
@@ -426,7 +407,7 @@ export class CandsStore {
         this.candDisplay.candFoldersIds = candFoldersIdsArr;
 
         const candId = this.candDisplay?.candidateId;
-        this.candsAllListCand(candId).candFoldersIds = candFoldersIdsArr;
+        this.allCandsListCand(candId).candFoldersIds = candFoldersIdsArr;
         this.candsPosListCand(candId).candFoldersIds = candFoldersIdsArr;
         this.candsFolderListCand(candId).candFoldersIds = candFoldersIdsArr;
       }

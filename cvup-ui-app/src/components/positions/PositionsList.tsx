@@ -13,7 +13,7 @@ import { useStore } from "../../Hooks/useStore";
 import { MdOutlineEdit, MdPersonAddAlt1, MdRemove } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
-import { TabsCandsEnum } from "../../models/GeneralEnums";
+import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IPosition } from "../../models/GeneralModels";
 import classNames from "classnames";
@@ -27,17 +27,11 @@ export const PositionsList = observer(() => {
 
   const handleAttachPosCandCv = async (posId: number) => {
     await candsStore.attachPosCandCv(posId);
-    await positionsStore.candDisplayPositionClick(posId);
+    await positionsStore.positionClick(posId, true);
+    positionsStore.setRelatedPositionToCandDisplay();
+    candsStore.setDisplayCandOntopPCList();
     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
   };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (positionsStore.positionsSorted.length === 0) {
-  //       await positionsStore.getPositionsList();
-  //     }
-  //   })();
-  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (positionsStore.positionsSorted) {
@@ -73,17 +67,6 @@ export const PositionsList = observer(() => {
       instance.removeEventListener("scroll", onScroll);
     };
   }, [onScroll]);
-
-  // const handlePositionClick = (posId: number) => {
-  //   if (
-  //     candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands ||
-  //     positionsStore.selectedPosition?.id !== posId
-  //   ) {
-  //     positionsStore.setPosSelected(posId);
-  //     candsStore.getPositionCands();
-  //     candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-  //   }
-  // };
 
   const handleEditPositionClick = () => {};
 

@@ -12,14 +12,14 @@ export const CandsListsWrapper = observer(() => {
   // const [folderId, setFolderId] = useState(0);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
-  const [candsAllList, setCandsAllList] = useState<ICand[]>([]);
+  const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
   const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
   useEffect(() => {
-    setCandsAllList(candsStore.candsAllList);
-  }, [candsStore.candsAllList]);
+    setAllCandsList(candsStore.allCandsList);
+  }, [candsStore.allCandsList]);
 
   useEffect(() => {
     setCandsPosList(candsStore.posCandsList);
@@ -59,7 +59,10 @@ export const CandsListsWrapper = observer(() => {
       if (searchVals.value) {
         candsStore.searchPositionCands(searchVals);
       } else {
-        candsStore.getPositionCands();
+        if (positionsStore.selectedPosition?.id) {
+          candsStore.getPositionCandsList(positionsStore.selectedPosition?.id);
+          candsStore.setDisplayCandOntopPCList();
+        }
       }
     }
   };
@@ -132,7 +135,7 @@ export const CandsListsWrapper = observer(() => {
           />
         </Box>
         <CandsList
-          candsListData={candsAllList}
+          candsListData={allCandsList}
           candsSource={CandsSourceEnum.AllCands}
           advancedOpen={candsAdvancedOpen}
         />

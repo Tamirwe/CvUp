@@ -69,10 +69,12 @@ export const Cv = observer(() => {
               {positionsStore.candDisplayPosition && (
                 <Link
                   href="#"
-                  onClick={() => {
-                    positionsStore.candDisplayPositionClick(
-                      positionsStore.candDisplayPosition!.id
+                  onClick={async () => {
+                    await positionsStore.positionClick(
+                      positionsStore.candDisplayPosition!.id,
+                      true
                     );
+                    candsStore.setDisplayCandOntopPCList();
                   }}
                 >
                   {positionsStore.candDisplayPosition?.name || ""}

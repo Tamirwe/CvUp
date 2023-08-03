@@ -46,13 +46,12 @@ export const LoginForm = ({ loginType }: IProps) => {
   const [formModel, setFormModel] = useState<IUserLogin>({
     email: "",
     password: "",
-    rememberMe: false,
+    rememberMe: true,
     key: params.get("sk") || "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     email: "",
     password: "",
-    rememberMe: false,
   });
 
   useEffect(() => {

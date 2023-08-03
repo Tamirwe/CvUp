@@ -17,6 +17,7 @@ export class PositionsStore {
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
   private searchPhrase?: ISearchModel;
+  private isSelectedPositionOnTop?: boolean = false;
   candDisplayPosition: IPosition | undefined;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -36,12 +37,25 @@ export class PositionsStore {
         )
       );
     } else {
-      return this.positionsList
+      const posList = this.positionsList
         .slice()
         .sort(
           (a, b) =>
             new Date(b.updated).getTime() - new Date(a.updated).getTime()
         );
+
+      if (this.isSelectedPositionOnTop && this.selectedPosition) {
+        const objIndex = posList.findIndex(
+          (x) => x.id === this.selectedPosition?.id
+        );
+
+        if (objIndex > -1) {
+          const posArr = posList.splice(objIndex, 1);
+          posList.splice(0, 0, posArr[0]);
+        }
+      }
+
+      return posList;
     }
   }
 
@@ -69,7 +83,9 @@ export class PositionsStore {
     return (x.name + "").toLowerCase() + (x.customerName + "").toLowerCase();
   };
 
-  updateCandDisplayPosition(candsSource: CandsSourceEnum) {
+  setRelatedPositionToCandDisplay(
+    candsSource: CandsSourceEnum = CandsSourceEnum.Position
+  ) {
     this.candDisplayPosition = undefined;
 
     if (candsSource === CandsSourceEnum.Position) {
@@ -77,41 +93,30 @@ export class PositionsStore {
     }
   }
 
-  // setPosSelectedById(posId: number, candId?: number) {
-  //   this.selectedPosition = this.positionsList.find((x) => x.id === posId);
-  // }
+  async positionClick(posId: number, isPositionOnTop: boolean = false) {
+    return new Promise((resolve) => {
+      runInAction(async () => {
+        if (posId) {
+          await Promise.all([
+            this.rootStore.candsStore.getPositionCandsList(posId),
+            this.getPositionContacts(posId),
+          ]);
+        }
 
-  async candDisplayPositionClick(posId: number) {
-    await this.positionClick(posId);
-    this.updateCandDisplayPosition(CandsSourceEnum.Position);
-  }
+        this.selectedPosition = this.positionsList.find((x) => x.id === posId);
 
-  async positionClick(posId: number, cand?: ICand) {
-    this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+        this.rootStore.candsStore.currentTabCandsLists =
+          TabsCandsEnum.PositionCands;
 
-    await Promise.all([
-      this.rootStore.candsStore.getPositionCands(),
-      this.getPositionContacts(posId),
-    ]);
+        if (isMobile) {
+          this.rootStore.generalStore.leftDrawerOpen = false;
+          this.rootStore.generalStore.rightDrawerOpen = true;
+        }
 
-    // const posList = [...this.positionsList];
-
-    // const objIndex = posList.findIndex(
-    //   (x) => x.id === this.selectedPosition?.id
-    // );
-
-    // if (objIndex > -1) {
-    //   const posArr = posList.splice(objIndex, 1);
-    //   posList.splice(0, 0, posArr[0]);
-    // }
-
-    this.rootStore.candsStore.currentTabCandsLists =
-      TabsCandsEnum.PositionCands;
-
-    if (isMobile) {
-      this.rootStore.generalStore.leftDrawerOpen = false;
-      this.rootStore.generalStore.rightDrawerOpen = true;
-    }
+        this.isSelectedPositionOnTop = isPositionOnTop;
+        resolve("");
+      });
+    });
   }
 
   async addPosition(position: IPosition) {

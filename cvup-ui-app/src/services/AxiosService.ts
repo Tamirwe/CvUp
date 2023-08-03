@@ -52,6 +52,13 @@ export default function axiosService(
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         const newTokens = await refreshAccessToken();
+
+        if (!newTokens) {
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("refreshToken");
+          document.location.href = "/";
+        }
+
         originalRequest._retry = true;
 
         if (newTokens) {

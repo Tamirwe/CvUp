@@ -1,4 +1,4 @@
-import { Button, Grid, Stack, TextField } from "@mui/material";
+import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
@@ -11,14 +11,20 @@ interface IProps {
 export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
   const { candsStore } = useStore();
   const [review, setReview] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     setReview(candsStore.candDisplay?.review || "");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async () => {
-    await candsStore.saveCandReview(review);
-    onSaved();
+    const res = await candsStore.saveCandReview(review);
+
+    if (res?.isSuccess) {
+      onSaved();
+    } else {
+      setSubmitError(res?.errorData?.message);
+    }
   };
 
   return (
@@ -44,6 +50,14 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
               value={review}
             />
           </Grid>
+
+          {submitError && (
+            <Grid item xs={12}>
+              <div style={{ direction: "ltr" }}>
+                <FormHelperText error>{submitError}</FormHelperText>
+              </div>
+            </Grid>
+          )}
 
           <Grid item xs={12} mt={4}>
             <Grid container justifyContent="space-between">

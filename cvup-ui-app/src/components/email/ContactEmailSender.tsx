@@ -20,6 +20,7 @@ import { EmailsToControl } from "./EmailsToControl";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { validateTxt } from "../../utils/Validation";
 import { TextValidateTypeEnum } from "../../models/GeneralEnums";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   open: boolean;
@@ -152,8 +153,10 @@ export const ContactEmailSender = (props: IProps) => {
   };
 
   return (
-    <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth="md">
-      <DialogTitle>Send Email To Contact</DialogTitle>
+    <Dialog open={props.open} fullWidth maxWidth="md">
+      <BootstrapDialogTitle id="dialog-title" onClose={() => props.onClose()}>
+        Send Email To Contact
+      </BootstrapDialogTitle>
       <DialogContent>
         <Grid container>
           <Grid item xs={12} lg={12} pt={1}>

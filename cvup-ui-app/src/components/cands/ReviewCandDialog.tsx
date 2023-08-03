@@ -1,6 +1,7 @@
-import { Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ReviewCandForm } from "./ReviewCandForm";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   isOpen: boolean;
@@ -17,12 +18,14 @@ export const ReviewCandDialog = ({ isOpen, onClose }: IProps) => {
   return (
     <Dialog
       open={open}
-      onClose={() => onClose(false)}
+      // onClose={() => onClose(false)}
       fullWidth
       maxWidth={"md"}
       sx={{}}
     >
-      <DialogTitle>Candidate Review</DialogTitle>
+      <BootstrapDialogTitle id="dialog-title" onClose={() => onClose(false)}>
+        Candidate Review
+      </BootstrapDialogTitle>
       <DialogContent>
         <ReviewCandForm
           onSaved={() => {

@@ -92,18 +92,18 @@ export const SettingsMenu = () => {
         </MenuItem> */}
         <Divider />
 
-        {authStore.userRole === UserRoleEnum.Admin && (
-          <MenuItem
-            onClick={() => {
-              generalStore.showUserListDialog = true;
-            }}
-          >
-            <Avatar>
-              <MdGroup />
-            </Avatar>
-            Users
-          </MenuItem>
-        )}
+        {/* {authStore.userRole === UserRoleEnum.Admin && ( */}
+        <MenuItem
+          onClick={() => {
+            generalStore.showUserListDialog = true;
+          }}
+        >
+          <Avatar>
+            <MdGroup />
+          </Avatar>
+          Users
+        </MenuItem>
+        {/* )} */}
         <MenuItem
           onClick={() => {
             authStore.logout();

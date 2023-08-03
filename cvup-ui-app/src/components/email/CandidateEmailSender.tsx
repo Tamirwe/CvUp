@@ -38,6 +38,7 @@ import {
 } from "../../models/GeneralEnums";
 import { CiEdit } from "react-icons/ci";
 import { observer } from "mobx-react-lite";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   open: boolean;
@@ -214,11 +215,13 @@ export const CandidateEmailSender = observer((props: IProps) => {
     <Dialog
       fullScreen={isMobile ? true : false}
       open={props.open}
-      onClose={props.onClose}
+      // onClose={props.onClose}
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Send Email To Candidate</DialogTitle>
+      <BootstrapDialogTitle id="dialog-title" onClose={() => props.onClose()}>
+        Send Email To Candidate
+      </BootstrapDialogTitle>
       <DialogContent>
         <Grid container>
           <Grid item xs={12} lg={12} pt={1}>

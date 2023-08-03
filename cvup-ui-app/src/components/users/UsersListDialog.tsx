@@ -14,6 +14,7 @@ import { IIdName, IUser } from "../../models/AuthModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { UserForm } from "./UserForm";
 import { UsersList } from "./UsersList";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   isOpen: boolean;
@@ -34,22 +35,10 @@ export const UsersListDialog = ({ isOpen, onClose }: IProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth={"xs"}>
-      <DialogTitle>
-        Users{" "}
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <MdClose />
-        </IconButton>
-      </DialogTitle>
+    <Dialog open={open} fullWidth maxWidth={"xs"}>
+      <BootstrapDialogTitle id="dialog-title" onClose={onClose}>
+        Users
+      </BootstrapDialogTitle>
       <DialogContent>
         <UsersList />
         <Button
@@ -59,15 +48,6 @@ export const UsersListDialog = ({ isOpen, onClose }: IProps) => {
         >
           Add
         </Button>
-
-        {/* {openInterviewerForm && editInterviewer && (
-          <InterviewerFormDialog
-            interviewer={editInterviewer}
-            crudType={crudType}
-            isOpen={openInterviewerForm}
-            onClose={(isSaved) => handleFormClose(isSaved)}
-          />
-        )} */}
       </DialogContent>
     </Dialog>
   );

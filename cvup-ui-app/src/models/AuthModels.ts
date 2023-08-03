@@ -42,7 +42,7 @@ export interface IUserLogin {
 export interface ResponseModel<T> {
   data: T;
   isSuccess: boolean;
-  errorData: string;
+  errorData: any;
   status: number;
 }
 

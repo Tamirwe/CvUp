@@ -5,6 +5,7 @@ import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { IFolder } from "../../models/GeneralModels";
 import { FormAddChild } from "./FormAddChild";
 import { FolderForm } from "./FolderForm";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   folder?: IFolder;
@@ -44,8 +45,10 @@ export const FolderFormDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={() => onClose()} fullWidth maxWidth={"xs"}>
-      <DialogTitle>{formTitle}</DialogTitle>
+    <Dialog open={open} fullWidth maxWidth={"xs"}>
+      <BootstrapDialogTitle id="dialog-title" onClose={() => onClose()}>
+        {formTitle}
+      </BootstrapDialogTitle>
       <DialogContent>
         {generalStore.openModeFolderFormDialog === CrudTypesEnum.Update ? (
           <FolderForm

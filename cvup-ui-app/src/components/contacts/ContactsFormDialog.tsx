@@ -4,6 +4,7 @@ import { IContact } from "../../models/GeneralModels";
 import { CrudTypesEnum } from "../../models/GeneralEnums";
 import { ContactsForm } from "./ContactsForm";
 import { useStore } from "../../Hooks/useStore";
+import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
   crudType?: CrudTypesEnum;
@@ -11,10 +12,7 @@ interface IProps {
   onClose: (isSaved: boolean) => void;
 }
 
-export const ContactsFormDialog = ({
-  isOpen,
-  onClose,
-}: IProps) => {
+export const ContactsFormDialog = ({ isOpen, onClose }: IProps) => {
   const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [formTitle, setFormTitle] = useState("Add Contact");
@@ -26,24 +24,18 @@ export const ContactsFormDialog = ({
     setOpen(isOpen);
   }, [isOpen]);
 
-  const handleSave=()=>{
+  const handleSave = () => {
     customersContactsStore.getContactsList();
     onClose(false);
-  }
+  };
 
   return (
-    <Dialog
-      open={open}
-      onClose={() => onClose(false)}
-      fullWidth
-      maxWidth={"xs"}
-    >
-      <DialogTitle>{formTitle}</DialogTitle>
+    <Dialog open={open} fullWidth maxWidth={"xs"}>
+      <BootstrapDialogTitle id="dialog-title" onClose={() => onClose(false)}>
+        {formTitle}
+      </BootstrapDialogTitle>
       <DialogContent>
-        <ContactsForm
-          onSaved={handleSave}
-          onCancel={() => onClose(false)}
-        />
+        <ContactsForm onSaved={handleSave} onCancel={() => onClose(false)} />
       </DialogContent>
     </Dialog>
   );

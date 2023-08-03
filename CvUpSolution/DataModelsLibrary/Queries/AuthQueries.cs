@@ -189,7 +189,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 authenticateUser.refresh_token = refreshToken;
-                authenticateUser.refresh_token_expiry = DateTime.Now;
+                authenticateUser.refresh_token_expiry = DateTime.Now.AddDays(1);
                 var result = dbContext.users.Update(authenticateUser);
                 await dbContext.SaveChangesAsync();
             }

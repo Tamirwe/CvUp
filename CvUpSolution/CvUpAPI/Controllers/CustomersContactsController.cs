@@ -1,11 +1,13 @@
 ﻿using CustomersContactsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersContactsController : ControllerBase

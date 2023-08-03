@@ -1,11 +1,13 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using FoldersLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FoldersController : ControllerBase

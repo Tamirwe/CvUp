@@ -25,7 +25,9 @@ namespace AuthLibrary
             {
                 var user = await _authQueries.GetUser(userId);
 
-                if (user != null && user.refresh_token == refreshToken && user.refresh_token_expiry < DateTime.Now)
+                if (user != null && user.refresh_token == refreshToken &&
+                    user.refresh_token_expiry != null 
+                    && user.refresh_token_expiry > DateTime.Now)
                 {
                     return await GeneratedToken(principal.Claims, user, true);
                 }
@@ -44,7 +46,7 @@ namespace AuthLibrary
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signinCredentials
             );
 

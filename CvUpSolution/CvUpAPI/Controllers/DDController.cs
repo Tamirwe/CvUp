@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CvUpAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DDController : ControllerBase

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -110,8 +111,8 @@ namespace LuceneLibrary
                         result.Add(new SearchEntry
                         {
                             Id = Convert.ToInt32(doc.Get("Id")),
-                            CandId = Convert.ToInt32(doc.Get("CAND_Id")),
-                            CV = doc.Get("CV")
+                            CV = doc.Get("CV"),
+                            Score= (int)Math.Round(hitIdxs[i].Score*100,0)
                         });
                     }
 
@@ -160,22 +161,43 @@ namespace LuceneLibrary
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
-            string txtToIndex = $"{nn(cvCand.email)} {nn(cvCand.phone)} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.emailSubject)} {nn(cvCand.cvTxt)}";
+            string txtToIndex = $"{nn(cvCand.email)} {nn(cvCand.phone)} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.cvsTxt)}";
             txtToIndex = txtIndexMange(txtToIndex);
 
-            var doc = new Document() {{ new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES) },
-                {new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES) },
+            var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES) },
                 {new TextField("CV", txtToIndex, Field.Store.YES) }};
 
             return doc;
         }
+
+        //private Document documentToIndex(CvsToIndexModel cvCand)
+        //{
+        //    string txtToIndex = $"{nn(cvCand.email)} {nn(cvCand.phone)} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.emailSubject)} {nn(cvCand.cvTxt)}";
+        //    txtToIndex = txtIndexMange(txtToIndex);
+
+        //    var doc = new Document() {{ new TextField("Id", cvCand.cvId.ToString(), Field.Store.YES) },
+        //        {new TextField("CAND_Id", cvCand.candidateId.ToString(), Field.Store.YES) },
+        //        {new TextField("CV", txtToIndex, Field.Store.YES) }};
+
+        //    return doc;
+        //}
 
         private string txtIndexMange(string txt)
         {
             string manageTxt = txt.Replace("'", "").Replace("\"", "").Replace("ך", "כ").Replace("ם", "מ").Replace("ף", "פ").Replace("ץ", "צ").ToLower();
             string pattern = @"\t|\n|\r|\p{P}";
             manageTxt = Regex.Replace(manageTxt, pattern, " ");
-            return manageTxt;
+            //return manageTxt;
+
+            string[] words = manageTxt.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            //var word_query =(from string word in words orderby word select word).Distinct();
+
+            string[] result = words.Distinct().ToArray();
+
+            var cvWords = string.Join(" ", result);
+
+            return cvWords;
         }
 
         private string nn(string? str)
@@ -185,11 +207,11 @@ namespace LuceneLibrary
 
         public async Task DocumentUpdate(int companyId, List<CvsToIndexModel> cvPropsToIndex)
         {
-            await DocumentDelete(companyId, cvPropsToIndex.First().cvId);
+            await DocumentDelete(companyId, cvPropsToIndex.First().candidateId);
             await CompanyIndexAddDocuments(companyId, cvPropsToIndex,false);
         }
 
-        private async Task DocumentDelete(int companyId, int cvId)
+        private async Task DocumentDelete(int companyId, int id)
         {
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
             string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
@@ -200,7 +222,7 @@ namespace LuceneLibrary
 
                 using (var indexWriter = new IndexWriter(indexDir, config))
                 {
-                    var DocIdToDelete = new TermQuery(new Term("Id", cvId.ToString()));
+                    var DocIdToDelete = new TermQuery(new Term("Id", id.ToString()));
                     await Task.Run(() => indexWriter.DeleteDocuments(DocIdToDelete));
                 }
             }
@@ -266,7 +288,7 @@ namespace LuceneLibrary
     public class SearchEntry
     {
         public int Id { get; set; }
-        public int CandId { get; set; }
         public string CV { get; set; } = String.Empty;
+        public int Score { get; set; }
     }
 }

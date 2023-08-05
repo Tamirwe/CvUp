@@ -47,5 +47,9 @@ namespace DataModelsLibrary.Queries
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
+        Task<cand_pos_stage?> getPosStage(int companyId, string stageType);
+        Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId);
+        Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId);
+        Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId);
     }
 }

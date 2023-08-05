@@ -12,6 +12,7 @@ namespace Database.models
         public string stage_Type { get; set; } = null!;
         public sbyte is_custom { get; set; }
         public string? color { get; set; }
+        public string? stage_event { get; set; }
 
         public virtual company company { get; set; } = null!;
     }

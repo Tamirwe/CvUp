@@ -164,7 +164,6 @@ namespace DataModelsLibrary.Queries
                 {
                     company_id = Convert.ToInt32(importCv.companyId),
                     candidate_id = importCv.candidateId,
-                    cv_ascii_sum = importCv.cvAsciiSum,
                     email_id = importCv.emailId,
                     subject = importCv.subject,
                     from = importCv.from,
@@ -178,8 +177,12 @@ namespace DataModelsLibrary.Queries
                 var cvTxt = new cvs_txt
                 {
                     cv_id = newCv.id,
+                    candidate_id = importCv.candidateId,
                     company_id = importCv.companyId,
-                    cv_txt = importCv.cvTxt.Length > 7999 ? importCv.cvTxt.Substring(0, 7999) : importCv.cvTxt
+                    cv_txt = importCv.cvTxt.Length > 7999 ? importCv.cvTxt.Substring(0, 7999) : importCv.cvTxt,
+                    email_subject = importCv.subject,
+                    ascii_sum = importCv.cvAsciiSum,
+
                 };
 
                 dbContext.cvs_txts.Add(cvTxt);
@@ -254,19 +257,41 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
-                        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
-	                            FROM candidates cnd 
-	                            INNER JOIN cvs ON cnd.id = cvs.candidate_id
-	                            INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
-	                            INNER JOIN (SELECT MAX(cvs.id) cv_id
-		                             FROM cvs
-		                             WHERE cvs.company_id={companyId}                
-                                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
-                    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
+                string candStr = "";
+
+                if (candidateId>0)
+                {
+                    candStr = $" AND ctx.candidate_id = {candidateId} ";
+                }
+
+                string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
+                                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
+                                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
+                                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
+                                WHERE cvs.company_id = {companyId}
+                                {candStr}
+                                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
+		                                FROM cvs_txt ctx
+		                                WHERE ctx.company_id = {companyId}
+		                                GROUP BY ctx.ascii_sum) 
+                                GROUP BY ctx.candidate_id;";
 
                 var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
                 return cvsResults;
+
+                //string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
+                //        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
+	               //             FROM candidates cnd 
+	               //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
+	               //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
+	               //             INNER JOIN (SELECT MAX(cvs.id) cv_id
+		              //               FROM cvs
+		              //               WHERE cvs.company_id={companyId}                
+                //                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
+                //    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
+
+                //var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
+                //return cvsResults;
 
 
                 //var query = from cand in dbContext.candidates
@@ -317,27 +342,16 @@ namespace DataModelsLibrary.Queries
 
             using (var dbContext = new cvup00001Context())
             {
-                var query = from cvs in dbContext.cvs
-                            join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
-                            where cvs.company_id == companyId && cvs.cv_ascii_sum == null
-                            select new CvPropsToIndexModel
-                            {
-                                id = cvs.id,
-                                companyId = companyId,
-                                candidateId = cvs.candidate_id,
-                                cvTxt = cvTxt.cv_txt,
-                                cvdbid = cvs.cvdbid,
-                            };
+                List<cvs_txt>? cvsTxtList = await dbContext.cvs_txts.Where(x=>x.ascii_sum == null).ToListAsync();
+                dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-                var itli = await query.ToListAsync();
-
-                foreach (var item in itli)
+                foreach (var itemCv in cvsTxtList)
                 {
                     int docAsciiSum = 0;
 
-                    if (item.cvTxt != null)
+                    if (itemCv.cv_txt != null)
                     {
-                        foreach (char c in item.cvTxt)
+                        foreach (char c in itemCv.cv_txt)
                         {
                             try
                             {
@@ -347,18 +361,12 @@ namespace DataModelsLibrary.Queries
                         }
                     }
 
-                    var cvAscii = new cvs_ascii_sum
-                    {
-                        cv_id = item.id,
-                        company_id = companyId,
-                        candidate_id = item.candidateId,
-                        ascii_sum = docAsciiSum,
-                        cvdbid = item.cvdbid,
-                    };
-
-                    dbContext.cvs_ascii_sums.Add(cvAscii);
-                    await dbContext.SaveChangesAsync();
+                    itemCv.ascii_sum = docAsciiSum;
                 }
+
+                dbContext.cvs_txts.UpdateRange(cvsTxtList);
+
+                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -475,7 +483,7 @@ namespace DataModelsLibrary.Queries
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 updated = p.date_updated,
                                 customerName = c.name,
-                                customerId = p.customer_id
+                                customerId = p.customer_id,
                             };
 
                 return await query.ToListAsync();
@@ -654,8 +662,16 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.cv_ascii_sum == cvAsciiSum).ToListAsync();
-                return cvs;
+                var query = from c in dbContext.cvs
+                            join t in dbContext.cvs_txts on c.id equals t.cv_id
+                            where c.company_id == companyId && c.candidate_id == candidateId && t.ascii_sum == cvAsciiSum
+                            select c;
+
+                var cvsList = await query.ToListAsync();
+                return cvsList;
+
+                //List<cvs_txt> cvs = await dbContext.cvs_txts.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.ascii_sum == cvAsciiSum).ToListAsync();
+                //return cvs;
             }
         }
 
@@ -742,7 +758,7 @@ namespace DataModelsLibrary.Queries
                 foreach (var pcv in candPosList)
                 {
                     candPos.Add(pcv.position_id);
-                    candPosStages.Add(new CandPosStageModel { d = pcv.stage_date?.ToString("yyyy-MM-dd"), t = pcv.stage_type, id = pcv.position_id });
+                    candPosStages.Add(new CandPosStageModel { _dt = pcv.stage_date?.ToString("yyyy-MM-dd"), _tp = pcv.stage_type, _pid = pcv.position_id, _ec = pcv.email_to_contact?.ToString("yyyy-MM-dd") });
                 }
 
                 var candPosStagesJson = JsonConvert.SerializeObject(candPosStages);
@@ -800,7 +816,8 @@ namespace DataModelsLibrary.Queries
                                  stageType = st.stage_Type,
                                  order = st.order,
                                  isCustom = Convert.ToBoolean(st.is_custom),
-                                 color = st.color
+                                 color = st.color,
+                                 stageEvent= st.stage_event
                              });
 
                 return await query.ToListAsync();
@@ -926,5 +943,57 @@ namespace DataModelsLibrary.Queries
                 return await query.ToListAsync();
             }
         }
+
+        public async Task<cand_pos_stage?> getPosStage(int companyId, string stageType)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return await dbContext.cand_pos_stages.Where(x => x.company_id == companyId && x.stage_Type == stageType).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId) {
+            using (var dbContext = new cvup00001Context())
+            {
+                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id==positionId).FirstOrDefaultAsync();
+
+                if (candPos != null)
+                {
+                    candPos.call_email_to_candidate = DateTime.Now;
+                    dbContext.position_candidates.Update(candPos);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+
+                if (candPos != null)
+                {
+                    candPos.email_to_contact = DateTime.Now;
+                    dbContext.position_candidates.Update(candPos);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+        public async Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+
+                if (candPos != null)
+                {
+                    candPos.reject_email_to_candidate = DateTime.Now;
+                    dbContext.position_candidates.Update(candPos);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }

@@ -10,16 +10,39 @@ import { ICand, ISearchModel } from "../../models/GeneralModels";
 export const CandsListsWrapper = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
   // const [folderId, setFolderId] = useState(0);
+  const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
-  const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
+
+  const [allCandsListSort, setAllCandsListSort] = useState("");
+  const [candsPosListSort, setCandsPosListSort] = useState("");
+  const [candsFolderListSort, setCandsFolderListSort] = useState("");
+
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
   const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
   useEffect(() => {
-    setAllCandsList(candsStore.allCandsList);
-  }, [candsStore.allCandsList]);
+    if (allCandsListSort && allCandsListSort === "asc") {
+      setAllCandsList(sortCandList(allCandsListSort, candsStore.allCandsList));
+    } else {
+      setAllCandsList(candsStore.allCandsList);
+    }
+  }, [candsStore.allCandsList, allCandsListSort]);
+
+  const sortCandList = (dir: string, list: ICand[]) => {
+    const sorted = list.slice();
+
+    if (dir === "desc") {
+      return sorted.sort((a, b) =>
+        a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
+      );
+    }
+
+    return sorted.sort((a, b) =>
+      a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
+    );
+  };
 
   useEffect(() => {
     setCandsPosList(candsStore.posCandsList);
@@ -132,6 +155,10 @@ export const CandsListsWrapper = observer(() => {
             onSearch={handleAllCandsSearch}
             onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
             shoeAdvancedIcon={true}
+            records={candsStore.allCandsList.length}
+            onSort={(dir: string) => {
+              setAllCandsListSort(dir);
+            }}
           />
         </Box>
         <CandsList
@@ -150,6 +177,10 @@ export const CandsListsWrapper = observer(() => {
               setPositionsAdvancedOpen(!positionsAdvancedOpen)
             }
             shoeAdvancedIcon={true}
+            records={candsStore.posCandsList.length}
+            onSort={(dir: string) => {
+              setCandsPosListSort(dir);
+            }}
           />
         </Box>
         <CandsList
@@ -166,6 +197,10 @@ export const CandsListsWrapper = observer(() => {
             onSearch={handleFolderCandsSearch}
             onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}
             shoeAdvancedIcon={true}
+            records={candsStore.folderCandsList.length}
+            onSort={(dir: string) => {
+              setCandsFolderListSort(dir);
+            }}
           />
         </Box>
         <CandsList

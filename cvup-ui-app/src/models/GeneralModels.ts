@@ -52,9 +52,10 @@ export interface ICand {
 }
 
 export interface ICandPosStage {
-  id: number;
-  t: string;
-  d: string;
+  _pid: number;
+  _tp: string;
+  _dt: string;
+  _ec: string;
 }
 
 export interface IPosStagesType {

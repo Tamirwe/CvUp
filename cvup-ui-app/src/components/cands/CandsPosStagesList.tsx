@@ -23,10 +23,10 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
     >
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
-          const posNameCompany = positionsStore.findPosName(stage.id);
+          const posNameCompany = positionsStore.findPosName(stage._pid);
           const isCurrentPosition =
             candsSource === CandsSourceEnum.Position &&
-            positionsStore.selectedPosition?.id === stage.id;
+            positionsStore.selectedPosition?.id === stage._pid;
 
           if (!posNameCompany) {
             return;
@@ -47,7 +47,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    candsStore.detachPosCand(cand, stage.id, i);
+                    candsStore.detachPosCand(cand, stage._pid, i);
                   }}
                 >
                   <MdRemove />
@@ -60,16 +60,19 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                     cand.candidateId === candsStore.candDisplay?.candidateId,
                 })}
                 style={{
-                  color: candsStore.findStageColor(stage.t),
+                  color: candsStore.findStageColor(stage._tp),
                 }}
-                title={`Status: ${candsStore.findStageName(stage.t)}`}
+                title={` ${candsStore.findStageName(stage._tp)} - ${format(
+                  new Date(stage._dt),
+                  "MMM d, yyyy"
+                )}`}
                 {...(cand.candidateId ===
                   candsStore.candDisplay?.candidateId && {
                   onClick: async (event) => {
                     event.stopPropagation();
                     event.preventDefault();
 
-                    const posId = stage.id;
+                    const posId = stage._pid;
                     await positionsStore.positionClick(posId, true);
                     positionsStore.setRelatedPositionToCandDisplay();
                     candsStore.setDisplayCandOntopPCList();
@@ -82,7 +85,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {format(new Date(stage.d), "MMM d, yyyy")}
+                  {format(new Date(stage._dt), "MMM d, yyyy")}
                 </div>
                 <div>&nbsp;-&nbsp;</div>
                 <div
@@ -97,9 +100,16 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                   {posNameCompany}
                 </div>
 
-                <div>
-                  <MdOutlineMarkEmailUnread />
-                </div>
+                {/* {stage._ec && (
+                  <div
+                    title={`Sent to contact on ${format(
+                      new Date(stage._ec),
+                      "MMM d, yyyy"
+                    )}`}
+                  >
+                    <MdOutlineMarkEmailUnread />
+                  </div>
+                )} */}
               </div>
             </div>
           );

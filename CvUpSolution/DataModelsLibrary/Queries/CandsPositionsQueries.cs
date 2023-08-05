@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -253,40 +254,73 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId=0)
+        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId = 0)
         {
             using (var dbContext = new cvup00001Context())
             {
-                string candStr = "";
 
-                if (candidateId>0)
+                var query = from cand in dbContext.candidates
+                            where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            select new CvsToIndexModel
+                            {
+                                candidateId = cand.id,
+                                firstName = cand.first_name,
+                                lastName = cand.last_name,
+                                email = cand.email,
+                                phone = cand.phone,
+                                reviewText = cand.review,
+                            };
+
+                List<CvsToIndexModel> candsCvs = await query.ToListAsync();
+
+                List<cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
+
+                foreach (var item in candsCvs)
                 {
-                    candStr = $" AND ctx.candidate_id = {candidateId} ";
+                    var cvsTxtCand = cvsTxts.Where(x => x.candidate_id == item.candidateId).ToList();
+
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (var cv in cvsTxtCand)
+                    {
+                        sb.Append(" " + cv.email_subject + " " + cv.cv_txt);
+                    }
+
+                    item.cvsTxt = sb.ToString();
                 }
 
-                string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
-                                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
-                                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
-                                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
-                                WHERE cvs.company_id = {companyId}
-                                {candStr}
-                                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
-		                                FROM cvs_txt ctx
-		                                WHERE ctx.company_id = {companyId}
-		                                GROUP BY ctx.ascii_sum) 
-                                GROUP BY ctx.candidate_id;";
+                return candsCvs;
 
-                var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
-                return cvsResults;
+                //string candStr = "";
+
+                //if (candidateId>0)
+                //{
+                //    candStr = $" AND ctx.candidate_id = {candidateId} ";
+                //}
+
+                //string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
+                //                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
+                //                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
+                //                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
+                //                WHERE cvs.company_id = {companyId}
+                //                {candStr}
+                //                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
+                //                  FROM cvs_txt ctx
+                //                  WHERE ctx.company_id = {companyId}
+                //                  GROUP BY ctx.ascii_sum) 
+                //                GROUP BY ctx.candidate_id;";
+
+                //var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
+                //return cvsResults;
 
                 //string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
                 //        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
-	               //             FROM candidates cnd 
-	               //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
-	               //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
-	               //             INNER JOIN (SELECT MAX(cvs.id) cv_id
-		              //               FROM cvs
-		              //               WHERE cvs.company_id={companyId}                
+                //             FROM candidates cnd 
+                //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
+                //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
+                //             INNER JOIN (SELECT MAX(cvs.id) cv_id
+                //               FROM cvs
+                //               WHERE cvs.company_id={companyId}                
                 //                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
                 //    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
 

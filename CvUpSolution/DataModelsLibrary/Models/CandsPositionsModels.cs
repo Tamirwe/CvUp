@@ -37,17 +37,18 @@ namespace DataModelsLibrary.Models
     [Keyless]
     public class CvsToIndexModel
     {
-        public int companyId { get; set; }
-        public int cvId { get; set; }
+        //public int companyId { get; set; }
+        //public int cvId { get; set; }
+        //public string? cvTxt { get; set; } = "";
+        //public string? emailSubject { get; set; } = "";
         public int candidateId { get; set; }
-        //public string cvKey { get; set; } = "";
-        public string? cvTxt { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
-        public string? emailSubject { get; set; } = "";
         public string? firstName { get; set; } = "";
         public string? lastName { get; set; } = "";
         public string? reviewText { get; set; } = "";
+        public string? cvsTxt { get; set; } = "";
+
     }
 
     public class CvPropsToIndexModel
@@ -88,6 +89,7 @@ namespace DataModelsLibrary.Models
         public CandPosStageModel[]? posStages { get; set; }
         public int[]? candFoldersIds { get; set; }
         public bool isSeen { get; set; }
+        public int? score { get; set; }
 
     }
 
@@ -119,13 +121,15 @@ namespace DataModelsLibrary.Models
         public string name { get; set; } = "";
         public bool isCustom { get; set; } = false;
         public string? color { get; set; } = "";
+        public string? stageEvent { get; set; } = "";
     }
 
     public class CandPosStageModel
     {
-        public int id { get; set; } 
-        public string? t { get; set; } = "";
-        public string? d { get; set; } = "";
+        public int _pid { get; set; } 
+        public string? _tp { get; set; } = "";
+        public string? _dt { get; set; } = "";
+        public string? _ec { get; set; } = "";
 
     }
 

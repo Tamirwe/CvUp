@@ -18,7 +18,6 @@ namespace Database.models
         public string? subject { get; set; }
         public string? from { get; set; }
         public string? email_id { get; set; }
-        public long? cv_ascii_sum { get; set; }
         public string? position { get; set; }
         public int? duplicate_cv_id { get; set; }
         public DateTime date_created { get; set; }

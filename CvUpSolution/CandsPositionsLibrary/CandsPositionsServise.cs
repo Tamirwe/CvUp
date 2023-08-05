@@ -218,7 +218,28 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
         {
             await _cvsPositionsQueries.UpdateCandPositionStatus(posStatus);
+
             await _cvsPositionsQueries.UpdateCandPosArrays(posStatus.companyId, posStatus.candidateId);
+
+            cand_pos_stage? posSatge = await _cvsPositionsQueries.getPosStage(posStatus.companyId, posStatus.stageType);
+
+            if (posSatge != null)
+            {
+                switch (posSatge.stage_event)
+                {
+                    case "call_email_to_candidate":
+                        await _cvsPositionsQueries.updateCandPosCallEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+                        break;
+                    case "email_to_customer":
+                        await _cvsPositionsQueries.updateCandPosEmailToCustomer(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+                        break;
+                    case "reject_email_to_candidate":
+                        await _cvsPositionsQueries.updateCandPosRejectEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
@@ -226,11 +247,10 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetCompaniesEmails();
         }
 
-        public async Task<List<int>> SearchCands(int companyId, searchCandCvModel searchVals)
+        public async Task<List<SearchEntry>> SearchCands(int companyId, searchCandCvModel searchVals)
         {
             var results = await _luceneService.Search(companyId, searchVals);
-            var distinctCandsList = results.Select(e => e.CandId).Distinct().ToList();
-            return distinctCandsList;
+            return results;
         }
 
         public async Task UpdateCvsAsciiSum(int companyId)

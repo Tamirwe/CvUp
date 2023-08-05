@@ -1,5 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
+using LuceneLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace CandsPositionsLibrary
         Task AttachPosCandCv(AttachePosCandCvModel posCv);
         Task DetachPosCand(AttachePosCandCvModel posCv);
         Task<List<company_cvs_email>> GetCompaniesEmails();
-        Task<List<int>> SearchCands(int companyId, searchCandCvModel searchVals);
+        Task<List<SearchEntry>> SearchCands(int companyId, searchCandCvModel searchVals);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId);
         Task SaveCandReview(int companyId,CandReviewModel candReview);

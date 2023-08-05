@@ -12,6 +12,9 @@ namespace Database.models
         public int cv_id { get; set; }
         public int? stage_id { get; set; }
         public string? stage_type { get; set; }
+        public DateTime? email_to_contact { get; set; }
+        public DateTime? call_email_to_candidate { get; set; }
+        public DateTime? reject_email_to_candidate { get; set; }
         public DateTime? stage_date { get; set; }
         public DateTime date_created { get; set; }
         public DateTime? date_updated { get; set; }

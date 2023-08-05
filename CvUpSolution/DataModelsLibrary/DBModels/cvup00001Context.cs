@@ -25,7 +25,6 @@ namespace Database.models
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<customer> customers { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
-        public virtual DbSet<cvs_ascii_sum> cvs_ascii_sums { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
@@ -91,6 +90,8 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(50);
 
                 entity.Property(e => e.stage_Type).HasMaxLength(50);
+
+                entity.Property(e => e.stage_event).HasMaxLength(50);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.cand_pos_stages)
@@ -281,19 +282,6 @@ namespace Database.models
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
             });
 
-            modelBuilder.Entity<cvs_ascii_sum>(entity =>
-            {
-                entity.ToTable("cvs_ascii_sum");
-
-                entity.Property(e => e.cv_folder).HasMaxLength(20);
-
-                entity.Property(e => e.cv_key).HasMaxLength(50);
-
-                entity.Property(e => e.file_extension).HasMaxLength(6);
-
-                entity.Property(e => e.mail_date).HasColumnType("datetime");
-            });
-
             modelBuilder.Entity<cvs_txt>(entity =>
             {
                 entity.ToTable("cvs_txt");
@@ -303,6 +291,8 @@ namespace Database.models
                 entity.HasIndex(e => e.company_id, "ix_cvs_txt_company_id");
 
                 entity.Property(e => e.cv_txt).HasMaxLength(8000);
+
+                entity.Property(e => e.email_subject).HasMaxLength(500);
 
                 entity.HasOne(d => d.cv)
                     .WithMany(p => p.cvs_txts)
@@ -447,6 +437,8 @@ namespace Database.models
 
                 entity.HasIndex(e => e.stage_id, "fk_position_candidates_stage_id_position_candidate_stages_id");
 
+                entity.Property(e => e.call_email_to_candidate).HasColumnType("datetime");
+
                 entity.Property(e => e.cand_cvs).HasColumnType("json");
 
                 entity.Property(e => e.customer_review).HasMaxLength(1000);
@@ -470,6 +462,10 @@ namespace Database.models
                 entity.Property(e => e.date_sent_talk_request).HasColumnType("datetime");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
+
+                entity.Property(e => e.email_to_contact).HasColumnType("datetime");
+
+                entity.Property(e => e.reject_email_to_candidate).HasColumnType("datetime");
 
                 entity.Property(e => e.stage_date).HasColumnType("datetime");
 

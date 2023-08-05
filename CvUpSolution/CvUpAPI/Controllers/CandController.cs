@@ -45,8 +45,12 @@ namespace CvUpAPI.Controllers
         [Route("SearchCands")]
         public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel searchVals)
         {
-            List<CandModel?> candsList;
-            var candsIds = await _candPosService.SearchCands(Globals.CompanyId, searchVals);
+            List<CandModel?> candsList = new List<CandModel?>();
+            var results = await _candPosService.SearchCands(Globals.CompanyId, searchVals);
+
+            var candsIds = results.Select(e => e.Id).Take(300).ToList();
+
+
 
             if (searchVals.folderId > 0)
             {
@@ -63,8 +67,18 @@ namespace CvUpAPI.Controllers
                 candsList = await _candPosService.GetCandsList(Globals.CompanyId, 1, 300, candsIds);
             }
 
-            var sortedCands = candsList.OrderBy(x => candsIds.IndexOf(x.candidateId)).ToList();
-            return sortedCands.Take( 300); 
+            foreach (var res in results)
+            {
+                var itemToChange = candsList.FirstOrDefault(x => x.candidateId == res.Id);
+
+                if (itemToChange != null)
+                {
+                    itemToChange.score = res.Score;
+                }
+            }
+
+            var sortedCands = candsList.OrderByDescending(x => x.score).ToList();
+            return sortedCands;
         }
 
         [HttpGet]

@@ -245,6 +245,9 @@ export const SearchControl = ({
         </Search>
         {searchVals.value && (
           <div
+            title={
+              records === 300 ? "More then 300 records found" : "Records found"
+            }
             style={{
               whiteSpace: "nowrap",
               direction: "ltr",

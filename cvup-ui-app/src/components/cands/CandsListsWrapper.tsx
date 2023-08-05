@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { CandsList } from "./CandsList";
 import { observer } from "mobx-react";
-import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import {
+  CandsSourceEnum,
+  SortByEnum,
+  TabsCandsEnum,
+} from "../../models/GeneralEnums";
 import { SearchControl } from "../header/SearchControl";
 import { ICand, ISearchModel } from "../../models/GeneralModels";
 
@@ -22,27 +26,37 @@ export const CandsListsWrapper = observer(() => {
   const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
-  useEffect(() => {
-    if (allCandsListSort && allCandsListSort === "asc") {
-      setAllCandsList(sortCandList(allCandsListSort, candsStore.allCandsList));
-    } else {
-      setAllCandsList(candsStore.allCandsList);
-    }
-  }, [candsStore.allCandsList, allCandsListSort]);
+  const sortCandList = (sortBy: SortByEnum, dir: string, list: ICand[]) => {
+    if (sortBy === SortByEnum.cvDate) {
+      const sorted = list.slice();
 
-  const sortCandList = (dir: string, list: ICand[]) => {
-    const sorted = list.slice();
+      if (dir === "asc") {
+        return sorted.sort((a, b) =>
+          a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
+        );
+      }
 
-    if (dir === "desc") {
       return sorted.sort((a, b) =>
-        a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
+        a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
+      );
+    } else {
+      const sorted = list.slice();
+
+      if (dir === "asc") {
+        return sorted.sort((a, b) =>
+          a.score > b.score ? 1 : b.score > a.score ? -1 : 0
+        );
+      }
+
+      return sorted.sort((a, b) =>
+        a.score < b.score ? 1 : b.score < a.score ? -1 : 0
       );
     }
-
-    return sorted.sort((a, b) =>
-      a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
-    );
   };
+
+  useEffect(() => {
+    setAllCandsList(candsStore.allCandsList);
+  }, [candsStore.allCandsList]);
 
   useEffect(() => {
     setCandsPosList(candsStore.posCandsList);
@@ -97,6 +111,21 @@ export const CandsListsWrapper = observer(() => {
       } else {
         candsStore.getFolderCandsList();
       }
+    }
+  };
+
+  const handleSort = (
+    sortBy: SortByEnum,
+    dir: string,
+    ListSource: TabsCandsEnum
+  ) => {
+    switch (ListSource) {
+      case TabsCandsEnum.AllCands:
+        setAllCandsList(sortCandList(sortBy, dir, candsStore.allCandsList));
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -156,8 +185,8 @@ export const CandsListsWrapper = observer(() => {
             onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
             shoeAdvancedIcon={true}
             records={candsStore.allCandsList.length}
-            onSort={(dir: string) => {
-              setAllCandsListSort(dir);
+            onSort={(sortBy: SortByEnum, dir: string) => {
+              handleSort(sortBy, dir, TabsCandsEnum.AllCands);
             }}
           />
         </Box>
@@ -178,7 +207,7 @@ export const CandsListsWrapper = observer(() => {
             }
             shoeAdvancedIcon={true}
             records={candsStore.posCandsList.length}
-            onSort={(dir: string) => {
+            onSort={(sortBy: SortByEnum, dir: string) => {
               setCandsPosListSort(dir);
             }}
           />
@@ -198,7 +227,7 @@ export const CandsListsWrapper = observer(() => {
             onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}
             shoeAdvancedIcon={true}
             records={candsStore.folderCandsList.length}
-            onSort={(dir: string) => {
+            onSort={(sortBy: SortByEnum, dir: string) => {
               setCandsFolderListSort(dir);
             }}
           />

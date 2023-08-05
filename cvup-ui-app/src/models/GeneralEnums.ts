@@ -91,3 +91,8 @@ export enum DynamicEmailDataEnum {
   MyFirstNameEn,
   MyFullnameEn,
 }
+
+export enum SortByEnum {
+  score,
+  cvDate,
+}

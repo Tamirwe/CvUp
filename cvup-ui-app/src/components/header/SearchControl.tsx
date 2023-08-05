@@ -24,6 +24,7 @@ import {
 } from "react-icons/md";
 import useDebounce from "../../Hooks/useDebounce";
 import { ISearchModel } from "../../models/GeneralModels";
+import { SortByEnum } from "../../models/GeneralEnums";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -96,7 +97,7 @@ interface IProps {
   onSearch: (value: ISearchModel) => void;
   onShowAdvanced?: (isShow: boolean) => void;
   records?: number;
-  onSort?: (sortBy: string, dir: string) => void;
+  onSort?: (sortBy: SortByEnum, dir: string) => void;
 }
 
 export const SearchControl = ({
@@ -111,16 +112,23 @@ export const SearchControl = ({
   //const [value, setValue] = useState("");
   const [searchVals, setSearchVals] = useState<ISearchModel>({
     value: "",
-    exact: false,
+    exact: true,
     advancedValue: "",
   });
-  const [sortBy, setSortBy] = useState("scoreSort");
+  const [sortBy, setSortBy] = useState(SortByEnum.score);
   const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
   const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
+  function setDefaultSort() {
+    setSortBy(SortByEnum.score);
+    setSortByScoreDesc(true);
+    setSortByCvDateDesc(false);
+  }
+
   useEffect(() => {
+    setDefaultSort();
     onSearch(searchVals);
   }, [debouncedValue]);
 
@@ -148,6 +156,7 @@ export const SearchControl = ({
   };
 
   const search = () => {
+    setDefaultSort();
     onSearch(searchVals);
   };
 
@@ -160,18 +169,19 @@ export const SearchControl = ({
       } else {
         sortDir = "desc";
       }
-      onSort && onSort("cvDateSort", sortDir);
+
       setSortByScoreDesc(false);
-      setSortBy("cvDateSort");
+      setSortBy(SortByEnum.cvDate);
+      onSort && onSort(SortByEnum.cvDate, sortDir);
     } else {
       if (sortByScoreDesc) {
         sortDir = "asc";
       } else {
         sortDir = "desc";
       }
-      onSort && onSort("scoreSort", sortDir);
       setSortByCvDateDesc(false);
-      setSortBy("scoreSort");
+      setSortBy(SortByEnum.score);
+      onSort && onSort(SortByEnum.score, sortDir);
     }
   };
 
@@ -233,35 +243,44 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-
-        {showAdvancedSearch && (
-          <ToggleButtonGroup
-            sx={{
+        {searchVals.value && (
+          <div
+            style={{
+              whiteSpace: "nowrap",
               direction: "ltr",
-              "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
+              padding: "0 5px",
             }}
-            color="primary"
-            value={searchVals.exact ? "exact" : "approximate"}
-            exclusive
-            size="small"
-            onChange={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              setSearchVals((currentProps) => ({
-                ...currentProps,
-                exact: !searchVals.exact,
-              }));
-            }}
-            aria-label="Platform"
           >
-            <ToggleButton value="approximate" title="Approximate Search">
-              AP
-            </ToggleButton>
-            <ToggleButton value="exact" title="Exact Search">
-              Ex
-            </ToggleButton>
-          </ToggleButtonGroup>
+            {records === 300 ? `300 ...` : `${records} rec`}
+          </div>
         )}
+
+        <ToggleButtonGroup
+          sx={{
+            direction: "ltr",
+            "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
+          }}
+          color="primary"
+          value={searchVals.exact ? "exact" : "approximate"}
+          exclusive
+          size="small"
+          onChange={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            setSearchVals((currentProps) => ({
+              ...currentProps,
+              exact: !searchVals.exact,
+            }));
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="approximate" title="Approximate Search">
+            AP
+          </ToggleButton>
+          <ToggleButton value="exact" title="Exact Search">
+            Ex
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Stack>
       {showAdvancedSearch && (
         <Stack direction="row" pt={1} alignItems={"center"}>
@@ -289,17 +308,7 @@ export const SearchControl = ({
               </IconWrapper>
             )}
           </Search>
-          {searchVals.value && (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                direction: "ltr",
-                padding: "0 5px",
-              }}
-            >
-              {records === 300 ? `300 ...` : `${records} rec`}
-            </div>
-          )}
+
           <ToggleButtonGroup
             sx={{
               direction: "ltr",
@@ -320,7 +329,10 @@ export const SearchControl = ({
             }}
             aria-label="Platform"
           >
-            <ToggleButton value="cvDateSort" title="Sort by cv sent date">
+            <ToggleButton
+              value={SortByEnum.cvDate}
+              title="Sort by cv sent date"
+            >
               <MdSort />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -344,7 +356,7 @@ export const SearchControl = ({
             }}
             aria-label="Platform"
           >
-            <ToggleButton value="scoreSort" title="Sort by score">
+            <ToggleButton value={SortByEnum.score} title="Sort by score">
               <MdRule />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -353,3 +365,4 @@ export const SearchControl = ({
     </Stack>
   );
 };
+

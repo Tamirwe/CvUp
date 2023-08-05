@@ -153,6 +153,7 @@ export const CandsList = observer(
                           [styles.isMobile]: isMobile,
                         })}
                       >
+                        {/* {cand.score} */}
                         {candsSource === CandsSourceEnum.AllCands
                           ? cand.emailSubject
                           : `${cand.firstName} ${cand.lastName}`}

@@ -49,6 +49,7 @@ export interface ICand {
   posStages?: ICandPosStage[];
   isSeen: boolean;
   reviewDate?: Date;
+  score: number;
 }
 
 export interface ICandPosStage {

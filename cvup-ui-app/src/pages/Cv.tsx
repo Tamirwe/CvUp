@@ -27,7 +27,7 @@ export const Cv = observer(() => {
     if (candsStore.candDisplay?.posStages) {
       setPosStage(
         candsStore.candDisplay?.posStages.find(
-          (x) => x.id === positionsStore.candDisplayPosition?.id
+          (x) => x._pid === positionsStore.candDisplayPosition?.id
         )
       );
     }
@@ -52,23 +52,20 @@ export const Cv = observer(() => {
         sx={{
           paddingTop: "1rem",
           direction: "rtl",
-          padding: "1rem 1.5rem 0 1rem",
+          padding: "1rem 1.5rem 1rem 1rem",
         }}
       >
-        <Grid item xs={12} lg={12}>
-          <Grid
-            container
-            sx={{
-              display: "flex",
-              gap: "0.71rem",
-              color: "#7b84ff",
-              alignItems: "center",
-              fontWeight: 700,
-              // justifyContent: "center",
-              fontSize: "1.1rem",
-            }}
-          >
-            <Grid item xs="auto" lg="auto">
+        <Grid item xs={12} lg={6}>
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                color: "#7b84ff",
+                fontWeight: 700,
+                fontSize: "1.1rem",
+              }}
+            >
               {positionsStore.candDisplayPosition && (
                 <Link
                   href="#"
@@ -86,19 +83,11 @@ export const Cv = observer(() => {
                 </Link>
               )}
             </Grid>
-          </Grid>
-
-          <Grid
-            container
-            pt={1}
-            sx={{
-              display: "flex",
-              gap: "0.71rem",
-              color: "#0090d7",
-              alignItems: "center",
-            }}
-          >
-            <Grid item xs="auto" lg="auto">
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}
+            >
               <Link
                 href="#"
                 onClick={() => {
@@ -107,8 +96,6 @@ export const Cv = observer(() => {
               >
                 {candidateName}
               </Link>
-            </Grid>
-            <Grid item xs="auto" lg="auto">
               <Link
                 href="#"
                 onClick={() => {
@@ -117,31 +104,39 @@ export const Cv = observer(() => {
               >
                 {candsStore.candDisplay?.email}{" "}
               </Link>
-            </Grid>
-            <Grid item xs="auto" lg="auto">
               <a href={"tel:" + candsStore.candDisplay?.phone}>
                 {candsStore.candDisplay?.phone}
               </a>
             </Grid>
-            {posStage?.t && (
+          </Grid>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Grid container>
+            {posStage?._dt && (
               <Grid
                 item
-                xs="auto"
-                lg="auto"
-                sx={{ display: "flex", alignItems: "center" }}
+                xs={12}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "left",
+                  flexDirection: "row-reverse",
+                  gap: 1,
+                }}
               >
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <span style={{ direction: "ltr" }}>Status:</span>
+                <FormControl variant="standard" sx={{ minWidth: 120 }}>
                   <Select
                     sx={{
                       direction: "ltr",
                       "& .MuiSelect-select": {
                         color: candsStore.posStages?.find(
-                          (x) => x.stageType === posStage?.t
+                          (x) => x.stageType === posStage?._tp
                         )?.color,
                         fontWeight: "bold",
                       },
                     }}
-                    value={posStage?.t}
+                    value={posStage?._tp}
                     onChange={async (e) => {
                       await candsStore.updateCandPositionStatus(e.target.value);
                     }}
@@ -160,24 +155,52 @@ export const Cv = observer(() => {
                     })}
                   </Select>
                 </FormControl>
-                <span style={{ direction: "ltr" }}>Status:</span>
+                <span> {format(new Date(posStage?._dt), "MMM d, yyyy")} </span>
+              </Grid>
+            )}
+            {posStage?._ec && (
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "left",
+                  flexDirection: "row-reverse",
+                  gap: 1,
+                  paddingTop: "1rem",
+                }}
+              >
+                <span style={{ direction: "ltr" }}>Sent to customer:</span>
+                <span>
+                  {" "}
+                  {posStage?._ec &&
+                    format(new Date(posStage?._ec), "MMM d, yyyy")}{" "}
+                </span>
               </Grid>
             )}
           </Grid>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row-reverse",
-              fontSize: "0.7rem",
-              fontWeight: 700,
-            }}
-          >
-            {candsStore.candDisplay?.reviewDate &&
-              format(
+        </Grid>
+        <Grid item xs={12} lg={12}>
+          {candsStore.candDisplay?.reviewDate && (
+            <div
+              title="Review updated date"
+              style={{
+                display: "flex",
+                flexDirection: "row-reverse",
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                paddingTop: "1rem",
+                gap: 2,
+              }}
+            >
+              <span style={{ direction: "ltr" }}>Review:</span>
+              {format(
                 new Date(candsStore.candDisplay?.reviewDate),
                 "MMM d, yyyy"
               )}{" "}
-          </div>
+            </div>
+          )}
           <div className="qlCustom">
             <pre
               style={{

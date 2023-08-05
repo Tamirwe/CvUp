@@ -19,6 +19,8 @@ import {
   MdKeyboardArrowUp,
   MdOutlineClose,
   MdOutlineSearch,
+  MdRule,
+  MdSort,
 } from "react-icons/md";
 import useDebounce from "../../Hooks/useDebounce";
 import { ISearchModel } from "../../models/GeneralModels";
@@ -93,12 +95,16 @@ interface IProps {
   shoeAdvancedIcon?: boolean;
   onSearch: (value: ISearchModel) => void;
   onShowAdvanced?: (isShow: boolean) => void;
+  records?: number;
+  onSort?: (sortBy: string, dir: string) => void;
 }
 
 export const SearchControl = ({
   onSearch,
   onShowAdvanced,
   shoeAdvancedIcon = false,
+  records,
+  onSort,
 }: IProps) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -108,6 +114,10 @@ export const SearchControl = ({
     exact: false,
     advancedValue: "",
   });
+  const [sortBy, setSortBy] = useState("scoreSort");
+  const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
+  const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
+
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
   useEffect(() => {
@@ -139,6 +149,30 @@ export const SearchControl = ({
 
   const search = () => {
     onSearch(searchVals);
+  };
+
+  const handleSort = (cvDateSortClick: boolean, ScoreSortClick: boolean) => {
+    let sortDir = "";
+
+    if (cvDateSortClick) {
+      if (sortByCvDateDesc) {
+        sortDir = "asc";
+      } else {
+        sortDir = "desc";
+      }
+      onSort && onSort("cvDateSort", sortDir);
+      setSortByScoreDesc(false);
+      setSortBy("cvDateSort");
+    } else {
+      if (sortByScoreDesc) {
+        sortDir = "asc";
+      } else {
+        sortDir = "desc";
+      }
+      onSort && onSort("scoreSort", sortDir);
+      setSortByCvDateDesc(false);
+      setSortBy("scoreSort");
+    }
   };
 
   return (
@@ -255,6 +289,65 @@ export const SearchControl = ({
               </IconWrapper>
             )}
           </Search>
+          {searchVals.value && (
+            <div
+              style={{
+                whiteSpace: "nowrap",
+                direction: "ltr",
+                padding: "0 5px",
+              }}
+            >
+              {records === 300 ? `300 ...` : `${records} rec`}
+            </div>
+          )}
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              "& .MuiButtonBase-root": {
+                padding: "5px 3px",
+                fontSize: "1.0rem",
+              },
+            }}
+            color={sortByCvDateDesc ? "primary" : "secondary"}
+            value={sortBy}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSortByCvDateDesc(!sortByCvDateDesc);
+              handleSort(true, false);
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="cvDateSort" title="Sort by cv sent date">
+              <MdSort />
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              "& .MuiButtonBase-root": {
+                padding: "5px 3px",
+                fontSize: "1.0rem",
+              },
+            }}
+            color={sortByScoreDesc ? "primary" : "secondary"}
+            value={sortBy}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSortByScoreDesc(!sortByScoreDesc);
+              handleSort(false, true);
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="scoreSort" title="Sort by score">
+              <MdRule />
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Stack>
       )}
     </Stack>

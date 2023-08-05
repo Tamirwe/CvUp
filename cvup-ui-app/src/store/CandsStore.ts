@@ -474,7 +474,7 @@ export class CandsStore {
   sortPosStage(posStages: ICandPosStage[]) {
     return posStages
       .slice()
-      .sort((a, b) => (a.d < b.d ? 1 : b.d < a.d ? -1 : 0));
+      .sort((a, b) => (a._dt < b._dt ? 1 : b._dt < a._dt ? -1 : 0));
   }
 
   async getEmailTemplates() {

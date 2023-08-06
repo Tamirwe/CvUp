@@ -116,6 +116,7 @@ namespace CvUpAPI.Controllers
         {
             posCv.companyId = Globals.CompanyId;
              await _candPosService.AttachPosCandCv(posCv);
+             await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId);
             return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
 
         }
@@ -126,6 +127,7 @@ namespace CvUpAPI.Controllers
         {
             posCv.companyId = Globals.CompanyId;
             await _candPosService.DetachPosCand(posCv);
+            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId);
             return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
         }
 
@@ -152,6 +154,7 @@ namespace CvUpAPI.Controllers
         {
             posStatus.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandPositionStatus(posStatus);
+            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId);
             return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
         }
 

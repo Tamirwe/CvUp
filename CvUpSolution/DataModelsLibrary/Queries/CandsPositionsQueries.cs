@@ -434,15 +434,17 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                descr = p.descr ?? "",
-                                requirements = p.requirements ?? "",
+                                descr = p.descr ,
+                                requirements = p.requirements,
                                 customerId = p.customer_id ?? 0,
                                 customerName = c.name,
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
                                 contactsIds = conts,
                                 emailsubjectAddon=p.customer_pos_num,
-                                updated=p.date_updated
+                                remarks=p.remarks,
+                                matchEmailsubject = p.match_email_subject,
+                                updated =p.date_updated
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -466,6 +468,9 @@ namespace DataModelsLibrary.Queries
                     updater_id = userId,
                     date_created = DateTime.Now,
                     date_updated = DateTime.Now,
+                    customer_pos_num = data.emailsubjectAddon,
+                    remarks = data.remarks,
+                    match_email_subject = data.matchEmailsubject
                 };
 
                 if (data.customerId > 0)
@@ -494,6 +499,9 @@ namespace DataModelsLibrary.Queries
                 pos.status = data.status.ToString();
                 pos.updater_id = userId;
                 pos.date_updated = DateTime.Now;
+                pos.customer_pos_num = data.emailsubjectAddon;
+                pos.remarks = data.remarks;
+                pos.match_email_subject = data.matchEmailsubject;
 
                 var result = dbContext.positions.Update(pos);
                 await dbContext.SaveChangesAsync();
@@ -1026,6 +1034,17 @@ namespace DataModelsLibrary.Queries
                     dbContext.position_candidates.Update(candPos);
                     await dbContext.SaveChangesAsync();
                 }
+            }
+        }
+
+        public async Task UpdatePositionDate(int companyId, int positionId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position? pos = dbContext.positions.Where(x => x.company_id == companyId && x.id == positionId).First();
+                pos.date_updated = DateTime.Now;
+                var result = dbContext.positions.Update(pos);
+                await dbContext.SaveChangesAsync();
             }
         }
 

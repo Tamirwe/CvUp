@@ -57,16 +57,23 @@ namespace CvUpAPI.Controllers
         [Route("AddCustomer")]
         public async Task<IActionResult> AddCustomer(IdNameModel data)
         {
-            await _customersContactsService.AddCustomer(data, Globals.CompanyId);
-            return Ok();
+            customer newRec =await _customersContactsService.AddCustomer(data, Globals.CompanyId);
+            return Ok(new IdNameModel { id= newRec.id, name=newRec.name });
         }
 
         [HttpPut]
         [Route("UpdateCustomer")]
         public async Task<IActionResult> UpdateCustomer(IdNameModel data)
         {
-            await _customersContactsService.UpdateCustomer(data, Globals.CompanyId);
-            return Ok();
+            customer? newRec = await _customersContactsService.UpdateCustomer(data, Globals.CompanyId);
+
+            if (newRec != null)
+            {
+                return Ok(new IdNameModel { id = newRec.id, name = newRec.name });
+
+            }
+
+            return BadRequest();
         }
 
         [HttpGet]

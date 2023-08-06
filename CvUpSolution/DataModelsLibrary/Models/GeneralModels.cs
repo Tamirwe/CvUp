@@ -27,7 +27,8 @@ namespace DataModelsLibrary.Models
         public List<int>? contactsIds { get; set; }
         public int[] interviewersIds { get; set; } = new int[] { };
         public string? emailsubjectAddon { get; set; } = string.Empty;
-
+        public string? remarks { get; set; } = string.Empty;
+        public string? matchEmailsubject { get; set; } = string.Empty;
     }
 
     //public class PositionClientModel

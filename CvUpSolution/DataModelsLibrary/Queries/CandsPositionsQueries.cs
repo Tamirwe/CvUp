@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -253,40 +254,73 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId=0)
+        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId = 0)
         {
             using (var dbContext = new cvup00001Context())
             {
-                string candStr = "";
 
-                if (candidateId>0)
+                var query = from cand in dbContext.candidates
+                            where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            select new CvsToIndexModel
+                            {
+                                candidateId = cand.id,
+                                firstName = cand.first_name,
+                                lastName = cand.last_name,
+                                email = cand.email,
+                                phone = cand.phone,
+                                reviewText = cand.review,
+                            };
+
+                List<CvsToIndexModel> candsCvs = await query.ToListAsync();
+
+                List<cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
+
+                foreach (var item in candsCvs)
                 {
-                    candStr = $" AND ctx.candidate_id = {candidateId} ";
+                    var cvsTxtCand = cvsTxts.Where(x => x.candidate_id == item.candidateId).ToList();
+
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (var cv in cvsTxtCand)
+                    {
+                        sb.Append(" " + cv.email_subject + " " + cv.cv_txt);
+                    }
+
+                    item.cvsTxt = sb.ToString();
                 }
 
-                string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
-                                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
-                                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
-                                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
-                                WHERE cvs.company_id = {companyId}
-                                {candStr}
-                                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
-		                                FROM cvs_txt ctx
-		                                WHERE ctx.company_id = {companyId}
-		                                GROUP BY ctx.ascii_sum) 
-                                GROUP BY ctx.candidate_id;";
+                return candsCvs;
 
-                var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
-                return cvsResults;
+                //string candStr = "";
+
+                //if (candidateId>0)
+                //{
+                //    candStr = $" AND ctx.candidate_id = {candidateId} ";
+                //}
+
+                //string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
+                //                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
+                //                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
+                //                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
+                //                WHERE cvs.company_id = {companyId}
+                //                {candStr}
+                //                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
+                //                  FROM cvs_txt ctx
+                //                  WHERE ctx.company_id = {companyId}
+                //                  GROUP BY ctx.ascii_sum) 
+                //                GROUP BY ctx.candidate_id;";
+
+                //var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
+                //return cvsResults;
 
                 //string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
                 //        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
-	               //             FROM candidates cnd 
-	               //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
-	               //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
-	               //             INNER JOIN (SELECT MAX(cvs.id) cv_id
-		              //               FROM cvs
-		              //               WHERE cvs.company_id={companyId}                
+                //             FROM candidates cnd 
+                //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
+                //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
+                //             INNER JOIN (SELECT MAX(cvs.id) cv_id
+                //               FROM cvs
+                //               WHERE cvs.company_id={companyId}                
                 //                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
                 //    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
 
@@ -400,15 +434,17 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                descr = p.descr ?? "",
-                                requirements = p.requirements ?? "",
+                                descr = p.descr ,
+                                requirements = p.requirements,
                                 customerId = p.customer_id ?? 0,
                                 customerName = c.name,
                                 status = Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
                                 contactsIds = conts,
                                 emailsubjectAddon=p.customer_pos_num,
-                                updated=p.date_updated
+                                remarks=p.remarks,
+                                matchEmailsubject = p.match_email_subject,
+                                updated =p.date_updated
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -432,6 +468,9 @@ namespace DataModelsLibrary.Queries
                     updater_id = userId,
                     date_created = DateTime.Now,
                     date_updated = DateTime.Now,
+                    customer_pos_num = data.emailsubjectAddon,
+                    remarks = data.remarks,
+                    match_email_subject = data.matchEmailsubject
                 };
 
                 if (data.customerId > 0)
@@ -460,6 +499,9 @@ namespace DataModelsLibrary.Queries
                 pos.status = data.status.ToString();
                 pos.updater_id = userId;
                 pos.date_updated = DateTime.Now;
+                pos.customer_pos_num = data.emailsubjectAddon;
+                pos.remarks = data.remarks;
+                pos.match_email_subject = data.matchEmailsubject;
 
                 var result = dbContext.positions.Update(pos);
                 await dbContext.SaveChangesAsync();
@@ -992,6 +1034,17 @@ namespace DataModelsLibrary.Queries
                     dbContext.position_candidates.Update(candPos);
                     await dbContext.SaveChangesAsync();
                 }
+            }
+        }
+
+        public async Task UpdatePositionDate(int companyId, int positionId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position? pos = dbContext.positions.Where(x => x.company_id == companyId && x.id == positionId).First();
+                pos.date_updated = DateTime.Now;
+                var result = dbContext.positions.Update(pos);
+                await dbContext.SaveChangesAsync();
             }
         }
 

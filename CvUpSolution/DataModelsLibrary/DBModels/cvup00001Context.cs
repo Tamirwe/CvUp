@@ -387,6 +387,8 @@ namespace Database.models
 
                 entity.Property(e => e.descr).HasMaxLength(2000);
 
+                entity.Property(e => e.match_email_subject).HasMaxLength(250);
+
                 entity.Property(e => e.name).HasMaxLength(500);
 
                 entity.Property(e => e.remarks).HasMaxLength(500);

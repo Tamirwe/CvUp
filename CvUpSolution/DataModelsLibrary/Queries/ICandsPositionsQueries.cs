@@ -51,5 +51,6 @@ namespace DataModelsLibrary.Queries
         Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId);
         Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId);
         Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId);
+        Task UpdatePositionDate(int companyId, int positionId);
     }
 }

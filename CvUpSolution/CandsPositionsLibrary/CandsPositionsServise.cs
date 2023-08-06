@@ -333,5 +333,11 @@ namespace CandsPositionsLibrary
         {
             return await _cvsPositionsQueries.CandsReport(companyId, stageType);
         }
+
+        public async  Task UpdatePositionDate(int companyId, int positionId)
+        {
+            await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId);
+        }
+
     }
 }

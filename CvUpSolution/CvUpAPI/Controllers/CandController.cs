@@ -28,6 +28,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetIsAuthorized")]
+        public IActionResult GetIsAuthorized()
+        {
+            return Ok();
+        }
+
+        [HttpGet]
         [Route("GetCandsList")]
         public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 200)
         {

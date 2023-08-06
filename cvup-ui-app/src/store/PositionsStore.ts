@@ -94,28 +94,25 @@ export class PositionsStore {
   }
 
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
-    return new Promise((resolve) => {
+    runInAction(() => {
       this.selectedPosition = this.positionsList.find((x) => x.id === posId);
+    });
 
-      runInAction(async () => {
-        if (posId) {
-          await Promise.all([
-            this.getPositionContacts(posId),
-            this.rootStore.candsStore.getPositionCandsList(posId),
-          ]);
-        }
+    if (posId) {
+      await this.getPositionContacts(posId);
+      await this.rootStore.candsStore.getPositionCandsList(posId);
+    }
 
-        this.rootStore.candsStore.currentTabCandsLists =
-          TabsCandsEnum.PositionCands;
+    runInAction(() => {
+      this.rootStore.candsStore.currentTabCandsLists =
+        TabsCandsEnum.PositionCands;
 
-        if (isMobile) {
-          this.rootStore.generalStore.leftDrawerOpen = false;
-          this.rootStore.generalStore.rightDrawerOpen = true;
-        }
+      if (isMobile) {
+        this.rootStore.generalStore.leftDrawerOpen = false;
+        this.rootStore.generalStore.rightDrawerOpen = true;
+      }
 
-        this.isSelectedPositionOnTop = isPositionOnTop;
-        resolve("");
-      });
+      this.isSelectedPositionOnTop = isPositionOnTop;
     });
   }
 
@@ -154,15 +151,20 @@ export class PositionsStore {
   }
 
   async getPositionContacts(posId: number) {
-    this.rootStore.generalStore.backdrop = true;
+    runInAction(() => {
+      this.rootStore.generalStore.backdrop = true;
+    });
 
     const res = await this.positionApi.getPositionContactsIds(posId);
 
-    if (this.positionSelected) {
-      this.positionSelected!.contactsIds = [...res.data];
-    }
+    runInAction(() => {
+      if (this.positionSelected) {
+        this.positionSelected!.contactsIds = [...res.data];
+      }
 
-    this.rootStore.generalStore.backdrop = false;
+      this.rootStore.generalStore.backdrop = false;
+    });
+
   }
 
   async deletePosition(id: number) {

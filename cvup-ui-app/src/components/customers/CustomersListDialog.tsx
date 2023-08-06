@@ -4,6 +4,8 @@ import {
   DialogContent,
   IconButton,
   Button,
+  Grid,
+  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
@@ -23,6 +25,26 @@ export const CustomersListDialog = ({ isOpen, onClose }: IProps) => {
   const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [openCustomerForm, setOpenCustomerForm] = useState(false);
+  const [searchTxt, setSearchTxt] = useState("");
+  const [dataList, setDataList] = useState<IIdName[]>([]);
+
+  useEffect(() => {
+    setDataList([...customersContactsStore.customersList]);
+  }, []);
+
+  useEffect(() => {
+    let fDataList;
+
+    if (searchTxt) {
+      fDataList = customersContactsStore.customersList.filter(
+        (x) => x.name.toLowerCase().indexOf(searchTxt) > -1
+      );
+    } else {
+      fDataList = [...customersContactsStore.customersList];
+    }
+
+    setDataList(fDataList);
+  }, [searchTxt]);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -60,7 +82,27 @@ export const CustomersListDialog = ({ isOpen, onClose }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <CustomersList onCustomerClick={handleCustomerClick} />
+        <Grid container>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              required
+              margin="normal"
+              type="text"
+              id="search"
+              label="Search Customer"
+              variant="outlined"
+              onChange={(e) => {
+                setSearchTxt(e.target.value);
+              }}
+              value={searchTxt}
+            />
+          </Grid>
+        </Grid>
+        <CustomersList
+          onCustomerClick={handleCustomerClick}
+          dataList={dataList}
+        />
         <Button
           onClick={() => {
             customersContactsStore.selectedCustomer = undefined;

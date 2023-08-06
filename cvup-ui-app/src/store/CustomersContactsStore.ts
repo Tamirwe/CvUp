@@ -8,9 +8,10 @@ export class CustomersContactsStore {
   private contactsApi;
   private contactSelected?: IContact;
   private customerSelected?: IIdName;
-  private contactsList: IContact[] = [];
   private searchPhrase?: ISearchModel;
   customersList: IIdName[] = [];
+  customerAddedUpdated?: IIdName;
+  contactsList: IContact[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -134,5 +135,11 @@ export class CustomersContactsStore {
     }
 
     return "";
+  }
+
+  setCustomerAddedUpdated(data?: IIdName) {
+    runInAction(() => {
+      this.customerAddedUpdated = data;
+    });
   }
 }

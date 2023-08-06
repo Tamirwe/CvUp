@@ -31,13 +31,13 @@ export default class CustomersContactsApi extends BaseApi {
   }
 
   async addCustomer(customer: IIdName) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<IIdName>(async () => {
       return await this.http.post("CustomersContacts/AddCustomer", customer);
     });
   }
 
   async updateCustomer(customer: IIdName) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<IIdName>(async () => {
       return await this.http.put("CustomersContacts/UpdateCustomer", customer);
     });
   }

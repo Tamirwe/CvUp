@@ -15,11 +15,11 @@ interface IProps {
 export const ContactsFormDialog = ({ isOpen, onClose }: IProps) => {
   const { customersContactsStore } = useStore();
   const [open, setOpen] = useState(false);
-  const [formTitle, setFormTitle] = useState("Add Contact");
+  const [formTitle, setFormTitle] = useState("Add Contact Person");
 
   useEffect(() => {
     if (customersContactsStore.selectedContact) {
-      setFormTitle("Edit Contact");
+      setFormTitle("Edit Contact Person");
     }
     setOpen(isOpen);
   }, [isOpen]);

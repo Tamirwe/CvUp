@@ -84,15 +84,17 @@ export interface IPosCandCvs {
 export interface IPosition {
   id: number;
   name: string;
-  descr: string;
-  requirements: string;
+  descr?: string;
+  requirements?: string;
   updated: Date;
   status: PositionStatusEnum;
   customerId: number;
   customerName: string;
   interviewersIds: number[];
   contactsIds: number[];
-  emailsubjectAddon: string;
+  emailsubjectAddon?: string;
+  remarks?: string;
+  matchEmailsubject?: string;
 }
 
 export interface ICvReview {

@@ -187,7 +187,7 @@ export const SearchControl = ({
 
   return (
     <Stack>
-      <Stack direction="row" alignItems={"center"}>
+      <Stack direction="row" alignItems={"center"} sx={{ direction: "rtl" }}>
         <Search sx={{ direction: "rtl" }}>
           <SearchIconWrapper>
             <MdOutlineSearch onClick={search} />
@@ -243,7 +243,8 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-        {searchVals.value && (
+        {((searchVals.value && records !== undefined) ||
+          (!shoeAdvancedIcon && records !== undefined)) && (
           <div
             title={
               records === 300 ? "More then 300 records found" : "Records found"
@@ -258,32 +259,34 @@ export const SearchControl = ({
           </div>
         )}
 
-        <ToggleButtonGroup
-          sx={{
-            direction: "ltr",
-            "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
-          }}
-          color="primary"
-          value={searchVals.exact ? "exact" : "approximate"}
-          exclusive
-          size="small"
-          onChange={(event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            setSearchVals((currentProps) => ({
-              ...currentProps,
-              exact: !searchVals.exact,
-            }));
-          }}
-          aria-label="Platform"
-        >
-          <ToggleButton value="approximate" title="Approximate Search">
-            AP
-          </ToggleButton>
-          <ToggleButton value="exact" title="Exact Search">
-            Ex
-          </ToggleButton>
-        </ToggleButtonGroup>
+        {shoeAdvancedIcon && (
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
+            }}
+            color="primary"
+            value={searchVals.exact ? "exact" : "approximate"}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSearchVals((currentProps) => ({
+                ...currentProps,
+                exact: !searchVals.exact,
+              }));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="approximate" title="Approximate Search">
+              AP
+            </ToggleButton>
+            <ToggleButton value="exact" title="Exact Search">
+              Ex
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
       </Stack>
       {showAdvancedSearch && (
         <Stack direction="row" pt={1} alignItems={"center"}>

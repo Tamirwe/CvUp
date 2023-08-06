@@ -61,6 +61,7 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
       }
 
       if (response.isSuccess) {
+        customersContactsStore.setCustomerAddedUpdated(response.data);
         onSaved();
       } else {
         return setSubmitError("An Error Occurred Please Try Again Later.");
@@ -102,6 +103,7 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
           <TextField
             sx={{ minWidth: 350 }}
             fullWidth
+            autoFocus
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"

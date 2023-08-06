@@ -7,6 +7,7 @@ import { CrudTypesEnum } from "../../models/GeneralEnums";
 
 interface IProps {
   onCustomerClick: () => void;
+  dataList: IIdName[];
 }
 
 export const CustomersList = observer((props: IProps) => {
@@ -28,7 +29,7 @@ export const CustomersList = observer((props: IProps) => {
         maxHeight: 300,
       }}
     >
-      {customersContactsStore.customersList?.map((item, i) => {
+      {props.dataList?.map((item, i) => {
         return (
           <ListItemButton
             onClick={() => {

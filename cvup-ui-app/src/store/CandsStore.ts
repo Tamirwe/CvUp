@@ -234,20 +234,24 @@ export class CandsStore {
   }
 
   async getPositionCandsList(posId: number) {
-    this.rootStore.generalStore.backdrop = true;
-
-    runInAction(async () => {
-      this.posCandsList = [];
-
-      const res = await this.cvsApi.getPosCandsList(posId);
-      this.posCandsList = res.data;
+    runInAction(() => {
+      this.rootStore.generalStore.backdrop = true;
     });
 
-    this.rootStore.generalStore.backdrop = false;
+    // runInAction(async () => {
+    this.posCandsList = [];
+
+    const res = await this.cvsApi.getPosCandsList(posId);
+    runInAction(() => {
+      this.posCandsList = res.data;
+
+      this.rootStore.generalStore.backdrop = false;
+    });
+
   }
 
-  async setDisplayCandOntopPCList() {
-    runInAction(async () => {
+   setDisplayCandOntopPCList() {
+    runInAction( () => {
       if (this.candDisplay?.candidateId) {
         const candsList = [...this.posCandsList];
 

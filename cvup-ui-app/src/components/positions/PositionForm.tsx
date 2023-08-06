@@ -44,15 +44,17 @@ export const PositionForm = observer(({ onClose }: IProps) => {
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
     name: "",
-    descr: "",
-    requirements: "",
+    descr: undefined,
+    requirements: undefined,
     updated: new Date(),
     status: PositionStatusEnum.Active,
     customerId: 0,
     customerName: "",
     interviewersIds: [],
     contactsIds: [],
-    emailsubjectAddon: "",
+    emailsubjectAddon: undefined,
+    remarks: undefined,
+    matchEmailsubject: undefined,
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
@@ -60,6 +62,8 @@ export const PositionForm = observer(({ onClose }: IProps) => {
   });
 
   useEffect(() => {
+    customersContactsStore.setCustomerAddedUpdated(undefined);
+
     if (positionsStore.editPosition) {
       setCrudType(CrudTypesEnum.Update);
       setFormModel({ ...positionsStore.editPosition });
@@ -72,7 +76,14 @@ export const PositionForm = observer(({ onClose }: IProps) => {
     );
 
     setContactsList(contList);
-  }, [formModel?.customerId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (contList.length === 1) {
+      setFormModel((currentProps) => ({
+        ...currentProps,
+        contactsIds: [contList[0].id],
+      }));
+    }
+  }, [formModel?.customerId, customersContactsStore.contactsList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (formModel) {
@@ -88,6 +99,24 @@ export const PositionForm = observer(({ onClose }: IProps) => {
       });
     }
   }, [formModel?.interviewersIds]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (customersContactsStore.customerAddedUpdated) {
+      const customer = customersContactsStore.customersList.find(
+        (x) => x.id === customersContactsStore.customerAddedUpdated?.id
+      );
+
+      if (customer) {
+        setFormModel((currentProps) => ({
+          ...currentProps,
+          customerId: customer.id,
+          customerName: customer.name,
+        }));
+        clearError("customerId");
+        setIsDirty(true);
+      }
+    }
+  }, [customersContactsStore.customersList]);
 
   const validateForm = () => {
     let isFormValid = true,
@@ -159,6 +188,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     sx={{
                       direction: "rtl",
                     }}
+                    autoFocus
                     fullWidth
                     required
                     margin="normal"
@@ -291,7 +321,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                       size="medium"
                       aria-label="toggle password visibility"
                       onClick={() =>
-                        (generalStore.showCustomersListDialog = true)
+                        (generalStore.showContactFormDialog = true)
                       }
                       edge="end"
                       sx={{
@@ -344,6 +374,50 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     value={formModel.emailsubjectAddon || ""}
                   />
                 </Grid>
+                <Grid item xs={12} lg={6}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="matchEmailsubject"
+                    label="Match text email subject"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        matchEmailsubject: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.matchEmailsubject || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="remarks"
+                    label="Remarks for position"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        remarks: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.remarks || ""}
+                  />
+                </Grid>
 
                 <Grid item xs={12} lg={6}>
                   <TextField
@@ -352,7 +426,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     }}
                     fullWidth
                     multiline
-                    rows={isMobile ? 18 : 22}
+                    rows={isMobile ? 18 : 20}
                     margin="normal"
                     type="text"
                     id="description"
@@ -375,7 +449,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     }}
                     fullWidth
                     multiline
-                    rows={isMobile ? 18 : 22}
+                    rows={isMobile ? 18 : 20}
                     margin="normal"
                     type="text"
                     id="requirements"
@@ -393,11 +467,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Grid container>
-                <Grid item xs={12} mt={3}></Grid>
-              </Grid>
-            </Grid>
+
             {submitError && (
               <Grid item xs={12}>
                 <div style={{ direction: "ltr" }}>
@@ -405,7 +475,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </div>
               </Grid>
             )}
-            <Grid item xs={12} mt={4}>
+            <Grid item xs={12} mt={1}>
               <Grid container justifyContent="space-between">
                 <Grid item>
                   {crudType === CrudTypesEnum.Update &&

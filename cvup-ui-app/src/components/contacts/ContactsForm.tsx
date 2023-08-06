@@ -53,6 +53,8 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
   });
 
   useEffect(() => {
+    customersContactsStore.setCustomerAddedUpdated(undefined);
+
     if (customersContactsStore.selectedContact) {
       setCrudType(CrudTypesEnum.Update);
       setFormModel({ ...customersContactsStore.selectedContact });
@@ -62,6 +64,24 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
     //   await Promise.all([customersContactsStore.getCustomersList()]);
     // })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (customersContactsStore.customerAddedUpdated) {
+      const customer = customersContactsStore.customersList.find(
+        (x) => x.id === customersContactsStore.customerAddedUpdated?.id
+      );
+
+      if (customer) {
+        setFormModel((currentProps) => ({
+          ...currentProps,
+          customerId: customer.id,
+          customerName: customer.name,
+        }));
+        clearError("customerId");
+        setIsDirty(true);
+      }
+    }
+  }, [customersContactsStore.customersList]);
 
   const validateForm = () => {
     let isFormValid = true,
@@ -174,6 +194,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             sx={{ width: "88%" }}
             renderInput={(params) => (
               <TextField
+                autoFocus
                 helperText={errModel.customerId}
                 error={errModel.customerId !== ""}
                 {...params}
@@ -206,7 +227,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="fnameInp"
+            id="firstName"
             label="First Name"
             variant="outlined"
             onChange={(e) => {
@@ -229,7 +250,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="lastNameInp"
+            id="lastName"
             label="Last Name"
             variant="outlined"
             onChange={(e) => {
@@ -254,7 +275,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="emailInp"
+            id="email"
             label="Email"
             variant="outlined"
             onChange={(e) => {
@@ -277,7 +298,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="emailInp"
+            id="phone"
             label="Phone"
             variant="outlined"
             onChange={(e) => {

@@ -96,7 +96,10 @@ export const LeftListsWrapper = observer(() => {
         hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Positions}
       >
         <Box mt={1} ml={1}>
-          <SearchControl onSearch={handlePositionsSearch} />
+          <SearchControl
+            onSearch={handlePositionsSearch}
+            records={positionsStore.positionsSorted.length}
+          />
         </Box>
         <PositionsList />;
       </Box>
@@ -104,7 +107,10 @@ export const LeftListsWrapper = observer(() => {
         hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Folders}
       >
         <Box mt={1} ml={1}>
-          <SearchControl onSearch={handleFoldersSearch} />
+          <SearchControl
+            onSearch={handleFoldersSearch}
+            records={foldersStore.foldersListSorted.length}
+          />
         </Box>
         <FoldersList />;
       </Box>
@@ -112,7 +118,10 @@ export const LeftListsWrapper = observer(() => {
         hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Contacts}
       >
         <Box mt={1} ml={1}>
-          <SearchControl onSearch={handleContactsSearch} />
+          <SearchControl
+            onSearch={handleContactsSearch}
+            records={customersContactsStore.contactsListSorted.length}
+          />
         </Box>
         <ContactsList />;
       </Box>

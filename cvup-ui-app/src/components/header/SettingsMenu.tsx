@@ -103,6 +103,16 @@ export const SettingsMenu = () => {
           </Avatar>
           Users
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            generalStore.showCustomersListDialog = true;
+          }}
+        >
+          <Avatar>
+            <MdGroup />
+          </Avatar>
+          Customers
+        </MenuItem>
         {/* )} */}
         <MenuItem
           onClick={() => {

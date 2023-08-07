@@ -9,6 +9,8 @@ export class CustomersContactsStore {
   private contactSelected?: IContact;
   private customerSelected?: IIdName;
   private searchPhrase?: ISearchModel;
+  private isContactsListSortDirectionDesc: boolean = true;
+
   customersList: IIdName[] = [];
   customerAddedUpdated?: IIdName;
   contactsList: IContact[] = [];
@@ -21,15 +23,29 @@ export class CustomersContactsStore {
   reset() {}
 
   get contactsListSorted() {
+    let posList;
+
     if (this.searchPhrase && this.searchPhrase.value) {
-      return this.contactsList.filter((x) =>
+      posList = this.contactsList.filter((x) =>
         this.searchStringContacts(x).includes(
           this.searchPhrase!.value.toLowerCase()
         )
       );
     } else {
-      return this.contactsList.slice();
+      posList = this.contactsList.slice();
     }
+
+    if (this.isContactsListSortDirectionDesc) {
+      posList.sort((a, b) =>
+        a.firstName > b.firstName ? 1 : b.firstName > a.firstName ? -1 : 0
+      );
+    } else {
+      posList.sort((a, b) =>
+        b.firstName > a.firstName ? 1 : a.firstName > b.firstName ? -1 : 0
+      );
+    }
+
+    return posList;
   }
 
   get selectedContact() {
@@ -46,6 +62,10 @@ export class CustomersContactsStore {
 
   set selectedCustomer(val: IIdName | undefined) {
     this.customerSelected = val;
+  }
+
+  set contactsListSortDirection(val: string) {
+    this.isContactsListSortDirectionDesc = val === "desc" ? true : false;
   }
 
   searchContacts(searchVals: ISearchModel) {

@@ -98,6 +98,8 @@ interface IProps {
   onShowAdvanced?: (isShow: boolean) => void;
   records?: number;
   onSort?: (sortBy: SortByEnum, dir: string) => void;
+  onSortLeftLists?: (dir: string) => void;
+  showSortLeft?: boolean;
 }
 
 export const SearchControl = ({
@@ -106,6 +108,8 @@ export const SearchControl = ({
   shoeAdvancedIcon = false,
   records,
   onSort,
+  onSortLeftLists,
+  showSortLeft = false,
 }: IProps) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -118,6 +122,7 @@ export const SearchControl = ({
   const [sortBy, setSortBy] = useState(SortByEnum.score);
   const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
   const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
+  const [sortByLeft, setSortByLeft] = useState(true);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
@@ -243,6 +248,33 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
+
+        {showSortLeft && (
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              "& .MuiButtonBase-root": {
+                padding: "5px 3px",
+                fontSize: "1.0rem",
+              },
+            }}
+            color={sortByLeft ? "primary" : "secondary"}
+            value={sortByLeft}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSortByLeft(!sortByLeft);
+              onSortLeftLists && onSortLeftLists(sortByLeft ? "asc" : "desc");
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value={true} title="Sort by updated date">
+              <MdSort />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
         {((searchVals.value && records !== undefined) ||
           (!shoeAdvancedIcon && records !== undefined)) && (
           <div
@@ -258,7 +290,6 @@ export const SearchControl = ({
             {records === 300 ? `300 ...` : `${records} rec`}
           </div>
         )}
-
         {shoeAdvancedIcon && (
           <ToggleButtonGroup
             sx={{

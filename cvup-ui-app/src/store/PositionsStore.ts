@@ -18,6 +18,7 @@ export class PositionsStore {
   private positionEdit?: IPosition;
   private searchPhrase?: ISearchModel;
   private isSelectedPositionOnTop?: boolean = false;
+  private isPositionsListSortDirectionDesc: boolean = true;
   candDisplayPosition: IPosition | undefined;
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -30,33 +31,40 @@ export class PositionsStore {
   }
 
   get positionsSorted() {
+    let posList;
+
     if (this.searchPhrase && this.searchPhrase.value) {
-      return this.positionsList.filter((x) =>
+      posList = this.positionsList.filter((x) =>
         this.searchStringPositions(x).includes(
           this.searchPhrase!.value!.toLowerCase()
         )
       );
     } else {
-      const posList = this.positionsList
-        .slice()
-        .sort(
-          (a, b) =>
-            new Date(b.updated).getTime() - new Date(a.updated).getTime()
-        );
-
-      if (this.isSelectedPositionOnTop && this.selectedPosition) {
-        const objIndex = posList.findIndex(
-          (x) => x.id === this.selectedPosition?.id
-        );
-
-        if (objIndex > -1) {
-          const posArr = posList.splice(objIndex, 1);
-          posList.splice(0, 0, posArr[0]);
-        }
-      }
-
-      return posList;
+      posList = this.positionsList.slice();
     }
+
+    if (this.isPositionsListSortDirectionDesc) {
+      posList.sort(
+        (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime()
+      );
+    } else {
+      posList.sort(
+        (a, b) => new Date(a.updated).getTime() - new Date(b.updated).getTime()
+      );
+    }
+
+    if (this.isSelectedPositionOnTop && this.selectedPosition) {
+      const objIndex = posList.findIndex(
+        (x) => x.id === this.selectedPosition?.id
+      );
+
+      if (objIndex > -1) {
+        const posArr = posList.splice(objIndex, 1);
+        posList.splice(0, 0, posArr[0]);
+      }
+    }
+
+    return posList;
   }
 
   get selectedPosition() {
@@ -73,6 +81,10 @@ export class PositionsStore {
 
   set editPosition(val: IPosition | undefined) {
     this.positionEdit = val;
+  }
+
+  set positionsListSortDirection(val: string) {
+    this.isPositionsListSortDirectionDesc = val === "desc" ? true : false;
   }
 
   searchPositions(searchVals: ISearchModel) {
@@ -164,7 +176,6 @@ export class PositionsStore {
 
       this.rootStore.generalStore.backdrop = false;
     });
-
   }
 
   async deletePosition(id: number) {

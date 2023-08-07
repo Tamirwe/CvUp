@@ -99,6 +99,10 @@ export const LeftListsWrapper = observer(() => {
           <SearchControl
             onSearch={handlePositionsSearch}
             records={positionsStore.positionsSorted.length}
+            showSortLeft={true}
+            onSortLeftLists={(dir) =>
+              (positionsStore.positionsListSortDirection = dir)
+            }
           />
         </Box>
         <PositionsList />;
@@ -110,6 +114,10 @@ export const LeftListsWrapper = observer(() => {
           <SearchControl
             onSearch={handleFoldersSearch}
             records={foldersStore.foldersListSorted.length}
+            showSortLeft={true}
+            onSortLeftLists={(dir) =>
+              (foldersStore.foldersListSortDirection = dir)
+            }
           />
         </Box>
         <FoldersList />;
@@ -121,6 +129,10 @@ export const LeftListsWrapper = observer(() => {
           <SearchControl
             onSearch={handleContactsSearch}
             records={customersContactsStore.contactsListSorted.length}
+            showSortLeft={true}
+            onSortLeftLists={(dir) =>
+              (customersContactsStore.contactsListSortDirection = dir)
+            }
           />
         </Box>
         <ContactsList />;

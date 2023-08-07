@@ -16,6 +16,8 @@ export class FoldersStore {
   private folderSelected?: IFolder;
   private editFolder?: IFolder;
   private searchPhrase?: ISearchModel;
+  private isfoldersListSortDirectionDesc: boolean = true;
+
   rootFolder: IFolder = {
     id: 0,
     name: "Folders",
@@ -23,13 +25,23 @@ export class FoldersStore {
   };
 
   get foldersListSorted() {
+    let posList;
+
     if (this.searchPhrase && this.searchPhrase.value) {
-      return this.foldersList.filter((x) =>
+      posList = this.foldersList.filter((x) =>
         x.name.toLowerCase().includes(this.searchPhrase!.value.toLowerCase())
       );
     } else {
-      return this.foldersList.slice();
+      posList = this.foldersList.slice();
     }
+
+    if (this.isfoldersListSortDirectionDesc) {
+      posList.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+    } else {
+      posList.sort((a, b) => (b.name > a.name ? 1 : a.name > b.name ? -1 : 0));
+    }
+
+    return posList;
   }
 
   get selectedFolder() {
@@ -46,6 +58,10 @@ export class FoldersStore {
 
   set editFolderSelected(val: IFolder | undefined) {
     this.editFolder = val;
+  }
+
+  set foldersListSortDirection(val: string) {
+    this.isfoldersListSortDirectionDesc = val === "desc" ? true : false;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

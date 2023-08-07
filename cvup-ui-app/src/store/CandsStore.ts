@@ -78,9 +78,7 @@ export class CandsStore {
 
         //not must but any way
         const updatedCand = Object.assign({}, cand);
-        this.updateCandAllList(updatedCand);
-        this.updatePosCandList(updatedCand);
-        this.updateFolderCandList(updatedCand);
+        this.updateLists(updatedCand);
       }
     });
   }
@@ -133,9 +131,7 @@ export class CandsStore {
     if (res.isSuccess && res.data) {
       runInAction(() => {
         this.candDisplay = { ...res.data };
-        this.updateCandAllList(res.data);
-        this.updatePosCandList(res.data);
-        this.updateFolderCandList(res.data);
+        this.updateLists(res.data);
       });
     }
 
@@ -163,9 +159,7 @@ export class CandsStore {
       runInAction(() => {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
-          this.updateCandAllList(res.data);
-          this.updatePosCandList(res.data);
-          this.updateFolderCandList(res.data);
+          this.updateLists(res.data);
         }
       });
     }
@@ -247,11 +241,10 @@ export class CandsStore {
 
       this.rootStore.generalStore.backdrop = false;
     });
-
   }
 
-   setDisplayCandOntopPCList() {
-    runInAction( () => {
+  setDisplayCandOntopPCList() {
+    runInAction(() => {
       if (this.candDisplay?.candidateId) {
         const candsList = [...this.posCandsList];
 
@@ -292,9 +285,7 @@ export class CandsStore {
       runInAction(() => {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
-          this.updateCandAllList(res.data);
-          this.updateFolderCandList(res.data);
-          this.updatePosCandList(res.data);
+          this.updateLists(res.data);
         }
       });
     }
@@ -311,9 +302,7 @@ export class CandsStore {
       runInAction(() => {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
-          this.updateCandAllList(res.data);
-          this.updatePosCandList(res.data);
-          this.updateFolderCandList(res.data);
+          this.updateLists(res.data);
 
           if (
             this.rootStore.positionsStore.selectedPosition?.id === positionId
@@ -323,6 +312,12 @@ export class CandsStore {
         }
       });
     }
+  }
+
+  updateLists(cand: ICand) {
+    this.updateCandAllList(cand);
+    this.updatePosCandList(cand);
+    this.updateFolderCandList(cand);
   }
 
   updateCandAllList(cand: ICand) {
@@ -432,9 +427,7 @@ export class CandsStore {
       runInAction(() => {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
-          this.updateCandAllList(res.data);
-          this.updatePosCandList(res.data);
-          this.updateFolderCandList(res.data);
+          this.updateLists(res.data);
         }
       });
     }
@@ -537,5 +530,71 @@ export class CandsStore {
       this.candsReportData = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
+  }
+
+  async deleteCv() {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.cvsApi.deleteCv(
+      this.candDisplay?.candidateId,
+      this.candDisplay?.cvId
+    );
+
+    if (res.isSuccess) {
+      if (res.data && res.data.candidateId) {
+        this.updateLists(res.data);
+      } else {
+        this.removeCandFromLists(this.candDisplay?.candidateId);
+      }
+
+      this.candDisplay = undefined;
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async deleteCandidate() {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.cvsApi.deleteCandidate(
+      this.candDisplay?.candidateId
+    );
+
+    if (res.isSuccess) {
+      this.removeCandFromLists(this.candDisplay?.candidateId);
+      this.candDisplay = undefined;
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  removeCandFromLists(candId?: number) {
+    let candsList = [...this.allCandsList];
+    let index = candsList.findIndex((x) => x.candidateId === candId);
+
+    if (index > -1) {
+      candsList.splice(index, 1);
+      this.allCandsList = candsList;
+    }
+
+    candsList = [...this.posCandsList];
+    index = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+
+    if (index > -1) {
+      candsList.splice(index, 1);
+      this.posCandsList = candsList;
+    }
+
+    candsList = [...this.folderCandsList];
+    index = candsList.findIndex(
+      (x) => x.candidateId === this.candDisplay?.candidateId
+    );
+
+    if (index > -1) {
+      candsList.splice(index, 1);
+      this.posCandsList = candsList;
+    }
   }
 }

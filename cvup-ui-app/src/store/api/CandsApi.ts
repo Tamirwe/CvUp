@@ -173,4 +173,18 @@ export default class CandsApi extends BaseApi {
       return await this.http.get(`Cand/CandsReport?stageType=${stageType}`);
     });
   }
+
+  async deleteCv(candidateId?: number, cvId?: number) {
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.delete(
+        `Cand/DeleteCv?cnid=${candidateId}&cvId=${cvId}`
+      );
+    });
+  }
+
+  async deleteCandidate(candidateId?: number) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.delete(`Cand/DeleteCandidate?id=${candidateId}`);
+    });
+  }
 }

@@ -235,6 +235,11 @@ export class GeneralStore {
     return aaa.data;
   }
 
+  async getIsAuthorized() {
+    const res = await this.generalApi.getIsAuthorized();
+    return res;
+  }
+
   // async addUpdateCustomer(customer: IIdName) {
   //   this.rootStore.generalStore.backdrop = true;
   //   const response = await this.generalApi.addUpdateCustomer(customer);

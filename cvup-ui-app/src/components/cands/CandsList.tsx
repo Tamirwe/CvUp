@@ -41,6 +41,7 @@ export const CandsList = observer(
 
     useEffect(() => {
       if (candsListData) {
+        setDupOpenCandId(0);
         setListCands([...candsListData?.slice(0, 50)]);
       }
     }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps

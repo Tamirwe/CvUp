@@ -7,11 +7,15 @@ import { isMobile } from "react-device-detect";
 import {
   MdOutlineAttachEmail,
   MdOutlineContactMail,
+  MdOutlineDelete,
   MdOutlineEdit,
   MdOutlineMarkEmailRead,
   MdOutlineMarkEmailUnread,
 } from "react-icons/md";
-import { EmailTypeEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  EmailTypeEnum,
+} from "../../models/GeneralEnums";
 import { CiEdit, CiMail } from "react-icons/ci";
 import { observer } from "mobx-react";
 import { useLocation } from "react-router-dom";
@@ -157,6 +161,24 @@ export const Header = observer(() => {
                       }
                     >
                       <MdOutlineMarkEmailUnread />
+                    </IconButton>
+                    <IconButton
+                      title="Delete Cv"
+                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                      size="small"
+                      onClick={async () => {
+                        const isDelete = await generalStore.alertConfirmDialog(
+                          AlertConfirmDialogEnum.Confirm,
+                          "Delete Cv",
+                          "Are you sure you want to delete this cv?"
+                        );
+
+                        if (isDelete) {
+                          await candsStore.deleteCv();
+                        }
+                      }}
+                    >
+                      <MdOutlineDelete />
                     </IconButton>
                   </>
                 )}

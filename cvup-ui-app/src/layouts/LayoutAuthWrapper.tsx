@@ -7,12 +7,16 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
-import { CrudTypesEnum, EmailTypeEnum } from "../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  CrudTypesEnum,
+  EmailTypeEnum,
+} from "../models/GeneralEnums";
 import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
 import { ContactEmailSender } from "../components/email/ContactEmailSender";
 import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FolderFormDialog } from "../components/folders/FolderFormDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
@@ -27,6 +31,33 @@ import { CandFormDialog } from "../components/cands/CandFormDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
+  const [pause, setPause] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (!pause) {
+        const res = await generalStore.getIsAuthorized();
+
+        if (!res.isSuccess) {
+          setPause(true);
+          const isOk = await generalStore.alertConfirmDialog(
+            AlertConfirmDialogEnum.Confirm,
+            "Your session expired",
+            "Please login again"
+          );
+
+          setPause(false);
+
+          if (isOk) {
+            document.location.href = "/";
+          }
+        }
+      }
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       {generalStore.showEmailDialog === EmailTypeEnum.Candidate && (

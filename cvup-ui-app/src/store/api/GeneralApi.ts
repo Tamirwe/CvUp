@@ -31,4 +31,10 @@ export default class GeneralApi extends BaseApi {
       return await this.http.delete(`General/DeleteHrCompany?id=${id}`);
     });
   }
+
+  async getIsAuthorized() {
+    return await this.apiWrapper2(async () => {
+      return await this.http.get(`Cand/GetIsAuthorized`);
+    });
+  }
 }

@@ -22,6 +22,8 @@ import { delay } from "../utils/GeneralUtils";
 export class CandsStore {
   private cvsApi;
   private candIdDuplicateCvs: number = 0;
+  private isPdfLoaded: boolean = false;
+
   allCandsList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
@@ -63,26 +65,44 @@ export class CandsStore {
     return this.tabDisplayCandsLists;
   }
 
+  set pdfLoaded(val) {
+    this.isPdfLoaded = val;
+  }
+
+  get pdfLoaded() {
+    return this.isPdfLoaded;
+  }
+
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
+    this.isPdfLoaded = false;
     await this.getPdf(cand.keyId);
 
-    //in mbile when cand review take all screen pdf viewr not load cv because it not in screan
-    await delay(500);
+    //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
 
     runInAction(() => {
-      this.candDisplay = cand;
-      this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-        candsSource
-      );
+      let intervalcount = 0;
 
-      if (!cand.isSeen) {
-        this.cvsApi.updateIsSeen(cand.cvId);
-        cand.isSeen = true;
+      const interval = setInterval(() => {
+        intervalcount++;
 
-        //not must but any way
-        const updatedCand = Object.assign({}, cand);
-        this.updateLists(updatedCand);
-      }
+        if (this.isPdfLoaded || intervalcount > 9) {
+          clearInterval(interval);
+
+          this.candDisplay = cand;
+          this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+            candsSource
+          );
+
+          if (!cand.isSeen) {
+            this.cvsApi.updateIsSeen(cand.cvId);
+            cand.isSeen = true;
+
+            //not must but any way
+            const updatedCand = Object.assign({}, cand);
+            this.updateLists(updatedCand);
+          }
+        }
+      }, 100);
     });
   }
 

@@ -25,7 +25,7 @@ import {
 import { EmailTypeEnum } from "../../models/GeneralEnums";
 
 export const PdfViewer = observer(() => {
-  const { candsStore, generalStore } = useStore();
+  const { candsStore } = useStore();
 
   // const defaultLayoutPluginInstance = defaultLayoutPlugin({
   //   sidebarTabs: (defaultTabs) => [],
@@ -86,6 +86,10 @@ export const PdfViewer = observer(() => {
         </div>
       </div>
     );
+  };
+
+  const handlePageChange = () => {
+    candsStore.pdfLoaded = true;
   };
 
   return (
@@ -224,6 +228,7 @@ export const PdfViewer = observer(() => {
       >
         {candsStore.pdfUrl && (
           <Viewer
+            onPageChange={handlePageChange}
             // defaultScale={SpecialZoomLevel.PageWidth}
             defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfUrl}

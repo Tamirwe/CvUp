@@ -67,15 +67,13 @@ export class CandsStore {
 
     runInAction(() => {
       // this.candAllSelected = cand;
-      this.candDisplay = cand;
+      //this.candDisplay = cand;
       // this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
       //   candsSource
       // );
-
       // if (!cand.isSeen) {
       //   this.cvsApi.updateIsSeen(cand.cvId);
       //   cand.isSeen = true;
-
       //   //not must but any way
       //   const updatedCand = Object.assign({}, cand);
       //   this.updateLists(updatedCand);

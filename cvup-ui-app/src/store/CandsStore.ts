@@ -79,7 +79,6 @@ export class CandsStore {
 
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
 
-    runInAction(() => {
       let intervalcount = 0;
 
       const interval = setInterval(() => {
@@ -87,23 +86,23 @@ export class CandsStore {
 
         if (this.isPdfLoaded || intervalcount > 9) {
           clearInterval(interval);
+          runInAction(() => {
+            this.candDisplay = cand;
+            this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+              candsSource
+            );
 
-          this.candDisplay = cand;
-          this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-            candsSource
-          );
+            if (!cand.isSeen) {
+              this.cvsApi.updateIsSeen(cand.cvId);
+              cand.isSeen = true;
 
-          if (!cand.isSeen) {
-            this.cvsApi.updateIsSeen(cand.cvId);
-            cand.isSeen = true;
-
-            //not must but any way
-            const updatedCand = Object.assign({}, cand);
-            this.updateLists(updatedCand);
-          }
+              //not must but any way
+              const updatedCand = Object.assign({}, cand);
+              this.updateLists(updatedCand);
+            }
+          });
         }
       }, 100);
-    });
   }
 
   async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {

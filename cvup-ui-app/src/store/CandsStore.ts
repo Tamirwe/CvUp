@@ -63,6 +63,8 @@ export class CandsStore {
   }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
+    this.getPdf(cand.keyId);
+
     runInAction(() => {
       // this.candAllSelected = cand;
       this.candDisplay = cand;
@@ -70,7 +72,6 @@ export class CandsStore {
         candsSource
       );
 
-      this.getPdf(cand.keyId);
 
       if (!cand.isSeen) {
         this.cvsApi.updateIsSeen(cand.cvId);

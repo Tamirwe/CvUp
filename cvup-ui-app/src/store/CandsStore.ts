@@ -74,35 +74,37 @@ export class CandsStore {
   }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
-    this.isPdfLoaded = false;
-    await this.getPdf(cand.keyId);
-
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
 
-      let intervalcount = 0;
+    this.isPdfLoaded = false;
+    this.candDisplay = undefined;
 
-      const interval = setInterval(() => {
-        intervalcount++;
+    await this.getPdf(cand.keyId);
 
-        if (this.isPdfLoaded || intervalcount > 9) {
-          clearInterval(interval);
-          runInAction(() => {
-            this.candDisplay = cand;
-            this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-              candsSource
-            );
+    let intervalcount = 0;
 
-            if (!cand.isSeen) {
-              this.cvsApi.updateIsSeen(cand.cvId);
-              cand.isSeen = true;
+    const interval = setInterval(() => {
+      intervalcount++;
 
-              //not must but any way
-              const updatedCand = Object.assign({}, cand);
-              this.updateLists(updatedCand);
-            }
-          });
-        }
-      }, 100);
+      if (this.isPdfLoaded || intervalcount > 9) {
+        clearInterval(interval);
+        runInAction(() => {
+          this.candDisplay = cand;
+          this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+            candsSource
+          );
+
+          if (!cand.isSeen) {
+            this.cvsApi.updateIsSeen(cand.cvId);
+            cand.isSeen = true;
+
+            //not must but any way
+            const updatedCand = Object.assign({}, cand);
+            this.updateLists(updatedCand);
+          }
+        });
+      }
+    }, 100);
   }
 
   async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {

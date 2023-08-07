@@ -224,7 +224,7 @@ export const Cv = observer(() => {
           </Grid>
         </Grid>
       )}
-      {candsStore.candDisplay && <PdfViewer />}
+      <PdfViewer />
     </div>
   );
 });

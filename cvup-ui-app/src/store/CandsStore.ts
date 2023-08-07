@@ -17,6 +17,7 @@ import {
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
+import { delay } from "../utils/GeneralUtils";
 
 export class CandsStore {
   private cvsApi;
@@ -65,19 +66,23 @@ export class CandsStore {
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     await this.getPdf(cand.keyId);
 
+    //in mbile when cand review take all screen pdf viewr not load cv because it not in screan
+    await delay(500);
+
     runInAction(() => {
-      // this.candAllSelected = cand;
-      //this.candDisplay = cand;
-      // this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-      //   candsSource
-      // );
-      // if (!cand.isSeen) {
-      //   this.cvsApi.updateIsSeen(cand.cvId);
-      //   cand.isSeen = true;
-      //   //not must but any way
-      //   const updatedCand = Object.assign({}, cand);
-      //   this.updateLists(updatedCand);
-      // }
+      this.candDisplay = cand;
+      this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+        candsSource
+      );
+
+      if (!cand.isSeen) {
+        this.cvsApi.updateIsSeen(cand.cvId);
+        cand.isSeen = true;
+
+        //not must but any way
+        const updatedCand = Object.assign({}, cand);
+        this.updateLists(updatedCand);
+      }
     });
   }
 

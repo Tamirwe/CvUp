@@ -122,19 +122,19 @@ export const CandsList = observer(
                 selected={
                   cand.candidateId === candsStore.candDisplay?.candidateId
                 }
-                onClick={(event) => {
+                onClick={async (event) => {
                   event.stopPropagation();
                   event.preventDefault();
-
-                  if (isMobile) {
-                    generalStore.rightDrawerOpen = false;
-                  }
 
                   if (location.pathname !== "/cv") {
                     navigate(`/cv`);
                   }
 
-                  candsStore.displayCv(cand, candsSource);
+                  await candsStore.displayCv(cand, candsSource);
+
+                  if (isMobile) {
+                    generalStore.rightDrawerOpen = false;
+                  }
                 }}
               >
                 <Box
@@ -179,7 +179,7 @@ export const CandsList = observer(
                       sx={{
                         visibility: !cand.hasDuplicates ? "hidden" : "visible",
                       }}
-                      onClick={(event) => {
+                      onClick={async (event) => {
                         event.stopPropagation();
                         event.preventDefault();
 
@@ -188,8 +188,8 @@ export const CandsList = observer(
                           navigate(`/cv`);
                         }
 
-                        candsStore.displayCv(cand, candsSource);
-                        candsStore.getDuplicatesCvsList(cand);
+                        await candsStore.displayCv(cand, candsSource);
+                        await candsStore.getDuplicatesCvsList(cand);
 
                         if (dupOpenCandId !== cand.candidateId) {
                           setDupOpenCandId(cand.candidateId);

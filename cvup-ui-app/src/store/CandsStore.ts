@@ -65,22 +65,22 @@ export class CandsStore {
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     await this.getPdf(cand.keyId);
 
-    // runInAction(() => {
-    //   // this.candAllSelected = cand;
-    //   this.candDisplay = cand;
-    //   this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-    //     candsSource
-    //   );
+    runInAction(() => {
+      // this.candAllSelected = cand;
+      this.candDisplay = cand;
+      this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+        candsSource
+      );
 
-    //   if (!cand.isSeen) {
-    //     this.cvsApi.updateIsSeen(cand.cvId);
-    //     cand.isSeen = true;
+      if (!cand.isSeen) {
+        this.cvsApi.updateIsSeen(cand.cvId);
+        cand.isSeen = true;
 
-    //     //not must but any way
-    //     const updatedCand = Object.assign({}, cand);
-    //     this.updateLists(updatedCand);
-    //   }
-    // });
+        //not must but any way
+        const updatedCand = Object.assign({}, cand);
+        this.updateLists(updatedCand);
+      }
+    });
   }
 
   async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {

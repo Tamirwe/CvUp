@@ -41,10 +41,15 @@ export const CandsList = observer(
 
     useEffect(() => {
       if (candsListData) {
-        setDupOpenCandId(0);
         setListCands([...candsListData?.slice(0, 50)]);
       }
     }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+      if (!candsStore.candDisplay) {
+        setDupOpenCandId(0);
+      }
+    }, [candsStore.candDisplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
       setTimeout(() => {
@@ -219,13 +224,15 @@ export const CandsList = observer(
                   )}
                 </Box>
               </ListItemButton>
-              <Collapse
-                in={dupOpenCandId === cand.candidateId}
-                timeout="auto"
-                unmountOnExit
-              >
-                <CandDupCvsList />
-              </Collapse>
+              {dupOpenCandId > 0 && (
+                <Collapse
+                  in={dupOpenCandId === cand.candidateId}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <CandDupCvsList />
+                </Collapse>
+              )}
             </ListItem>
           );
         })}

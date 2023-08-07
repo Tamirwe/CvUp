@@ -34,6 +34,16 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.AddCv(importCv);
         }
 
+        public async Task DeleteCv(int companyId, int candidateId, int cvId)
+        {
+            await _cvsPositionsQueries.DeleteCv( companyId, candidateId,  cvId);
+        }
+
+        public async Task DeleteCandidate(int companyId, int candidateId)
+        {
+            await _cvsPositionsQueries.DeleteCandidate(companyId, candidateId);
+        }
+
         public async Task UpdateCvKeyId(ImportCvModel importCv)
         {
             await _cvsPositionsQueries.UpdateCvKeyId(importCv);
@@ -193,9 +203,9 @@ namespace CandsPositionsLibrary
             return cvs;
         }
 
-        public async Task UpdateCandidateLastCv(ImportCvModel importCv)
+        public async Task UpdateCandidateLastCvByImport(ImportCvModel importCv)
         {
-            await _cvsPositionsQueries.UpdateCandidateLastCv(importCv);
+            await _cvsPositionsQueries.UpdateCandidateLastCvByImport(importCv);
         }
 
         public async Task UpdateSameCv(ImportCvModel importCv)

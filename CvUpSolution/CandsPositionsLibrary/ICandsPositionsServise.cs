@@ -12,6 +12,8 @@ namespace CandsPositionsLibrary
     public interface ICandsPositionsServise
     {
         Task<int> AddCv(ImportCvModel importCv);
+        Task DeleteCv(int companyId, int candidateId, int cvId);
+        Task DeleteCandidate(int companyId, int candidateId);
         Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         Task IndexCompanyCvs(int companyId);
         Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
@@ -29,7 +31,7 @@ namespace CandsPositionsLibrary
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task UpdateCvKeyId(ImportCvModel importCv);
         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
-        Task UpdateCandidateLastCv(ImportCvModel importCv);
+        Task UpdateCandidateLastCvByImport(ImportCvModel importCv);
         Task UpdateSameCv(ImportCvModel importCv);
         Task AttachPosCandCv(AttachePosCandCvModel posCv);
         Task DetachPosCand(AttachePosCandCvModel posCv);

@@ -162,7 +162,7 @@ export const Header = observer(() => {
                     >
                       <MdOutlineMarkEmailUnread />
                     </IconButton>
-                    <IconButton
+                    {/* <IconButton
                       title="Delete Cv"
                       sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
                       size="small"
@@ -179,7 +179,7 @@ export const Header = observer(() => {
                       }}
                     >
                       <MdOutlineDelete />
-                    </IconButton>
+                    </IconButton> */}
                   </>
                 )}
                 {/* <SearchCands /> */}

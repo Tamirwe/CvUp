@@ -213,5 +213,21 @@ namespace CvUpAPI.Controllers
            return await _candPosService.CandsReport(Globals.CompanyId, stageType);
         }
 
+        [HttpDelete]
+        [Route("DeleteCv")]
+        public async Task<CandModel?> DeleteCv(int cnid, int cvId)
+        {
+            await _candPosService.DeleteCv(Globals.CompanyId, cnid, cvId);
+            return await _candPosService.GetCandidate(Globals.CompanyId, cnid);
+
+        }
+
+        [HttpDelete]
+        [Route("DeleteCandidate")]
+        public async Task<IActionResult> DeleteCandidate(int id)
+        {
+            await _candPosService.DeleteCandidate(Globals.CompanyId, id);
+            return Ok();
+        }
     }
 }

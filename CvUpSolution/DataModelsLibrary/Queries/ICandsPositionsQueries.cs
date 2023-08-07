@@ -26,7 +26,9 @@ namespace DataModelsLibrary.Queries
          Task<CvModel?> GetCv(int cvId, int companyId);
          Task UpdateCvKeyId(ImportCvModel importCv);
          Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
-         Task UpdateCandidateLastCv(ImportCvModel importCv);
+         Task UpdateCandidateLastCvByImport(ImportCvModel importCv);
+         Task DeleteCv(int companyId, int candidateId, int cvId);
+         Task DeleteCandidate(int companyId, int candidateId);
          Task UpdateSameCv(ImportCvModel importCv);
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);

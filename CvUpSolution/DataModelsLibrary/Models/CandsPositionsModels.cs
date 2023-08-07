@@ -13,6 +13,7 @@ namespace DataModelsLibrary.Models
     {
         public int companyId { get; set; }
         public int cvId { get; set; }
+        public DateTime dateCreated { get; set; }
         public string cvKey { get; set; } = "";
         public string tempFilePath { get; set; } = "";
         public string fileExtension { get; set; } = "";
@@ -32,6 +33,7 @@ namespace DataModelsLibrary.Models
         public bool isDuplicate { get; set; } = false;
         public int duplicateCvId { get; set; }
         public bool isSameCv { get; set; } = false;
+        public int fileTypeKey { get; set; }
     }
 
     [Keyless]

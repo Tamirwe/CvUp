@@ -543,11 +543,14 @@ export class CandsStore {
     if (res.isSuccess) {
       if (res.data && res.data.candidateId) {
         this.updateLists(res.data);
+        this.duplicateCvsCandId = 0;
       } else {
         this.removeCandFromLists(this.candDisplay?.candidateId);
       }
 
-      this.candDisplay = undefined;
+      runInAction(() => {
+        this.candDisplay = undefined;
+      });
     }
 
     this.rootStore.generalStore.backdrop = false;
@@ -560,10 +563,12 @@ export class CandsStore {
       this.candDisplay?.candidateId
     );
 
-    if (res.isSuccess) {
-      this.removeCandFromLists(this.candDisplay?.candidateId);
-      this.candDisplay = undefined;
-    }
+    runInAction(() => {
+      if (res.isSuccess) {
+        this.removeCandFromLists(this.candDisplay?.candidateId);
+        this.candDisplay = undefined;
+      }
+    });
 
     this.rootStore.generalStore.backdrop = false;
   }

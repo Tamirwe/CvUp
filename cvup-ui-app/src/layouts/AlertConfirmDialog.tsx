@@ -34,7 +34,7 @@ export const AlertConfirmDialog = observer(() => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {generalStore.alertConfirmDialogMessage}
+            <div>{generalStore.alertConfirmDialogMessage}</div>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

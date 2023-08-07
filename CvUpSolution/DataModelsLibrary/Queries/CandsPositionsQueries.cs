@@ -169,7 +169,10 @@ namespace DataModelsLibrary.Queries
                     subject = importCv.subject,
                     from = importCv.from,
                     duplicate_cv_id = importCv.duplicateCvId,
-                    position = Utils.Truncate(importCv.positionRelated, 250)
+                    position = Utils.Truncate(importCv.positionRelated, 250),
+                    file_type=importCv.fileTypeKey,
+                    date_created = importCv.dateCreated,
+
                 };
 
                 dbContext.cvs.Add(newCv);
@@ -183,7 +186,6 @@ namespace DataModelsLibrary.Queries
                     cv_txt = importCv.cvTxt.Length > 7999 ? importCv.cvTxt.Substring(0, 7999) : importCv.cvTxt,
                     email_subject = importCv.subject,
                     ascii_sum = importCv.cvAsciiSum,
-
                 };
 
                 dbContext.cvs_txts.Add(cvTxt);
@@ -191,6 +193,68 @@ namespace DataModelsLibrary.Queries
                 await dbContext.SaveChangesAsync();
 
                 return newCv.id;
+            }
+        }
+
+        public async Task DeleteCv(int companyId, int candidateId, int cvId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<cv>? candCvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId).ToListAsync();
+
+                if (candCvs.Count > 1)
+                {
+                    cv? cvToDelete = candCvs.Where(x=>x.id == cvId).FirstOrDefault();
+
+                    if (cvToDelete != null)
+                    {
+                        var result = dbContext.cvs.Remove(cvToDelete);
+                        await dbContext.SaveChangesAsync();
+                        await UpdateCandidateLastCv(companyId, candidateId);
+                    }
+                }
+                else
+                {
+                    await DeleteCandidate(companyId, candidateId);
+                }
+            }
+        }
+
+        private async Task UpdateCandidateLastCv(int companyId, int candidateId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<cv>? candCvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId).OrderByDescending(x => x.date_created).ToListAsync();
+                cv? lastCv = candCvs.OrderByDescending(x=>x.date_created).FirstOrDefault();
+
+                if (lastCv != null)
+                {
+                    candidate? cand = await dbContext.candidates.Where(x => x.id == candidateId).FirstOrDefaultAsync();
+
+                    if (cand != null)
+                    {
+                        cand.has_duplicates_cvs = (sbyte?)(candCvs.Count > 1 ? 1 : 0);
+                        cand.last_cv_id = lastCv.id;
+                        cand.last_cv_sent = lastCv.date_created;
+                        cand.date_updated = DateTime.Now;
+                        var result = dbContext.candidates.Update(cand);
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+        }
+
+        public async Task DeleteCandidate(int companyId, int candidateId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? candTodelete = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
+
+                if (candTodelete != null)
+                {
+                    var result = dbContext.candidates.Remove(candTodelete);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
 
@@ -717,7 +781,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateCandidateLastCv(ImportCvModel importCv)
+        public async Task UpdateCandidateLastCvByImport(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
             {

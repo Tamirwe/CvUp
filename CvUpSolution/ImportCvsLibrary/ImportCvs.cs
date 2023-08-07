@@ -1,22 +1,23 @@
-﻿using MailKit.Net.Imap;
-using MailKit;
-using System.Text;
-using MailKit.Search;
-using MimeKit;
-using Microsoft.Extensions.Configuration;
+﻿using CandsPositionsLibrary;
+using Database.models;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using System.Text.RegularExpressions;
-using static DataModelsLibrary.GlobalConstant;
+using GeneralLibrary;
+using Google.Protobuf;
+using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using MimeKit;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
-using System.Drawing.Imaging;
-using J2N.Text;
-using DataModelsLibrary.Enums;
-using Database.models;
 using System.ComponentModel.Design;
-using GeneralLibrary;
-using CandsPositionsLibrary;
+using System.Net.Mail;
+using System.Text;
+using System.Text.RegularExpressions;
+using static DataModelsLibrary.GlobalConstant;
 
 namespace ImportCvsLibrary
 {
@@ -29,10 +30,10 @@ namespace ImportCvsLibrary
         string _mailPassword;
         string _cvFolderPath = "";
         string _cvTempFolderPath = "";
-        string _yearFolder = DateTime.Now.Year.ToString("0000");
-        string _monthFolder = DateTime.Now.Month.ToString("00");
+        string _yearFolder="";
+        string _monthFolder="";
         string _companyFolder = "";
-        List<company_cvs_email>? _companiesEmail;
+        //List<company_cvs_email>? _companiesEmail;
         List<ParserRulesModel> _parsersRulesAllCompanies;
         List<ParserRulesModel> _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
@@ -47,9 +48,103 @@ namespace ImportCvsLibrary
             _mailPassword = config["GlobalSettings:GmailPassword"];
         }
 
+
+
+        public async Task ReceiveEmailsAsync()
+        {
+            using (var client = new ImapClient())
+            {
+                // Connect to the IMAP server
+                await client.ConnectAsync("imap.gmail.com", 993, true);
+
+                // Authenticate with the server
+                await client.AuthenticateAsync(_gmailUserName, _mailPassword);
+
+                // Open the Inbox folder
+                await client.Inbox.OpenAsync(MailKit.FolderAccess.ReadOnly);
+
+
+                var messages = await client.Inbox.SearchAsync(SearchQuery.NotSeen);
+
+                foreach (var message in messages)
+                {
+                    // Fetch the full message
+                    var fullMessage = await client.Inbox.GetMessageAsync(message);
+
+                    foreach (var bodyPart in fullMessage.BodyParts)
+                    {
+                        var contentBase = bodyPart.ContentDisposition;
+
+                        if (bodyPart.ContentType.Name != null)
+                        {
+                            //var part = (MimePart)bodyPart;
+                            //var fileName = part.FileName;
+
+                            //string fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
+
+                            //var myUniqueFileName = $@"{DateTime.Now.Ticks}{_importCv.fileExtension}";
+                            //_importCv.tempFilePath = $"{_cvTempFolderPath}\\{myUniqueFileName}";
+
+                            ////using (var stream = File.Create(_importCv.tempFilePath))
+                            ////{
+                            ////    if (attachment is MessagePart)
+                            ////    {
+                            ////        var rfc822 = (MessagePart)attachment;
+                            ////        rfc822.Message.WriteTo(stream);
+                            ////    }
+                            ////    else
+                            ////    {
+                            ////        var part = (MimePart)attachment;
+                            ////        part.Content.DecodeTo(stream);
+                            ////    }
+                            ////}
+
+
+                            //using (var stream = File.Create(_importCv.tempFilePath))
+                            //{
+                            //    part.Content.DecodeTo(stream);
+                            //    //SaveAttachmentToTemporaryFile(stream);
+                            //}
+                            
+                        }
+                    }
+
+                        //ProcessEmailMessage(fullMessage);
+                }
+
+                // Disconnect from the server
+                await client.DisconnectAsync(true);
+            }
+        }
+
+        private void ProcessEmailMessage(MimeMessage message)
+        {
+            // Implement your logic to process the email message here.
+            // You can access different parts of the email, such as subject, body, attachments, etc.
+
+            Console.WriteLine($"Subject: {message.Subject}");
+            Console.WriteLine($"From: {message.From}");
+            Console.WriteLine($"Body: {message.TextBody}");
+            // Process attachments if needed
+            foreach (IEnumerable<MimeEntity> attachment in message.Attachments)
+            {
+                foreach (var item in attachment)
+                {
+                    string originalFileName = item.ContentDisposition?.FileName ?? item.ContentType.Name;
+                    Console.WriteLine(originalFileName);
+                }
+                //string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
+
+               
+            }
+        }
+
+
         public async void ImportFromGmail()
         {
-            _companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
+            //await ReceiveEmailsAsync();
+
+            //_companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
             _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
 
             using (var client = new ImapClient())
@@ -62,7 +157,8 @@ namespace ImportCvsLibrary
 
                 foreach (var uid in uids)
                 {
-                    var message = inbox.GetMessage(uid);
+                    var message = client.Inbox.GetMessage(uid);
+
                     Console.WriteLine("Subject: {0}", message.Subject);
 
                     // no need because app is only for bella
@@ -71,30 +167,71 @@ namespace ImportCvsLibrary
 
                     if (companyId > 0)
                     {
+                        _companyFolder = companyId.ToString();
+                        var dateCreated = DateTime.Now;
+                        _yearFolder = dateCreated.Year.ToString("0000");
+                        _monthFolder = dateCreated.Month.ToString("00");
+
                         CreateCvFolder(companyId);
-                        _parsersRules = _parsersRulesAllCompanies.Where(x=>x.company_id == companyId).ToList();
+                        _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
 
-                        foreach (MimeEntity attachment in message.Attachments)
+                        foreach (var bodyPart in message.BodyParts)
                         {
-                            string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
-                            string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+                            var contentBase = bodyPart.ContentDisposition;
 
-                            if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                            if (bodyPart.ContentType.Name != null)
                             {
-                                _importCv = new ImportCvModel
-                                {
-                                    companyId = companyId,
-                                    emailId = message.MessageId,
-                                    subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
-                                    from = message.From.ToString(),
-                                    fileExtension = fileExtension,
-                                };
+                                var part = (MimePart)bodyPart;
+                                var originalFileName = part.FileName;
+                                string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+                                int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
-                                SaveAttachmentToTemporaryFile( attachment);
-                                ParseEmailSubject();
-                                await CvExtractDataAndSave();
+                                if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                                {
+                                    _importCv = new ImportCvModel
+                                    {
+                                        companyId = companyId,
+                                        emailId = message.MessageId,
+                                        subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
+                                        from = message.From.ToString(),
+                                        fileExtension = fileExtension,
+                                        fileTypeKey = fileTypeKey,
+                                        dateCreated = dateCreated,
+                                    };
+
+                                    SaveAttachmentToTemporaryFile(part);
+                                    ParseEmailSubject();
+                                    await CvExtractDataAndSave();
+                                }
                             }
                         }
+
+
+
+
+
+
+                        //foreach (var attachment in message.Attachments)
+                        //{
+                        //    string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
+                        //    string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+
+                        //    if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                        //    {
+                        //        _importCv = new ImportCvModel
+                        //        {
+                        //            companyId = companyId,
+                        //            emailId = message.MessageId,
+                        //            subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
+                        //            from = message.From.ToString(),
+                        //            fileExtension = fileExtension,
+                        //        };
+
+                        //        SaveAttachmentToTemporaryFile(attachment);
+                        //        ParseEmailSubject();
+                        //        await CvExtractDataAndSave();
+                        //    }
+                        //}
                     }
 
                     inbox.SetFlags(uid, MessageFlags.Seen, true);
@@ -119,7 +256,7 @@ namespace ImportCvsLibrary
 
         private async Task UpdateCandidateLastCv()
         {
-            await _cvsPositionsServise.UpdateCandidateLastCv(_importCv);
+            await _cvsPositionsServise.UpdateCandidateLastCvByImport(_importCv);
         }
 
         private async Task UpdateCvKeyId()
@@ -132,7 +269,6 @@ namespace ImportCvsLibrary
 
         private void CreateCvFolder(int companyId)
         {
-            _companyFolder = companyId.ToString();
             Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs");
             _cvTempFolderPath = $"{_filesRootFolder}\\_{_companyFolder}\\temp";
             Directory.CreateDirectory(_cvTempFolderPath);
@@ -381,8 +517,7 @@ namespace ImportCvsLibrary
 
         private string GetAttachmentFileNamePath(int cvId, string fileExtension, out string cvKey)
         {
-            int fileTypeKey = Utils.FileTypeKey(fileExtension);
-            cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{fileTypeKey}-{cvId}";
+            cvKey = $"{_companyFolder}-{_yearFolder}{_monthFolder}{_importCv.fileTypeKey}-{cvId}";
 
             string fileName = $"{_companyFolder}-{_yearFolder}{_monthFolder}-{cvId}{fileExtension}";
 
@@ -391,24 +526,24 @@ namespace ImportCvsLibrary
             return fileNamePath;
         }
 
-        private int GetCompanyIdFromAddress(InternetAddressList addressList)
-        {
-            foreach (var toEmail in addressList.ToList())
-            {
-                if (_companiesEmail != null)
-                {
-                    var toAddress = toEmail.ToString();
+        //private int GetCompanyIdFromAddress(InternetAddressList addressList)
+        //{
+        //    foreach (var toEmail in addressList.ToList())
+        //    {
+        //        if (_companiesEmail != null)
+        //        {
+        //            var toAddress = toEmail.ToString();
 
-                    var companyEmail = _companiesEmail.Where(x => x.email == toAddress).FirstOrDefault();
+        //            var companyEmail = _companiesEmail.Where(x => x.email == toAddress).FirstOrDefault();
 
-                    if (companyEmail != null)
-                    {
-                        return companyEmail.company_id;
-                    }
-                }
-            }
+        //            if (companyEmail != null)
+        //            {
+        //                return companyEmail.company_id;
+        //            }
+        //        }
+        //    }
 
-            return 0;
-        }
+        //    return 0;
+        //}
     }
 }

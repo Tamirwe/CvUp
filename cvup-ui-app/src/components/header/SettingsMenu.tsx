@@ -10,14 +10,22 @@ import {
 import { useState } from "react";
 
 import { CiLogout, CiSettings } from "react-icons/ci";
-import { MdGroup, MdOutlineTextSnippet } from "react-icons/md";
+import {
+  MdDelete,
+  MdGroup,
+  MdOutlineDelete,
+  MdOutlineTextSnippet,
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
-import { UserRoleEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  UserRoleEnum,
+} from "../../models/GeneralEnums";
 import { green } from "@mui/material/colors";
 
 export const SettingsMenu = () => {
-  const { generalStore, authStore } = useStore();
+  const { generalStore, authStore, candsStore } = useStore();
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -90,6 +98,44 @@ export const SettingsMenu = () => {
         {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem> */}
+        <Divider />
+        <MenuItem
+          onClick={async () => {
+            const isDelete = await generalStore.alertConfirmDialog(
+              AlertConfirmDialogEnum.Confirm,
+              "Delete Cv",
+              "Are you sure you want to delete this cv?"
+            );
+
+            if (isDelete) {
+              await candsStore.deleteCv();
+            }
+          }}
+        >
+          <Avatar>
+            <MdOutlineDelete />
+          </Avatar>
+          Delete Cv
+        </MenuItem>
+        <MenuItem
+          onClick={async () => {
+            const isDelete = await generalStore.alertConfirmDialog(
+              AlertConfirmDialogEnum.Confirm,
+              "Delete Candidate",
+              "Are you sure you want to delete this candidate?"
+            );
+
+            if (isDelete) {
+              await candsStore.deleteCandidate();
+            }
+          }}
+        >
+          <Avatar>
+            <MdDelete />
+          </Avatar>
+          Delete Candidate
+        </MenuItem>
+
         <Divider />
 
         {/* {authStore.userRole === UserRoleEnum.Admin && ( */}

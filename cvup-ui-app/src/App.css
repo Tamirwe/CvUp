@@ -40,6 +40,6 @@ body {
 }
 
 .ql-editor{
-  height: calc(100vh - 35rem);
+  height:  30rem;
   overflow: auto;
 }

@@ -8,6 +8,7 @@ import { EmailTypeEnum } from "../models/GeneralEnums";
 import { useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../models/GeneralModels";
 import { format } from "date-fns";
+import { isMobile } from "react-device-detect";
 
 export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -46,12 +47,15 @@ export const Cv = observer(() => {
   };
 
   return (
-    <div ref={scrollRef} className={styles.scrollCv}>
+    <div
+      ref={scrollRef}
+      className={styles.scrollCv}
+      style={{ marginTop: "0.5rem" }}
+    >
       {candsStore.candDisplay && (
         <Grid
           container
           sx={{
-            paddingTop: "1rem",
             direction: "rtl",
             padding: "1rem 1.5rem 1rem 1rem",
           }}
@@ -64,7 +68,7 @@ export const Cv = observer(() => {
                 sx={{
                   color: "#7b84ff",
                   fontWeight: 700,
-                  fontSize: "1.1rem",
+                  fontSize: isMobile ? "0.9rem" : "1.1rem",
                 }}
               >
                 {positionsStore.candDisplayPosition && (
@@ -79,7 +83,7 @@ export const Cv = observer(() => {
                     }}
                   >
                     {positionsStore.candDisplayPosition?.name || ""}
-                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;-&nbsp;
                     {positionsStore.candDisplayPosition?.customerName || ""}
                   </Link>
                 )}
@@ -87,27 +91,46 @@ export const Cv = observer(() => {
               <Grid
                 item
                 xs={12}
-                sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1rem",
+                  paddingTop: "1rem",
+                }}
               >
-                <Link
-                  href="#"
-                  onClick={() => {
-                    generalStore.showCandFormDialog = true;
+                <Grid
+                  container
+                  sx={{
+                    gap: "1rem",
                   }}
                 >
-                  {candidateName}
-                </Link>
-                <Link
-                  href="#"
-                  onClick={() => {
-                    generalStore.showEmailDialog = EmailTypeEnum.Candidate;
-                  }}
-                >
-                  {candsStore.candDisplay?.email}{" "}
-                </Link>
-                <a href={"tel:" + candsStore.candDisplay?.phone}>
-                  {candsStore.candDisplay?.phone}
-                </a>
+                  <Grid item>
+                    <Link
+                      sx={{ whiteSpace: "nowrap" }}
+                      href="#"
+                      onClick={() => {
+                        generalStore.showCandFormDialog = true;
+                      }}
+                    >
+                      {candidateName}
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        generalStore.showEmailDialog = EmailTypeEnum.Candidate;
+                      }}
+                    >
+                      {candsStore.candDisplay?.email}{" "}
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <a href={"tel:" + candsStore.candDisplay?.phone}>
+                      {candsStore.candDisplay?.phone}
+                    </a>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -122,7 +145,8 @@ export const Cv = observer(() => {
                     alignItems: "center",
                     textAlign: "left",
                     flexDirection: "row-reverse",
-                    gap: 1,
+                    gap: 1.5,
+                    paddingTop: isMobile ? 1.5 : 0,
                   }}
                 >
                   <span style={{ direction: "ltr" }}>Status:</span>
@@ -158,7 +182,7 @@ export const Cv = observer(() => {
                       })}
                     </Select>
                   </FormControl>
-                  <span>
+                  <span style={{ whiteSpace: "nowrap", fontSize: "0.75rem" }}>
                     {" "}
                     {format(new Date(posStage?._dt), "MMM d, yyyy")}{" "}
                   </span>
@@ -188,25 +212,37 @@ export const Cv = observer(() => {
             </Grid>
           </Grid>
           <Grid item xs={12} lg={12}>
-            {candsStore.candDisplay?.reviewDate && (
-              <div
-                title="Review updated date"
-                style={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  paddingTop: "1rem",
-                  gap: 2,
-                }}
-              >
-                <span style={{ direction: "ltr" }}>Review:</span>
-                {format(
-                  new Date(candsStore.candDisplay?.reviewDate),
-                  "MMM d, yyyy"
-                )}{" "}
-              </div>
-            )}
+            {candsStore.candDisplay?.review &&
+              candsStore.candDisplay?.reviewDate && (
+                <div
+                  title="Review updated date"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row-reverse",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    paddingTop: "1rem",
+                  }}
+                >
+                  <Link
+                    title="Review updated"
+                    sx={{ whiteSpace: "nowrap" }}
+                    href="#"
+                    onClick={() => {
+                      generalStore.showReviewCandDialog =
+                        !generalStore.showReviewCandDialog;
+                    }}
+                  >
+                    <span style={{ direction: "ltr" }}>
+                      Review:&nbsp;&nbsp;
+                    </span>
+                    {format(
+                      new Date(candsStore.candDisplay?.reviewDate),
+                      "MMM d, yyyy"
+                    )}{" "}
+                  </Link>
+                </div>
+              )}
             <div className="qlCustom">
               <pre
                 style={{

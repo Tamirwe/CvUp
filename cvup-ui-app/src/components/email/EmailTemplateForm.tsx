@@ -134,9 +134,9 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
           <Grid container>
             <Grid item xs={12} lg={12} sx={{ direction: "rtl" }}>
               <Grid container>
-                <Grid item xs={12} lg={12} pt={1}>
+                <Grid item xs={12} lg={12}>
                   <Grid container>
-                    <Grid item xs={12} lg={7}>
+                    <Grid item xs={12} lg={7} pt={2}>
                       <Stack direction="row">
                         <IconButton color="primary" onClick={handleAddTemplate}>
                           <GoPlus />
@@ -207,7 +207,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={12} lg={5}>
+                    <Grid item xs={12} lg={5} pt={2}>
                       <FormControl
                         fullWidth
                         // variant="standard"

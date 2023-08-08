@@ -141,11 +141,6 @@ export const Header = observer(() => {
                       sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
                       size="small"
                       onClick={() => {
-                        if (generalStore.cvReviewDialogOpen) {
-                          localStorage.setItem("rteX", "50");
-                          localStorage.setItem("rteY", "50");
-                        }
-
                         generalStore.showReviewCandDialog =
                           !generalStore.showReviewCandDialog;
                       }}

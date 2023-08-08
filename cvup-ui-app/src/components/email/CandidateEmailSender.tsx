@@ -56,10 +56,10 @@ export const CandidateEmailSender = observer((props: IProps) => {
     name: "",
     subject: "",
   });
-  const [emailsToList, setEmailsToList] = useState<IEmailsAddress[]>([]);
-  const [listDefaultEmails, setListDefaultEmails] = useState<IEmailsAddress[]>(
+  const [emailsOptionsList, setEmailsOptionsList] = useState<IEmailsAddress[]>(
     []
   );
+  const [toEmailsList, setToEmailsList] = useState<IEmailsAddress[]>([]);
   const [bodyHtml, setBodyHtml] = useState("");
   const [formModel, setFormModel] = useState<IEmailForm>({
     subject: "",
@@ -75,7 +75,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
       const emailsList = [
         {
           id: 1,
-          Address: candsStore.candAllSelected?.email || "",
+          Address: candsStore.candDisplay?.email || "",
           Name:
             (candsStore.candDisplay?.firstName || "") +
             " " +
@@ -83,8 +83,8 @@ export const CandidateEmailSender = observer((props: IProps) => {
         },
       ];
 
-      setEmailsToList(emailsList);
-      setListDefaultEmails(emailsList);
+      setEmailsOptionsList(emailsList);
+      setToEmailsList(emailsList);
     }
   };
 
@@ -192,7 +192,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
       const emailBody = quillEditor.root.innerHTML;
 
       const emailData: ISendEmail = {
-        toAddresses: emailsToList,
+        toAddresses: toEmailsList,
         subject: formModel.subject,
         body: emailBody,
       };
@@ -204,11 +204,10 @@ export const CandidateEmailSender = observer((props: IProps) => {
 
       if (data.isSuccess) {
         generalStore.alertSnackbar("success", "Email sent");
+        props.onClose();
       } else {
         generalStore.alertSnackbar("error", "Email send error - check outbox");
       }
-
-      props.onClose();
     }
   };
 
@@ -227,8 +226,11 @@ export const CandidateEmailSender = observer((props: IProps) => {
         <Grid container>
           <Grid item xs={12} lg={12} pt={1}>
             <EmailsToControl
-              listEmailsTo={emailsToList}
-              listDefaultEmails={listDefaultEmails}
+              optionsList={emailsOptionsList}
+              listValues={toEmailsList}
+              onChange={(vals) => {
+                setToEmailsList(vals);
+              }}
             />
           </Grid>
           <Grid item xs={12} lg={8} pt={2}>

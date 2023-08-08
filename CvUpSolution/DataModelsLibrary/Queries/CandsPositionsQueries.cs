@@ -2,9 +2,12 @@
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Drawing;
@@ -170,7 +173,7 @@ namespace DataModelsLibrary.Queries
                     from = importCv.from,
                     duplicate_cv_id = importCv.duplicateCvId,
                     position = Utils.Truncate(importCv.positionRelated, 250),
-                    file_type=importCv.fileTypeKey,
+                    file_type = importCv.fileTypeKey,
                     date_created = importCv.dateCreated,
 
                 };
@@ -204,13 +207,12 @@ namespace DataModelsLibrary.Queries
 
                 if (candCvs.Count > 1)
                 {
-                    cv? cvToDelete = candCvs.Where(x=>x.id == cvId).FirstOrDefault();
+                    cv? cvToDelete = candCvs.Where(x => x.id == cvId).FirstOrDefault();
 
                     if (cvToDelete != null)
                     {
                         var result = dbContext.cvs.Remove(cvToDelete);
                         await dbContext.SaveChangesAsync();
-                        await UpdateCandidateLastCv(companyId, candidateId);
                     }
                 }
                 else
@@ -220,29 +222,31 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        private async Task UpdateCandidateLastCv(int companyId, int candidateId)
+        public async Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 List<cv>? candCvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId).OrderByDescending(x => x.date_created).ToListAsync();
-                cv? lastCv = candCvs.OrderByDescending(x=>x.date_created).FirstOrDefault();
-
-                if (lastCv != null)
-                {
-                    candidate? cand = await dbContext.candidates.Where(x => x.id == candidateId).FirstOrDefaultAsync();
-
-                    if (cand != null)
-                    {
-                        cand.has_duplicates_cvs = (sbyte?)(candCvs.Count > 1 ? 1 : 0);
-                        cand.last_cv_id = lastCv.id;
-                        cand.last_cv_sent = lastCv.date_created;
-                        cand.date_updated = DateTime.Now;
-                        var result = dbContext.candidates.Update(cand);
-                        await dbContext.SaveChangesAsync();
-                    }
-                }
+                cv? lastCv = candCvs.OrderByDescending(x => x.date_created).FirstOrDefault();
+                var isDuplicate = candCvs.Count > 1;
+                return new Tuple<cv?, bool>(lastCv, isDuplicate);
             }
         }
+
+        public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).First();
+                cand.has_duplicates_cvs = (sbyte?)(isDuplicate ? 1 : 0);
+                cand.last_cv_id = cvId;
+                cand.last_cv_sent = lastCvSent;
+                cand.date_updated = DateTime.Now;
+                var result = dbContext.candidates.Update(cand);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
 
         public async Task DeleteCandidate(int companyId, int candidateId)
         {
@@ -440,7 +444,7 @@ namespace DataModelsLibrary.Queries
 
             using (var dbContext = new cvup00001Context())
             {
-                List<cvs_txt>? cvsTxtList = await dbContext.cvs_txts.Where(x=>x.ascii_sum == null).ToListAsync();
+                List<cvs_txt>? cvsTxtList = await dbContext.cvs_txts.Where(x => x.ascii_sum == null).ToListAsync();
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
                 foreach (var itemCv in cvsTxtList)
@@ -468,7 +472,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<int>> getPositionContactsIds(int companyId,int positionId)
+        public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -498,17 +502,17 @@ namespace DataModelsLibrary.Queries
                             {
                                 id = p.id,
                                 name = p.name,
-                                descr = p.descr ,
+                                descr = p.descr,
                                 requirements = p.requirements,
                                 customerId = p.customer_id ?? 0,
                                 customerName = c.name,
-                                status = Enum.Parse<PositionStatusEnum>(p.status),
+                                status = System.Enum.Parse<PositionStatusEnum>(p.status),
                                 interviewersIds = inter.ToArray(),
                                 contactsIds = conts,
-                                emailsubjectAddon=p.customer_pos_num,
-                                remarks=p.remarks,
+                                emailsubjectAddon = p.customer_pos_num,
+                                remarks = p.remarks,
                                 matchEmailsubject = p.match_email_subject,
-                                updated =p.date_updated
+                                updated = p.date_updated
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -579,14 +583,14 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.positions
-                             join c in dbContext.customers on p.customer_id equals c.id
+                            join c in dbContext.customers on p.customer_id equals c.id
                             where p.company_id == companyId
                             orderby p.date_updated descending
                             select new PositionModel
                             {
                                 id = p.id,
                                 name = p.name,
-                                status = Enum.Parse<PositionStatusEnum>(p.status),
+                                status = System.Enum.Parse<PositionStatusEnum>(p.status),
                                 updated = p.date_updated,
                                 customerName = c.name,
                                 customerId = p.customer_id,
@@ -714,7 +718,7 @@ namespace DataModelsLibrary.Queries
             {
                 using (var dbContext = new cvup00001Context())
                 {
-                    List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId ).ToListAsync();
+                    List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId).ToListAsync();
                     return cvs;
                 }
             }
@@ -778,20 +782,6 @@ namespace DataModelsLibrary.Queries
 
                 //List<cvs_txt> cvs = await dbContext.cvs_txts.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.ascii_sum == cvAsciiSum).ToListAsync();
                 //return cvs;
-            }
-        }
-
-        public async Task UpdateCandidateLastCvByImport(ImportCvModel importCv)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                candidate cand = dbContext.candidates.Where(x => x.id == importCv.candidateId).First();
-                cand.has_duplicates_cvs = (sbyte?)(importCv.isDuplicate ? 1 : 0);
-                cand.last_cv_id = importCv.cvId;
-                cand.last_cv_sent = DateTime.Now;
-                cand.date_updated = DateTime.Now;
-                var result = dbContext.candidates.Update(cand);
-                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -908,8 +898,8 @@ namespace DataModelsLibrary.Queries
                 return await dbContext.company_cvs_emails.ToListAsync();
             }
         }
-      
-        public async  Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)
+
+        public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -923,7 +913,7 @@ namespace DataModelsLibrary.Queries
                                  order = st.order,
                                  isCustom = Convert.ToBoolean(st.is_custom),
                                  color = st.color,
-                                 stageEvent= st.stage_event
+                                 stageEvent = st.stage_event
                              });
 
                 return await query.ToListAsync();
@@ -1040,10 +1030,10 @@ namespace DataModelsLibrary.Queries
                                  candidateId = cn.id,
                                  firstName = cn.first_name,
                                  lastName = cn.last_name,
-                                 positionId=pos.id,
-                                 positionName=pos.name,
+                                 positionId = pos.id,
+                                 positionName = pos.name,
                                  customerId = pos.customer_id,
-                                 stageDate=pcs.stage_date,
+                                 stageDate = pcs.stage_date,
                              }).Take(500); ;
 
                 return await query.ToListAsync();
@@ -1058,10 +1048,11 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId) {
+        public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId)
+        {
             using (var dbContext = new cvup00001Context())
             {
-                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id==positionId).FirstOrDefaultAsync();
+                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
 
                 if (candPos != null)
                 {
@@ -1109,6 +1100,51 @@ namespace DataModelsLibrary.Queries
                 pos.date_updated = DateTime.Now;
                 var result = dbContext.positions.Update(pos);
                 await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && x.match_email_subject != null).ToListAsync();
+
+                position? matchPos = posList.Where(x => x.match_email_subject != null && matchStr.Contains(x.match_email_subject)).FirstOrDefault();
+
+                return matchPos;
+            }
+        }
+
+        public async Task AddSendEmail(SendEmailModel emailData, int userId)
+        {
+            string toAddresses = "";
+
+            if (emailData.toAddresses != null)
+            {
+                foreach (var item in emailData.toAddresses)
+                {
+                    toAddresses += item.Address + ", ";
+                }
+            }
+
+            toAddresses = toAddresses.Substring(0, toAddresses.Length - 2);
+
+            using (var dbContext = new cvup00001Context())
+            {
+                dbContext.sent_emails.Add(new sent_email
+                {
+                    company_id = emailData.companyId,
+                    candidate_id = emailData.candidateId,
+                    position_id = emailData.positionId,
+                    cv_id = emailData.cvId,
+                    subject = emailData.subject != null ? emailData.subject.Substring(0, Math.Min(emailData.subject.Length, 500)) : null,
+                    body = emailData.body != null ? emailData.body.Substring(0, Math.Min(emailData.body.Length, 1000)) : null,
+                    user_id = userId,
+                    to = toAddresses.Substring(0, Math.Min(toAddresses.Length, 500))
+                });
+
+                await dbContext.SaveChangesAsync();
+
             }
         }
 

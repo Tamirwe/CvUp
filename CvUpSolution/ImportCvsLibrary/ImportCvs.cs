@@ -252,11 +252,29 @@ namespace ImportCvsLibrary
             await UpdateCvKeyId();
             await UpdateCandidateLastCv();
             await AddCvToIndex();
+            await AddCandToMatchPosition();
         }
+
+        private async Task AddCandToMatchPosition()
+        {
+            position? matchPos = await _cvsPositionsServise.GetPositionByMatchStr(_importCv.companyId, _importCv.subject);
+
+            if (matchPos != null) {
+                await _cvsPositionsServise.AttachPosCandCv(new AttachePosCandCvModel
+                {
+                    positionId = matchPos.id,
+                    candidateId = _importCv.candidateId,
+                    companyId = _importCv.companyId,
+                    cvId = _importCv.cvId,
+                    keyId = _importCv.cvKey
+                });
+            }
+        }
+
 
         private async Task UpdateCandidateLastCv()
         {
-            await _cvsPositionsServise.UpdateCandidateLastCvByImport(_importCv);
+            await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
         }
 
         private async Task UpdateCvKeyId()

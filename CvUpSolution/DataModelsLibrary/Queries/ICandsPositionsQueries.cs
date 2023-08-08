@@ -26,8 +26,9 @@ namespace DataModelsLibrary.Queries
          Task<CvModel?> GetCv(int cvId, int companyId);
          Task UpdateCvKeyId(ImportCvModel importCv);
          Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
-         Task UpdateCandidateLastCvByImport(ImportCvModel importCv);
+         Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
          Task DeleteCv(int companyId, int candidateId, int cvId);
+        Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId);
          Task DeleteCandidate(int companyId, int candidateId);
          Task UpdateSameCv(ImportCvModel importCv);
          Task<candidate?> GetCandidateByPhone(string phone);
@@ -54,5 +55,7 @@ namespace DataModelsLibrary.Queries
         Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId);
         Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId);
         Task UpdatePositionDate(int companyId, int positionId);
+        Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
+        Task AddSendEmail(SendEmailModel emailData, int userId);
     }
 }

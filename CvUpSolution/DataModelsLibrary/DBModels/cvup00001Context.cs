@@ -36,6 +36,7 @@ namespace Database.models
         public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
+        public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -558,6 +559,26 @@ namespace Database.models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<sent_email>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_sent_emails_company_id_companies_id");
+
+                entity.Property(e => e.body).HasMaxLength(1000);
+
+                entity.Property(e => e.date_sent)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.subject).HasMaxLength(500);
+
+                entity.Property(e => e.to).HasMaxLength(500);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.sent_emails)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_sent_emails_company_id_companies_id");
             });
 
             modelBuilder.Entity<user>(entity =>

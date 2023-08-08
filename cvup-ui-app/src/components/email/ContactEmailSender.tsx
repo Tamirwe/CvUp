@@ -33,10 +33,10 @@ export const ContactEmailSender = (props: IProps) => {
   const refQuill = useRef();
   const [bodyHtml, setBodyHtml] = useState("");
 
-  const [emailsToList, setEmailsToList] = useState<IEmailsAddress[]>([]);
-  const [listDefaultEmails, setListDefaultEmails] = useState<IEmailsAddress[]>(
+  const [emailsOptionsList, setEmailsOptionsList] = useState<IEmailsAddress[]>(
     []
   );
+  const [toEmailsList, setToEmailsList] = useState<IEmailsAddress[]>([]);
   const [formModel, setFormModel] = useState<IEmailForm>({
     subject: "",
     body: "",
@@ -68,7 +68,7 @@ export const ContactEmailSender = (props: IProps) => {
         return emailAddress;
       });
 
-      setEmailsToList(emailsOptionsList || []);
+      setEmailsOptionsList(emailsOptionsList || []);
 
       const emailsToList = positionsStore.candDisplayPosition?.contactsIds?.map(
         (id) => {
@@ -82,7 +82,7 @@ export const ContactEmailSender = (props: IProps) => {
         }
       );
 
-      setListDefaultEmails(emailsToList || []);
+      setToEmailsList(emailsToList || []);
     }
   };
 
@@ -137,7 +137,7 @@ export const ContactEmailSender = (props: IProps) => {
       };
 
       const emailData: ISendEmail = {
-        toAddresses: emailsToList,
+        toAddresses: toEmailsList,
         subject: formModel.subject,
         body: emailBody,
         attachCvs: [attachment],
@@ -164,8 +164,11 @@ export const ContactEmailSender = (props: IProps) => {
         <Grid container>
           <Grid item xs={12} lg={12} pt={1}>
             <EmailsToControl
-              listEmailsTo={emailsToList}
-              listDefaultEmails={listDefaultEmails}
+              optionsList={emailsOptionsList}
+              listValues={toEmailsList}
+              onChange={(vals) => {
+                setToEmailsList(vals);
+              }}
             />
           </Grid>
           <Grid item xs={12} lg={12} pt={2}>

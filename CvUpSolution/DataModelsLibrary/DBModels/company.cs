@@ -20,6 +20,7 @@ namespace Database.models
             position_contacts = new HashSet<position_contact>();
             position_interviewers = new HashSet<position_interviewer>();
             positions = new HashSet<position>();
+            sent_emails = new HashSet<sent_email>();
             users = new HashSet<user>();
         }
 
@@ -43,6 +44,7 @@ namespace Database.models
         public virtual ICollection<position_contact> position_contacts { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<position> positions { get; set; }
+        public virtual ICollection<sent_email> sent_emails { get; set; }
         public virtual ICollection<user> users { get; set; }
     }
 }

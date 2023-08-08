@@ -6,6 +6,7 @@ using EmailsLibrary;
 using EmailsLibrary.Models;
 using LuceneLibrary;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.Design;
 
 namespace CandsPositionsLibrary
 {
@@ -36,7 +37,16 @@ namespace CandsPositionsLibrary
 
         public async Task DeleteCv(int companyId, int candidateId, int cvId)
         {
-            await _cvsPositionsQueries.DeleteCv( companyId, candidateId,  cvId);
+            await _cvsPositionsQueries.DeleteCv(companyId, candidateId, cvId);
+
+            var tuple = await _cvsPositionsQueries.GetCandLastCv(companyId, candidateId);
+            cv? lastCv = tuple.Item1;
+            bool isDuplicate = tuple.Item2;
+
+            if (lastCv != null)
+            {
+                await _cvsPositionsQueries.UpdateCandLastCv(companyId, candidateId, lastCv.id, isDuplicate, lastCv.date_created);
+            }
         }
 
         public async Task DeleteCandidate(int companyId, int candidateId)
@@ -203,9 +213,9 @@ namespace CandsPositionsLibrary
             return cvs;
         }
 
-        public async Task UpdateCandidateLastCvByImport(ImportCvModel importCv)
+        public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
         {
-            await _cvsPositionsQueries.UpdateCandidateLastCvByImport(importCv);
+            await _cvsPositionsQueries.UpdateCandLastCv(companyId,  candidateId,  cvId,  isDuplicate,  lastCvSent);
         }
 
         public async Task UpdateSameCv(ImportCvModel importCv)
@@ -348,6 +358,15 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId);
         }
+        public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
+        {
+            return await _cvsPositionsQueries.GetPositionByMatchStr(companyId, matchStr);
+        }
 
-    }
+        public async Task AddSendEmail(SendEmailModel emailData, int userId)
+        {
+            await _cvsPositionsQueries.AddSendEmail( emailData, userId);
+        }
+
+}
 }

@@ -4,8 +4,9 @@ import { IEmailsAddress } from "../../models/GeneralModels";
 import { isEmailValid } from "../../utils/Validation";
 
 interface IProps {
-  listEmailsTo: IEmailsAddress[];
-  listDefaultEmails: IEmailsAddress[];
+  optionsList: IEmailsAddress[];
+  listValues: IEmailsAddress[];
+  onChange: (vals: IEmailsAddress[]) => void;
 }
 
 export const EmailsToControl = (props: IProps) => {
@@ -14,21 +15,21 @@ export const EmailsToControl = (props: IProps) => {
   const [vals, setVals] = useState<IEmailsAddress[]>([]);
 
   useEffect(() => {
-    setEmailsToList([...props.listEmailsTo]);
-  }, [props.listEmailsTo]);
+    setEmailsToList([...props.optionsList]);
+  }, [props.optionsList]);
 
   useEffect(() => {
-    if (props.listDefaultEmails.length) {
-      setVals([...props.listDefaultEmails]);
+    if (props.listValues.length) {
+      setVals([...props.listValues]);
 
-      if (props.listEmailsTo.length) {
-        filterEmailToList(props.listDefaultEmails);
+      if (props.optionsList.length) {
+        filterEmailToList(props.listValues);
       }
     }
-  }, [props.listDefaultEmails, props.listEmailsTo]);
+  }, [props.listValues, props.optionsList]);
 
   const filterEmailToList = (emailsPicked: IEmailsAddress[]) => {
-    const options = props.listEmailsTo.filter((x) =>
+    const options = props.optionsList.filter((x) =>
       emailsPicked.every((y) => y.Address !== x.Address)
     );
 
@@ -48,6 +49,7 @@ export const EmailsToControl = (props: IProps) => {
         if (event && event.type === "click") {
           setVals(newValue);
           filterEmailToList(newValue);
+          props.onChange(newValue);
         }
       }}
       // onClose={() => {

@@ -152,6 +152,7 @@ namespace CvUpAPI.Controllers
             emailData.companyId = Globals.CompanyId;
             UserModel? user = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
             await _candPosService.SendEmail(emailData, user);
+            await _candPosService.AddSendEmail(emailData, Globals.UserId);
             return Ok();
         }
 

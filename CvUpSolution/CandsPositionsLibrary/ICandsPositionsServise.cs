@@ -31,7 +31,7 @@ namespace CandsPositionsLibrary
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task UpdateCvKeyId(ImportCvModel importCv);
         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
-        Task UpdateCandidateLastCvByImport(ImportCvModel importCv);
+        Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
         Task UpdateSameCv(ImportCvModel importCv);
         Task AttachPosCandCv(AttachePosCandCvModel posCv);
         Task DetachPosCand(AttachePosCandCvModel posCv);
@@ -50,5 +50,7 @@ namespace CandsPositionsLibrary
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
         Task UpdatePositionDate(int companyId, int positionId);
+        Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
+        Task AddSendEmail(SendEmailModel emailData, int userId);
     }
 }

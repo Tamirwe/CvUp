@@ -304,9 +304,12 @@ namespace CandsPositionsLibrary
                 {
                     To = emailData.toAddresses,
                     Subject = emailData.subject,
-                    From = from,
                     Body = $"{emailData.body} {user.signature} ",
-                    Attachments = Attachments
+                    Attachments = Attachments,
+
+                    From = new EmailAddress { Address = user.email, Name = $"{user.firstName} {user.lastName}" },
+                    MailSenderUserName = user.mailUsername,
+                    MailSenderPassword = user.mailPassword,
                 };
 
                 await _emailService.Send(email);

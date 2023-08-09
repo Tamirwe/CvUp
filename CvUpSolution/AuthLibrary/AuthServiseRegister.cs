@@ -37,7 +37,7 @@ namespace AuthLibrary
 
         private async Task GenerateCompanyEmail(int companyId)
         {
-            string mailFromAddress = _configuration["GlobalSettings:GmailAddress"];
+            string mailFromAddress = _config["GlobalSettings:ImportGmailAddress"];
             string[] mailFromParts = mailFromAddress.Split("@");
             company_cvs_email? companyEmail;
             string generatedCompanyEmail;
@@ -86,7 +86,10 @@ namespace AuthLibrary
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = string.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Complete Registration",
-                Body = _emailService.RegistrationEmailBody(origin, key)
+                Body = _emailService.RegistrationEmailBody(origin, key),
+                From = new EmailAddress { Address = _config["GlobalSettings:SystemGmailAddress"], Name = _config["GlobalSettings:SystemMailFromName"] },
+                MailSenderUserName = _config["GlobalSettings:SystemGmailUserName"],
+                MailSenderPassword = _config["GlobalSettings:SystemGmailPassword"],
             };
 
             _emailService.Send(email);

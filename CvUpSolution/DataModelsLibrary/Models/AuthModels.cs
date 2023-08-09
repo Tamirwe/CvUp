@@ -67,6 +67,7 @@ namespace DataModelsLibrary.Models
         public string? addedByName { get; set; } = string.Empty;
         public string? addedById { get; set; } = string.Empty;
         public string? signature { get; set; } = string.Empty;
-
+        public string? mailUsername { get; set; } = string.Empty;
+        public string? mailPassword { get; set; } = string.Empty;
     }
 }

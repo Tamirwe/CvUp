@@ -13,34 +13,16 @@ namespace EmailsLibrary
 {
     public partial class EmailService : IEmailService
     {
-        string _mailFromName;
-        string _mailFromAddress;
-        string _mailUserName;
-        string _mailPassword;
-
-        public EmailService(IConfiguration config)
-        {
-            _mailFromName = config["GlobalSettings:MailFromName"];
-            _mailFromAddress = config["GlobalSettings:GmailPassword"];
-            _mailUserName = config["GlobalSettings:GmailUserName"];
-            _mailPassword = config["GlobalSettings:GmailPassword"];
-        }
+       
 
         public async Task Send(EmailModel eml)
         {
 
             var message = new MimeMessage();
 
-            if (eml.From != null)
+            if (eml.From != null && eml.From.Address != null)
             {
-                if (eml.From.Address == null)
-                {
-                    message.From.Add(new MailboxAddress(_mailFromName, _mailFromAddress));
-                }
-                else
-                {
-                    message.From.Add(new MailboxAddress(eml.From.Name, eml.From.Address));
-                }
+                message.From.Add(new MailboxAddress(eml.From.Name, eml.From.Address));
             }
 
             if (eml.To != null)
@@ -70,7 +52,6 @@ namespace EmailsLibrary
 
             message.Subject = eml.Subject;
 
-
             var builder = new BodyBuilder { HtmlBody = eml.Body };
        
             if (eml.Attachments != null)
@@ -93,7 +74,7 @@ namespace EmailsLibrary
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                 // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(_mailUserName, _mailPassword);
+                client.Authenticate(eml.MailSenderUserName, eml.MailSenderPassword);
 
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);

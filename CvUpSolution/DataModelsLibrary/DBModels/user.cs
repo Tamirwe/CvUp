@@ -11,6 +11,7 @@ namespace Database.models
             position_interviewers = new HashSet<position_interviewer>();
             positionopeners = new HashSet<position>();
             positionupdaters = new HashSet<position>();
+            users_refresh_tokens = new HashSet<users_refresh_token>();
         }
 
         public int id { get; set; }
@@ -21,8 +22,6 @@ namespace Database.models
         public string last_name { get; set; } = null!;
         public DateTime? date_created { get; set; }
         public string? log_info { get; set; }
-        public string? refresh_token { get; set; }
-        public DateTime? refresh_token_expiry { get; set; }
         public string permission_type { get; set; } = null!;
         public string active_status { get; set; } = null!;
         public string? phone { get; set; }
@@ -30,11 +29,14 @@ namespace Database.models
         public string? first_name_en { get; set; }
         public string? last_name_en { get; set; }
         public string? signature { get; set; }
+        public string? mail_username { get; set; }
+        public string? mail_password { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<auth_out_email> auth_out_emails { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<position> positionopeners { get; set; }
         public virtual ICollection<position> positionupdaters { get; set; }
+        public virtual ICollection<users_refresh_token> users_refresh_tokens { get; set; }
     }
 }

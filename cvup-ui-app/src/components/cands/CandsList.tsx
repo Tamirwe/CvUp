@@ -182,21 +182,15 @@ export const CandsList = observer(
                         visibility: !cand.hasDuplicates ? "hidden" : "visible",
                       }}
                       onClick={async (event) => {
-                        // event.stopPropagation();
-                        // event.preventDefault();
+                        event.stopPropagation();
+                        event.preventDefault();
 
                         // if (!isMobile) {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
 
-                        if (
-                          candsStore.candDisplay &&
-                          candsStore.candDisplay.cvId !== cand.cvId
-                        ) {
-                          await candsStore.displayCv(cand, candsSource);
-                        }
-
+                        await candsStore.displayCv(cand, candsSource);
                         await candsStore.getDuplicatesCvsList(cand);
 
                         if (dupOpenCandId !== cand.candidateId) {

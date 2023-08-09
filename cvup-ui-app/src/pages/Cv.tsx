@@ -263,6 +263,7 @@ export const Cv = observer(() => {
       <PdfViewer />
       <br />
       <br />
+      <br />
     </div>
   );
 });

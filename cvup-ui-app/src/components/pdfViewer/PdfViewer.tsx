@@ -232,6 +232,10 @@ export const PdfViewer = observer(() => {
             // defaultScale={SpecialZoomLevel.PageWidth}
             defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfUrl}
+            // httpHeaders={{
+            //   Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            // }}
+            // withCredentials={true}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}
           />

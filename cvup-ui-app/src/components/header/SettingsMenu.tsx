@@ -117,7 +117,7 @@ export const SettingsMenu = () => {
           </Avatar>
           Delete Cv
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(
               AlertConfirmDialogEnum.Confirm,
@@ -134,7 +134,7 @@ export const SettingsMenu = () => {
             <MdDelete />
           </Avatar>
           Delete Candidate
-        </MenuItem>
+        </MenuItem> */}
 
         <Divider />
 

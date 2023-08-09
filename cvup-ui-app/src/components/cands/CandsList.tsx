@@ -43,13 +43,15 @@ export const CandsList = observer(
       if (candsListData) {
         setListCands([...candsListData?.slice(0, 50)]);
       }
-    }, [candsListData, setListCands]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    useEffect(() => {
-      if (!candsStore.candDisplay) {
-        setDupOpenCandId(0);
-      }
-    }, [candsStore.candDisplay]); // eslint-disable-line react-hooks/exhaustive-deps
+      setDupOpenCandId(0);
+    }, [candsListData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // useEffect(() => {
+    //   if (!candsStore.candDisplay) {
+    //     setDupOpenCandId(0);
+    //   }
+    // }, [candsStore.candDisplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
       setTimeout(() => {
@@ -62,7 +64,7 @@ export const CandsList = observer(
 
       if (
         instance.scrollHeight - instance.clientHeight <
-        instance.scrollTop + 150
+        instance.scrollTop + 50
       ) {
         if (listCands) {
           const numRecords = listCands.length;
@@ -180,15 +182,21 @@ export const CandsList = observer(
                         visibility: !cand.hasDuplicates ? "hidden" : "visible",
                       }}
                       onClick={async (event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
+                        // event.stopPropagation();
+                        // event.preventDefault();
 
                         // if (!isMobile) {
                         if (location.pathname !== "/cv") {
                           navigate(`/cv`);
                         }
 
-                        await candsStore.displayCv(cand, candsSource);
+                        if (
+                          candsStore.candDisplay &&
+                          candsStore.candDisplay.cvId !== cand.cvId
+                        ) {
+                          await candsStore.displayCv(cand, candsSource);
+                        }
+
                         await candsStore.getDuplicatesCvsList(cand);
 
                         if (dupOpenCandId !== cand.candidateId) {

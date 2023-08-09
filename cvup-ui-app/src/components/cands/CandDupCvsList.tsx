@@ -59,7 +59,7 @@ export const CandDupCvsList = observer(() => {
                 className={classNames({
                   [styles.listItem]: true,
                 })}
-                style={{ direction: "ltr" }}
+                style={{ direction: "ltr", fontSize: "0.8rem" }}
               >
                 <div
                   className={classNames({

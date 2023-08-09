@@ -150,7 +150,7 @@ export const LayoutAuthWrapper = observer(() => {
         </Alert>
       </Snackbar>
       <Backdrop
-        sx={{ color: "#fff", zIndex: 99999 }}
+        sx={{ color: "#a0dbff", zIndex: 99999, backgroundColor: "#0000000f" }}
         open={generalStore.backdrop}
       >
         <CircularProgress color="inherit" />

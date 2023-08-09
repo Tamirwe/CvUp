@@ -18,6 +18,7 @@ import {
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
 import { delay } from "../utils/GeneralUtils";
+import { isMobile } from "react-device-detect";
 
 export class CandsStore {
   private cvsApi;
@@ -77,7 +78,10 @@ export class CandsStore {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
 
     this.isPdfLoaded = false;
-    this.candDisplay = undefined;
+
+    if (isMobile) {
+      this.candDisplay = undefined;
+    }
 
     await this.getPdf(cand.keyId);
 

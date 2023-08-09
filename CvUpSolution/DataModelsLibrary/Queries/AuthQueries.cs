@@ -108,7 +108,7 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                return await dbContext.users.Where(x => x.company_id== companyId &&  x.email == email).FirstOrDefaultAsync();
+                return await dbContext.users.Where(x => x.company_id == companyId && x.email == email).FirstOrDefaultAsync();
             }
         }
 
@@ -150,7 +150,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName,  string? firstNameEn, string? lastNameEn, UserActiveStatus status, UserPermission permission, string log)
+        public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, string? firstNameEn, string? lastNameEn, UserActiveStatus status, UserPermission permission, string log)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -181,33 +181,6 @@ namespace DataModelsLibrary.Queries
                 var result = dbContext.companies.Update(_company);
                 await dbContext.SaveChangesAsync();
                 return _company;
-            }
-        }
-
-        public async Task SaveRefreshToken(string refreshToken, user authenticateUser)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                authenticateUser.refresh_token = refreshToken;
-                authenticateUser.refresh_token_expiry = DateTime.Now.AddDays(1);
-                var result = dbContext.users.Update(authenticateUser);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task RevokeUserToken(int userId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                user? user = await dbContext.users.Where(x => x.id == userId).FirstOrDefaultAsync();
-
-                if (user != null)
-                {
-                    user.refresh_token = null;
-                    user.refresh_token_expiry = null;
-                    var result = dbContext.users.Update(user);
-                    await dbContext.SaveChangesAsync();
-                }
             }
         }
 
@@ -416,5 +389,70 @@ namespace DataModelsLibrary.Queries
                 }
             }
         }
+
+        public async Task<users_refresh_token?> GetUserRefreshTokens(int companyId, int userId, string refreshToken)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return await dbContext.users_refresh_tokens.Where(x => x.company_id == companyId && x.user_id == userId && x.token == refreshToken).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task UPdateRefreshToken(users_refresh_token newRefreshToken)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var result = dbContext.users_refresh_tokens.Update(newRefreshToken);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteExpiredTokens()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var expiredTokens = await dbContext.users_refresh_tokens.Where(x => x.token_expire < DateTime.Now).ToListAsync();
+
+                foreach (var item in expiredTokens)
+                {
+                    dbContext.users_refresh_tokens.Remove(item);
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddUserRefreshToken(int companyId, int userId, string newRefreshToken, int refreshTokenHoursExpiration)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var newRec = new users_refresh_token
+                {
+                    company_id = companyId,
+                    user_id = userId,
+                    token = newRefreshToken,
+                    token_expire = DateTime.Now.AddHours(refreshTokenHoursExpiration),
+                };
+
+                dbContext.users_refresh_tokens.Add(newRec);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task RevokeUser(int companyId, int userId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var usersRefreshTokens = await dbContext.users_refresh_tokens.Where(x => x.company_id == companyId && x.user_id == userId).ToListAsync();
+
+                foreach (var item in usersRefreshTokens)
+                {
+                    dbContext.users_refresh_tokens.Remove(item);
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

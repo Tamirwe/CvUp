@@ -21,8 +21,7 @@ namespace DataModelsLibrary.Queries
         Task AddRegistrationKey(string key, user user);
         Task DeleteOldRegistrationsKeys();
         Task<registeration_key?> GetRegistrationKey(string key);
-        Task SaveRefreshToken(string refreshToken, user authenticateUser);
-        Task RevokeUserToken(int userId);
+        Task RevokeUser(int companyId, int userId);
         Task RemoveRegistrationKey(registeration_key rkey);
         Task UpdateUser(user user);
         Task AddInterviewer(InterviewerModel data, int companyId);
@@ -33,6 +32,9 @@ namespace DataModelsLibrary.Queries
         Task AddCompanyCvsEmail(int companyId, string generatedCompanyEmail);
         Task UpdateCompanyUser(UserModel data, int companyId);
         Task DeleteUser(int companyId, int id);
-
+        Task<users_refresh_token?> GetUserRefreshTokens(int companyId, int userId, string refreshToken);
+        Task UPdateRefreshToken(users_refresh_token newRefreshToken);
+        Task DeleteExpiredTokens();
+        Task AddUserRefreshToken(int companyId, int userId, string newRefreshToken, int refreshTokenHoursExpiration);
     }
 }

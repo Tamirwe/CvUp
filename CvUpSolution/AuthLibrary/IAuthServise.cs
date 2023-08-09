@@ -13,8 +13,7 @@ namespace AuthLibrary
         string GenerateRefreshToken();
         Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember);
         Task ResendRegistrationEmail(string? origin, UserModel data, int companyId);
-        Task<TokenModel?> RefreshToken(string token, string refreshToken);
-        Task RevokeToken(int userId);
+        Task<TokenModel?> CheckUpdateRefreshToken(string token, string refreshToken);
         Task<user?> CompleteRegistration(UserLoginModel data);
         Task<user?> PasswordReset(UserLoginModel data);
         Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data);
@@ -29,5 +28,7 @@ namespace AuthLibrary
         Task ActivateCompanyUser(string? origin, int companyId, UserModel data);
         Task DactivateCompanyUser( int companyId, UserModel data);
         Task<UserModel?> GetUser(int companyId, int userId);
+        Task RevokeUser(int companyId, int userId);
+
     }
 }

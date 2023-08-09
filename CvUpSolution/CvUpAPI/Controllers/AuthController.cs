@@ -42,7 +42,7 @@ namespace CvUpAPI.Controllers
             if (tokens.refreshToken is null || tokens.token is null)
                 return BadRequest("Invalid client request");
 
-            TokenModel? newToken = await _authServise.RefreshToken(tokens.token, tokens.refreshToken);
+            TokenModel? newToken = await _authServise.CheckUpdateRefreshToken(tokens.token, tokens.refreshToken);
 
             if (newToken is null)
             {
@@ -130,9 +130,9 @@ namespace CvUpAPI.Controllers
 
         [HttpPost, Authorize]
         [Route("revoke")]
-        public async Task<IActionResult> Revoke()
+        public async Task<IActionResult> Revoke(string refreshToken)
         {
-            await _authServise.RevokeToken(Globals.UserId);
+            await _authServise.RevokeUser(Globals.CompanyId, Globals.UserId);
             return NoContent();
         }
 

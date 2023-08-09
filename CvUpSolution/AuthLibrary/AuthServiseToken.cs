@@ -15,28 +15,34 @@ namespace AuthLibrary
 {
     public partial class AuthServise
     {
-
-        public async Task<TokenModel?> RefreshToken(string token, string refreshToken)
+        public async Task<TokenModel?> CheckUpdateRefreshToken(string token, string refreshToken)
         {
             var principal = GetPrincipalFromExpiredToken(token);
             bool isUserId = int.TryParse(principal.Claims.Where(x => x.Type == "UserId").First().Value, out var userId);
+            bool iscompanyId = int.TryParse(principal.Claims.Where(x => x.Type == "CompanyId").First().Value, out var companyId);
 
-            if (isUserId)
+            if (isUserId && iscompanyId)
             {
-                var user = await _authQueries.GetUser(userId);
+                var userRefreshToken = await _authQueries.GetUserRefreshTokens(companyId, userId, refreshToken);
 
-                if (user != null && user.refresh_token == refreshToken &&
-                    user.refresh_token_expiry != null 
-                    && user.refresh_token_expiry > DateTime.Now)
+                if (userRefreshToken != null && userRefreshToken.token == refreshToken &&
+                    userRefreshToken.token_expire != null
+                    && userRefreshToken.token_expire > DateTime.Now)
                 {
-                    return await GeneratedToken(principal.Claims, user, true);
+                    var newToken = GenerateUserToken(principal.Claims);
+                    var newRefreshToken = GenerateRefreshToken();
+                    userRefreshToken.token = newToken;
+                    int RefreshTokenHoursExpiration = Convert.ToInt32(_config["Jwt:RefreshTokenHoursExpiration"]);
+                    userRefreshToken.token_expire = DateTime.Now.AddHours(RefreshTokenHoursExpiration);
+                    await _authQueries.UPdateRefreshToken(userRefreshToken);
+                    return new TokenModel { token = newToken, refreshToken = newRefreshToken };
                 }
             }
 
             return null;
         }
 
-        private async Task<TokenModel> GeneratedToken(IEnumerable<Claim> claims, user authenticateUser, bool isRemember)
+        private string GenerateUserToken(IEnumerable<Claim> claims)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
 
@@ -51,16 +57,7 @@ namespace AuthLibrary
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            string refreshToken = "";
-
-            if (isRemember)
-            {
-                refreshToken = GenerateRefreshToken();
-                await _authQueries.SaveRefreshToken(refreshToken, authenticateUser);
-            }
-
-
-            return new TokenModel { token = tokenString, refreshToken = refreshToken };
+            return tokenString;
         }
 
         public async Task<TokenModel> GenerateAccessToken(user authenticateUser, bool isRemember)
@@ -76,24 +73,18 @@ namespace AuthLibrary
                                 new Claim("role",Enum.Parse<UserPermission>(authenticateUser.permission_type).ToString()),
                             };
 
-            return await GeneratedToken(claims, authenticateUser, isRemember);
+            var newToken = GenerateUserToken(claims);
+            string newRefreshToken = "";
 
-            //var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            //var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            //var token = new JwtSecurityToken(
-            //    issuer: _configuration["Jwt:Issuer"],
-            //    audience: _configuration["Jwt:Audience"],
-            //    claims,
-            //    expires: DateTime.UtcNow.AddMinutes(1),
-            //    signingCredentials: signinCredentials
-            //);
+            if (isRemember)
+            {
+                newRefreshToken = GenerateRefreshToken();
+                await _authQueries.DeleteExpiredTokens();
+                int RefreshTokenHoursExpiration= Convert.ToInt32(_config["Jwt:RefreshTokenHoursExpiration"]);
+                await _authQueries.AddUserRefreshToken(authenticateUser.company_id, authenticateUser.id, newRefreshToken, RefreshTokenHoursExpiration);
+            }
 
-            //var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            //var refreshToken = GenerateRefreshToken();
-            //_authQueries.SaveRefreshToken(refreshToken, authenticateUser);
-
-            //return new TokenModel { token = tokenString, refreshToken = refreshToken };
-
+            return new TokenModel { token = newToken, refreshToken = newRefreshToken };
         }
 
         public string GenerateRefreshToken()
@@ -125,9 +116,9 @@ namespace AuthLibrary
             return principal;
         }
 
-        public async Task RevokeToken(int userId)
+        public async Task RevokeUser(int companyId, int userId)
         {
-            await _authQueries.RevokeUserToken(userId);
+            await _authQueries.RevokeUser( companyId,  userId);
         }
     }
 }

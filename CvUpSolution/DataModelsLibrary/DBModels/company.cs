@@ -22,6 +22,7 @@ namespace Database.models
             positions = new HashSet<position>();
             sent_emails = new HashSet<sent_email>();
             users = new HashSet<user>();
+            users_refresh_tokens = new HashSet<users_refresh_token>();
         }
 
         public int id { get; set; }
@@ -46,5 +47,6 @@ namespace Database.models
         public virtual ICollection<position> positions { get; set; }
         public virtual ICollection<sent_email> sent_emails { get; set; }
         public virtual ICollection<user> users { get; set; }
+        public virtual ICollection<users_refresh_token> users_refresh_tokens { get; set; }
     }
 }

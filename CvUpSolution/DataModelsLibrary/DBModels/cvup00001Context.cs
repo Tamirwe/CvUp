@@ -38,6 +38,7 @@ namespace Database.models
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
+        public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -616,16 +617,33 @@ namespace Database.models
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
-                entity.Property(e => e.refresh_token).HasMaxLength(100);
-
-                entity.Property(e => e.refresh_token_expiry).HasColumnType("datetime");
-
                 entity.Property(e => e.signature).HasMaxLength(10000);
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_users_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<users_refresh_token>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_refresh_tokens_company_id_companies_id");
+
+                entity.HasIndex(e => e.user_id, "fk_refresh_tokens_user_id_users_id");
+
+                entity.Property(e => e.token).HasMaxLength(100);
+
+                entity.Property(e => e.token_expire).HasColumnType("datetime");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.users_refresh_tokens)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_refresh_tokens_company_id_companies_id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.users_refresh_tokens)
+                    .HasForeignKey(d => d.user_id)
+                    .HasConstraintName("fk_refresh_tokens_user_id_users_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

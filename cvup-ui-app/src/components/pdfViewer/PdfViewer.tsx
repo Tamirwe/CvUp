@@ -94,7 +94,7 @@ export const PdfViewer = observer(() => {
   };
 
   const handlePageChange = () => {
-    candsStore.pdfLoaded = true;
+    // candsStore.pdfLoaded = true;
   };
 
   return (

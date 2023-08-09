@@ -23,7 +23,7 @@ import { isMobile } from "react-device-detect";
 export class CandsStore {
   private cvsApi;
   private candIdDuplicateCvs: number = 0;
-  private isPdfLoaded: boolean = false;
+  // private isPdfLoaded: boolean = false;
 
   allCandsList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
@@ -66,18 +66,18 @@ export class CandsStore {
     return this.tabDisplayCandsLists;
   }
 
-  set pdfLoaded(val) {
-    this.isPdfLoaded = val;
-  }
+  // set pdfLoaded(val) {
+  //   this.isPdfLoaded = val;
+  // }
 
-  get pdfLoaded() {
-    return this.isPdfLoaded;
-  }
+  // get pdfLoaded() {
+  //   return this.isPdfLoaded;
+  // }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
 
-    this.isPdfLoaded = false;
+    // this.isPdfLoaded = false;
 
     if (isMobile) {
       this.candDisplay = undefined;
@@ -85,30 +85,30 @@ export class CandsStore {
 
     await this.getPdf(cand.keyId);
 
-    let intervalcount = 0;
+    // let intervalcount = 0;
 
-    const interval = setInterval(() => {
-      intervalcount++;
+    // const interval = setInterval(() => {
+    //   intervalcount++;
 
-      if (this.isPdfLoaded || intervalcount > 9) {
-        clearInterval(interval);
-        runInAction(() => {
-          this.candDisplay = cand;
-          this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-            candsSource
-          );
+    //   if (this.isPdfLoaded || intervalcount > 9) {
+    // clearInterval(interval);
+    runInAction(() => {
+      this.candDisplay = cand;
+      this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
+        candsSource
+      );
 
-          if (!cand.isSeen) {
-            this.cvsApi.updateIsSeen(cand.cvId);
-            cand.isSeen = true;
+      if (!cand.isSeen) {
+        this.cvsApi.updateIsSeen(cand.cvId);
+        cand.isSeen = true;
 
-            //not must but any way
-            const updatedCand = Object.assign({}, cand);
-            this.updateLists(updatedCand);
-          }
-        });
+        //not must but any way
+        const updatedCand = Object.assign({}, cand);
+        this.updateLists(updatedCand);
       }
-    }, 100);
+    });
+    //   }
+    // }, 100);
   }
 
   async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {

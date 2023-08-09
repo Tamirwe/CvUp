@@ -31,7 +31,7 @@ namespace AuthLibrary
                 {
                     var newToken = GenerateUserToken(principal.Claims);
                     var newRefreshToken = GenerateRefreshToken();
-                    userRefreshToken.token = newToken;
+                    userRefreshToken.token = newRefreshToken;
                     int RefreshTokenHoursExpiration = Convert.ToInt32(_config["Jwt:RefreshTokenHoursExpiration"]);
                     userRefreshToken.token_expire = DateTime.Now.AddHours(RefreshTokenHoursExpiration);
                     await _authQueries.UPdateRefreshToken(userRefreshToken);

@@ -371,6 +371,8 @@ namespace DataModelsLibrary.Queries
                                 firstNameEn = u.first_name_en,
                                 lastNameEn = u.last_name_en,
                                 signature = u.signature,
+                                mailUsername = u.mail_username,
+                                mailPassword = u.mail_password,
                             };
 
                 return await query.FirstOrDefaultAsync();

@@ -38,13 +38,13 @@ namespace AuthLibrary
 
         private async Task<TokenModel> GeneratedToken(IEnumerable<Claim> claims, user authenticateUser, bool isRemember)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
 
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signinCredentials
@@ -113,7 +113,7 @@ namespace AuthLibrary
                 ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])),
                 ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
             };
             var tokenHandler = new JwtSecurityTokenHandler();

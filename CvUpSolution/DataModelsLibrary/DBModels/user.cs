@@ -30,6 +30,8 @@ namespace Database.models
         public string? first_name_en { get; set; }
         public string? last_name_en { get; set; }
         public string? signature { get; set; }
+        public string? mail_username { get; set; }
+        public string? mail_password { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<auth_out_email> auth_out_emails { get; set; }

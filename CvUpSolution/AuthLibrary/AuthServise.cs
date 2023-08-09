@@ -14,14 +14,14 @@ namespace AuthLibrary
         private IAuthQueries _authQueries;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
-        public IConfiguration _configuration;
+        public IConfiguration _config;
 
         public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries, IConfiguration config)
         {
             _authQueries = authQueries;
             _emailService = emailService;
             _emailQueries = emailQueries;
-            _configuration = config;
+            _config = config;
         }
 
         public async Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data)
@@ -112,7 +112,10 @@ namespace AuthLibrary
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = string.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Reset Password",
-                Body = _emailService.ResetPasswordEmailBody(origin, key)
+                Body = _emailService.ResetPasswordEmailBody(origin, key),
+                From = new EmailAddress { Address = _config["GlobalSettings:SystemGmailAddress"], Name = _config["GlobalSettings:SystemMailFromName"] },
+                MailSenderUserName = _config["GlobalSettings:SystemGmailUserName"],
+                MailSenderPassword = _config["GlobalSettings:SystemGmailPassword"],
             };
 
             await _emailService.Send(email);

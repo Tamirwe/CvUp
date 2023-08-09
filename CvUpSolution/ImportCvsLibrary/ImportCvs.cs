@@ -44,8 +44,8 @@ namespace ImportCvsLibrary
 
             _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
             //Directory.CreateDirectory(_filesRootFolder);
-            _gmailUserName = config["GlobalSettings:GmailUserName"];
-            _mailPassword = config["GlobalSettings:GmailPassword"];
+            _gmailUserName = config["GlobalSettings:ImportGmailUserName"];
+            _mailPassword = config["GlobalSettings:ImportGmailPassword"];
         }
 
 

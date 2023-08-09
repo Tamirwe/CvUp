@@ -606,6 +606,10 @@ namespace Database.models
 
                 entity.Property(e => e.log_info).HasMaxLength(1500);
 
+                entity.Property(e => e.mail_password).HasMaxLength(50);
+
+                entity.Property(e => e.mail_username).HasMaxLength(50);
+
                 entity.Property(e => e.passwaord).HasMaxLength(120);
 
                 entity.Property(e => e.permission_type).HasColumnType("enum('Admin','User')");

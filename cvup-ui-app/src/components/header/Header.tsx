@@ -126,7 +126,7 @@ export const Header = observer(() => {
                 <SettingsMenu />
                 {candsStore.candDisplay && location.pathname === "/cv" && (
                   <>
-                    <IconButton
+                    {/* <IconButton
                       title="Email to candidate"
                       sx={{ fontSize: "1.56rem" }}
                       size="medium"
@@ -135,7 +135,7 @@ export const Header = observer(() => {
                       }
                     >
                       <MdOutlineMarkEmailRead />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                       title="Review"
                       sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}

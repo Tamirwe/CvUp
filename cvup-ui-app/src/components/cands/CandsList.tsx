@@ -162,7 +162,7 @@ export const CandsList = observer(
                         {/* {cand.score} */}
                         {candsSource === CandsSourceEnum.AllCands
                           ? cand.emailSubject
-                          : `${cand.firstName} ${cand.lastName}`}
+                          : `${cand.firstName || ""} ${cand.lastName || ""}`}
                       </div>
                       <div
                         title="Cv sent date"

@@ -76,7 +76,7 @@ export const CandsList = observer(
           setListCands(newPosList);
         }
 
-        console.log(instance.scrollTop);
+        // console.log(instance.scrollTop);
       }
     }, [listCands, setListCands]);
 

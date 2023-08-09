@@ -1,5 +1,10 @@
 import { observer } from "mobx-react";
-import { LoadError, SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
+import {
+  LoadError,
+  SpecialZoomLevel,
+  TextDirection,
+  Viewer,
+} from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 import { toolbarPlugin, ToolbarSlot } from "@react-pdf-viewer/toolbar";
@@ -232,12 +237,15 @@ export const PdfViewer = observer(() => {
             // defaultScale={SpecialZoomLevel.PageWidth}
             defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfUrl}
+            plugins={[toolbarPluginInstance]}
+            renderError={renderError}
+            theme={{
+              direction: TextDirection.RightToLeft,
+            }}
             // httpHeaders={{
             //   Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             // }}
             // withCredentials={true}
-            plugins={[toolbarPluginInstance]}
-            renderError={renderError}
           />
         )}
       </div>

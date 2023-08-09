@@ -261,6 +261,8 @@ export const Cv = observer(() => {
         </Grid>
       )}
       <PdfViewer />
+      <br />
+      <br />
     </div>
   );
 });

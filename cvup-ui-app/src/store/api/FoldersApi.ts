@@ -1,4 +1,4 @@
-import { IFolder } from "../../models/GeneralModels";
+import { ICand, IFolder } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class FoldersApi extends BaseApi {
@@ -27,7 +27,7 @@ export default class FoldersApi extends BaseApi {
   }
 
   async attachCandidate(folderId: number, candidateId: number | undefined) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post("Folders/AttachCandidate", {
         folderId,
         candidateId,
@@ -36,7 +36,7 @@ export default class FoldersApi extends BaseApi {
   }
 
   async detachCandidate(folderId: number, candidateId: number | undefined) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post("Folders/DetachCandidate", {
         folderId,
         candidateId,

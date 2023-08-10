@@ -35,10 +35,10 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async getDuplicatesCvsList(cvId: number, candidateId: number) {
+  async getDuplicatesCvsList(candidateId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
-        `Cand/GetCandCvsList?cvId=${cvId}&candidateId=${candidateId}`
+        `Cand/GetCandCvsList?candidateId=${candidateId}`
       );
     });
   }

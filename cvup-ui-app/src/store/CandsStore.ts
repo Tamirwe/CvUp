@@ -242,10 +242,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
 
     if (this.duplicateCvsCandId !== cand.candidateId) {
-      const res = await this.cvsApi.getDuplicatesCvsList(
-        cand.cvId,
-        cand.candidateId
-      );
+      const res = await this.cvsApi.getDuplicatesCvsList(cand.candidateId);
 
       runInAction(() => {
         this.duplicateCvsCandId = cand.candidateId;

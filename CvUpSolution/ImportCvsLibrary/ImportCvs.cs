@@ -229,13 +229,16 @@ namespace ImportCvsLibrary
             ExtractCvProps();
             await CandidateFindOrCreate();
             GetCvAsciiSum();
-            await CheckIsCvDuplicate();
-            await AddCvToDb();
-            RenameAndMoveAttachmentToFolder();
-            await UpdateCvKeyId();
-            await UpdateCandidateLastCv();
-            await AddCvToIndex();
-            await AddCandToMatchPosition();
+            await CheckIsCvDuplicateOrSameCv();
+            if (!_importCv.isSameCv)
+            {
+                await AddCvToDb();
+                RenameAndMoveAttachmentToFolder();
+                await _cvsPositionsServise.UpdateCvKeyId(_importCv);
+                await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
+                await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
+                await AddCandToMatchPosition();
+            }
         }
 
         private async Task AddCandToMatchPosition()
@@ -255,18 +258,18 @@ namespace ImportCvsLibrary
         }
 
 
-        private async Task UpdateCandidateLastCv()
-        {
-            await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
-        }
+        //private async Task UpdateCandidateLastCv()
+        //{
+        //    await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
+        //}
 
-        private async Task UpdateCvKeyId()
-        {
-            if (!_importCv.isSameCv)
-            {
-                await _cvsPositionsServise.UpdateCvKeyId(_importCv);
-            }
-        }
+        //private async Task UpdateCvKeyId()
+        //{
+        //    if (!_importCv.isSameCv)
+        //    {
+        //        await _cvsPositionsServise.UpdateCvKeyId(_importCv);
+        //    }
+        //}
 
         private void CreateCvFolder(int companyId)
         {
@@ -300,12 +303,9 @@ namespace ImportCvsLibrary
 
         private void RenameAndMoveAttachmentToFolder()
         {
-            if (!_importCv.isSameCv)
-            {
                 string fileNamePath = GetAttachmentFileNamePath(_importCv.cvId, _importCv.fileExtension, out string cvKey);
                 _importCv.cvKey = cvKey;
                 File.Move(_importCv.tempFilePath, fileNamePath);
-            }
         }
 
         private void ExtractCvProps()
@@ -323,26 +323,33 @@ namespace ImportCvsLibrary
             GetCandidatePhone();
         }
 
-        private async Task CheckIsCvDuplicate()
+        private async Task CheckIsCvDuplicateOrSameCv()
         {
             if (!_importCv.isNewCandidate)
             {
-                List<cv> cvs = await _cvsPositionsServise.CheckIsCvDuplicate(_importCv.companyId, _importCv.candidateId, _importCv.cvAsciiSum);
+                List<CandCvModel> cvs = await _cvsPositionsServise.GetCandCvsList(_importCv.companyId, _importCv.candidateId);
 
                 if (cvs.Count > 0)
                 {
                     _importCv.isDuplicate = true;
-                    _importCv.duplicateCvId = cvs.First().id;
+                    bool isSubjectduplicate = false;
 
                     foreach (var cv in cvs)
                     {
-                        if (cv.subject == _importCv.subject && cv.date_created.AddDays(30) > DateTime.Now && cv.from == _importCv.from)
+                        if (cv.emailSubject == _importCv.subject)
+                        {
+                            isSubjectduplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (isSubjectduplicate)
+                    {
+                        cvs_txt? cvTxt = await _cvsPositionsServise.CheckIsSameCv(_importCv.companyId, _importCv.candidateId, _importCv.cvAsciiSum);
+
+                        if (cvTxt != null)
                         {
                             _importCv.isSameCv = true;
-                            _importCv.cvId = cv.id;
-                            _importCv.duplicateCvId = 0;
-                            _importCv.isDuplicate = false;
-                            break;
                         }
                     }
                 }
@@ -420,23 +427,20 @@ namespace ImportCvsLibrary
 
         private async Task AddCvToDb()
         {
-            if (_importCv.isSameCv)
-            {
-                await _cvsPositionsServise.UpdateSameCv(_importCv);
-            }
-            else
-            {
+            //if (_importCv.isSameCv)
+            //{
+            //    await _cvsPositionsServise.UpdateSameCv(_importCv);
+            //}
+            //else
+            //{
                 _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
-            }
+            //}
         }
 
-        private async Task AddCvToIndex()
-        {
-            if (!_importCv.isDuplicate && !_importCv.isSameCv)
-            {
-                await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
-            }
-        }
+        //private async Task AddCvToIndex()
+        //{
+        //    await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
+        //}
 
         private void GetCandidatePhone()
         {

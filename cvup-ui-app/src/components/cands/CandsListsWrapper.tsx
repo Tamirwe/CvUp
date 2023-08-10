@@ -186,7 +186,7 @@ export const CandsListsWrapper = observer(() => {
             onSearch={handleAllCandsSearch}
             onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
             shoeAdvancedIcon={true}
-            records={candsStore.allCandsList.length}
+            records={candsStore.allCandsList && candsStore.allCandsList.length}
             onSort={(sortBy: SortByEnum, dir: string) => {
               handleSort(sortBy, dir, TabsCandsEnum.AllCands);
             }}
@@ -210,7 +210,7 @@ export const CandsListsWrapper = observer(() => {
               setPositionsAdvancedOpen(!positionsAdvancedOpen)
             }
             shoeAdvancedIcon={true}
-            records={candsStore.posCandsList.length}
+            records={candsStore.posCandsList && candsStore.posCandsList.length}
             onSort={(sortBy: SortByEnum, dir: string) => {
               handleSort(sortBy, dir, TabsCandsEnum.PositionCands);
             }}
@@ -237,7 +237,9 @@ export const CandsListsWrapper = observer(() => {
             onSearch={handleFolderCandsSearch}
             onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}
             shoeAdvancedIcon={true}
-            records={candsStore.folderCandsList.length}
+            records={
+              candsStore.folderCandsList && candsStore.folderCandsList.length
+            }
             onSort={(sortBy: SortByEnum, dir: string) => {
               handleSort(sortBy, dir, TabsCandsEnum.FolderCands);
             }}

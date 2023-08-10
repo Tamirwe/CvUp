@@ -121,7 +121,10 @@ export class FoldersStore {
     );
 
     if (res.isSuccess) {
-      await this.rootStore.candsStore.getFolderCandsList();
+      if (this.selectedFolder && this.selectedFolder.id ===  folderId) {
+        await this.rootStore.candsStore.getFolderCandsList();
+      }
+
       this.rootStore.candsStore.updateCandListFolderAttached(res.data);
     }
     
@@ -136,7 +139,10 @@ export class FoldersStore {
     );
 
     if (res.isSuccess) {
-      await this.rootStore.candsStore.getFolderCandsList();
+      if (this.selectedFolder && this.selectedFolder.id ===  folderId) {
+        await this.rootStore.candsStore.getFolderCandsList();
+      }
+      
       this.rootStore.candsStore.updateCandListFolderAttached(res.data);
     }
 

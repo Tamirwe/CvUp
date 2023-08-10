@@ -431,7 +431,7 @@ export class CandsStore {
     runInAction(() => {
       if (this.candDisplay) {
         this.candDisplay = { ...cand };
-        this.updateLists(cand);
+        //this.updateLists(cand);
       }
     });
   }

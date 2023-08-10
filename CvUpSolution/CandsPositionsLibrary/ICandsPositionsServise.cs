@@ -21,7 +21,7 @@ namespace CandsPositionsLibrary
         Task<int> UpdatePosition(PositionModel data, int companyId, int userId);
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
-        Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId);
+        Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
         Task DeletePosition(int companyId, int id);
@@ -30,7 +30,7 @@ namespace CandsPositionsLibrary
         Task<List<ParserRulesModel>> GetParsersRules();
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task UpdateCvKeyId(ImportCvModel importCv);
-        Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
+        Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum);
         Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
         Task UpdateSameCv(ImportCvModel importCv);
         Task AttachPosCandCv(AttachePosCandCvModel posCv);

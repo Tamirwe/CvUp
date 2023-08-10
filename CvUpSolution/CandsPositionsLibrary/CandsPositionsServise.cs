@@ -152,9 +152,9 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, candsIds);
         }
 
-        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int cvId, int candidateId)
+        public async Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId)
         {
-            List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId, _configuration["GlobalSettings:cvsEncryptorKey"]);
+            List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
             //cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
@@ -208,10 +208,10 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetCv(cvId, companyId);
         }
 
-        public async Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
+        public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum)
         {
-            List<cv> cvs = await _cvsPositionsQueries.CheckIsCvDuplicate(companyId, candidateId, cvAsciiSum);
-            return cvs;
+            cvs_txt? cvTxt = await _cvsPositionsQueries.CheckIsSameCv(companyId, candidateId, cvAsciiSum);
+            return cvTxt;
         }
 
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)

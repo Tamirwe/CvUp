@@ -90,9 +90,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetCandCvsList")]
-        public async Task<List<CandCvModel>> GetCandCvsList(int cvId, int candidateId)
+        public async Task<List<CandCvModel>> GetCandCvsList( int candidateId)
         {
-            return await _candPosService.GetCandCvsList(Globals.CompanyId, cvId, candidateId);
+            return await _candPosService.GetCandCvsList(Globals.CompanyId,  candidateId);
         }
 
         [HttpGet]

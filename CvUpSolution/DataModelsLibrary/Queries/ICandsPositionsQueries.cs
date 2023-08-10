@@ -25,14 +25,14 @@ namespace DataModelsLibrary.Queries
          Task<List<string?>> GetCompanyCvsIds(int companyId);
          Task<CvModel?> GetCv(int cvId, int companyId);
          Task UpdateCvKeyId(ImportCvModel importCv);
-         Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum);
+         Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum);
          Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
          Task DeleteCv(int companyId, int candidateId, int cvId);
         Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId);
          Task DeleteCandidate(int companyId, int candidateId);
          Task UpdateSameCv(ImportCvModel importCv);
          Task<candidate?> GetCandidateByPhone(string phone);
-         Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey);
+         Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId);
          Task UpdateCvsAsciiSum(int companyId);
          Task AttachPosCandCv(AttachePosCandCvModel posCv);
          Task DetachPosCand(AttachePosCandCvModel posCv);

@@ -171,7 +171,7 @@ namespace DataModelsLibrary.Queries
                     email_id = importCv.emailId,
                     subject = importCv.subject,
                     from = importCv.from,
-                    duplicate_cv_id = importCv.duplicateCvId,
+                    //duplicate_cv_id = importCv.duplicateCvId,
                     position = Utils.Truncate(importCv.positionRelated, 250),
                     file_type = importCv.fileTypeKey,
                     date_created = importCv.dateCreated,
@@ -418,7 +418,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId, string encriptKey)
+        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -768,20 +768,12 @@ namespace DataModelsLibrary.Queries
         }
 
 
-        public async Task<List<cv>> CheckIsCvDuplicate(int companyId, int candidateId, int cvAsciiSum)
+        public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId,int cvAsciiSum)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = from c in dbContext.cvs
-                            join t in dbContext.cvs_txts on c.id equals t.cv_id
-                            where c.company_id == companyId && c.candidate_id == candidateId && t.ascii_sum == cvAsciiSum
-                            select c;
-
-                var cvsList = await query.ToListAsync();
-                return cvsList;
-
-                //List<cvs_txt> cvs = await dbContext.cvs_txts.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.ascii_sum == cvAsciiSum).ToListAsync();
-                //return cvs;
+                cvs_txt? cvsTxt = await dbContext.cvs_txts.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.ascii_sum == cvAsciiSum).FirstOrDefaultAsync();
+                return cvsTxt;
             }
         }
 

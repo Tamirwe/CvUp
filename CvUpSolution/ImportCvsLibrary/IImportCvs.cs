@@ -2,7 +2,7 @@
 {
     public interface IImportCvs
     {
-        public void ImportFromGmail();
-        public void BackupDataBase();
+        Task ImportFromGmail();
+        void BackupDataBase();
     }
 }

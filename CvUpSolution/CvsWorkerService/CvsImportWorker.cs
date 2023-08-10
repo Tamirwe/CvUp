@@ -6,11 +6,12 @@ namespace CvsWorkerService
     {
         private readonly IImportCvs _importCvs;
         private readonly ILogger<CvsImportWorker> _logger;
-
+        private bool _isRunning  = false;
         public CvsImportWorker(IImportCvs importCvs, ILogger<CvsImportWorker> logger)
         {
             _importCvs = importCvs;
             _logger = logger;
+            _isRunning = false;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -19,7 +20,15 @@ namespace CvsWorkerService
             {
                 //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                _importCvs.ImportFromGmail();
+                if (!_isRunning)
+                {
+                    _isRunning = true;
+
+                    await _importCvs.ImportFromGmail();
+
+                    _isRunning = false;
+                }
+
 
                 if (DateTime.Now.Hour == 3 || DateTime.Now.Hour == 16)
                 {

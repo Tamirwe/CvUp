@@ -140,104 +140,87 @@ namespace ImportCvsLibrary
         }
 
 
-        public async void ImportFromGmail()
+        public async Task ImportFromGmail()
         {
             //await ReceiveEmailsAsync();
 
             //_companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
-            _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
 
-            using (var client = new ImapClient())
+            try
             {
-                client.Connect("imap.gmail.com", 993, true);
-                client.Authenticate(_gmailUserName, _mailPassword);
-                var inbox = client.Inbox;
-                inbox.Open(FolderAccess.ReadWrite);
-                var uids = client.Inbox.Search(SearchQuery.NotSeen);
 
-                foreach (var uid in uids)
+
+                _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
+
+                using (var client = new ImapClient())
                 {
-                    var message = client.Inbox.GetMessage(uid);
+                    client.Connect("imap.gmail.com", 993, true);
+                    client.Authenticate(_gmailUserName, _mailPassword);
+                    var inbox = client.Inbox;
+                    inbox.Open(FolderAccess.ReadWrite);
+                    var uids = client.Inbox.Search(SearchQuery.NotSeen);
 
-                    Console.WriteLine("Subject: {0}", message.Subject);
-
-                    // no need because app is only for bella
-                    //int companyId = GetCompanyIdFromAddress(message.To);
-                    int companyId = 154;
-
-                    if (companyId > 0)
+                    foreach (var uid in uids)
                     {
-                        _companyFolder = companyId.ToString();
-                        var dateCreated = DateTime.Now;
-                        _yearFolder = dateCreated.Year.ToString("0000");
-                        _monthFolder = dateCreated.Month.ToString("00");
+                        var message = client.Inbox.GetMessage(uid);
 
-                        CreateCvFolder(companyId);
-                        _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
+                        Console.WriteLine("Subject: {0}", message.Subject);
 
-                        foreach (var bodyPart in message.BodyParts)
+                        // no need because app is only for bella
+                        //int companyId = GetCompanyIdFromAddress(message.To);
+                        int companyId = 154;
+
+                        if (companyId > 0)
                         {
-                            var contentBase = bodyPart.ContentDisposition;
+                            _companyFolder = companyId.ToString();
+                            var dateCreated = DateTime.Now;
+                            _yearFolder = dateCreated.Year.ToString("0000");
+                            _monthFolder = dateCreated.Month.ToString("00");
 
-                            if (bodyPart.ContentType.Name != null)
+                            CreateCvFolder(companyId);
+                            _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
+
+                            foreach (var bodyPart in message.BodyParts)
                             {
-                                var part = (MimePart)bodyPart;
-                                var originalFileName = part.FileName;
-                                string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
-                                int fileTypeKey = Utils.FileTypeKey(fileExtension);
+                                var contentBase = bodyPart.ContentDisposition;
 
-                                if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                                if (bodyPart.ContentType.Name != null)
                                 {
-                                    _importCv = new ImportCvModel
-                                    {
-                                        companyId = companyId,
-                                        emailId = message.MessageId,
-                                        subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
-                                        from = message.From.ToString(),
-                                        fileExtension = fileExtension,
-                                        fileTypeKey = fileTypeKey,
-                                        dateCreated = dateCreated,
-                                    };
+                                    var part = (MimePart)bodyPart;
+                                    var originalFileName = part.FileName;
+                                    string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+                                    int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
-                                    SaveAttachmentToTemporaryFile(part);
-                                    ParseEmailSubject();
-                                    await CvExtractDataAndSave();
+                                    if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                                    {
+                                        _importCv = new ImportCvModel
+                                        {
+                                            companyId = companyId,
+                                            emailId = message.MessageId,
+                                            subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
+                                            from = message.From.ToString(),
+                                            fileExtension = fileExtension,
+                                            fileTypeKey = fileTypeKey,
+                                            dateCreated = dateCreated,
+                                        };
+
+                                        SaveAttachmentToTemporaryFile(part);
+                                        ParseEmailSubject();
+                                        await CvExtractDataAndSave();
+                                    }
                                 }
                             }
                         }
 
-
-
-
-
-
-                        //foreach (var attachment in message.Attachments)
-                        //{
-                        //    string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
-                        //    string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
-
-                        //    if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
-                        //    {
-                        //        _importCv = new ImportCvModel
-                        //        {
-                        //            companyId = companyId,
-                        //            emailId = message.MessageId,
-                        //            subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
-                        //            from = message.From.ToString(),
-                        //            fileExtension = fileExtension,
-                        //        };
-
-                        //        SaveAttachmentToTemporaryFile(attachment);
-                        //        ParseEmailSubject();
-                        //        await CvExtractDataAndSave();
-                        //    }
-                        //}
+                        inbox.SetFlags(uid, MessageFlags.Seen, true);
                     }
 
-                    inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    client.Disconnect(true);
                 }
-
-                client.Disconnect(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
 

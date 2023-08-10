@@ -38,6 +38,7 @@ namespace CandsPositionsLibrary
         public async Task DeleteCv(int companyId, int candidateId, int cvId)
         {
             await _cvsPositionsQueries.DeleteCv(companyId, candidateId, cvId);
+            await _cvsPositionsQueries.UpdateCandPosArrays(companyId, candidateId);
 
             var tuple = await _cvsPositionsQueries.GetCandLastCv(companyId, candidateId);
             cv? lastCv = tuple.Item1;

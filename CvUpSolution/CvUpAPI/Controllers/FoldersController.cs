@@ -1,4 +1,5 @@
-﻿using Database.models;
+﻿using CandsPositionsLibrary;
+using Database.models;
 using DataModelsLibrary.Models;
 using FoldersLibrary;
 using Microsoft.AspNetCore.Authorization;
@@ -13,11 +14,13 @@ namespace CvUpAPI.Controllers
     public class FoldersController : ControllerBase
     {
         private IConfiguration _configuration;
+        private ICandsPositionsServise _candPosService;
         private IFoldersService _foldersService;
 
-        public FoldersController(IConfiguration config, IFoldersService foldersService)
+        public FoldersController(IConfiguration config, ICandsPositionsServise candPosService, IFoldersService foldersService)
         {
             _configuration = config;
+            _candPosService = candPosService;
             _foldersService = foldersService;
         }
 
@@ -55,18 +58,18 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("AttachCandidate")]
-        public async Task<IActionResult> AttachCandidate(FolderCandidateModel data)
+        public async Task<CandModel?> AttachCandidate(FolderCandidateModel data)
         {
             await _foldersService.AttachCandidate(Globals.CompanyId, data);
-            return Ok();
+            return await _candPosService.GetCandidate(Globals.CompanyId, data.candidateId);
         }
 
         [HttpPost]
         [Route("DetachCandidate")]
-        public async Task<IActionResult> DetachCandidate(FolderCandidateModel data)
+        public async Task<CandModel?> DetachCandidate(FolderCandidateModel data)
         {
             await _foldersService.DetachCandidate(Globals.CompanyId, data);
-            return Ok();
+            return await _candPosService.GetCandidate(Globals.CompanyId, data.candidateId);
         }
     }
 }

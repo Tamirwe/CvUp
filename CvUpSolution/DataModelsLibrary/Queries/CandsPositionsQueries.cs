@@ -845,24 +845,24 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<position_candidate>? candPosList = await dbContext.position_candidates.Where(x => x.company_id == companyId
-                   && x.candidate_id == candidateId).ToListAsync();
-
-                List<CandPosStageModel> candPosStages = new List<CandPosStageModel>();
-                List<int> candPos = new List<int>();
-
-                foreach (var pcv in candPosList)
-                {
-                    candPos.Add(pcv.position_id);
-                    candPosStages.Add(new CandPosStageModel { _dt = pcv.stage_date?.ToString("yyyy-MM-dd"), _tp = pcv.stage_type, _pid = pcv.position_id, _ec = pcv.email_to_contact?.ToString("yyyy-MM-dd") });
-                }
-
-                var candPosStagesJson = JsonConvert.SerializeObject(candPosStages);
-
                 candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
 
                 if (cand != null)
                 {
+                    List<position_candidate>? candPosList = await dbContext.position_candidates.Where(x => x.company_id == companyId
+                   && x.candidate_id == candidateId).ToListAsync();
+
+                    List<CandPosStageModel> candPosStages = new List<CandPosStageModel>();
+                    List<int> candPos = new List<int>();
+
+                    foreach (var pcv in candPosList)
+                    {
+                        candPos.Add(pcv.position_id);
+                        candPosStages.Add(new CandPosStageModel { _dt = pcv.stage_date?.ToString("yyyy-MM-dd"), _tp = pcv.stage_type, _pid = pcv.position_id, _ec = pcv.email_to_contact?.ToString("yyyy-MM-dd") });
+                    }
+
+                    var candPosStagesJson = JsonConvert.SerializeObject(candPosStages);
+
                     cand.pos_ids = $"[{string.Join(",", candPos)}]";
                     cand.pos_stages = candPosStagesJson;
                     var result = dbContext.candidates.Update(cand);
@@ -1107,9 +1107,9 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && x.match_email_subject != null).ToListAsync();
+                List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && ! string.IsNullOrWhiteSpace(x.match_email_subject) && x.status == "Active").ToListAsync();
 
-                position? matchPos = posList.Where(x => x.match_email_subject != null && matchStr.Contains(x.match_email_subject)).FirstOrDefault();
+                position? matchPos = posList.Where(x => !string.IsNullOrWhiteSpace(x.match_email_subject) && matchStr.Contains(x.match_email_subject)).FirstOrDefault();
 
                 return matchPos;
             }

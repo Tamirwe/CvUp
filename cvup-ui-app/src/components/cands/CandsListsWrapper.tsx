@@ -17,11 +17,6 @@ export const CandsListsWrapper = observer(() => {
   const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
-
-  const [allCandsListSort, setAllCandsListSort] = useState("");
-  const [candsPosListSort, setCandsPosListSort] = useState("");
-  const [candsFolderListSort, setCandsFolderListSort] = useState("");
-
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
   const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
@@ -123,7 +118,14 @@ export const CandsListsWrapper = observer(() => {
       case TabsCandsEnum.AllCands:
         setAllCandsList(sortCandList(sortBy, dir, candsStore.allCandsList));
         break;
-
+      case TabsCandsEnum.PositionCands:
+        setCandsPosList(sortCandList(sortBy, dir, candsStore.posCandsList));
+        break;
+      case TabsCandsEnum.FolderCands:
+        setCandsFolderList(
+          sortCandList(sortBy, dir, candsStore.folderCandsList)
+        );
+        break;
       default:
         break;
     }
@@ -188,6 +190,8 @@ export const CandsListsWrapper = observer(() => {
             onSort={(sortBy: SortByEnum, dir: string) => {
               handleSort(sortBy, dir, TabsCandsEnum.AllCands);
             }}
+            showRefreshList={true}
+            onRefreshLists={() => candsStore.getCandsList()}
           />
         </Box>
         <CandsList
@@ -208,8 +212,15 @@ export const CandsListsWrapper = observer(() => {
             shoeAdvancedIcon={true}
             records={candsStore.posCandsList.length}
             onSort={(sortBy: SortByEnum, dir: string) => {
-              setCandsPosListSort(dir);
+              handleSort(sortBy, dir, TabsCandsEnum.PositionCands);
             }}
+            showRefreshList={true}
+            onRefreshLists={() =>
+              positionsStore.selectedPosition?.id &&
+              candsStore.getPositionCandsList(
+                positionsStore.selectedPosition?.id
+              )
+            }
           />
         </Box>
         <CandsList
@@ -228,8 +239,13 @@ export const CandsListsWrapper = observer(() => {
             shoeAdvancedIcon={true}
             records={candsStore.folderCandsList.length}
             onSort={(sortBy: SortByEnum, dir: string) => {
-              setCandsFolderListSort(dir);
+              handleSort(sortBy, dir, TabsCandsEnum.FolderCands);
             }}
+            // showRefreshList={true}
+            // onRefreshLists={() =>
+            //   positionsStore.selectedPosition?.id &&
+            //   candsStore.getFolderCandsList()
+            // }
           />
         </Box>
         <CandsList

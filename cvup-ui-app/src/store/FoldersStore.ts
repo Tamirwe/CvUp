@@ -120,17 +120,11 @@ export class FoldersStore {
       this.rootStore.candsStore.candDisplay?.candidateId
     );
 
-    if (
-      res.isSuccess &&
-      this.rootStore.candsStore.candDisplay?.candFoldersIds
-    ) {
-      const foldersIdsArr = [
-        ...this.rootStore.candsStore.candDisplay?.candFoldersIds,
-      ];
-      foldersIdsArr.push(folderId);
-      this.rootStore.candsStore.updateCandFoldersIds(foldersIdsArr);
+    if (res.isSuccess) {
+      await this.rootStore.candsStore.getFolderCandsList();
+      this.rootStore.candsStore.updateCandListFolderAttached(res.data);
     }
-
+    
     this.rootStore.generalStore.backdrop = false;
   }
 
@@ -141,15 +135,9 @@ export class FoldersStore {
       this.rootStore.candsStore.candDisplay?.candidateId
     );
 
-    if (
-      res.isSuccess &&
-      this.rootStore.candsStore.candDisplay?.candFoldersIds
-    ) {
-      const foldersIdsArr = [
-        ...this.rootStore.candsStore.candDisplay?.candFoldersIds,
-      ];
-      numArrRemoveItem(folderId, foldersIdsArr);
-      this.rootStore.candsStore.updateCandFoldersIds(foldersIdsArr);
+    if (res.isSuccess) {
+      await this.rootStore.candsStore.getFolderCandsList();
+      this.rootStore.candsStore.updateCandListFolderAttached(res.data);
     }
 
     this.rootStore.generalStore.backdrop = false;

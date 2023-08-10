@@ -387,7 +387,7 @@ export class CandsStore {
 
     if (index > -1) {
       candsList[index] = { ...cand };
-      this.posCandsList = candsList;
+      this.folderCandsList = candsList;
     }
   }
 
@@ -427,15 +427,11 @@ export class CandsStore {
     return cand ? cand : varToPreventTsError;
   }
 
-  async updateCandFoldersIds(candFoldersIdsArr: number[]) {
+  async updateCandListFolderAttached(cand: ICand) {
     runInAction(() => {
       if (this.candDisplay) {
-        this.candDisplay.candFoldersIds = candFoldersIdsArr;
-
-        const candId = this.candDisplay?.candidateId;
-        this.allCandsListCand(candId).candFoldersIds = candFoldersIdsArr;
-        this.candsPosListCand(candId).candFoldersIds = candFoldersIdsArr;
-        this.candsFolderListCand(candId).candFoldersIds = candFoldersIdsArr;
+        this.candDisplay = { ...cand };
+        this.updateLists(cand);
       }
     });
   }

@@ -19,6 +19,7 @@ import {
   MdKeyboardArrowUp,
   MdOutlineClose,
   MdOutlineSearch,
+  MdRefresh,
   MdRule,
   MdSort,
 } from "react-icons/md";
@@ -100,6 +101,8 @@ interface IProps {
   onSort?: (sortBy: SortByEnum, dir: string) => void;
   onSortLeftLists?: (dir: string) => void;
   showSortLeft?: boolean;
+  showRefreshList?: boolean;
+  onRefreshLists?: () => void;
 }
 
 export const SearchControl = ({
@@ -110,6 +113,8 @@ export const SearchControl = ({
   onSort,
   onSortLeftLists,
   showSortLeft = false,
+  showRefreshList = false,
+  onRefreshLists,
 }: IProps) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -123,6 +128,7 @@ export const SearchControl = ({
   const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
   const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
   const [sortByLeft, setSortByLeft] = useState(true);
+  const [refreshList, setRefreshList] = useState(true);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
@@ -193,6 +199,41 @@ export const SearchControl = ({
   return (
     <Stack>
       <Stack direction="row" alignItems={"center"} sx={{ direction: "rtl" }}>
+        {showRefreshList && (
+          <ToggleButtonGroup
+            sx={{
+              direction: "ltr",
+              marginLeft: 0.5,
+              "& .MuiButtonBase-root": {
+                padding: "5px 3px",
+                fontSize: "1.0rem",
+              },
+            }}
+            color="primary"
+            value={refreshList}
+            exclusive
+            size="small"
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setRefreshList(!refreshList);
+              onRefreshLists && onRefreshLists();
+              setSearchVals((currentProps) => ({
+                ...currentProps,
+                value: "",
+              }));
+              setSearchVals((currentProps) => ({
+                ...currentProps,
+                advancedValue: "",
+              }));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value={true} title="Sort by updated date">
+              <MdRefresh />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
         <Search sx={{ direction: "rtl" }}>
           <SearchIconWrapper>
             <MdOutlineSearch onClick={search} />

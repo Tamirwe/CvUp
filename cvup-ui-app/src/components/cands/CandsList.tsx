@@ -115,7 +115,7 @@ export const CandsList = observer(
                 direction: "rtl",
                 pl: "2px",
                 "& .MuiButtonBase-root": {
-                  pl: "1px",
+                  ml: "2px",
                 },
               }}
             >
@@ -144,28 +144,37 @@ export const CandsList = observer(
                     width: "100%",
                   }}
                 >
-                  <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      title="Email subject"
+                      style={{
+                        color: cand.isSeen ? "unset" : "green",
+                      }}
+                      className={classNames({
+                        [styles.listItemText]: true,
+                        [styles.isMobile]: isMobile,
+                      })}
+                    >
+                      {/* {cand.score} */}
+                      {candsSource === CandsSourceEnum.AllCands
+                        ? cand.emailSubject
+                        : `${cand.firstName || ""} ${cand.lastName || ""}`}
+                    </div>
+
                     <div
                       style={{
-                        width: "87%",
+                        // width: "87%",
                         display: "flex",
-                        justifyContent: "space-between",
+                        // justifyContent: "space-between",
                         alignItems: "center",
                       }}
                     >
-                      <div
-                        title="Email subject"
-                        style={{ color: cand.isSeen ? "unset" : "green" }}
-                        className={classNames({
-                          [styles.listItemText]: true,
-                          [styles.isMobile]: isMobile,
-                        })}
-                      >
-                        {/* {cand.score} */}
-                        {candsSource === CandsSourceEnum.AllCands
-                          ? cand.emailSubject
-                          : `${cand.firstName || ""} ${cand.lastName || ""}`}
-                      </div>
                       <div
                         title="Cv sent date"
                         className={classNames({
@@ -173,53 +182,54 @@ export const CandsList = observer(
                           [styles.isMobile]: isMobile,
                         })}
                       >
-                        {format(new Date(cand.cvSent), "MMM d, yyyy")}
+                        {format(new Date(cand.cvSent), "MMM d, yy")}
                       </div>
-                    </div>
+                      <ListItemIcon
+                        sx={{
+                          visibility: !cand.hasDuplicates
+                            ? "hidden"
+                            : "visible",
+                        }}
+                        onClick={async (event) => {
+                          event.stopPropagation();
+                          event.preventDefault();
 
-                    <ListItemIcon
-                      sx={{
-                        visibility: !cand.hasDuplicates ? "hidden" : "visible",
-                      }}
-                      onClick={async (event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
+                          // if (!isMobile) {
+                          if (location.pathname !== "/cv") {
+                            navigate(`/cv`);
+                          }
 
-                        // if (!isMobile) {
-                        if (location.pathname !== "/cv") {
-                          navigate(`/cv`);
-                        }
+                          await candsStore.displayCv(cand, candsSource);
+                          await candsStore.getDuplicatesCvsList(cand);
 
-                        await candsStore.displayCv(cand, candsSource);
-                        await candsStore.getDuplicatesCvsList(cand);
+                          if (dupOpenCandId !== cand.candidateId) {
+                            setDupOpenCandId(cand.candidateId);
+                          } else {
+                            setDupOpenCandId(0);
+                          }
 
-                        if (dupOpenCandId !== cand.candidateId) {
-                          setDupOpenCandId(cand.candidateId);
-                        } else {
-                          setDupOpenCandId(0);
-                        }
-
-                        // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
-                        //   candsStore.duplicateCvsCandId = cand.candidateId;
-                        //   candsStore.getDuplicatesCvsList(cand);
-                        // } else {
-                        //   candsStore.duplicateCvsCandId = 0;
-                        // }
-                        //}
-                      }}
-                    >
-                      <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="label"
+                          // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
+                          //   candsStore.duplicateCvsCandId = cand.candidateId;
+                          //   candsStore.getDuplicatesCvsList(cand);
+                          // } else {
+                          //   candsStore.duplicateCvsCandId = 0;
+                          // }
+                          //}
+                        }}
                       >
-                        {dupOpenCandId === cand.candidateId ? (
-                          <MdExpandLess />
-                        ) : (
-                          <MdExpandMore />
-                        )}
-                      </IconButton>
-                    </ListItemIcon>
+                        <IconButton
+                          color="primary"
+                          aria-label="upload picture"
+                          component="label"
+                        >
+                          {dupOpenCandId === cand.candidateId ? (
+                            <MdExpandLess />
+                          ) : (
+                            <MdExpandMore />
+                          )}
+                        </IconButton>
+                      </ListItemIcon>
+                    </div>
                   </div>
                   {cand.posStages && cand.posStages?.length > 0 && (
                     <CandsPosStagesList cand={cand} candsSource={candsSource} />

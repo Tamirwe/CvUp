@@ -114,9 +114,9 @@ export const CandsList = observer(
                 alignItems: "normal",
                 direction: "rtl",
                 pl: "2px",
-                "& .MuiButtonBase-root": {
-                  ml: "2px",
-                },
+                // "& .MuiButtonBase-root": {
+                //   ml: "2px",
+                // },
               }}
             >
               <ListItemButton
@@ -242,7 +242,7 @@ export const CandsList = observer(
                   timeout="auto"
                   unmountOnExit
                 >
-                  <CandDupCvsList />
+                  <CandDupCvsList candPosCvId={cand.posCvId} />
                 </Collapse>
               )}
             </ListItem>

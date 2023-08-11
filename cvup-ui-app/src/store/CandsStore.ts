@@ -30,10 +30,10 @@ export class CandsStore {
   posCandsList: ICand[] = [];
   folderCandsList: ICand[] = [];
   pdfUrl: string = "";
-  candAllSelected?: ICand;
+  // candAllSelected?: ICand;
   candDupSelected?: ICandCv;
-  candPosSelected?: ICand;
-  candFolderSelected?: ICand;
+  // candPosSelected?: ICand;
+  // candFolderSelected?: ICand;
   candDisplay?: ICand;
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
   posStages?: IPosStagesType[];
@@ -55,7 +55,7 @@ export class CandsStore {
 
   reset() {
     this.allCandsList = [];
-    this.candAllSelected = undefined;
+    // this.candAllSelected = undefined;
   }
 
   set currentTabCandsLists(val) {
@@ -111,7 +111,7 @@ export class CandsStore {
     // }, 100);
   }
 
-  async displayCvDuplicate(candCv: ICandCv, listType: CvDisplayedListEnum) {
+  async displayCvDuplicate(candCv: ICandCv) {
     runInAction(() => {
       this.candDupSelected = candCv;
 
@@ -120,25 +120,25 @@ export class CandsStore {
         this.candDisplay!.keyId = candCv.keyId;
       }
 
-      switch (listType) {
-        case CvDisplayedListEnum.CandsList:
-          this.candAllSelected = this.allCandsList.find(
-            (x) => x.candidateId === candCv.candidateId
-          );
-          break;
-        case CvDisplayedListEnum.PositionCandsList:
-          this.candPosSelected = this.posCandsList.find(
-            (x) => x.candidateId === candCv.candidateId
-          );
-          break;
-        case CvDisplayedListEnum.FolderCandsList:
-          this.candFolderSelected = this.folderCandsList.find(
-            (x) => x.candidateId === candCv.candidateId
-          );
-          break;
-        default:
-          break;
-      }
+      // switch (listCource) {
+      //   case CvDisplayedListEnum.CandsList:
+      //     this.candAllSelected = this.allCandsList.find(
+      //       (x) => x.candidateId === candCv.candidateId
+      //     );
+      //     break;
+      //   case CvDisplayedListEnum.PositionCandsList:
+      //     this.candPosSelected = this.posCandsList.find(
+      //       (x) => x.candidateId === candCv.candidateId
+      //     );
+      //     break;
+      //   case CvDisplayedListEnum.FolderCandsList:
+      //     this.candFolderSelected = this.folderCandsList.find(
+      //       (x) => x.candidateId === candCv.candidateId
+      //     );
+      //     break;
+      //   default:
+      //     break;
+      // }
 
       this.getPdf(candCv.keyId);
     });
@@ -247,6 +247,9 @@ export class CandsStore {
       runInAction(() => {
         this.duplicateCvsCandId = cand.candidateId;
         this.candDupCvsList = res.data;
+
+        const candDup = this.candDupCvsList.find((x) => x.cvId === cand.cvId);
+        this.candDupSelected = candDup;
       });
     }
     this.rootStore.generalStore.backdrop = false;

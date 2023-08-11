@@ -8,7 +8,11 @@ import styles from "./CandsList.module.scss";
 import classNames from "classnames";
 import { isMobile } from "react-device-detect";
 
-export const CandDupCvsList = observer(() => {
+interface IProps {
+  candPosCvId?: number;
+}
+
+export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
   const { candsStore, generalStore } = useStore();
   let location = useLocation();
   const navigate = useNavigate();
@@ -19,10 +23,10 @@ export const CandDupCvsList = observer(() => {
       disablePadding
       dense={true}
       sx={{
-        backgroundColor: "#fbfff0",
+        backgroundColor: "#fffae2",
         border: "1px solid #ffdcdc",
         maxHeight: "300px",
-        overflowY: "scroll",
+        overflowY: "auto",
 
         // "&:hover ": {
         //   overflow: "overlay",
@@ -33,7 +37,11 @@ export const CandDupCvsList = observer(() => {
         candsStore.candDupCvsList.map((dupCv, i) => {
           return (
             <ListItemButton
+              title={candPosCvId === dupCv.cvId ? "Attached CV" : ""}
               key={`${dupCv.cvId}dup`}
+              className={classNames({
+                [styles.poslistItemCurrent]: candPosCvId === dupCv.cvId,
+              })}
               sx={{
                 "&.Mui-selected": {
                   backgroundColor: "#edf1ff",
@@ -49,10 +57,7 @@ export const CandDupCvsList = observer(() => {
                   generalStore.rightDrawerOpen = false;
                 }
 
-                candsStore.displayCvDuplicate(
-                  dupCv,
-                  CvDisplayedListEnum.CandsList
-                );
+                candsStore.displayCvDuplicate(dupCv);
               }}
             >
               <div

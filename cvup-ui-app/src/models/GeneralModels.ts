@@ -30,6 +30,7 @@ export interface IUserClaims {
 
 export interface ICand {
   cvId: number;
+  posCvId?: number;
   review?: string;
   candidateId: number;
   keyId: string;

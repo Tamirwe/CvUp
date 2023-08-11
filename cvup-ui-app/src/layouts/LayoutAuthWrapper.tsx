@@ -34,23 +34,31 @@ export const LayoutAuthWrapper = observer(() => {
   const [pause, setPause] = useState(false);
 
   useEffect(() => {
+    let countNotAuth = 0;
+
     const interval = setInterval(async () => {
       if (!pause) {
         const res = await generalStore.getIsAuthorized();
 
         if (!res.isSuccess) {
-          setPause(true);
-          const isOk = await generalStore.alertConfirmDialog(
-            AlertConfirmDialogEnum.Confirm,
-            "Your session expired",
-            "Please login again"
-          );
+          countNotAuth++;
 
-          setPause(false);
+          if (countNotAuth >= 2) {
+            setPause(true);
+            const isOk = await generalStore.alertConfirmDialog(
+              AlertConfirmDialogEnum.Confirm,
+              "Your session expired",
+              "Please login again"
+            );
 
-          if (isOk) {
-            document.location.href = "/";
+            setPause(false);
+
+            if (isOk) {
+              document.location.href = "/";
+            }
           }
+        } else {
+          countNotAuth = 0;
         }
       }
     }, 60000);

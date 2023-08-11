@@ -76,6 +76,7 @@ namespace DataModelsLibrary.Models
     {
         public int candidateId { get; set; }
         public int cvId { get; set; }
+        public int? posCvId { get; set; }
         public string? keyId { get; set; } = "";
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";
@@ -132,7 +133,6 @@ namespace DataModelsLibrary.Models
         public string? _tp { get; set; } = "";
         public string? _dt { get; set; } = "";
         public string? _ec { get; set; } = "";
-
     }
 
     public class PosCandCvsModel

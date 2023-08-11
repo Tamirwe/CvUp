@@ -104,7 +104,8 @@ namespace DataModelsLibrary.Queries
                              orderby pcv.date_created descending
                              select new CandModel
                              {
-                                 cvId = cvs.id,
+                                 cvId = pcv.cv_id,
+                                 posCvId = pcv.cv_id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
                                  keyId = cvs.key_id,

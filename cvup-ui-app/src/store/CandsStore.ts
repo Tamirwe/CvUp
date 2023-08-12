@@ -70,9 +70,9 @@ export class CandsStore {
   //   this.isPdfLoaded = val;
   // }
 
-  // get pdfLoaded() {
-  //   return this.isPdfLoaded;
-  // }
+  get downloadUrl() {
+    return this.appSettings.apiUrl;
+  }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
@@ -624,6 +624,15 @@ export class CandsStore {
     if (index > -1) {
       candsList.splice(index, 1);
       this.posCandsList = candsList;
+    }
+  }
+
+  async getfile() {
+    const keyId = this.rootStore.candsStore.candDisplay?.keyId;
+
+    if (keyId) {
+      const res = await this.cvsApi.getfile(keyId);
+      return res.data;
     }
   }
 }

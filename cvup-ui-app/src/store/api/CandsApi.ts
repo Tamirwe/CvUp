@@ -187,4 +187,10 @@ export default class CandsApi extends BaseApi {
       return await this.http.delete(`Cand/DeleteCandidate?id=${candidateId}`);
     });
   }
+
+  async getfile(keyId: string) {
+    return await this.apiWrapper2<Blob>(async () => {
+      return await this.http.get(`Cand/GetFileStream?id=${keyId}`);
+    });
+  }
 }

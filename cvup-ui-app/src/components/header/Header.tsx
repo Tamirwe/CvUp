@@ -1,5 +1,5 @@
 import { useStore } from "../../Hooks/useStore";
-import { Grid, IconButton, Stack } from "@mui/material";
+import { Grid, IconButton, Link, Stack } from "@mui/material";
 import { SettingsMenu } from "./SettingsMenu";
 import { useEffect } from "react";
 import { BsList } from "react-icons/bs";
@@ -9,6 +9,7 @@ import {
   MdOutlineContactMail,
   MdOutlineDelete,
   MdOutlineEdit,
+  MdOutlineFileDownload,
   MdOutlineMarkEmailRead,
   MdOutlineMarkEmailUnread,
 } from "react-icons/md";
@@ -156,6 +157,74 @@ export const Header = observer(() => {
                       }
                     >
                       <MdOutlineMarkEmailUnread />
+                    </IconButton>
+
+                    <Link
+                      href={`${candsStore.downloadUrl}DD/GetFileStream?id=${candsStore.candDisplay.keyId}`}
+                      target="_blank"
+                      download
+                    >
+                      <IconButton
+                        title="Download original file"
+                        sx={{ fontSize: "1.54rem" }}
+                        size="small"
+                      >
+                        <MdOutlineFileDownload />
+                      </IconButton>
+                    </Link>
+
+                    <IconButton
+                      title="Email to customer"
+                      sx={{ fontSize: "1.54rem" }}
+                      size="small"
+                      onClick={async () => {
+                        const data = await candsStore.getfile();
+
+                        if (data) {
+                          console.log(data instanceof Blob);
+
+                          const blob = new Blob([data as Blob], {
+                            type: "application/pdf",
+                          });
+
+                          console.log(typeof blob);
+
+                          console.log(blob);
+
+                          const url = window.URL.createObjectURL(blob);
+                          const link = document.createElement("a");
+                          link.href = url;
+                          link.setAttribute("download", "filegdgd.pdf");
+                          document.body.appendChild(link);
+                          link.click();
+                        }
+
+                        //if (!(data instanceof Blob)) return;
+                        // const downloadedFile = new Blob([data!], {
+                        //   type: "application/pdf",
+                        // });
+
+                        // const a = document.createElement("a");
+                        // a.setAttribute("style", "display:none;");
+                        // document.body.appendChild(a);
+                        // a.download = "fileName1.pdf";
+                        // a.href = URL.createObjectURL(downloadedFile);
+                        // a.target = "_blank";
+                        // a.click();
+                        // document.body.removeChild(a);
+
+                        // if (data) {
+                        //   const link = document.createElement("a");
+                        //   link.href =
+                        //     window.URL.createObjectURL(downloadedFile);
+                        //   link.setAttribute("download", "fileName.pdf");
+                        //   document.body.appendChild(link);
+                        //   link.click();
+                        //   link.remove();
+                        // }
+                      }}
+                    >
+                      <MdOutlineFileDownload />
                     </IconButton>
                     {/* <IconButton
                       title="Delete Cv"

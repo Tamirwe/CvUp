@@ -249,6 +249,7 @@ namespace DataModelsLibrary.Models
     {
         public string cvFilePath { get; set; } = string.Empty;
         public string cvFileType { get; set; } = string.Empty;
+        public string fileName { get; set; } = string.Empty;
     }
 
 }

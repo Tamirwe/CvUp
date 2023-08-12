@@ -29,7 +29,7 @@ namespace CvFilesLibrary
             string fileName = $"{companyFolder}-{yearFolder}{monthFolder}-{secArr[2]}{fileType}";
             string[] pathArr = secArr[0].Split("_");
             string path = $"{_filesRootFolder}\\_{companyFolder}\\cvs\\{yearFolder}\\{monthFolder}\\{fileName}";
-            return new CvFileDetailsModel { cvFilePath = path, cvFileType = fileType };
+            return new CvFileDetailsModel { cvFilePath = path, cvFileType = fileType, fileName= fileName };
         }
 
         public  MemoryStream AddPdfLogo(int companyId, string cvKey )

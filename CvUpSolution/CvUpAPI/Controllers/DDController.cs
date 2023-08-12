@@ -9,9 +9,11 @@ using System.Net.Mime;
 using DataModelsLibrary.Models;
 using CvFilesLibrary;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace CvUpAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DDController : ControllerBase
@@ -22,6 +24,25 @@ namespace CvUpAPI.Controllers
         {
             _cvsFilesService = cvsFilesService;
         }
+
+        [HttpGet]
+        [Route("GetFileStream")]
+        public async Task<IActionResult?> GetFileStream(string id)
+        {
+            CvFileDetailsModel cvFileDetails = _cvsFilesService.GetCvFileDetails(id);
+
+            var provider = new FileExtensionContentTypeProvider();
+
+            const string DefaultContentType = "application/octet-stream";
+
+            if (!provider.TryGetContentType(cvFileDetails.cvFilePath, out string? contentType))
+            {
+                contentType = DefaultContentType;
+            }
+
+            return   await Task.Run(() => PhysicalFile(cvFileDetails.cvFilePath, contentType, cvFileDetails.fileName));
+        }
+
 
         [HttpGet]
         public async Task<IActionResult?> Get(string id)

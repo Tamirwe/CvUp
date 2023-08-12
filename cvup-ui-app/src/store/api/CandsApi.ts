@@ -190,7 +190,19 @@ export default class CandsApi extends BaseApi {
 
   async getfile(keyId: string) {
     return await this.apiWrapper2<Blob>(async () => {
-      return await this.http.get(`Cand/GetFileStream?id=${keyId}`);
+      return await this.http.get(`DD/GetFileStream?id=${keyId}`, {
+        responseType: "blob",
+        timeout: 30000,
+      });
+    });
+  }
+
+  async getPdfFile(keyId: string) {
+    return await this.apiWrapper2<Blob>(async () => {
+      return await this.http.get(`DD?id=${keyId}`, {
+        responseType: "blob",
+        timeout: 30000,
+      });
     });
   }
 }

@@ -30,6 +30,8 @@ export class CandsStore {
   posCandsList: ICand[] = [];
   folderCandsList: ICand[] = [];
   pdfUrl: string = "";
+  pdfBlobUrl: string = "";
+
   // candAllSelected?: ICand;
   candDupSelected?: ICandCv;
   // candPosSelected?: ICand;
@@ -145,6 +147,14 @@ export class CandsStore {
   }
 
   async getPdf(keyId: string) {
+    const data = await this.getPdfFile(keyId);
+    if (!(data instanceof Blob)) return;
+    const downloadedFile = new Blob([data!], {
+      type: data.type,
+    });
+
+    this.pdfBlobUrl = URL.createObjectURL(downloadedFile);
+
     this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
   }
 
@@ -627,11 +637,16 @@ export class CandsStore {
     }
   }
 
-  async getfile() {
-    const keyId = this.rootStore.candsStore.candDisplay?.keyId;
-
+  async getfile(keyId?: string) {
     if (keyId) {
       const res = await this.cvsApi.getfile(keyId);
+      return res.data;
+    }
+  }
+
+  async getPdfFile(keyId?: string) {
+    if (keyId) {
+      const res = await this.cvsApi.getPdfFile(keyId);
       return res.data;
     }
   }

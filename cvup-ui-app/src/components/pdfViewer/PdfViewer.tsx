@@ -231,12 +231,12 @@ export const PdfViewer = observer(() => {
           overflow: "hidden",
         }}
       >
-        {candsStore.pdfUrl && (
+        {candsStore.pdfBlobUrl && (
           <Viewer
             onPageChange={handlePageChange}
             // defaultScale={SpecialZoomLevel.PageWidth}
             defaultScale={SpecialZoomLevel.PageWidth}
-            fileUrl={candsStore.pdfUrl}
+            fileUrl={candsStore.pdfBlobUrl}
             plugins={[toolbarPluginInstance]}
             renderError={renderError}
             theme={{

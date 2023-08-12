@@ -148,7 +148,7 @@ export const Header = observer(() => {
                     >
                       <CiEdit />
                     </IconButton>
-                    <IconButton
+                    {/* <IconButton
                       title="Email to customer"
                       sx={{ fontSize: "1.54rem" }}
                       size="small"
@@ -161,7 +161,6 @@ export const Header = observer(() => {
 
                     <Link
                       href={`${candsStore.downloadUrl}DD/GetFileStream?id=${candsStore.candDisplay.keyId}`}
-                      target="_blank"
                       download
                     >
                       <IconButton
@@ -171,82 +170,47 @@ export const Header = observer(() => {
                       >
                         <MdOutlineFileDownload />
                       </IconButton>
-                    </Link>
+                    </Link> */}
 
                     <IconButton
                       title="Email to customer"
                       sx={{ fontSize: "1.54rem" }}
                       size="small"
                       onClick={async () => {
-                        const data = await candsStore.getfile();
+                        const keyId = candsStore.candDisplay?.keyId;
 
-                        if (data) {
-                          console.log(data instanceof Blob);
+                        const data = await candsStore.getfile(keyId);
+                        if (!(data instanceof Blob)) return;
+                        const downloadedFile = new Blob([data!], {
+                          type: data.type,
+                        });
 
-                          const blob = new Blob([data as Blob], {
-                            type: "application/pdf",
-                          });
-
-                          console.log(typeof blob);
-
-                          console.log(blob);
-
-                          const url = window.URL.createObjectURL(blob);
-                          const link = document.createElement("a");
-                          link.href = url;
-                          link.setAttribute("download", "filegdgd.pdf");
-                          document.body.appendChild(link);
-                          link.click();
+                        const a = document.createElement("a");
+                        a.setAttribute("style", "display:none;");
+                        document.body.appendChild(a);
+                        switch (data.type) {
+                          case "application/pdf":
+                            a.download = `${keyId}.pdf`;
+                            break;
+                          case "application/msword":
+                            a.download = `${keyId}.doc`;
+                            break;
+                          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                            a.download = `${keyId}.docx`;
+                            break;
+                          default:
+                            break;
                         }
-
-                        //if (!(data instanceof Blob)) return;
-                        // const downloadedFile = new Blob([data!], {
-                        //   type: "application/pdf",
-                        // });
-
-                        // const a = document.createElement("a");
-                        // a.setAttribute("style", "display:none;");
-                        // document.body.appendChild(a);
-                        // a.download = "fileName1.pdf";
-                        // a.href = URL.createObjectURL(downloadedFile);
-                        // a.target = "_blank";
-                        // a.click();
-                        // document.body.removeChild(a);
-
-                        // if (data) {
-                        //   const link = document.createElement("a");
-                        //   link.href =
-                        //     window.URL.createObjectURL(downloadedFile);
-                        //   link.setAttribute("download", "fileName.pdf");
-                        //   document.body.appendChild(link);
-                        //   link.click();
-                        //   link.remove();
-                        // }
+                        a.href = URL.createObjectURL(downloadedFile);
+                        a.target = "_blank";
+                        a.click();
+                        document.body.removeChild(a);
                       }}
                     >
                       <MdOutlineFileDownload />
                     </IconButton>
-                    {/* <IconButton
-                      title="Delete Cv"
-                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
-                      size="small"
-                      onClick={async () => {
-                        const isDelete = await generalStore.alertConfirmDialog(
-                          AlertConfirmDialogEnum.Confirm,
-                          "Delete Cv",
-                          "Are you sure you want to delete this cv?"
-                        );
-
-                        if (isDelete) {
-                          await candsStore.deleteCv();
-                        }
-                      }}
-                    >
-                      <MdOutlineDelete />
-                    </IconButton> */}
                   </>
                 )}
-                {/* <SearchCands /> */}
               </Stack>
             </Grid>
             <Grid item xs={5} sx={{ textAlign: "right" }} pr={1}>

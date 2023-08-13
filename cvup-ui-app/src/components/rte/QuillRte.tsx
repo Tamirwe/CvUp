@@ -58,8 +58,8 @@ export const QuillRte = observer(
 
         ["bold", "italic", "underline", "strike", "link"],
         [
-          { list: "ordered" },
-          { list: "bullet" },
+          // { list: "ordered" },
+          // { list: "bullet" },
           { indent: "-1" },
           { indent: "+1" },
         ],

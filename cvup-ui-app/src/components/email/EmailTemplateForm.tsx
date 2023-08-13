@@ -26,6 +26,7 @@ import { GoPlus } from "react-icons/go";
 import { MdContentCopy } from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
 import { QuillRte } from "../rte/QuillRte";
+import { BrowserView, MobileView } from "react-device-detect";
 
 interface IProps {
   onSaved: () => void;
@@ -39,7 +40,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   // const [emailTemplate, setEmailTemplate] = useState( null  );
   const [submitError, setSubmitError] = useState("");
   const [formModel, setFormModel] = useState<IEmailTemplate>({
-    id: 0,
+    id: 1,
     name: "",
     subject: "",
     body: "",
@@ -119,7 +120,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
 
   const handleAddTemplate = async () => {
     setFormModel({
-      id: 0,
+      id: 1,
       name: "",
       subject: "",
       body: "",
@@ -329,21 +330,23 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     Dynamic data to add:
                   </div>
                 </Grid>
-                <Grid container gap={1}>
+                <Grid container gap={2}>
                   {Object.keys(DynamicEmailDataEnum)
                     .filter((x) => isNaN(Number(x)))
-                    .map((key, i) => {
+                    .map((txt, i) => {
                       return (
-                        <Grid item xs="auto">
-                          <Link
-                            href="#"
-                            onClick={() => {
-                              copyToClipBoard(`[${key}]`);
-                            }}
-                          >
-                            <MdContentCopy />
-                            {`[${key}]`}
-                          </Link>
+                        <Grid item xs="auto" key={i}>
+                          <MobileView>{`[${txt}]`}</MobileView>
+                          <BrowserView>
+                            <Link
+                              href="#"
+                              onClick={() => {
+                                copyToClipBoard(`[${txt}]`);
+                              }}
+                            >
+                              {`[${txt}]`}
+                            </Link>
+                          </BrowserView>
                         </Grid>
                       );
                     })}

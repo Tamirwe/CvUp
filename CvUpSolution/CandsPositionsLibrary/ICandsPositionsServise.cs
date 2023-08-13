@@ -32,7 +32,7 @@ namespace CandsPositionsLibrary
         Task UpdateCvKeyId(ImportCvModel importCv);
         Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum);
         Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
-        Task UpdateSameCv(ImportCvModel importCv);
+        Task UpdateCvDate(int cvId);
         Task AttachPosCandCv(AttachePosCandCvModel posCv);
         Task DetachPosCand(AttachePosCandCvModel posCv);
         Task<List<company_cvs_email>> GetCompaniesEmails();

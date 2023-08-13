@@ -32,7 +32,7 @@ namespace DataModelsLibrary.Models
         public int cvAsciiSum { get; set; }
         public bool isDuplicate { get; set; } = false;
         public int duplicateCvId { get; set; }
-        public bool isSameCv { get; set; } = false;
+        public bool isSameCvEmailSubject { get; set; } = false;
         public int fileTypeKey { get; set; }
     }
 

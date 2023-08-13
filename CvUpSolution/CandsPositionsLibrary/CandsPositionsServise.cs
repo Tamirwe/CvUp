@@ -219,9 +219,9 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateCandLastCv(companyId,  candidateId,  cvId,  isDuplicate,  lastCvSent);
         }
 
-        public async Task UpdateSameCv(ImportCvModel importCv)
+        public async Task UpdateCvDate(int cvId)
         {
-            await _cvsPositionsQueries.UpdateSameCv(importCv);
+            await _cvsPositionsQueries.UpdateCvDate(cvId);
         }
 
         public async Task AttachPosCandCv(AttachePosCandCvModel posCv)

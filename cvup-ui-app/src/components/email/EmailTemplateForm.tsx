@@ -330,26 +330,28 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     Dynamic data to add:
                   </div>
                 </Grid>
-                <Grid container gap={2}>
-                  {Object.keys(DynamicEmailDataEnum)
-                    .filter((x) => isNaN(Number(x)))
-                    .map((txt, i) => {
-                      return (
-                        <Grid item lg="auto" xs={6} key={i}>
-                          <MobileView>{`[${txt}]`}</MobileView>
-                          <BrowserView>
-                            <Link
-                              href="#"
-                              onClick={() => {
-                                copyToClipBoard(`[${txt}]`);
-                              }}
-                            >
-                              {`[${txt}]`}
-                            </Link>
-                          </BrowserView>
-                        </Grid>
-                      );
-                    })}
+                <Grid item xs={12} lg={12}>
+                  <Grid container gap={2}>
+                    {Object.keys(DynamicEmailDataEnum)
+                      .filter((x) => isNaN(Number(x)))
+                      .map((txt, i) => {
+                        return (
+                          <Grid item lg="auto" xs={5} key={i}>
+                            <MobileView>{`[${txt}]`}</MobileView>
+                            <BrowserView>
+                              <Link
+                                href="#"
+                                onClick={() => {
+                                  copyToClipBoard(`[${txt}]`);
+                                }}
+                              >
+                                {`[${txt}]`}
+                              </Link>
+                            </BrowserView>
+                          </Grid>
+                        );
+                      })}
+                  </Grid>
                 </Grid>
               </Grid>
 

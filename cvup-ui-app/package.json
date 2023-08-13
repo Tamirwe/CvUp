@@ -48,7 +48,7 @@
   "scripts": {
     "start": "set PORT=3030 && react-scripts start",
     "build": "react-scripts build",
-    "build:deploy": "react-scripts build && node ./src/utils/deploy.js",
+    "build:deploy": " node ./src/utils/update-build.js && react-scripts build && node ./src/utils/deploy.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

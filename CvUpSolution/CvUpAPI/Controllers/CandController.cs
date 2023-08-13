@@ -1,5 +1,6 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
+using CvFilesLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using EmailsLibrary.Models;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.StaticFiles;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ComponentModel.Design;
 
@@ -20,11 +22,13 @@ namespace CvUpAPI.Controllers
     {
         private ICandsPositionsServise _candPosService;
         private IAuthServise _authServise;
+        private ICvsFilesService _cvsFilesService;
 
-        public CandController( ICandsPositionsServise candPosService, IAuthServise authServise)
+        public CandController( ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService)
         {
             _candPosService = candPosService;
             _authServise = authServise;
+            _cvsFilesService = cvsFilesService;
         }
 
         [HttpGet]
@@ -230,5 +234,7 @@ namespace CvUpAPI.Controllers
             await _candPosService.DeleteCandidate(Globals.CompanyId, id);
             return Ok();
         }
+
+       
     }
 }

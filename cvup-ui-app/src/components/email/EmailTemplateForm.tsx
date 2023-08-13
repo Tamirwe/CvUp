@@ -329,23 +329,25 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     Dynamic data to add:
                   </div>
                 </Grid>
-                {Object.keys(DynamicEmailDataEnum)
-                  .filter((x) => isNaN(Number(x)))
-                  .map((key, i) => {
-                    return (
-                      <Grid item xs="auto">
-                        <Link
-                          href="#"
-                          onClick={() => {
-                            copyToClipBoard(`[${key}]`);
-                          }}
-                        >
-                          <MdContentCopy />
-                          {`[${key}]`}
-                        </Link>
-                      </Grid>
-                    );
-                  })}
+                <Grid container gap={1}>
+                  {Object.keys(DynamicEmailDataEnum)
+                    .filter((x) => isNaN(Number(x)))
+                    .map((key, i) => {
+                      return (
+                        <Grid item xs="auto">
+                          <Link
+                            href="#"
+                            onClick={() => {
+                              copyToClipBoard(`[${key}]`);
+                            }}
+                          >
+                            <MdContentCopy />
+                            {`[${key}]`}
+                          </Link>
+                        </Grid>
+                      );
+                    })}
+                </Grid>
               </Grid>
 
               {submitError && (

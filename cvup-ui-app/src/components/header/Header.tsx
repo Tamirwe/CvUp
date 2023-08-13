@@ -148,7 +148,7 @@ export const Header = observer(() => {
                     >
                       <CiEdit />
                     </IconButton>
-                    {/* <IconButton
+                    <IconButton
                       title="Email to customer"
                       sx={{ fontSize: "1.54rem" }}
                       size="small"
@@ -158,7 +158,7 @@ export const Header = observer(() => {
                     >
                       <MdOutlineMarkEmailUnread />
                     </IconButton>
-
+                    {/*
                     <Link
                       href={`${candsStore.downloadUrl}DD/GetFileStream?id=${candsStore.candDisplay.keyId}`}
                       download

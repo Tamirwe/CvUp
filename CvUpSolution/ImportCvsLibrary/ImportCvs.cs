@@ -1,4 +1,5 @@
-﻿using CandsPositionsLibrary;
+﻿using Amazon.Runtime.Internal.Util;
+using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
@@ -14,6 +15,7 @@ using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,108 +50,10 @@ namespace ImportCvsLibrary
             _mailPassword = config["GlobalSettings:ImportGmailPassword"];
         }
 
-
-
-        public async Task ReceiveEmailsAsync()
-        {
-            using (var client = new ImapClient())
-            {
-                // Connect to the IMAP server
-                await client.ConnectAsync("imap.gmail.com", 993, true);
-
-                // Authenticate with the server
-                await client.AuthenticateAsync(_gmailUserName, _mailPassword);
-
-                // Open the Inbox folder
-                await client.Inbox.OpenAsync(MailKit.FolderAccess.ReadOnly);
-
-
-                var messages = await client.Inbox.SearchAsync(SearchQuery.NotSeen);
-
-                foreach (var message in messages)
-                {
-                    // Fetch the full message
-                    var fullMessage = await client.Inbox.GetMessageAsync(message);
-
-                    foreach (var bodyPart in fullMessage.BodyParts)
-                    {
-                        var contentBase = bodyPart.ContentDisposition;
-
-                        if (bodyPart.ContentType.Name != null)
-                        {
-                            //var part = (MimePart)bodyPart;
-                            //var fileName = part.FileName;
-
-                            //string fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
-
-                            //var myUniqueFileName = $@"{DateTime.Now.Ticks}{_importCv.fileExtension}";
-                            //_importCv.tempFilePath = $"{_cvTempFolderPath}\\{myUniqueFileName}";
-
-                            ////using (var stream = File.Create(_importCv.tempFilePath))
-                            ////{
-                            ////    if (attachment is MessagePart)
-                            ////    {
-                            ////        var rfc822 = (MessagePart)attachment;
-                            ////        rfc822.Message.WriteTo(stream);
-                            ////    }
-                            ////    else
-                            ////    {
-                            ////        var part = (MimePart)attachment;
-                            ////        part.Content.DecodeTo(stream);
-                            ////    }
-                            ////}
-
-
-                            //using (var stream = File.Create(_importCv.tempFilePath))
-                            //{
-                            //    part.Content.DecodeTo(stream);
-                            //    //SaveAttachmentToTemporaryFile(stream);
-                            //}
-                            
-                        }
-                    }
-
-                        //ProcessEmailMessage(fullMessage);
-                }
-
-                // Disconnect from the server
-                await client.DisconnectAsync(true);
-            }
-        }
-
-        private void ProcessEmailMessage(MimeMessage message)
-        {
-            // Implement your logic to process the email message here.
-            // You can access different parts of the email, such as subject, body, attachments, etc.
-
-            Console.WriteLine($"Subject: {message.Subject}");
-            Console.WriteLine($"From: {message.From}");
-            Console.WriteLine($"Body: {message.TextBody}");
-            // Process attachments if needed
-            foreach (IEnumerable<MimeEntity> attachment in message.Attachments)
-            {
-                foreach (var item in attachment)
-                {
-                    string originalFileName = item.ContentDisposition?.FileName ?? item.ContentType.Name;
-                    Console.WriteLine(originalFileName);
-                }
-                //string originalFileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
-
-               
-            }
-        }
-
-
         public async Task ImportFromGmail()
         {
-            //await ReceiveEmailsAsync();
-
-            //_companiesEmail = await _cvsPositionsServise.GetCompaniesEmails();
-
             try
-            {
-
-
+            {              
                 _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
 
                 using (var client = new ImapClient())
@@ -221,6 +125,33 @@ namespace ImportCvsLibrary
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+
+                //if (EventLog.Exists("CvUpImportLog"))
+                //{
+                //    // Delete Source
+                //    EventLog.Delete("CvUpImportLog");
+                //}
+
+
+                using (EventLog eventLog = new())
+                {
+                    if (!EventLog.SourceExists("CvUpImport"))
+                    {
+                        EventLog.CreateEventSource("CvUpImport", "CvUpImport");
+                    }
+
+                    string cvData = "";
+
+                    if (_importCv != null)
+                    {
+                        cvData = @$"candidateId: {_importCv.candidateId}, cvId: {_importCv.cvId}, 
+                                        candName: {_importCv.firstName} {_importCv.lastName}, emailId: {_importCv.emailId}, ";
+                    }
+
+                    eventLog.Source = "CvUpImport";
+                    eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
+                }
+
             }
         }
 
@@ -230,8 +161,12 @@ namespace ImportCvsLibrary
             await CandidateFindOrCreate();
             GetCvAsciiSum();
             await CheckIsCvDuplicateOrSameCv();
-            if (!_importCv.isSameCv)
+
+            if (_importCv.isSameCvEmailSubject)
             {
+                await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
+            }
+            else { 
                 await AddCvToDb();
                 RenameAndMoveAttachmentToFolder();
                 await _cvsPositionsServise.UpdateCvKeyId(_importCv);
@@ -349,7 +284,7 @@ namespace ImportCvsLibrary
 
                         if (cvTxt != null)
                         {
-                            _importCv.isSameCv = true;
+                            _importCv.isSameCvEmailSubject = true;
                         }
                     }
                 }
@@ -429,11 +364,11 @@ namespace ImportCvsLibrary
         {
             //if (_importCv.isSameCv)
             //{
-            //    await _cvsPositionsServise.UpdateSameCv(_importCv);
+            //    await _cvsPositionsServise.UpdateCvDate(int cvId);
             //}
             //else
             //{
-                _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
+            _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
             //}
         }
 

@@ -30,7 +30,7 @@ namespace DataModelsLibrary.Queries
          Task DeleteCv(int companyId, int candidateId, int cvId);
         Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId);
          Task DeleteCandidate(int companyId, int candidateId);
-         Task UpdateSameCv(ImportCvModel importCv);
+         Task UpdateCvDate(int cvId);
          Task<candidate?> GetCandidateByPhone(string phone);
          Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId);
          Task UpdateCvsAsciiSum(int companyId);

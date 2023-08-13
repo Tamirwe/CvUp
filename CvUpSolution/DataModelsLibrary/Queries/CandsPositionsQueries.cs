@@ -263,11 +263,11 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateSameCv(ImportCvModel importCv)
+        public async Task UpdateCvDate(int cvId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                cv cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
+                cv cv = dbContext.cvs.Where(x => x.id == cvId).First();
                 cv.date_created = DateTime.Now;
                 var result = dbContext.cvs.Update(cv);
                 await dbContext.SaveChangesAsync();

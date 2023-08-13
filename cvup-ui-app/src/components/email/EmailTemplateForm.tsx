@@ -335,7 +335,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                     .filter((x) => isNaN(Number(x)))
                     .map((txt, i) => {
                       return (
-                        <Grid item xs="auto" key={i}>
+                        <Grid item lg="auto" xs={6} key={i}>
                           <MobileView>{`[${txt}]`}</MobileView>
                           <BrowserView>
                             <Link

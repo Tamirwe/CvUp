@@ -91,11 +91,12 @@ export const MobileAuthLayout = observer(() => {
           }}
         >
           <div
-            onClick={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-            }}
+            // onClick={(event) => {
+            //   event.stopPropagation();
+            //   event.preventDefault();
+            // }}
             style={{
+              overflow: "hidden",
               zIndex: "99999",
               width: "90%",
             }}

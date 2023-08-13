@@ -9,17 +9,16 @@ export default function ComponentStyleOverrides(theme: themeType) {
         root: {
           "& .MuiDialog-container .MuiDialog-paper": {
             margin: 0,
-            width: "calc(100% - 22px)",
+            width: "calc(100% - 12px)",
           },
           "& .MuiDialog-container .MuiDialog-paperFullScreen": {
             padding: 2,
             width: "100%",
           },
-          "& .MuiDialogContent-root": isMobile
-            ? {
-                padding: "20px 2px",
-              }
-            : "",
+          "& .MuiDialogContent-root": {
+            padding: isMobile ? "20px 2px" : "",
+            overflowX: "hidden",
+          },
         },
       },
     },

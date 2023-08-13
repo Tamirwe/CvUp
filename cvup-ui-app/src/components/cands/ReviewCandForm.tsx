@@ -2,6 +2,7 @@ import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
+import { isMobile } from "react-device-detect";
 
 interface IProps {
   onSaved: () => void;
@@ -35,10 +36,11 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
             <TextField
               sx={{
                 direction: "rtl",
+                "& .MuiInputBase-input": { maxHeight: "calc(100% - 21rem)" },
               }}
               fullWidth
               multiline
-              rows={27}
+              rows={isMobile ? 18 : 27}
               margin="normal"
               type="text"
               id="description"

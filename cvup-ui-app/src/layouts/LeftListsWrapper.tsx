@@ -37,6 +37,7 @@ export const LeftListsWrapper = observer(() => {
   };
 
   const handleAddClick = () => {
+
     switch (generalStore.currentLeftDrawerTab) {
       case TabsGeneralEnum.Positions:
         positionsStore.editPosition = undefined;
@@ -54,6 +55,8 @@ export const LeftListsWrapper = observer(() => {
       default:
         break;
     }
+
+    generalStore.leftDrawerOpen = false;
   };
 
   const handlePositionsSearch = (searchVals: ISearchModel) => {

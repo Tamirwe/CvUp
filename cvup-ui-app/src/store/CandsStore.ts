@@ -153,9 +153,11 @@ export class CandsStore {
       type: data.type,
     });
 
-    this.pdfBlobUrl = URL.createObjectURL(downloadedFile);
+    runInAction(() => {
+      this.pdfBlobUrl = URL.createObjectURL(downloadedFile);
+    });
 
-    this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
+    // this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
   }
 
   async saveCandReview(review: string) {

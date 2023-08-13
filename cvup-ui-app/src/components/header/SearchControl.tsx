@@ -197,7 +197,12 @@ export const SearchControl = ({
   };
 
   return (
-    <Stack>
+    <Stack
+      onClick={(event) => {
+        event.stopPropagation();
+        event.preventDefault();
+      }}
+    >
       <Stack direction="row" alignItems={"center"} sx={{ direction: "rtl" }}>
         {showRefreshList && (
           <ToggleButtonGroup
@@ -236,7 +241,13 @@ export const SearchControl = ({
         )}
         <Search sx={{ direction: "rtl" }}>
           <SearchIconWrapper>
-            <MdOutlineSearch onClick={search} />
+            <MdOutlineSearch
+              onClick={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+                search();
+              }}
+            />
           </SearchIconWrapper>
           <StyledInputBase
             placeholder="Search…"

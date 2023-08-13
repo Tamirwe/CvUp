@@ -203,7 +203,7 @@ export const CandsListsWrapper = observer(() => {
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
       >
-        <Box mt={1} mr={2}>
+        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden" }}>
           <SearchControl
             onSearch={handlePositionCandsSearch}
             onShowAdvanced={() =>
@@ -232,7 +232,7 @@ export const CandsListsWrapper = observer(() => {
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
       >
-        <Box mt={1} mr={2}>
+        <Box mt={1} mr={1} ml={1}>
           <SearchControl
             onSearch={handleFolderCandsSearch}
             onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}

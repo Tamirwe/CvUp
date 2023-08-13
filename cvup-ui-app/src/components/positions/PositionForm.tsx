@@ -193,7 +193,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     required
                     margin="normal"
                     type="text"
-                    id="title"
+                    id="posName"
                     label="Position title"
                     variant="outlined"
                     onChange={(e) => {

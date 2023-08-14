@@ -15,19 +15,17 @@ export const FoldersList = observer(() => {
   const [rootFoldersList, setRootFoldersList] = useState<IFolder[]>([]);
 
   useEffect(() => {
-    if (!foldersStore.foldersListSorted.length) {
+    if (!foldersStore.foldersList.length) {
       foldersStore.getFoldersList();
     }
   }, []);
 
   useEffect(() => {
-    if (foldersStore.foldersListSorted.length > 0) {
-      const numRecords = rootFoldersList.length;
-      setRootFoldersList(
-        foldersStore.foldersListSorted?.slice(0, numRecords + 50)
-      );
-    }
-  }, [foldersStore.foldersListSorted]); // eslint-disable-line react-hooks/exhaustive-deps
+    //if (foldersStore.sortedFolders.length > 0) {
+    const numRecords = rootFoldersList.length;
+    setRootFoldersList(foldersStore.sortedFolders?.slice(0, numRecords + 50));
+    //}
+  }, [foldersStore.sortedFolders]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
@@ -39,7 +37,7 @@ export const FoldersList = observer(() => {
       if (rootFoldersList) {
         const numRecords = rootFoldersList.length;
         const newPosList = rootFoldersList.concat(
-          foldersStore.foldersListSorted?.slice(numRecords, numRecords + 50)
+          foldersStore.sortedFolders?.slice(numRecords, numRecords + 50)
         );
         setRootFoldersList(newPosList);
       }
@@ -165,7 +163,7 @@ export const FoldersList = observer(() => {
                     parentId: child.parentId,
                     name: child.name,
                   },
-                  children: foldersStore.foldersListSorted.filter(
+                  children: foldersStore.sortedFolders.filter(
                     (x) => x.parentId === child.id
                   ),
                 })

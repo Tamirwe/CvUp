@@ -111,12 +111,12 @@ export class PositionsStore {
       if (isPositionOnTop) {
         const posList = [...this.sortedPosList];
 
-        const objIndex = this.sortedPosList.findIndex(
+        const objIndex = posList.findIndex(
           (x) => x.id === this.selectedPosition?.id
         );
 
         if (objIndex > -1) {
-          const posArr = this.sortedPosList.splice(objIndex, 1);
+          posList.splice(objIndex, 1);
         }
 
         const posObj = this.positionsList.find(

@@ -33,6 +33,7 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
         // },
       }}
     >
+      {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>Duplicates</div> */}
       {candsStore.candDupCvsList &&
         candsStore.candDupCvsList.map((dupCv, i) => {
           return (

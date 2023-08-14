@@ -3,7 +3,16 @@ import { PdfViewer } from "../components/pdfViewer/PdfViewer";
 import "react-quill/dist/quill.snow.css";
 import { useStore } from "../Hooks/useStore";
 import styles from "./Cv.module.scss";
-import { FormControl, Grid, Link, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  Grid,
+  Link,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { EmailTypeEnum } from "../models/GeneralEnums";
 import { useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../models/GeneralModels";
@@ -14,6 +23,8 @@ export const Cv = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
   const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
   const [candidateName, setCandidateName] = useState("");
+  const [review, setReview] = useState("");
+
   const scrollRef = useRef<any>(null);
 
   useEffect(() => {
@@ -21,6 +32,8 @@ export const Cv = observer(() => {
 
     if (candsStore.candDisplay) {
       getCandName();
+      generalStore.showReviewCandDialog = false;
+      setReview(candsStore.candDisplay?.review || "");
     }
   }, [candsStore.candDisplay]);
 
@@ -243,20 +256,71 @@ export const Cv = observer(() => {
                   </Link>
                 </div>
               )}
-            <div className="qlCustom">
-              <pre
-                style={{
-                  whiteSpace: "break-spaces",
-                  direction: authStore.isRtl ? "rtl" : "ltr",
-                  textAlign: authStore.isRtl ? "right" : "left",
-                  fontFamily: "inherit",
-                  margin: 0,
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: candsStore.candDisplay?.review || "",
-                }}
-              ></pre>
+            <div>
+              {generalStore.showReviewCandDialog && !isMobile ? (
+                <Grid container justifyContent="space-between">
+                  <Grid item xs={12}>
+                    <TextField
+                      sx={{
+                        direction: "rtl",
+                        //"& .MuiInputBase-input": { maxHeight: "calc(100% - 21rem)" },
+                      }}
+                      fullWidth
+                      multiline
+                      rows={17}
+                      margin="normal"
+                      type="text"
+                      id="description"
+                      label="Description"
+                      variant="outlined"
+                      onChange={(e) => {
+                        setReview(e.target.value);
+                      }}
+                      value={review}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Stack direction="row" justifyContent="flex-end" gap={1}>
+                      <Button
+                        color="secondary"
+                        onClick={() => {
+                          generalStore.showReviewCandDialog = false;
+                        }}
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button
+                        color="secondary"
+                        onClick={async () => {
+                          const res = await candsStore.saveCandReview(review);
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </Stack>
+                  </Grid>
+                </Grid>
+              ) : (
+                <pre
+                  onClick={() => {
+                    generalStore.showReviewCandDialog =
+                      !generalStore.showReviewCandDialog;
+                  }}
+                  style={{
+                    whiteSpace: "break-spaces",
+                    direction: authStore.isRtl ? "rtl" : "ltr",
+                    textAlign: authStore.isRtl ? "right" : "left",
+                    fontFamily: "inherit",
+                    margin: 0,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: candsStore.candDisplay?.review || "",
+                  }}
+                ></pre>
+              )}
             </div>
+            <div></div>
           </Grid>
         </Grid>
       )}

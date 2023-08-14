@@ -37,7 +37,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
               key={i}
               className={classNames({
                 [styles.listItemPosStages]: true,
-                [styles.listItemPosStagesCurrent]: isCurrentPosition,
+                // [styles.listItemPosStagesCurrent]: isCurrentPosition,
               })}
             >
               {cand.candidateId === candsStore.candDisplay?.candidateId && (

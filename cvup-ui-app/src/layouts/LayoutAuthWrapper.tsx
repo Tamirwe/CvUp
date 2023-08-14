@@ -22,7 +22,7 @@ import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
 import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
-import { BrowserView, MobileView } from "react-device-detect";
+import { BrowserView, MobileView, isMobile } from "react-device-detect";
 import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { MobileAuthLayout } from "./MobileAuthLayout";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
@@ -122,7 +122,7 @@ export const LayoutAuthWrapper = observer(() => {
           onClose={() => (generalStore.showUserListDialog = false)}
         />
       )}
-      {generalStore.showReviewCandDialog && (
+      {generalStore.showReviewCandDialog && isMobile && (
         <ReviewCandDialog
           isOpen={generalStore.showReviewCandDialog}
           onClose={() => (generalStore.showReviewCandDialog = false)}

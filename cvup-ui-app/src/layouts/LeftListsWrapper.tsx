@@ -114,7 +114,7 @@ export const LeftListsWrapper = observer(() => {
         <Box mt={1} ml={1}>
           <SearchControl
             onSearch={handleFoldersSearch}
-            records={foldersStore.foldersListSorted.length}
+            records={foldersStore.sortedFolders.length}
             showSortLeft={true}
             onSortLeftLists={(dir) =>
               (foldersStore.foldersListSortDirection = dir)

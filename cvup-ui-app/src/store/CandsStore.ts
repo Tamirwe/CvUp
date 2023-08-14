@@ -95,13 +95,17 @@ export class CandsStore {
         candsSource
       );
 
-      if (!cand.isSeen) {
-        this.cvsApi.updateIsSeen(cand.cvId);
-        cand.isSeen = true;
+      if (
+        this.rootStore.authStore.currentUser?.email !== "tamir.we+a1@gmail.com"
+      ) {
+        if (!cand.isSeen) {
+          this.cvsApi.updateIsSeen(cand.cvId);
+          cand.isSeen = true;
 
-        //not must but any way
-        const updatedCand = Object.assign({}, cand);
-        this.updateLists(updatedCand);
+          //not must but any way
+          const updatedCand = Object.assign({}, cand);
+          this.updateLists(updatedCand);
+        }
       }
     });
   }

@@ -29,8 +29,8 @@ namespace EmailsLibrary
             {
                 foreach (var item in eml.To)
                 {
-                    //message.To.Add(new MailboxAddress(item.Name, item.Address));
-                    message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
+                    message.To.Add(new MailboxAddress(item.Name, item.Address));
+                    //message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
                 }
             }
 

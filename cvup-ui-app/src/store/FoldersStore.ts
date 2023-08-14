@@ -127,6 +127,39 @@ export class FoldersStore {
     }
   }
 
+  candFoldersOnTop(candFolderIds: number[]) {
+    if (candFolderIds && candFolderIds.length) {
+      const candFolders: IFolder[] = [];
+
+      for (let i = 0; i < candFolderIds.length; i++) {
+        const folder = this.foldersList.find((x) => x.id === candFolderIds[i]);
+
+        if (folder) {
+          candFolders.push({ ...folder });
+        }
+      }
+
+      if (candFolders.length) {
+        const topParents: IFolder[] = [];
+        for (let i = 0; i < candFolders.length; i++) {
+          this.findTopParent(candFolders[i], topParents);
+        }
+
+        const candTopFoldersList = [...this.sortedFolders];
+
+        for (let i = 0; i < topParents.length; i++) {
+          const ind = candTopFoldersList.findIndex(
+            (x) => x.id === topParents[i].id
+          );
+          candTopFoldersList.splice(ind, 1);
+          candTopFoldersList.splice(0, 0, topParents[i]);
+        }
+
+        this.sortedFolders = candTopFoldersList;
+      }
+    }
+  }
+
   async addFolder(folderModel: IFolder) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.foldersApi.addFolder(folderModel);

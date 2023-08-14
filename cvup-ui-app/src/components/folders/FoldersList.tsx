@@ -2,7 +2,11 @@ import { IconButton } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { CiEdit } from "react-icons/ci";
 import { useStore } from "../../Hooks/useStore";
-import { CrudTypesEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import {
+  CrudTypesEnum,
+  TabsCandsEnum,
+  TabsGeneralEnum,
+} from "../../models/GeneralEnums";
 import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
 import { MdPersonAddAlt1, MdPersonRemove } from "react-icons/md";
@@ -19,6 +23,14 @@ export const FoldersList = observer(() => {
       foldersStore.getFoldersList();
     }
   }, []);
+
+  useEffect(() => {
+    if (generalStore.currentLeftDrawerTab === TabsGeneralEnum.Folders) {
+      if (candsStore.candDisplay?.candFoldersIds.length) {
+        foldersStore.candFoldersOnTop(candsStore.candDisplay?.candFoldersIds);
+      }
+    }
+  }, [candsStore.candDisplay, generalStore.currentLeftDrawerTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //if (foldersStore.sortedFolders.length > 0) {
@@ -163,7 +175,7 @@ export const FoldersList = observer(() => {
                     parentId: child.parentId,
                     name: child.name,
                   },
-                  children: foldersStore.sortedFolders.filter(
+                  children: rootFoldersList.filter(
                     (x) => x.parentId === child.id
                   ),
                 })

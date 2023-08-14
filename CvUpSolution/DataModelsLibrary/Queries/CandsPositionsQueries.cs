@@ -101,7 +101,7 @@ namespace DataModelsLibrary.Queries
                              join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
                              where pcv.company_id == companyId
                                     && pcv.position_id == positionId
-                             orderby pcv.date_created descending
+                             orderby pcv.date_updated descending
                              select new CandModel
                              {
                                  cvId = pcv.cv_id,
@@ -360,62 +360,7 @@ namespace DataModelsLibrary.Queries
 
                 return candsCvs;
 
-                //string candStr = "";
 
-                //if (candidateId>0)
-                //{
-                //    candStr = $" AND ctx.candidate_id = {candidateId} ";
-                //}
-
-                //string sql = $@"SELECT  cvs.candidate_id candidateId , cnd.phone, cnd.email , cnd.first_name firstName , cnd.last_name lastName , 
-                //                cnd.review reviewText, GROUP_CONCAT(CONCAT_WS('',ctx.cv_txt,' ',ctx.email_subject)  SEPARATOR ' ')  cvsTxt
-                //                FROM candidates cnd INNER JOIN cvs ON cnd.id = cvs.candidate_id
-                //                INNER JOIN cvs_txt ctx ON cvs.candidate_id = ctx.candidate_id
-                //                WHERE cvs.company_id = {companyId}
-                //                {candStr}
-                //                AND ctx.cv_id IN (SELECT MAX(ctx.cv_id) cv_id
-                //                  FROM cvs_txt ctx
-                //                  WHERE ctx.company_id = {companyId}
-                //                  GROUP BY ctx.ascii_sum) 
-                //                GROUP BY ctx.candidate_id;";
-
-                //var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
-                //return cvsResults;
-
-                //string sql = $@" SELECT cvs.company_id companyId, cvs.id cvId, cvs.candidate_id candidateId , ctx.cv_txt cvTxt, cnd.phone, cnd.email
-                //        , cvs.subject emailSubject, cnd.first_name firstName , cnd.last_name lastName , cnd.review reviewText
-                //             FROM candidates cnd 
-                //             INNER JOIN cvs ON cnd.id = cvs.candidate_id
-                //             INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
-                //             INNER JOIN (SELECT MAX(cvs.id) cv_id
-                //               FROM cvs
-                //               WHERE cvs.company_id={companyId}                
-                //                     GROUP BY cvs.candidate_id, cvs.cv_ascii_sum ) tbl ON cvs.id = tbl.cv_id ";
-                //    sql += candidateId > 0 ? " AND cnd.id = " + candidateId : ""; ;
-
-                //var cvsResults = await dbContext.cvsToIndexDB.FromSqlRaw(sql).ToListAsync();
-                //return cvsResults;
-
-
-                //var query = from cand in dbContext.candidates
-                //            join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
-                //            join cvTxt in dbContext.cvs_txts on cvs.id equals cvTxt.cv_id
-                //            where cand.company_id == companyId
-                //            select new CvPropsToIndexModel
-                //            {
-                //                companyId = companyId,
-                //                cvId = cvs.id,
-                //                candidateId = cand.id,
-                //                cvTxt = cvTxt.cv_txt,
-                //                email = cand.email,
-                //                emailSubject = cvs.subject,
-                //                firstName = cand.first_name,
-                //                lastName = cand.last_name,
-                //                reviewText = cand.review_text,
-                //                phone = cand.phone,
-                //            };
-
-                //return await query.ToListAsync();
             }
         }
 

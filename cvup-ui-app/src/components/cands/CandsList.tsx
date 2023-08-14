@@ -105,6 +105,9 @@ export const CandsList = observer(
         })}
       >
         {listCands.map((cand, i) => {
+          const posStage = cand.posStages?.find(
+            (x) => x._pid === positionsStore.selectedPosition?.id
+          );
           return (
             <ListItem
               key={`${cand.candidateId}${i}`}
@@ -116,13 +119,17 @@ export const CandsList = observer(
                 alignItems: "normal",
                 direction: "rtl",
                 pl: "2px",
-                // "& .MuiButtonBase-root": {
-                //   ml: "2px",
-                // },
               }}
             >
               <ListItemButton
-                sx={{ pl: 0 }}
+                sx={{
+                  pl: 0,
+                  color: posStage
+                    ? candsStore.findStageColor(posStage._tp)
+                    : cand.isSeen
+                    ? "unset"
+                    : "green",
+                }}
                 selected={
                   cand.candidateId === candsStore.candDisplay?.candidateId
                 }
@@ -155,48 +162,52 @@ export const CandsList = observer(
                   >
                     <div
                       title="Email subject"
-                      style={{
-                        color: cand.isSeen ? "unset" : "green",
-                      }}
                       className={classNames({
                         [styles.listItemText]: true,
                         [styles.isMobile]: isMobile,
                       })}
                     >
-                      {/* {cand.score} */}
                       {candsSource === CandsSourceEnum.AllCands
-                        ? cand.emailSubject
+                        ? cand.emailSubject.replace("מועמדות חדשה מ", "")
                         : `${cand.firstName || ""} ${cand.lastName || ""}`}
                     </div>
 
                     <div
                       style={{
-                        // width: "87%",
                         display: "flex",
-                        // justifyContent: "space-between",
                         alignItems: "center",
                       }}
                     >
                       <div
-                        title="Cv sent date"
+                        title="Cv received"
                         className={classNames({
                           [styles.listItemDate]: true,
                           [styles.isMobile]: isMobile,
                         })}
                       >
-                        {format(new Date(cand.cvSent), "MMM d, yy")}
+                        {posStage ? (
+                          <div style={{ width: "100%", textAlign: "right" }}>
+                            {` ${format(
+                              new Date(posStage._dt),
+                              "MMM d, yyyy"
+                            )} - ${candsStore.findStageName(posStage._tp)} `}
+                          </div>
+                        ) : (
+                          format(new Date(cand.cvSent), "MMM d, yy")
+                        )}
                       </div>
                       <ListItemIcon
                         sx={{
-                          visibility: !cand.hasDuplicates
-                            ? "hidden"
-                            : "visible",
+                          visibility:
+                            cand.hasDuplicates ||
+                            candsSource === CandsSourceEnum.Position
+                              ? "visible"
+                              : "hidden",
                         }}
                         onClick={async (event) => {
                           event.stopPropagation();
                           event.preventDefault();
 
-                          // if (!isMobile) {
                           if (location.pathname !== "/cv") {
                             navigate(`/cv`);
                           }
@@ -209,14 +220,6 @@ export const CandsList = observer(
                           } else {
                             setDupOpenCandId(0);
                           }
-
-                          // if (candsStore.duplicateCvsCandId !== cand.candidateId) {
-                          //   candsStore.duplicateCvsCandId = cand.candidateId;
-                          //   candsStore.getDuplicatesCvsList(cand);
-                          // } else {
-                          //   candsStore.duplicateCvsCandId = 0;
-                          // }
-                          //}
                         }}
                       >
                         <IconButton
@@ -233,9 +236,14 @@ export const CandsList = observer(
                       </ListItemIcon>
                     </div>
                   </div>
-                  {cand.posStages && cand.posStages?.length > 0 && (
-                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
-                  )}
+                  {candsSource !== CandsSourceEnum.Position &&
+                    cand.posStages &&
+                    cand.posStages?.length > 0 && (
+                      <CandsPosStagesList
+                        cand={cand}
+                        candsSource={candsSource}
+                      />
+                    )}
                 </Box>
               </ListItemButton>
               {dupOpenCandId > 0 && (
@@ -244,6 +252,19 @@ export const CandsList = observer(
                   timeout="auto"
                   unmountOnExit
                 >
+                  {candsSource === CandsSourceEnum.Position &&
+                    cand.posStages &&
+                    cand.posStages?.length > 0 && (
+                      <div style={{ border: "1px solid #ffdcdc" }}>
+                        {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
+                          Candidate Positions
+                        </div> */}
+                        <CandsPosStagesList
+                          cand={cand}
+                          candsSource={candsSource}
+                        />
+                      </div>
+                    )}
                   <CandDupCvsList candPosCvId={cand.posCvId} />
                 </Collapse>
               )}

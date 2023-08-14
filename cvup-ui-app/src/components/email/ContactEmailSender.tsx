@@ -38,7 +38,7 @@ export const ContactEmailSender = (props: IProps) => {
   );
   const [toEmailsList, setToEmailsList] = useState<IEmailsAddress[]>([]);
   const [formModel, setFormModel] = useState<IEmailForm>({
-    subject: "",
+    subject: `${candsStore.candDisplay?.firstName} ${candsStore.candDisplay?.lastName} - ${positionsStore.candDisplayPosition?.name}`,
     body: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
@@ -101,6 +101,7 @@ export const ContactEmailSender = (props: IProps) => {
   useEffect(() => {
     generateBodyHtml();
     filterEmailContacts();
+
   }, []);
 
   const validateForm = () => {

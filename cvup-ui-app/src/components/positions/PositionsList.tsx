@@ -34,10 +34,14 @@ export const PositionsList = observer(() => {
   };
 
   useEffect(() => {
-    if (positionsStore.positionsSorted) {
-      setPosList(positionsStore.positionsSorted?.slice(0, 50));
+    if (positionsStore.sortedPosList) {
+      setPosList(positionsStore.sortedPosList?.slice(0, 50));
+
+      if (positionsStore.isSelectedPositionOnTop) {
+        listRef.current.scrollTop = 0;
+      }
     }
-  }, [positionsStore.positionsSorted]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [positionsStore.sortedPosList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
@@ -49,12 +53,12 @@ export const PositionsList = observer(() => {
       if (posList) {
         const numRecords = posList.length;
         const newPosList = posList.concat(
-          positionsStore.positionsSorted?.slice(numRecords, numRecords + 50)
+          positionsStore.sortedPosList?.slice(numRecords, numRecords + 50)
         );
         setPosList(newPosList);
       }
 
-      console.log(instance.scrollTop);
+      // console.log(instance.scrollTop);
     }
   }, [posList]);
 

@@ -41,7 +41,9 @@ export const CandsList = observer(
 
     useEffect(() => {
       if (candsListData) {
-        setListCands([...candsListData?.slice(0, 50)]);
+        setListCands([
+          ...candsListData?.slice(0, Math.max(listCands.length, 50)),
+        ]);
       }
 
       setDupOpenCandId(0);

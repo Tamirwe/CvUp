@@ -78,22 +78,17 @@ export class CandsStore {
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
+    // if (isMobile) {
+    //   this.candDisplay = undefined;
+    // }
 
-    // this.isPdfLoaded = false;
-
-    if (isMobile) {
-      this.candDisplay = undefined;
+    if (
+      this.candDisplay?.candidateId !== cand.candidateId ||
+      this.candDisplay?.cvId !== cand.cvId
+    ) {
+      await this.getPdf(cand.keyId);
     }
 
-    await this.getPdf(cand.keyId);
-
-    // let intervalcount = 0;
-
-    // const interval = setInterval(() => {
-    //   intervalcount++;
-
-    //   if (this.isPdfLoaded || intervalcount > 9) {
-    // clearInterval(interval);
     runInAction(() => {
       this.candDisplay = cand;
       this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
@@ -109,8 +104,6 @@ export class CandsStore {
         this.updateLists(updatedCand);
       }
     });
-    //   }
-    // }, 100);
   }
 
   async displayCvDuplicate(candCv: ICandCv) {

@@ -60,7 +60,7 @@ export const LeftListsWrapper = observer(() => {
   };
 
   const handlePositionsSearch = (searchVals: ISearchModel) => {
-    positionsStore.searchPositions(searchVals);
+    positionsStore.searchSortPositions(undefined, searchVals);
   };
 
   const handleFoldersSearch = (searchVals: ISearchModel) => {
@@ -101,11 +101,9 @@ export const LeftListsWrapper = observer(() => {
         <Box mt={1} ml={1}>
           <SearchControl
             onSearch={handlePositionsSearch}
-            records={positionsStore.positionsSorted.length}
+            records={positionsStore.sortedPosList.length}
             showSortLeft={true}
-            onSortLeftLists={(dir) =>
-              (positionsStore.positionsListSortDirection = dir)
-            }
+            onSortLeftLists={(dir) => positionsStore.searchSortPositions(dir)}
           />
         </Box>
         <PositionsList />;

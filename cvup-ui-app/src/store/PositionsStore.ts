@@ -1,11 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import {
-  IAppSettings,
-  ICand,
-  IPosStagesType,
-  IPosition,
-  ISearchModel,
-} from "../models/GeneralModels";
+import { IAppSettings, IPosition, ISearchModel } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 import { isMobile } from "react-device-detect";
@@ -17,9 +11,9 @@ export class PositionsStore {
   private positionSelected?: IPosition;
   private positionEdit?: IPosition;
   private searchPhrase?: ISearchModel;
-  private isSelectedPositionOnTop?: boolean = false;
-  private isPositionsListSortDirectionDesc: boolean = true;
+  isSelectedPositionOnTop?: boolean = false;
   candDisplayPosition: IPosition | undefined;
+  sortedPosList: IPosition[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -28,43 +22,6 @@ export class PositionsStore {
 
   reset() {
     this.positionsList = [];
-  }
-
-  get positionsSorted() {
-    let posList;
-
-    if (this.searchPhrase && this.searchPhrase.value) {
-      posList = this.positionsList.filter((x) =>
-        this.searchStringPositions(x).includes(
-          this.searchPhrase!.value!.toLowerCase()
-        )
-      );
-    } else {
-      posList = this.positionsList.slice();
-    }
-
-    if (this.isPositionsListSortDirectionDesc) {
-      posList.sort(
-        (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime()
-      );
-    } else {
-      posList.sort(
-        (a, b) => new Date(a.updated).getTime() - new Date(b.updated).getTime()
-      );
-    }
-
-    if (this.isSelectedPositionOnTop && this.selectedPosition) {
-      const objIndex = posList.findIndex(
-        (x) => x.id === this.selectedPosition?.id
-      );
-
-      if (objIndex > -1) {
-        const posArr = posList.splice(objIndex, 1);
-        posList.splice(0, 0, posArr[0]);
-      }
-    }
-
-    return posList;
   }
 
   get selectedPosition() {
@@ -83,12 +40,37 @@ export class PositionsStore {
     this.positionEdit = val;
   }
 
-  set positionsListSortDirection(val: string) {
-    this.isPositionsListSortDirectionDesc = val === "desc" ? true : false;
-  }
+  searchSortPositions(dir?: string, searchVals?: ISearchModel) {
+    runInAction(() => {
+      if (searchVals) {
+        this.searchPhrase = searchVals;
+      }
 
-  searchPositions(searchVals: ISearchModel) {
-    this.searchPhrase = searchVals;
+      if (this.searchPhrase && this.searchPhrase.value) {
+        this.sortedPosList = this.positionsList.filter((x) =>
+          this.searchStringPositions(x).includes(
+            this.searchPhrase!.value!.toLowerCase()
+          )
+        );
+      } else {
+        this.sortedPosList = this.positionsList.slice();
+      }
+
+      //positionsList is already sorted desc order
+      if (dir) {
+        if (dir === "desc") {
+          this.sortedPosList.sort(
+            (a, b) =>
+              new Date(b.updated).getTime() - new Date(a.updated).getTime()
+          );
+        } else {
+          this.sortedPosList.sort(
+            (a, b) =>
+              new Date(a.updated).getTime() - new Date(b.updated).getTime()
+          );
+        }
+      }
+    });
   }
 
   searchStringPositions = (x: IPosition) => {
@@ -125,6 +107,30 @@ export class PositionsStore {
       }
 
       this.isSelectedPositionOnTop = isPositionOnTop;
+
+      if (isPositionOnTop) {
+        const posList = [...this.sortedPosList];
+
+        const objIndex = this.sortedPosList.findIndex(
+          (x) => x.id === this.selectedPosition?.id
+        );
+
+        if (objIndex > -1) {
+          const posArr = this.sortedPosList.splice(objIndex, 1);
+        }
+
+        const posObj = this.positionsList.find(
+          (x) => x.id === this.selectedPosition?.id
+        );
+
+        const clonedPos = Object.assign({}, posObj);
+
+        if (clonedPos) {
+          posList.splice(0, 0, clonedPos);
+        }
+
+        this.sortedPosList = posList;
+      }
     });
   }
 
@@ -147,6 +153,7 @@ export class PositionsStore {
     const res = await this.positionApi.getPositionsList();
     runInAction(() => {
       this.positionsList = res.data;
+      this.sortedPosList = [...res.data];
     });
     this.rootStore.generalStore.backdrop = false;
   }

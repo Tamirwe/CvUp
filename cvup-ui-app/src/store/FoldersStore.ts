@@ -1,13 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import {
-  IAppSettings,
-  IFolder,
-  IFolderNode,
-  ISearchModel,
-} from "../models/GeneralModels";
+import { IAppSettings, IFolder, ISearchModel } from "../models/GeneralModels";
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
-import { numArrRemoveItem } from "../utils/GeneralUtils";
 import { TabsCandsEnum } from "../models/GeneralEnums";
 
 export class FoldersStore {
@@ -15,8 +9,8 @@ export class FoldersStore {
   foldersList: IFolder[] = [];
   private folderSelected?: IFolder;
   private editFolder?: IFolder;
-  private searchPhrase?: ISearchModel;
   private isfoldersListSortDirectionDesc: boolean = true;
+  private currentSearchVals?: ISearchModel;
   sortedFolders: IFolder[] = [];
 
   rootFolder: IFolder = {
@@ -24,26 +18,6 @@ export class FoldersStore {
     name: "Folders",
     parentId: -1,
   };
-
-  // get foldersListSorted() {
-  //   let posList;
-
-  //   if (this.searchPhrase && this.searchPhrase.value) {
-  //     posList = this.foldersList.filter((x) =>
-  //       x.name.toLowerCase().includes(this.searchPhrase!.value.toLowerCase())
-  //     );
-  //   } else {
-  //     posList = this.foldersList.slice();
-  //   }
-
-  //   if (this.isfoldersListSortDirectionDesc) {
-  //     posList.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
-  //   } else {
-  //     posList.sort((a, b) => (b.name > a.name ? 1 : a.name > b.name ? -1 : 0));
-  //   }
-
-  //   return posList;
-  // }
 
   get selectedFolder() {
     return this.folderSelected;
@@ -72,7 +46,26 @@ export class FoldersStore {
 
   reset() {}
 
-  searchFolders(searchVals: ISearchModel) {
+  sortFolders(dir: string) {
+    if (dir === "desc") {
+      this.foldersList.sort((a, b) =>
+        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+      );
+    } else {
+      this.foldersList.sort((a, b) =>
+        b.name > a.name ? 1 : a.name > b.name ? -1 : 0
+      );
+    }
+
+    this.searchFolders(this.currentSearchVals);
+  }
+
+  displayCandFolders() {
+    this.searchFolders(this.currentSearchVals);
+  }
+
+  searchFolders(searchVals?: ISearchModel) {
+    this.currentSearchVals = searchVals;
     let searchedFoldersList: IFolder[] = [];
 
     if (searchVals && searchVals.value) {
@@ -92,6 +85,19 @@ export class FoldersStore {
       }
     } else {
       searchedFoldersList = this.foldersList.slice();
+    }
+
+    const canddisplay = this.rootStore.candsStore.candDisplay;
+
+    if (canddisplay && canddisplay.candFoldersIds.length) {
+      const candTopFoldersList = this.candFoldersOnTop(
+        canddisplay.candFoldersIds,
+        searchedFoldersList
+      );
+
+      if (candTopFoldersList) {
+        searchedFoldersList = [...candTopFoldersList];
+      }
     }
 
     // if (this.isfoldersListSortDirectionDesc) {
@@ -116,7 +122,7 @@ export class FoldersStore {
     if (item.parentId > 0) {
       const parent = this.foldersList.find((x) => x.id === item.parentId);
       if (parent) {
-        this.findTopParent(parent, topParents);
+        this.findTopParent({ ...parent }, topParents);
       }
     } else {
       const isNotExist =
@@ -127,12 +133,16 @@ export class FoldersStore {
     }
   }
 
-  candFoldersOnTop(candFolderIds: number[]) {
+  candFoldersOnTop(candFolderIds: number[], searchedFoldersList: IFolder[]) {
+    const candTopFoldersList = [...searchedFoldersList];
+
     if (candFolderIds && candFolderIds.length) {
       const candFolders: IFolder[] = [];
 
       for (let i = 0; i < candFolderIds.length; i++) {
-        const folder = this.foldersList.find((x) => x.id === candFolderIds[i]);
+        const folder = searchedFoldersList.find(
+          (x) => x.id === candFolderIds[i]
+        );
 
         if (folder) {
           candFolders.push({ ...folder });
@@ -145,8 +155,6 @@ export class FoldersStore {
           this.findTopParent(candFolders[i], topParents);
         }
 
-        const candTopFoldersList = [...this.sortedFolders];
-
         for (let i = 0; i < topParents.length; i++) {
           const ind = candTopFoldersList.findIndex(
             (x) => x.id === topParents[i].id
@@ -155,7 +163,7 @@ export class FoldersStore {
           candTopFoldersList.splice(0, 0, topParents[i]);
         }
 
-        this.sortedFolders = candTopFoldersList;
+        return candTopFoldersList;
       }
     }
   }

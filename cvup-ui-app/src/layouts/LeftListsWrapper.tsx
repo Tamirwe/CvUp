@@ -1,8 +1,6 @@
 import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { PositionsList } from "../components/positions/PositionsList";
-import { useNavigate } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { CacheProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { useStore } from "../Hooks/useStore";
@@ -15,7 +13,6 @@ import { FoldersList } from "../components/folders/FoldersList";
 import { ISearchModel } from "../models/GeneralModels";
 
 export const LeftListsWrapper = observer(() => {
-  const navigate = useNavigate();
   const { generalStore, foldersStore, customersContactsStore, positionsStore } =
     useStore();
 
@@ -37,7 +34,6 @@ export const LeftListsWrapper = observer(() => {
   };
 
   const handleAddClick = () => {
-
     switch (generalStore.currentLeftDrawerTab) {
       case TabsGeneralEnum.Positions:
         positionsStore.editPosition = undefined;
@@ -116,9 +112,7 @@ export const LeftListsWrapper = observer(() => {
             onSearch={handleFoldersSearch}
             records={foldersStore.sortedFolders.length}
             showSortLeft={true}
-            onSortLeftLists={(dir) =>
-              (foldersStore.foldersListSortDirection = dir)
-            }
+            onSortLeftLists={(dir) => foldersStore.sortFolders(dir)}
           />
         </Box>
         <FoldersList />;

@@ -27,7 +27,7 @@ export const FoldersList = observer(() => {
   useEffect(() => {
     if (generalStore.currentLeftDrawerTab === TabsGeneralEnum.Folders) {
       if (candsStore.candDisplay?.candFoldersIds.length) {
-        foldersStore.candFoldersOnTop(candsStore.candDisplay?.candFoldersIds);
+        foldersStore.displayCandFolders();
       }
     }
   }, [candsStore.candDisplay, generalStore.currentLeftDrawerTab]); // eslint-disable-line react-hooks/exhaustive-deps

@@ -85,7 +85,7 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
                     paddingLeft: "1rem",
                   }}
                 >
-                  {dupCv.emailSubject}
+                  {dupCv.emailSubject.replace("מועמדות חדשה מ", "")}
                 </div>
               </div>
 

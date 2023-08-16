@@ -754,7 +754,8 @@ namespace DataModelsLibrary.Queries
                     stage_id = 1,
                     cand_cvs = posCvsStr,
                     stage_date = DateTime.Now,
-                    stage_type = "attached_to_position"
+                    stage_type = "attached_to_position",
+                    date_updated = DateTime.Now,
                 };
 
                 dbContext.position_candidates.Add(newPosCv);

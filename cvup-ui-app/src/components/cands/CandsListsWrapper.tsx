@@ -143,6 +143,10 @@ export const CandsListsWrapper = observer(() => {
             scrollButtons
             allowScrollButtonsMobile
             onChange={handleTabChange}
+            onClick={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
           >
             {foldersStore.selectedFolder?.id && (
               <Tab

@@ -68,23 +68,56 @@ export const FoldersList = observer(() => {
     };
   }, [onScroll]);
 
-  const editFolder = (folder: IFolder) => {
+  const handleEditFolderClick = useCallback((folder: IFolder) => {
+    if (isMobile) {
+      generalStore.leftDrawerOpen = false;
+    }
+
+    foldersStore.editFolderSelected = folder;
+    generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
+  }, []);
+
+  const handleDeatchClick = useCallback(
+    async (
+      event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+      folder: IFolder
+    ) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      if (isMobile) {
+        generalStore.leftDrawerOpen = false;
+      }
+
+      await foldersStore.detachCandidate(folder.id);
+    },
+    []
+  );
+
+  const handleAttachClick = useCallback(
+    async (
+      event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+      folder: IFolder
+    ) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      if (isMobile) {
+        generalStore.leftDrawerOpen = false;
+      }
+
+      await foldersStore.attachCandidate(folder.id);
+    },
+    []
+  );
+
+  const editFolder = useCallback((folder: IFolder) => {
     return (
       <div className={styles.iconsDiv}>
         <IconButton
           size="small"
           sx={{ color: "#dfdfdf" }}
-          onClick={async (event) => {
-            // event.stopPropagation();
-            // event.preventDefault();
-
-            if (isMobile) {
-              generalStore.leftDrawerOpen = false;
-            }
-
-            foldersStore.editFolderSelected = folder;
-            generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
-          }}
+          onClick={() => handleEditFolderClick(folder)}
         >
           <CiEdit />
         </IconButton>
@@ -93,16 +126,7 @@ export const FoldersList = observer(() => {
           <IconButton
             size="small"
             sx={{ color: "#ff8d00" }}
-            onClick={async (event) => {
-              event.stopPropagation();
-              event.preventDefault();
-
-              if (isMobile) {
-                generalStore.leftDrawerOpen = false;
-              }
-
-              await foldersStore.detachCandidate(folder.id);
-            }}
+            onClick={(event) => handleDeatchClick(event, folder)}
           >
             <MdPersonRemove />
           </IconButton>
@@ -110,25 +134,16 @@ export const FoldersList = observer(() => {
           <IconButton
             size="small"
             sx={{ color: "#dfdfdf" }}
-            onClick={async (event) => {
-              event.stopPropagation();
-              event.preventDefault();
-
-              if (isMobile) {
-                generalStore.leftDrawerOpen = false;
-              }
-
-              await foldersStore.attachCandidate(folder.id);
-            }}
+            onClick={(event) => handleAttachClick(event, folder)}
           >
             <MdPersonAddAlt1 />
           </IconButton>
         )}
       </div>
     );
-  };
+  }, []);
 
-  const renderChildren = (node: IFolderNode) => {
+  const renderChildren = useCallback((node: IFolderNode) => {
     return (
       <li
         key={node.folder.id}
@@ -184,7 +199,7 @@ export const FoldersList = observer(() => {
         </ul>
       </li>
     );
-  };
+  }, []);
 
   return (
     <ul className={styles.ulRoot} style={{}} role="tree" ref={listRef}>

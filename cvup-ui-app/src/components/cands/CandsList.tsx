@@ -124,6 +124,7 @@ export const CandsList = observer(
               <ListItemButton
                 sx={{
                   pl: 0,
+                  fontWeight: "bold",
                   color: posStage
                     ? candsStore.findStageColor(posStage._tp)
                     : cand.isSeen
@@ -168,7 +169,9 @@ export const CandsList = observer(
                       })}
                     >
                       {candsSource === CandsSourceEnum.AllCands
-                        ? cand.emailSubject.replace("מועמדות חדשה מ", "")
+                        ? cand.emailSubject
+                            .replace("מועמדות חדשה מ", "")
+                            .replace(" למשרת ", " - ")
                         : `${cand.firstName || ""} ${cand.lastName || ""}`}
                     </div>
 

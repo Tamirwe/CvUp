@@ -75,6 +75,8 @@ export const CandsListsWrapper = observer(() => {
     event: React.SyntheticEvent,
     newValue: TabsCandsEnum
   ) => {
+    event.stopPropagation();
+    event.preventDefault();
     candsStore.currentTabCandsLists = newValue;
   };
 

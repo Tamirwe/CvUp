@@ -68,50 +68,44 @@ export const FoldersList = observer(() => {
     };
   }, [onScroll]);
 
-  const handleEditFolderClick = useCallback((folder: IFolder) => {
+  const handleEditFolderClick = (folder: IFolder) => {
     if (isMobile) {
       generalStore.leftDrawerOpen = false;
     }
 
     foldersStore.editFolderSelected = folder;
     generalStore.openModeFolderFormDialog = CrudTypesEnum.Update;
-  }, []);
+  };
 
-  const handleDeatchClick = useCallback(
-    async (
-      event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
-      folder: IFolder
-    ) => {
-      event.stopPropagation();
-      event.preventDefault();
+  const handleDeatchClick = async (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+    folder: IFolder
+  ) => {
+    event.stopPropagation();
+    event.preventDefault();
 
-      if (isMobile) {
-        generalStore.leftDrawerOpen = false;
-      }
+    if (isMobile) {
+      generalStore.leftDrawerOpen = false;
+    }
 
-      await foldersStore.detachCandidate(folder.id);
-    },
-    []
-  );
+    await foldersStore.detachCandidate(folder.id);
+  };
 
-  const handleAttachClick = useCallback(
-    async (
-      event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
-      folder: IFolder
-    ) => {
-      event.stopPropagation();
-      event.preventDefault();
+  const handleAttachClick = async (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+    folder: IFolder
+  ) => {
+    event.stopPropagation();
+    event.preventDefault();
 
-      if (isMobile) {
-        generalStore.leftDrawerOpen = false;
-      }
+    if (isMobile) {
+      generalStore.leftDrawerOpen = false;
+    }
 
-      await foldersStore.attachCandidate(folder.id);
-    },
-    []
-  );
+    await foldersStore.attachCandidate(folder.id);
+  };
 
-  const editFolder = useCallback((folder: IFolder) => {
+  const editFolder = (folder: IFolder) => {
     return (
       <div className={styles.iconsDiv}>
         <IconButton
@@ -141,9 +135,9 @@ export const FoldersList = observer(() => {
         )}
       </div>
     );
-  }, []);
+  };
 
-  const renderChildren = useCallback((node: IFolderNode) => {
+  const renderChildren = (node: IFolderNode) => {
     return (
       <li
         key={node.folder.id}
@@ -199,7 +193,7 @@ export const FoldersList = observer(() => {
         </ul>
       </li>
     );
-  }, []);
+  };
 
   return (
     <ul className={styles.ulRoot} style={{}} role="tree" ref={listRef}>

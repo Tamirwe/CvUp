@@ -328,8 +328,8 @@ export class CandsStore {
     }
   }
 
-  async detachPosCand(detachCand: ICand, positionId: number, index: number) {
-    if (positionId) {
+  async detachPosCand(detachCand?: ICand, positionId?: number) {
+    if (detachCand && positionId) {
       const res = await this.cvsApi.detachPosCand(
         detachCand.candidateId,
         detachCand.cvId,

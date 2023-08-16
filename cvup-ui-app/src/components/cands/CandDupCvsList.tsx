@@ -68,6 +68,7 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
                 style={{ direction: "ltr", fontSize: "0.8rem" }}
               >
                 <div
+                  title="Cv sent date"
                   className={classNames({
                     [styles.listItemDate]: true,
                     [styles.isMobile]: isMobile,
@@ -85,7 +86,9 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
                     paddingLeft: "1rem",
                   }}
                 >
-                  {dupCv.emailSubject}
+                  {dupCv.emailSubject
+                    .replace("מועמדות חדשה מ", "")
+                    .replace(" למשרת ", " - ")}
                 </div>
               </div>
 

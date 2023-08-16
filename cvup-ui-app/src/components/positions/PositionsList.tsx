@@ -10,10 +10,15 @@ import {
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import { MdOutlineEdit, MdPersonAddAlt1, MdRemove } from "react-icons/md";
+import {
+  MdOutlineEdit,
+  MdPersonAddAlt1,
+  MdPersonRemove,
+  MdRemove,
+} from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
-import { CandsSourceEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import { TabsCandsEnum } from "../../models/GeneralEnums";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IPosition } from "../../models/GeneralModels";
 import classNames from "classnames";
@@ -24,14 +29,6 @@ export const PositionsList = observer(() => {
 
   const listRef = useRef<any>(null);
   const [posList, setPosList] = useState<IPosition[]>([]);
-
-  const handleAttachPosCandCv = async (posId: number) => {
-    await candsStore.attachPosCandCv(posId);
-    await positionsStore.positionClick(posId, true);
-    positionsStore.setRelatedPositionToCandDisplay();
-    candsStore.setDisplayCandOntopPCList();
-    candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-  };
 
   useEffect(() => {
     if (positionsStore.sortedPosList) {
@@ -57,8 +54,6 @@ export const PositionsList = observer(() => {
         );
         setPosList(newPosList);
       }
-
-      // console.log(instance.scrollTop);
     }
   }, [posList]);
 
@@ -72,7 +67,39 @@ export const PositionsList = observer(() => {
     };
   }, [onScroll]);
 
-  const handleEditPositionClick = () => {};
+  const handleEditPositionClick = useCallback(
+    async (event: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      await positionsStore.getPosition(
+        positionsStore.selectedPosition?.id || 0
+      );
+      generalStore.showPositionFormDialog = true;
+
+      if (isMobile) {
+        generalStore.leftDrawerOpen = false;
+      }
+    },
+    []
+  );
+
+  const handleAttachDeattach = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>, posId: number) => {
+      console.log(event.target.checked);
+
+      if (event.target.checked) {
+        await candsStore.attachPosCandCv(posId);
+        await positionsStore.positionClick(posId, true);
+        positionsStore.setRelatedPositionToCandDisplay();
+        candsStore.setDisplayCandOntopPCList();
+        candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+      } else {
+        candsStore.detachPosCand(candsStore.candDisplay, posId);
+      }
+    },
+    []
+  );
 
   return (
     <List
@@ -81,15 +108,6 @@ export const PositionsList = observer(() => {
         [styles.posList]: true,
         [styles.isMobile]: isMobile,
       })}
-
-      // sx={{
-      //   backgroundColor: "#fff",
-      //   height: "calc(100vh - 96px)",
-      //   overflowY: "scroll",
-      //   // "&:hover ": {
-      //   //   overflow: "overlay",
-      //   // },
-      // }}
     >
       {posList.map((pos, i) => {
         return (
@@ -128,10 +146,7 @@ export const PositionsList = observer(() => {
               />
               {positionsStore.selectedPosition?.id === pos.id && (
                 <ListItemIcon
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleEditPositionClick();
-                  }}
+                  onClick={(event) => handleEditPositionClick(event)}
                 >
                   <IconButton
                     sx={{
@@ -145,16 +160,6 @@ export const PositionsList = observer(() => {
                     color="primary"
                     aria-label="upload picture"
                     component="label"
-                    onClick={async () => {
-                      await positionsStore.getPosition(
-                        positionsStore.selectedPosition?.id || 0
-                      );
-                      generalStore.showPositionFormDialog = true;
-
-                      if (isMobile) {
-                        generalStore.leftDrawerOpen = false;
-                      }
-                    }}
                   >
                     <MdOutlineEdit />
                   </IconButton>
@@ -162,17 +167,19 @@ export const PositionsList = observer(() => {
               )}
               <Checkbox
                 checked={
-                  candsStore.candDisplay && candsStore.candDisplay.candPosIds
-                    ? candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
-                    : false
-                }
-                disabled={
                   candsStore.candDisplay &&
                   candsStore.candDisplay.candPosIds &&
                   candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
+                    ? true
+                    : false
                 }
+                // disabled={
+                //   candsStore.candDisplay &&
+                //   candsStore.candDisplay.candPosIds &&
+                //   candsStore.candDisplay.candPosIds.indexOf(pos.id) > -1
+                // }
                 onChange={(event) => {
-                  handleAttachPosCandCv(pos.id);
+                  handleAttachDeattach(event, pos.id);
                 }}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -187,7 +194,7 @@ export const PositionsList = observer(() => {
                   },
                 }}
                 icon={<MdPersonAddAlt1 />}
-                checkedIcon={<BsFillPersonFill />}
+                checkedIcon={<MdPersonRemove />}
               />
             </ListItemButton>
           </ListItem>

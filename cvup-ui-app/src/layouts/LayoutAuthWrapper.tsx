@@ -43,7 +43,7 @@ export const LayoutAuthWrapper = observer(() => {
         if (!res.isSuccess) {
           countNotAuth++;
 
-          if (countNotAuth >= 2) {
+          if (countNotAuth >= 5) {
             setPause(true);
             const isOk = await generalStore.alertConfirmDialog(
               AlertConfirmDialogEnum.Confirm,

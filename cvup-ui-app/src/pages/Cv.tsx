@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import { EmailTypeEnum } from "../models/GeneralEnums";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../models/GeneralModels";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
@@ -47,7 +47,7 @@ export const Cv = observer(() => {
     }
   }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
-  const getCandName = () => {
+  const getCandName = useCallback(() => {
     let fullName = `${candsStore.candDisplay?.firstName || ""} ${
       candsStore.candDisplay?.lastName || ""
     }`;
@@ -57,7 +57,53 @@ export const Cv = observer(() => {
     }
 
     setCandidateName(fullName);
-  };
+  }, []);
+
+  const handlePositionClick = useCallback(
+    async (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+      await positionsStore.positionClick(
+        positionsStore.candDisplayPosition!.id,
+        true
+      );
+      candsStore.setDisplayCandOntopPCList();
+    },
+    []
+  );
+
+  const candStatusSelectBox = useCallback(() => {
+    return (
+      <FormControl variant="standard" sx={{ minWidth: 120 }}>
+        <Select
+          sx={{
+            direction: "ltr",
+            "& .MuiSelect-select": {
+              color: candsStore.posStages?.find(
+                (x) => x.stageType === posStage?._tp
+              )?.color,
+              fontWeight: "bold",
+            },
+          }}
+          value={posStage?._tp}
+          onChange={async (e) => {
+            await candsStore.updateCandPositionStatus(e.target.value);
+          }}
+        >
+          {candsStore.posStages?.map((item, ind) => {
+            // console.log(key, index);
+            return (
+              <MenuItem
+                sx={{ color: item.color }}
+                key={ind}
+                value={item.stageType}
+              >
+                {item.name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
+    );
+  }, [posStage]);
 
   return (
     <div
@@ -85,16 +131,7 @@ export const Cv = observer(() => {
                 }}
               >
                 {positionsStore.candDisplayPosition && (
-                  <Link
-                    href="#"
-                    onClick={async () => {
-                      await positionsStore.positionClick(
-                        positionsStore.candDisplayPosition!.id,
-                        true
-                      );
-                      candsStore.setDisplayCandOntopPCList();
-                    }}
-                  >
+                  <Link href="#" onClick={handlePositionClick}>
                     {positionsStore.candDisplayPosition?.name || ""}
                     &nbsp;-&nbsp;
                     {positionsStore.candDisplayPosition?.customerName || ""}
@@ -163,38 +200,7 @@ export const Cv = observer(() => {
                   }}
                 >
                   <span style={{ direction: "ltr" }}>Status:</span>
-                  <FormControl variant="standard" sx={{ minWidth: 120 }}>
-                    <Select
-                      sx={{
-                        direction: "ltr",
-                        "& .MuiSelect-select": {
-                          color: candsStore.posStages?.find(
-                            (x) => x.stageType === posStage?._tp
-                          )?.color,
-                          fontWeight: "bold",
-                        },
-                      }}
-                      value={posStage?._tp}
-                      onChange={async (e) => {
-                        await candsStore.updateCandPositionStatus(
-                          e.target.value
-                        );
-                      }}
-                    >
-                      {candsStore.posStages?.map((item, ind) => {
-                        // console.log(key, index);
-                        return (
-                          <MenuItem
-                            sx={{ color: item.color }}
-                            key={ind}
-                            value={item.stageType}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
+                  {candStatusSelectBox()}
                   <span style={{ whiteSpace: "nowrap", fontSize: "0.75rem" }}>
                     {" "}
                     {format(new Date(posStage?._dt), "MMM d, yyyy")}{" "}

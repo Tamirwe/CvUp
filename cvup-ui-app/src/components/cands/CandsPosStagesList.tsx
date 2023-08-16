@@ -40,19 +40,19 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 // [styles.listItemPosStagesCurrent]: isCurrentPosition,
               })}
             >
-              {cand.candidateId === candsStore.candDisplay?.candidateId && (
+              {/* {cand.candidateId === candsStore.candDisplay?.candidateId && (
                 <IconButton
                   size="small"
                   sx={{ ml: 1 }}
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    candsStore.detachPosCand(cand, stage._pid, i);
+                    candsStore.detachPosCand(cand, stage._pid);
                   }}
                 >
                   <MdRemove />
                 </IconButton>
-              )}{" "}
+              )}{" "} */}
               <div
                 className={classNames({
                   [styles.listItem]: true,

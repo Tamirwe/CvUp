@@ -121,19 +121,22 @@ namespace ImportCvsLibrary
                                         }
                                     }
                                 }
+
+                                inbox.SetFlags(uid, MessageFlags.Seen, true);
                             }
 
-                            inbox.SetFlags(uid, MessageFlags.Seen, true);
-                            client.Disconnect(true);
                         }
                         catch (Exception ex)
                         {
                             inbox.SetFlags(uid, MessageFlags.Seen, true);
 
                             Console.WriteLine(ex.ToString());
-                            addEventLogEntry( ex);
+                            addEventLogEntry(ex);
                         }
                     }
+
+                    client.Disconnect(true);
+
                 }
             }
             catch (Exception ex)
@@ -299,6 +302,7 @@ namespace ImportCvsLibrary
                         if (cvTxt != null)
                         {
                             _importCv.isSameCvEmailSubject = true;
+                            _importCv.cvId = cvTxt.cv_id;
                         }
                     }
                 }

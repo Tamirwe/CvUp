@@ -85,24 +85,28 @@ namespace CandsPositionsLibrary
 
             if (cand != null)
             {
-                string candFirstName = importCv.firstName.Trim();
-                string candLastName = importCv.lastName.Trim();
-
+                importCv.candidateId = cand.id;
 
                 if (cand != null)
                 {
+                    bool isUpdate = false;
+
                     if (string.IsNullOrEmpty(cand.first_name))
                     {
-                        cand.first_name = candFirstName;
+                        cand.first_name = importCv.firstName.Trim();
+                        isUpdate = true;
                     }
 
                     if (string.IsNullOrEmpty(cand.last_name))
                     {
-                        cand.last_name = candLastName;
+                        cand.last_name = importCv.lastName.Trim();
+                        isUpdate = true;
                     }
 
-                    await _cvsPositionsQueries.UpdateCandidate(cand);
-                    importCv.candidateId = cand.id;
+                    if (isUpdate)
+                    {
+                        await _cvsPositionsQueries.UpdateCandidate(cand);
+                    }
                 }
             }
 

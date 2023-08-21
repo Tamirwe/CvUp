@@ -91,7 +91,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
+        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -105,40 +105,6 @@ namespace DataModelsLibrary.Queries
                              {
                                  cvId = pcv.cv_id,
                                  posCvId = pcv.cv_id,
-                                 review = cand.review,
-                                 reviewDate = cand.review_date,
-                                 keyId = cvs.key_id,
-                                 candidateId = cand.id,
-                                 email = cand.email,
-                                 emailSubject = cvs.subject,
-                                 firstName = cand.first_name,
-                                 lastName = cand.last_name,
-                                 phone = cand.phone,
-                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
-                                 cvSent = cvs.date_created,
-                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
-                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
-                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 isSeen = Convert.ToBoolean(cvs.is_seen)
-                             });
-
-                return await query.ToListAsync();
-            }
-        }
-
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                var query = (from cand in dbContext.candidates
-                             join fc in dbContext.folders_cands on cand.id equals fc.candidate_id
-                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
-                             where fc.company_id == companyId
-                                    && fc.folder_id == folderId
-                             orderby cand.last_cv_sent descending
-                             select new CandModel
-                             {
-                                 cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
@@ -190,6 +156,40 @@ namespace DataModelsLibrary.Queries
 
                 var result = await query.ToListAsync();
                 return result;
+            }
+        }
+
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from cand in dbContext.candidates
+                             join fc in dbContext.folders_cands on cand.id equals fc.candidate_id
+                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                             where fc.company_id == companyId
+                                    && fc.folder_id == folderId
+                             orderby cand.last_cv_sent descending
+                             select new CandModel
+                             {
+                                 cvId = cvs.id,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
+                                 keyId = cvs.key_id,
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 firstName = cand.first_name,
+                                 lastName = cand.last_name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent = cvs.date_created,
+                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
+                             });
+
+                return await query.ToListAsync();
             }
         }
 

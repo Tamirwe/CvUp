@@ -12,9 +12,9 @@ namespace DataModelsLibrary.Queries
          Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
         Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
-        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
-        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
+        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
         Task<position> AddPosition(PositionModel data, int companyId, int userId);
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
          Task<List<PositionModel>> GetPositionsList(int companyId);

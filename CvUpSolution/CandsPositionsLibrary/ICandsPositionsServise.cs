@@ -22,9 +22,9 @@ namespace CandsPositionsLibrary
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
         Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId);
-        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
-        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
+        Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
+        Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
         Task DeletePosition(int companyId, int id);
         Task<List<int>> getPositionContactsIds(int companyId, int positionId);
         Task<PositionModel> GetPosition(int companyId, int positionId);

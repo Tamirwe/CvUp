@@ -49,7 +49,7 @@ namespace CvUpAPI.Controllers
         [Route("GetFolderCandsList")]
         public async Task<List<CandModel?>> GetFolderCandsList(int folderId)
         {
-            return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId, null);
+            return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId);
         }
 
         [HttpGet]
@@ -68,16 +68,19 @@ namespace CvUpAPI.Controllers
 
             var candsIds = results.Select(e => e.Id).Take(300).ToList();
 
-
-
             if (searchVals.folderId > 0)
             {
-                candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId, candsIds);
+                candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId);
                 candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else if (searchVals.positionId > 0)
             {
-                candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, searchVals.positionId, candsIds);
+                candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, searchVals.positionId);
+                candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
+            }
+            else if (searchVals.positionTypeId > 0)
+            {
+                candsList = await _candPosService.GetPosTypeCandsList(Globals.CompanyId, searchVals.positionTypeId);
                 candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else
@@ -110,7 +113,7 @@ namespace CvUpAPI.Controllers
         [Route("GetPosCandsList")]
         public async Task<List<CandModel?>> GetPosCandsList(int positionId)
         {
-            return await _candPosService.GetPosCandsList(Globals.CompanyId, positionId, null);
+            return await _candPosService.GetPosCandsList(Globals.CompanyId, positionId);
         }
 
         [HttpGet]

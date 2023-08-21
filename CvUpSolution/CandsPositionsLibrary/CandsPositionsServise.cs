@@ -146,9 +146,9 @@ namespace CandsPositionsLibrary
             return result;
         }
 
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds)
+        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId)
         {
-            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId, candsIds);
+            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId);
         }
 
         public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
@@ -156,15 +156,14 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetPosTypeCandsList(companyId, positionTypeId);
         }
 
-        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
+        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
         {
-            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, candsIds);
+            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
             List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
-            //cvsList.RemoveAll(x => x.cvId == cvId);
             return cvsList;
         }
 

@@ -171,6 +171,7 @@ namespace DataModelsLibrary.Models
         public string advancedValue { get; set; } = "";
         public int folderId { get; set; }
         public int positionId { get; set; }
+        public int positionTypeId { get; set; }
     }
 
     public class AttachePosCandCvModel

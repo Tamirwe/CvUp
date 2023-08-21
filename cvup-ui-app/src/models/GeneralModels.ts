@@ -98,6 +98,12 @@ export interface IPosition {
   matchEmailsubject?: string;
 }
 
+export interface IPositionType {
+  id: number;
+  typeName: string;
+  dateUpdated: Date;
+}
+
 export interface ICvReview {
   candidateId: number;
   reviewHtml: string;

@@ -1,4 +1,4 @@
-import { IPosition } from "../../models/GeneralModels";
+import { IPosition, IPositionType } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {
@@ -37,6 +37,12 @@ export default class PositionsApi extends BaseApi {
   async getPositionsList() {
     return await this.apiWrapper2<IPosition[]>(async () => {
       return await this.http.get("Positions/GetPositionsList");
+    });
+  }
+
+  async getPositionsTypesList() {
+    return await this.apiWrapper2<IPositionType[]>(async () => {
+      return await this.http.get("Positions/GetPositionsTypes");
     });
   }
 

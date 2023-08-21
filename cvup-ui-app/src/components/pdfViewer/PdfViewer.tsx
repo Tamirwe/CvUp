@@ -8,7 +8,7 @@ import {
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 import { toolbarPlugin, ToolbarSlot } from "@react-pdf-viewer/toolbar";
-import { isBrowser, isMobile } from "react-device-detect";
+import { BrowserView, isBrowser, isMobile } from "react-device-detect";
 
 // import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
 // import type {
@@ -110,37 +110,38 @@ export const PdfViewer = observer(() => {
         // marginTop: "4rem",
       }}
     >
-      <div
-        style={{
-          alignItems: "center",
-          // backgroundColor: "#f1f1f1",
-          // border: "1px solid rgba(0, 0, 0, 0.2)",
-          // borderRadius: "2px",
-          bottom: "5px",
-          display: "flex",
-          left: "50%",
-          padding: "4px",
-          position: "fixed",
-          transform: "translate(-50%, 0)",
-          zIndex: 2,
-        }}
-      >
-        <Toolbar>
-          {(props: ToolbarSlot) => {
-            const {
-              CurrentPageInput,
-              Download,
-              EnterFullScreen,
-              GoToNextPage,
-              GoToPreviousPage,
-              NumberOfPages,
-              Print,
-              ZoomIn,
-              ZoomOut,
-            } = props;
-            return (
-              <>
-                {/* <div style={{ padding: "0px 2px" }}>
+      <BrowserView>
+        <div
+          style={{
+            alignItems: "center",
+            // backgroundColor: "#f1f1f1",
+            // border: "1px solid rgba(0, 0, 0, 0.2)",
+            // borderRadius: "2px",
+            bottom: "5px",
+            display: "flex",
+            left: "50%",
+            padding: "4px",
+            position: "fixed",
+            transform: "translate(-50%, 0)",
+            zIndex: 2,
+          }}
+        >
+          <Toolbar>
+            {(props: ToolbarSlot) => {
+              const {
+                CurrentPageInput,
+                Download,
+                EnterFullScreen,
+                GoToNextPage,
+                GoToPreviousPage,
+                NumberOfPages,
+                Print,
+                ZoomIn,
+                ZoomOut,
+              } = props;
+              return (
+                <>
+                  {/* <div style={{ padding: "0px 2px" }}>
                   <IconButton
                     title="Email to candidate"
                     sx={{ color: "#1976d2", fontSize: "1.3rem" }}
@@ -188,16 +189,16 @@ export const PdfViewer = observer(() => {
                   &nbsp;
                 </div> */}
 
-                <div style={{ padding: "0px 2px" }}>
-                  <ZoomOut />
-                </div>
-                <div style={{ padding: "0px 2px" }}>
-                  <ZoomIn />
-                </div>
-                <div style={{ padding: "0px 2px" }}>
-                  <Download />
-                </div>
-                {/* <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
+                  <div style={{ padding: "0px 2px" }}>
+                    <ZoomOut />
+                  </div>
+                  <div style={{ padding: "0px 2px" }}>
+                    <ZoomIn />
+                  </div>
+                  <div style={{ padding: "0px 2px" }}>
+                    <Download />
+                  </div>
+                  {/* <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
                   <GoToPreviousPage />
                 </div>
                 <div style={{ padding: "0px 2px", width: "4rem" }}>
@@ -209,22 +210,23 @@ export const PdfViewer = observer(() => {
                 <div style={{ padding: "0px 2px" }}>
                   <GoToNextPage />
                 </div> */}
-                {isBrowser && (
-                  <>
-                    <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
-                      <EnterFullScreen />
-                    </div>
+                  {isBrowser && (
+                    <>
+                      <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
+                        <EnterFullScreen />
+                      </div>
 
-                    <div style={{ padding: "0px 2px" }}>
-                      <Print />
-                    </div>
-                  </>
-                )}
-              </>
-            );
-          }}
-        </Toolbar>
-      </div>
+                      <div style={{ padding: "0px 2px" }}>
+                        <Print />
+                      </div>
+                    </>
+                  )}
+                </>
+              );
+            }}
+          </Toolbar>
+        </div>
+      </BrowserView>
       <div
         style={{
           flex: 1,

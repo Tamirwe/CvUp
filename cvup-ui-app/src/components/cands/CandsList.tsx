@@ -97,7 +97,13 @@ export const CandsList = observer(
         ref={listRef}
         dense={true}
         sx={{
-          height: advancedOpen ? "calc(100vh - 156px)" : "calc(100vh - 107px)",
+          height: isMobile
+            ? advancedOpen
+              ? "calc(100vh - 205px)"
+              : "calc(100vh - 156px)"
+            : advancedOpen
+            ? "calc(100vh - 173px)"
+            : "calc(100vh - 125px)",
         }}
         className={classNames({
           [styles.candList]: true,

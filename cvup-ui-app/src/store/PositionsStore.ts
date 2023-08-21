@@ -1,5 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, IPosition, ISearchModel } from "../models/GeneralModels";
+import {
+  IAppSettings,
+  IPosition,
+  IPositionType,
+  ISearchModel,
+} from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
 import { RootStore } from "./RootStore";
 import { isMobile } from "react-device-detect";
@@ -14,6 +19,7 @@ export class PositionsStore {
   isSelectedPositionOnTop?: boolean = false;
   candDisplayPosition: IPosition | undefined;
   sortedPosList: IPosition[] = [];
+  positionsTypesList: IPositionType[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -134,6 +140,22 @@ export class PositionsStore {
     });
   }
 
+  async positionTypeClick(posTypeId: number) {
+    if (posTypeId) {
+      await this.rootStore.candsStore.getPositionTypeCandsList(posTypeId);
+    }
+
+    runInAction(() => {
+      this.rootStore.candsStore.currentTabCandsLists =
+        TabsCandsEnum.PositionType;
+
+      if (isMobile) {
+        this.rootStore.generalStore.leftDrawerOpen = false;
+        this.rootStore.generalStore.rightDrawerOpen = true;
+      }
+    });
+  }
+
   async addPosition(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.positionApi.addPosition(position);
@@ -154,6 +176,15 @@ export class PositionsStore {
     runInAction(() => {
       this.positionsList = res.data;
       this.sortedPosList = [...res.data];
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async getPositionsTypesList() {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.getPositionsTypesList();
+    runInAction(() => {
+      this.positionsTypesList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }

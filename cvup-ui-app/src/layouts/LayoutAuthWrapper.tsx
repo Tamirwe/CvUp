@@ -24,10 +24,11 @@ import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 import { BrowserView, MobileView, isMobile } from "react-device-detect";
 import { BrowserAuthLayout } from "./BrowserAuthLayout";
-import { MobileAuthLayout } from "./MobileAuthLayout";
+import { MobileAuthLayout2 } from "./MobileAuthLayout2";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
 import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
 import { CandFormDialog } from "../components/cands/CandFormDialog";
+import { DescktopAuthLayout } from "./DescktopAuthLayout";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -164,10 +165,11 @@ export const LayoutAuthWrapper = observer(() => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <BrowserView>
-        <BrowserAuthLayout />
+        {/* <BrowserAuthLayout /> */}
+        <DescktopAuthLayout />
       </BrowserView>
       <MobileView>
-        <MobileAuthLayout />
+        <MobileAuthLayout2 />
       </MobileView>
     </Box>
   );

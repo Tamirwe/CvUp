@@ -1,11 +1,5 @@
 import {
-  Button,
-  Checkbox,
-  FormControl,
   InputBase,
-  Link,
-  MenuItem,
-  Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -13,8 +7,6 @@ import {
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import {
-  MdAdjust,
-  MdFilterTiltShift,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdOutlineClose,
@@ -234,7 +226,7 @@ export const SearchControl = ({
             }}
             aria-label="Platform"
           >
-            <ToggleButton value={true} title="Sort by updated date">
+            <ToggleButton value={true} title="Load new cv's">
               <MdRefresh />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -337,6 +329,7 @@ export const SearchControl = ({
               whiteSpace: "nowrap",
               direction: "ltr",
               padding: "0 5px",
+              fontSize: "0.7rem",
             }}
           >
             {records === 300 ? `300 ...` : `${records} rec`}
@@ -454,4 +447,3 @@ export const SearchControl = ({
     </Stack>
   );
 };
-

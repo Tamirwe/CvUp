@@ -17,9 +17,12 @@ export const CandsListsContainer = observer(() => {
   // const [folderId, setFolderId] = useState(0);
   const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
+  const [candsPosTypeList, setCandsPosTypeList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
   const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
+  const [positionsTypesAdvancedOpen, setPositionsTypesAdvancedOpen] =
+    useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
   const sortCandList = (sortBy: SortByEnum, dir: string, list: ICand[]) => {
@@ -57,6 +60,10 @@ export const CandsListsContainer = observer(() => {
   useEffect(() => {
     setCandsPosList(candsStore.posCandsList);
   }, [candsStore.posCandsList]);
+
+  useEffect(() => {
+    setCandsPosTypeList(candsStore.posTypeCandsList);
+  }, [candsStore.posTypeCandsList]);
 
   useEffect(() => {
     setCandsFolderList(candsStore.folderCandsList);
@@ -102,6 +109,20 @@ export const CandsListsContainer = observer(() => {
     }
   };
 
+  const handlePositionTypeCandsSearch = (searchVals: ISearchModel) => {
+    if (candsStore.currentTabCandsLists === TabsCandsEnum.PositionTypeCands) {
+      if (searchVals.value) {
+        candsStore.searchPositionTypeCands(searchVals);
+      } else {
+        if (positionsStore.selectedPositionType?.id) {
+          candsStore.getPositionTypeCandsList(
+            positionsStore.selectedPositionType?.id
+          );
+        }
+      }
+    }
+  };
+
   const handleFolderCandsSearch = (searchVals: ISearchModel) => {
     if (candsStore.currentTabCandsLists === TabsCandsEnum.FolderCands) {
       if (searchVals.value) {
@@ -141,6 +162,7 @@ export const CandsListsContainer = observer(() => {
           <Tabs
             sx={{
               "&.MuiTabs-root": { height: "3.7rem" },
+              direction: "ltr",
             }}
             value={candsStore.currentTabCandsLists}
             variant="scrollable"
@@ -156,6 +178,27 @@ export const CandsListsContainer = observer(() => {
               <Tab
                 label={foldersStore.selectedFolder?.name}
                 value={TabsCandsEnum.FolderCands}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  alignSelf: "flex-start",
+                }}
+              />
+            )}
+            {positionsStore.selectedPositionType?.typeName && (
+              <Tab
+                label={
+                  <div>
+                    <div>
+                      {positionsStore.selectedPositionType?.typeName.substring(
+                        0,
+                        20
+                      )}
+                    </div>
+                    <div>type</div>
+                  </div>
+                }
+                value={TabsCandsEnum.PositionTypeCands}
                 sx={{
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -237,6 +280,39 @@ export const CandsListsContainer = observer(() => {
           candsListData={candsPosList}
           candsSource={CandsSourceEnum.Position}
           advancedOpen={positionsAdvancedOpen}
+        />
+      </div>
+      <div
+        hidden={
+          candsStore.currentTabCandsLists !== TabsCandsEnum.PositionTypeCands
+        }
+      >
+        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden" }}>
+          <SearchControl
+            onSearch={handlePositionTypeCandsSearch}
+            onShowAdvanced={() =>
+              setPositionsTypesAdvancedOpen(!positionsTypesAdvancedOpen)
+            }
+            shoeAdvancedIcon={true}
+            records={
+              candsStore.posTypeCandsList && candsStore.posTypeCandsList.length
+            }
+            onSort={(sortBy: SortByEnum, dir: string) => {
+              handleSort(sortBy, dir, TabsCandsEnum.PositionTypeCands);
+            }}
+            showRefreshList={true}
+            onRefreshLists={() =>
+              positionsStore.selectedPositionType?.id &&
+              candsStore.getPositionTypeCandsList(
+                positionsStore.selectedPositionType?.id
+              )
+            }
+          />
+        </Box>
+        <CandsList
+          candsListData={candsPosTypeList}
+          candsSource={CandsSourceEnum.PositionType}
+          advancedOpen={positionsTypesAdvancedOpen}
         />
       </div>
       <div

@@ -1,9 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import {
-  CandsSourceEnum,
-  CvDisplayedListEnum,
-  TabsCandsEnum,
-} from "../models/GeneralEnums";
+import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
 import {
   IAppSettings,
   ICand,
@@ -17,8 +13,6 @@ import {
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
-import { delay } from "../utils/GeneralUtils";
-import { isMobile } from "react-device-detect";
 
 export class CandsStore {
   private cvsApi;
@@ -28,6 +22,7 @@ export class CandsStore {
   allCandsList: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
+  posTypeCandsList: ICand[] = [];
   folderCandsList: ICand[] = [];
   pdfUrl: string = "";
   pdfBlobUrl: string = "";
@@ -206,7 +201,7 @@ export class CandsStore {
 
   async searchAllCands(searchVals: ISearchModel) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(searchVals, 0, 0);
+    const res = await this.cvsApi.searchCands(searchVals, 0, 0, 0);
     runInAction(() => {
       this.allCandsList = res.data;
     });
@@ -217,10 +212,26 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(
       searchVals,
-      this.rootStore.positionsStore.selectedPosition?.id
+      this.rootStore.positionsStore.selectedPosition?.id,
+      0,
+      0
     );
     runInAction(() => {
       this.posCandsList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async searchPositionTypeCands(searchVals: ISearchModel) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.cvsApi.searchCands(
+      searchVals,
+      0,
+      this.rootStore.positionsStore.selectedPositionType?.id,
+      0
+    );
+    runInAction(() => {
+      this.posTypeCandsList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -229,6 +240,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.searchCands(
       searchVals,
+      0,
       0,
       this.rootStore.foldersStore.selectedFolder?.id
     );
@@ -291,7 +303,7 @@ export class CandsStore {
     const res = await this.cvsApi.getPosTypeCandsList(posTypeId);
 
     runInAction(() => {
-      this.posCandsList = res.data;
+      this.posTypeCandsList = res.data;
 
       this.rootStore.generalStore.backdrop = false;
     });

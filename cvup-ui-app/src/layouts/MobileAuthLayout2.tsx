@@ -1,10 +1,6 @@
-import { Box, Drawer, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
-import { LeftListsWrapper } from "./LeftListsWrapper";
 import { observer } from "mobx-react";
-import { CandsListsWrapper } from "../components/cands/CandsListsWrapper";
-import { useState } from "react";
 import { useStore } from "../Hooks/useStore";
 import { CandsListsContainer } from "../components/containers/CandsListsContainer";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";

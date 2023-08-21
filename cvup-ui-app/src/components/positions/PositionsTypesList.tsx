@@ -73,7 +73,7 @@ export const PositionsTypesList = observer(() => {
           >
             <ListItemButton
               sx={{ pl: "4px" }}
-              selected={pos.id === positionsStore.selectedPosition?.id}
+              selected={pos.id === positionsStore.selectedPositionType?.id}
               onClick={() => positionsStore.positionTypeClick(pos.id)}
             >
               <div

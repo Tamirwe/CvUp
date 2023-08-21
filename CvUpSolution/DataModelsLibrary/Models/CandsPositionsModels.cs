@@ -34,6 +34,7 @@ namespace DataModelsLibrary.Models
         public int duplicateCvId { get; set; }
         public bool isSameCvEmailSubject { get; set; } = false;
         public int fileTypeKey { get; set; }
+        public int? positionTypeId { get; set; }
     }
 
     [Keyless]
@@ -105,6 +106,13 @@ namespace DataModelsLibrary.Models
         public int? customerId { get; set; } = 0;
         public string? positionName { get; set; }
         public DateTime? stageDate { get; set; }
+    }
+
+    public class PositionTypeModel
+    {
+        public int id { get; set; }
+        public string typeName { get; set; } = "";
+        public DateTime dateUpdated { get; set; }
     }
 
     public class CandDetailsModel

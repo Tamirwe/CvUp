@@ -24,6 +24,7 @@ namespace CandsPositionsLibrary
         Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
+        Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task DeletePosition(int companyId, int id);
         Task<List<int>> getPositionContactsIds(int companyId, int positionId);
         Task<PositionModel> GetPosition(int companyId, int positionId);
@@ -52,5 +53,8 @@ namespace CandsPositionsLibrary
         Task UpdatePositionDate(int companyId, int positionId);
         Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
         Task AddSendEmail(SendEmailModel emailData, int userId);
+        Task<int?> GetPositionTypeId(int companyId, string positionRelated);
+        Task<int> AddPositionTypeName(int companyId, string positionRelated);
+        Task<List<PositionTypeModel>> GetPositionsTypes(int companyId);
     }
 }

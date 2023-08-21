@@ -69,5 +69,13 @@ namespace CvUpAPI.Controllers
             await _cvsPosService.DeletePosition(Globals.CompanyId, id);
             return Ok();
         }
+
+        [HttpGet]
+        [Route("GetPositionsTypes")]
+        public async Task<IActionResult> GetPositionsTypes()
+        {
+            List<PositionTypeModel> positionTypes = await _cvsPosService.GetPositionsTypes(Globals.CompanyId);
+            return Ok(positionTypes);
+        }
     }
 }

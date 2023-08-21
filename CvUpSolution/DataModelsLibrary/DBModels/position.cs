@@ -34,8 +34,6 @@ namespace Database.models
         public virtual company company { get; set; } = null!;
         public virtual contact? contact { get; set; }
         public virtual customer? customer { get; set; }
-        public virtual user? opener { get; set; }
-        public virtual user? updater { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
         public virtual ICollection<position_contact> position_contacts { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }

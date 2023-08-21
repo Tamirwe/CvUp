@@ -52,6 +52,13 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId, null);
         }
 
+        [HttpGet]
+        [Route("GetPosTypeCandsList")]
+        public async Task<List<CandModel?>> GetPosTypeCandsList(int positionTypeId)
+        {
+            return await _candPosService.GetPosTypeCandsList(Globals.CompanyId, positionTypeId);
+        }
+
         [HttpPost]
         [Route("SearchCands")]
         public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel searchVals)

@@ -4,8 +4,12 @@
   list-style: none;
   padding-inline-start: 10px;
   margin-top: 5px;
-  height: calc(100vh - 107px);
-  overflow-y: scroll,
+  height: calc(100vh - 164px);
+  overflow-y: scroll;
+  
+  &.isMobile {
+    height: calc(100vh - 153px);
+}
 }
 // .ulRoot:hover{
 //   overflow: overlay;

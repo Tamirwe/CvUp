@@ -23,7 +23,6 @@ import {
 import { IEmailTemplate } from "../../models/GeneralModels";
 import { validateTxt } from "../../utils/Validation";
 import { GoPlus } from "react-icons/go";
-import { MdContentCopy } from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
 import { QuillRte } from "../rte/QuillRte";
 import { BrowserView, MobileView } from "react-device-detect";

@@ -12,6 +12,7 @@ import styles from "./FoldersList.module.scss";
 import { MdPersonAddAlt1, MdPersonRemove } from "react-icons/md";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
+import classNames from "classnames";
 
 export const FoldersList = observer(() => {
   const { foldersStore, candsStore, generalStore } = useStore();
@@ -196,7 +197,14 @@ export const FoldersList = observer(() => {
   };
 
   return (
-    <ul className={styles.ulRoot} style={{}} role="tree" ref={listRef}>
+    <ul
+      className={classNames({
+        [styles.ulRoot]: true,
+        [styles.isMobile]: isMobile,
+      })}
+      role="tree"
+      ref={listRef}
+    >
       {renderChildren({
         folder: {
           ...foldersStore.rootFolder,

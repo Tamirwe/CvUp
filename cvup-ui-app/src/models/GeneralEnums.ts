@@ -38,6 +38,7 @@ export enum EmailTypeEnum {
 export enum TabsGeneralEnum {
   Contacts,
   Folders,
+  Types,
   Positions,
 }
 
@@ -46,6 +47,7 @@ export enum TabsCandsEnum {
   AllCands,
   PositionCands,
   FolderCands,
+  PositionType,
 }
 
 export enum TextValidateTypeEnum {

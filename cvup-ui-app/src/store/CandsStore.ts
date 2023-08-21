@@ -280,6 +280,23 @@ export class CandsStore {
     });
   }
 
+  async getPositionTypeCandsList(posTypeId: number) {
+    runInAction(() => {
+      this.rootStore.generalStore.backdrop = true;
+    });
+
+    // runInAction(async () => {
+    this.posCandsList = [];
+
+    const res = await this.cvsApi.getPosTypeCandsList(posTypeId);
+
+    runInAction(() => {
+      this.posCandsList = res.data;
+
+      this.rootStore.generalStore.backdrop = false;
+    });
+  }
+
   setDisplayCandOntopPCList() {
     runInAction(() => {
       if (this.candDisplay?.candidateId) {

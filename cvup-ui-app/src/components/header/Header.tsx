@@ -38,6 +38,7 @@ export const Header = observer(() => {
       await Promise.all([
         candsStore.getCandPosStages(),
         positionsStore.getPositionsList(),
+        positionsStore.getPositionsTypesList(),
         candsStore.getEmailTemplates(),
         customersContactsStore.getCustomersList(),
         authStore.getUser(),
@@ -64,8 +65,8 @@ export const Header = observer(() => {
       >
         <div
           style={{
-            backgroundColor: "rgb(249 252 255)",
-            border: "1px solid #f3f3f3",
+            //backgroundColor: "rgb(249 252 255)",
+            //border: "1px solid #f3f3f3",
             margin: "5px 10px",
             height: "100%",
             display: "flex",
@@ -118,7 +119,11 @@ export const Header = observer(() => {
                 {isMobile && (
                   <IconButton
                     size="medium"
-                    onClick={() => (generalStore.leftDrawerOpen = true)}
+                    onClick={() => {
+                      generalStore.rightDrawerOpen = false;
+                      generalStore.leftDrawerOpen =
+                        !generalStore.leftDrawerOpen;
+                    }}
                   >
                     <BsList />
                   </IconButton>
@@ -173,7 +178,7 @@ export const Header = observer(() => {
                     </Link> */}
 
                     <IconButton
-                      title="Email to customer"
+                      title="Download original file"
                       sx={{ fontSize: "1.54rem" }}
                       size="small"
                       onClick={async () => {
@@ -217,7 +222,11 @@ export const Header = observer(() => {
               {isMobile && (
                 <IconButton
                   size="medium"
-                  onClick={() => (generalStore.rightDrawerOpen = true)}
+                  onClick={() => {
+                    generalStore.leftDrawerOpen = false;
+                    generalStore.rightDrawerOpen =
+                      !generalStore.rightDrawerOpen;
+                  }}
                 >
                   <BsList />
                 </IconButton>

@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../Hooks/useStore";
 import { IContact } from "../../models/GeneralModels";
 import { useRef, useState, useEffect, useCallback } from "react";
+import { isMobile } from "react-device-detect";
 
 export const ContactsList = observer(() => {
   const { customersContactsStore, generalStore } = useStore();
@@ -58,8 +59,7 @@ export const ContactsList = observer(() => {
       ref={listRef}
       dense={true}
       sx={{
-        backgroundColor: "#fff",
-        height: "calc(100vh - 81px)",
+        height: isMobile ? "calc(100vh - 148px)" : "calc(100vh - 160px)",
         overflowY: "scroll",
         // "&:hover ": {
         //   overflow: "overlay",

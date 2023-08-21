@@ -51,6 +51,14 @@ export default class CandsApi extends BaseApi {
     });
   }
 
+  async getPosTypeCandsList(posTypeId: number) {
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.get(
+        `Cand/GetPosTypeCandsList?positionTypeId=${posTypeId}`
+      );
+    });
+  }
+
   async getFolderCandsList(folderId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(

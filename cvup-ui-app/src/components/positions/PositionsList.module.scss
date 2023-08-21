@@ -1,12 +1,13 @@
 .posList {
-    height: calc(100vh - 96px);
+    height: calc(100vh - 159px);
     overflow-y: scroll;
     overflow-x: hidden;
     direction: ltr;
   
     &.isMobile {
       font-size: 0.7rem;
-    }
+      height: calc(100vh - 148px);
+  }
   }
 
   .listItemDate {

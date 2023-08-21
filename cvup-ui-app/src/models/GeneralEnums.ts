@@ -47,7 +47,7 @@ export enum TabsCandsEnum {
   AllCands,
   PositionCands,
   FolderCands,
-  PositionType,
+  PositionTypeCands,
 }
 
 export enum TextValidateTypeEnum {
@@ -78,6 +78,7 @@ export enum AppModeEnum {
 export enum CandsSourceEnum {
   AllCands,
   Position,
+  PositionType,
   Folder,
 }
 

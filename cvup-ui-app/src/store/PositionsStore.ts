@@ -14,6 +14,7 @@ export class PositionsStore {
   private positionApi;
   private positionsList: IPosition[] = [];
   private positionSelected?: IPosition;
+  private positionTypeSelected?: IPositionType;
   private positionEdit?: IPosition;
   private searchPhrase?: ISearchModel;
   isSelectedPositionOnTop?: boolean = false;
@@ -36,6 +37,14 @@ export class PositionsStore {
 
   set selectedPosition(val: IPosition | undefined) {
     this.positionSelected = val;
+  }
+
+  get selectedPositionType() {
+    return this.positionTypeSelected;
+  }
+
+  set selectedPositionType(val: IPositionType | undefined) {
+    this.positionTypeSelected = val;
   }
 
   get editPosition() {
@@ -94,9 +103,7 @@ export class PositionsStore {
   }
 
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
-    runInAction(() => {
-      this.selectedPosition = this.positionsList.find((x) => x.id === posId);
-    });
+    this.positionSelected = this.positionsList.find((x) => x.id === posId);
 
     if (posId) {
       await this.getPositionContacts(posId);
@@ -141,13 +148,14 @@ export class PositionsStore {
   }
 
   async positionTypeClick(posTypeId: number) {
-    if (posTypeId) {
-      await this.rootStore.candsStore.getPositionTypeCandsList(posTypeId);
-    }
+    this.positionTypeSelected = this.positionsTypesList.find(
+      (x) => x.id === posTypeId
+    );
+    await this.rootStore.candsStore.getPositionTypeCandsList(posTypeId);
 
     runInAction(() => {
       this.rootStore.candsStore.currentTabCandsLists =
-        TabsCandsEnum.PositionType;
+        TabsCandsEnum.PositionTypeCands;
 
       if (isMobile) {
         this.rootStore.generalStore.leftDrawerOpen = false;
@@ -224,7 +232,7 @@ export class PositionsStore {
     if (response.isSuccess) {
       this.positionsList.splice(posIndex, 1);
       this.rootStore.candsStore.currentTabCandsLists = TabsCandsEnum.AllCands;
-      this.selectedPosition = undefined;
+      this.positionSelected = undefined;
     }
 
     this.rootStore.generalStore.backdrop = false;

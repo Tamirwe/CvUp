@@ -35,6 +35,7 @@ namespace Database.models
         public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
         public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
+        public virtual DbSet<position_type> position_types { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -251,6 +252,8 @@ namespace Database.models
             {
                 entity.HasIndex(e => e.candidate_id, "fk_cvs_candidate_id_candidates_id");
 
+                entity.HasIndex(e => e.position_type_id, "fk_cvs_position_type_id_position_types_id");
+
                 entity.HasIndex(e => e.company_id, "ix_cvs_company_id");
 
                 entity.HasIndex(e => e.cvdbid, "ix_cvs_cvdbid");
@@ -282,6 +285,12 @@ namespace Database.models
                     .WithMany(p => p.cvs)
                     .HasForeignKey(d => d.candidate_id)
                     .HasConstraintName("fk_cvs_candidate_id_candidates_id");
+
+                entity.HasOne(d => d.position_type)
+                    .WithMany(p => p.cvs)
+                    .HasForeignKey(d => d.position_type_id)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_cvs_position_type_id_position_types_id");
             });
 
             modelBuilder.Entity<cvs_txt>(entity =>
@@ -322,7 +331,6 @@ namespace Database.models
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.folders)
                     .HasForeignKey(d => d.company_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_folders_company_id_companies_id");
             });
 
@@ -415,18 +423,6 @@ namespace Database.models
                     .HasForeignKey(d => d.customer_id)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_positions_customer_id_customers_id");
-
-                entity.HasOne(d => d.opener)
-                    .WithMany(p => p.positionopeners)
-                    .HasForeignKey(d => d.opener_id)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("fk_positions_opener_id_users_id");
-
-                entity.HasOne(d => d.updater)
-                    .WithMany(p => p.positionupdaters)
-                    .HasForeignKey(d => d.updater_id)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("fk_positions_updater_id_users_id");
             });
 
             modelBuilder.Entity<position_candidate>(entity =>
@@ -549,6 +545,22 @@ namespace Database.models
                     .HasConstraintName("fk_position_interviewers_user_id_users_id");
             });
 
+            modelBuilder.Entity<position_type>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_types_company_id_companies_id");
+
+                entity.Property(e => e.date_updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.type_name).HasMaxLength(150);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_types)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_position_types_company_id_companies_id");
+            });
+
             modelBuilder.Entity<registeration_key>(entity =>
             {
                 entity.ToTable("registeration_key");
@@ -631,7 +643,7 @@ namespace Database.models
 
                 entity.HasIndex(e => e.user_id, "fk_refresh_tokens_user_id_users_id");
 
-                entity.Property(e => e.token).HasMaxLength(100);
+                entity.Property(e => e.token).HasMaxLength(200);
 
                 entity.Property(e => e.token_expire).HasColumnType("datetime");
 

@@ -60,7 +60,6 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds)
         {
-            int skip = (page - 1) * take;
             using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
@@ -161,6 +160,39 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from cand in dbContext.candidates
+                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                             where cand.company_id == companyId && cvs.position_type_id == positionTypeId
+                             orderby cand.last_cv_sent descending
+                             select new CandModel
+                             {
+                                 cvId = cvs.id,
+                                 review = cand.review,
+                                 reviewDate = cand.review_date,
+                                 keyId = cvs.key_id,
+                                 candidateId = cand.id,
+                                 email = cand.email,
+                                 emailSubject = cvs.subject,
+                                 firstName = cand.first_name,
+                                 lastName = cand.last_name,
+                                 phone = cand.phone,
+                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                                 cvSent = Convert.ToDateTime(cand.last_cv_sent),
+                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
+                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                                 isSeen = Convert.ToBoolean(cvs.is_seen)
+                             }).Take(300);
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+        }
+
         public async Task<int> AddCv(ImportCvModel importCv)
         {
             using (var dbContext = new cvup00001Context())
@@ -176,6 +208,7 @@ namespace DataModelsLibrary.Queries
                     position = Utils.Truncate(importCv.positionRelated, 250),
                     file_type = importCv.fileTypeKey,
                     date_created = importCv.dateCreated,
+                    position_type_id = importCv.positionTypeId,
 
                 };
 
@@ -714,7 +747,7 @@ namespace DataModelsLibrary.Queries
         }
 
 
-        public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId,int cvAsciiSum)
+        public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum)
         {
             using (var dbContext = new cvup00001Context())
             {
@@ -1046,7 +1079,7 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && ! string.IsNullOrWhiteSpace(x.match_email_subject) && x.status == "Active").ToListAsync();
+                List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && !string.IsNullOrWhiteSpace(x.match_email_subject) && x.status == "Active").ToListAsync();
 
                 position? matchPos = posList.Where(x => !string.IsNullOrWhiteSpace(x.match_email_subject) && matchStr.Contains(x.match_email_subject)).FirstOrDefault();
 
@@ -1083,6 +1116,63 @@ namespace DataModelsLibrary.Queries
                 });
 
                 await dbContext.SaveChangesAsync();
+
+            }
+        }
+
+        public async Task<int?> GetPositionTypeId(int companyId, string positionRelated)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var posType = await dbContext.position_types.Where(x => x.company_id == companyId && x.type_name == positionRelated).FirstOrDefaultAsync();
+
+                if (posType != null)
+                {
+                    posType.date_updated = DateTime.Now;
+                    dbContext.position_types.Update(posType);
+                    await dbContext.SaveChangesAsync();
+
+                    return posType.id;
+                }
+
+                return null;
+            }
+        }
+
+        public async Task<int> AddPositionTypeName(int companyId, string positionRelated)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+
+                var result = dbContext.position_types.Add(new position_type
+                {
+                    company_id = companyId,
+                    type_name = positionRelated,
+                    date_updated = DateTime.Now
+                });
+
+                await dbContext.SaveChangesAsync();
+
+                return result.Entity.id;
+            }
+        }
+
+        public async Task<List<PositionTypeModel>> GetPositionsTypes(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from et in dbContext.position_types
+                             where et.company_id == companyId
+                             orderby et.date_updated descending
+                             select new PositionTypeModel
+                             {
+                                 id = et.id,
+                                 typeName = et.type_name,
+                                 dateUpdated = et.date_updated,
+                             });
+
+                return await query.ToListAsync();
+
 
             }
         }

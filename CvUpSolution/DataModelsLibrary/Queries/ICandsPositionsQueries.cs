@@ -14,6 +14,7 @@ namespace DataModelsLibrary.Queries
         Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId, List<int>? candsIds);
+        Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task<position> AddPosition(PositionModel data, int companyId, int userId);
          Task<position> UpdatePosition(PositionModel data, int companyId, int userId);
          Task<List<PositionModel>> GetPositionsList(int companyId);
@@ -57,5 +58,8 @@ namespace DataModelsLibrary.Queries
         Task UpdatePositionDate(int companyId, int positionId);
         Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
         Task AddSendEmail(SendEmailModel emailData, int userId);
+        Task<int?> GetPositionTypeId(int companyId, string positionRelated);
+        Task<int> AddPositionTypeName(int companyId, string positionRelated);
+        Task<List<PositionTypeModel>> GetPositionsTypes(int companyId);
     }
 }

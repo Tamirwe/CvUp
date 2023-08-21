@@ -26,8 +26,10 @@ namespace Database.models
         public string? file_extension { get; set; }
         public int? file_type { get; set; }
         public bool? is_seen { get; set; }
+        public int? position_type_id { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
+        public virtual position_type? position_type { get; set; }
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
     }

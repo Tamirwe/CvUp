@@ -184,6 +184,7 @@ namespace ImportCvsLibrary
                 await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
             }
             else { 
+                //await AddPositionName();
                 await AddCvToDb();
                 RenameAndMoveAttachmentToFolder();
                 await _cvsPositionsServise.UpdateCvKeyId(_importCv);
@@ -356,7 +357,7 @@ namespace ImportCvsLibrary
                                     _importCv.candidateName = subjectArr[i];
                                     break;
                                 case nameof(ParserValueType.Position):
-                                    _importCv.positionRelated = subjectArr[i];
+                                    _importCv.positionRelated = subjectArr[i].Trim();
                                     break;
                                 case nameof(ParserValueType.CompanyType):
 
@@ -386,6 +387,19 @@ namespace ImportCvsLibrary
             //}
             //else
             //{
+            if (!string.IsNullOrEmpty(_importCv.positionRelated))
+            {
+                int? posTypeId = await _cvsPositionsServise.GetPositionTypeId(_importCv.companyId, _importCv.positionRelated);
+
+                if (posTypeId == null)
+                {
+                    posTypeId = await _cvsPositionsServise.AddPositionTypeName(_importCv.companyId, _importCv.positionRelated);
+                }
+
+                _importCv.positionTypeId = posTypeId;
+
+            }
+
             _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
             //}
         }

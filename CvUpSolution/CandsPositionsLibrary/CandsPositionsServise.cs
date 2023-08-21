@@ -151,12 +151,17 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId, candsIds);
         }
 
+        public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
+        {
+            return await _cvsPositionsQueries.GetPosTypeCandsList(companyId, positionTypeId);
+        }
+
         public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId, List<int>? candsIds)
         {
             return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId, candsIds);
         }
 
-        public async Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId)
+        public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
             List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
             //cvsList.RemoveAll(x => x.cvId == cvId);
@@ -220,7 +225,7 @@ namespace CandsPositionsLibrary
 
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
         {
-            await _cvsPositionsQueries.UpdateCandLastCv(companyId,  candidateId,  cvId,  isDuplicate,  lastCvSent);
+            await _cvsPositionsQueries.UpdateCandLastCv(companyId, candidateId, cvId, isDuplicate, lastCvSent);
         }
 
         public async Task UpdateCvDate(int cvId)
@@ -362,7 +367,7 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.CandsReport(companyId, stageType);
         }
 
-        public async  Task UpdatePositionDate(int companyId, int positionId)
+        public async Task UpdatePositionDate(int companyId, int positionId)
         {
             await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId);
         }
@@ -373,8 +378,22 @@ namespace CandsPositionsLibrary
 
         public async Task AddSendEmail(SendEmailModel emailData, int userId)
         {
-            await _cvsPositionsQueries.AddSendEmail( emailData, userId);
+            await _cvsPositionsQueries.AddSendEmail(emailData, userId);
         }
 
-}
+        public async Task<int?> GetPositionTypeId(int companyId, string positionRelated)
+        {
+            return await _cvsPositionsQueries.GetPositionTypeId(companyId, positionRelated);
+        }
+
+        public async Task<int> AddPositionTypeName(int companyId, string positionRelated)
+        {
+            return await _cvsPositionsQueries.AddPositionTypeName(companyId, positionRelated);
+        }
+
+        public async Task<List<PositionTypeModel>> GetPositionsTypes(int companyId)
+        {
+            return await _cvsPositionsQueries.GetPositionsTypes(companyId);
+        }
+    }
 }

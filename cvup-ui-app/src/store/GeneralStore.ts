@@ -27,6 +27,7 @@ export class GeneralStore {
   private isAlertConfirmDialogOpen: boolean = false;
   private isPositionFormDialogOpen: boolean = false;
   private isShowReviewCandDialog: boolean = false;
+  private isShowCustomerReviewCandDialog: boolean = false;
   private isShowEmailTemplatesDialog: boolean = false;
   private isShowCandFormDialog: boolean = false;
   private isAlertSnackbarOpen: boolean = false;
@@ -152,6 +153,14 @@ export class GeneralStore {
 
   set showReviewCandDialog(val) {
     this.isShowReviewCandDialog = val;
+  }
+
+  get showCustomerReviewCandDialog() {
+    return this.isShowCustomerReviewCandDialog;
+  }
+
+  set showCustomerReviewCandDialog(val) {
+    this.isShowCustomerReviewCandDialog = val;
   }
 
   get showEmailTemplatesDialog() {

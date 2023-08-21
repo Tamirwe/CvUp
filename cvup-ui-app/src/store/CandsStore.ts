@@ -171,6 +171,25 @@ export class CandsStore {
     return res;
   }
 
+  async saveCustomerCandReview(review: string) {
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.cvsApi.saveCustomerCandReview(
+      review,
+      this.candDisplay?.candidateId!
+    );
+
+    if (res.isSuccess && res.data) {
+      runInAction(() => {
+        this.candDisplay = { ...res.data };
+        this.updateLists(res.data);
+      });
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+    return res;
+  }
+
   async saveCandDetails(
     firstName: string,
     lastName: string,

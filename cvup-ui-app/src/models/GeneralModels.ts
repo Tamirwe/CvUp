@@ -32,6 +32,8 @@ export interface ICand {
   cvId: number;
   posCvId?: number;
   review?: string;
+  customerReview?: string;
+  allCustomersReviews?: string;
   candidateId: number;
   keyId: string;
   encriptedId: string;

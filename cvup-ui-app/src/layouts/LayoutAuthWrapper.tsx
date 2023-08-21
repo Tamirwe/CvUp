@@ -29,6 +29,7 @@ import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
 import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
 import { CandFormDialog } from "../components/cands/CandFormDialog";
 import { DescktopAuthLayout } from "./DescktopAuthLayout";
+import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -127,6 +128,12 @@ export const LayoutAuthWrapper = observer(() => {
         <ReviewCandDialog
           isOpen={generalStore.showReviewCandDialog}
           onClose={() => (generalStore.showReviewCandDialog = false)}
+        />
+      )}
+      {generalStore.showCustomerReviewCandDialog && (
+        <CustomerReviewCandDialog
+          isOpen={generalStore.showCustomerReviewCandDialog}
+          onClose={() => (generalStore.showCustomerReviewCandDialog = false)}
         />
       )}
       {generalStore.showEmailTemplatesDialog && (

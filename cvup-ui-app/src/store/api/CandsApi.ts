@@ -110,6 +110,15 @@ export default class CandsApi extends BaseApi {
     });
   }
 
+  async saveCustomerCandReview(review: string, candidateId: number) {
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.put("Cand/SaveCustomerCandReview", {
+        review,
+        candidateId,
+      });
+    });
+  }
+
   async saveCandDetails(
     candidateId: number,
     firstName: string,

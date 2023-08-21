@@ -45,7 +45,7 @@ export default abstract class BaseApi {
       return Promise.resolve({
         data: null as any,
         isSuccess: false,
-        errorData: error.response ? error.response.data : error,
+        errorData: error,
         status: error.response ? error.response.status : "",
       });
     }

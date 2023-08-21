@@ -14,7 +14,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { EmailTypeEnum } from "../../models/GeneralEnums";
+import { CandsSourceEnum, EmailTypeEnum } from "../../models/GeneralEnums";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../../models/GeneralModels";
 import { format } from "date-fns";
@@ -49,6 +49,18 @@ export const CvView = observer(() => {
       );
     }
   }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
+
+  useEffect(() => {
+    if (candsStore.candDisplay) {
+      const posCand = candsStore.posCandsList.find(
+        (x) => x.candidateId === candsStore.candDisplay?.candidateId
+      );
+
+      if (posCand) {
+        candsStore.displayCv(posCand, CandsSourceEnum.Position);
+      }
+    }
+  }, [candsStore.posCandsList]);
 
   const getCandName = useCallback(() => {
     let fullName = `${candsStore.candDisplay?.firstName || ""} ${
@@ -258,7 +270,6 @@ export const CvView = observer(() => {
                       display: "flex",
                       flexDirection: "row-reverse",
                       fontSize: "0.75rem",
-                      fontWeight: 700,
                       paddingTop: "1rem",
                     }}
                   >
@@ -271,9 +282,7 @@ export const CvView = observer(() => {
                           !generalStore.showReviewCandDialog;
                       }}
                     >
-                      <span style={{ direction: "ltr" }}>
-                        Review:&nbsp;&nbsp;
-                      </span>
+                      <span style={{ direction: "ltr" }}></span>
                       {format(
                         new Date(candsStore.candDisplay?.reviewDate),
                         "MMM d, yyyy"
@@ -345,7 +354,6 @@ export const CvView = observer(() => {
                   ></pre>
                 )}
               </div>
-              <div></div>
             </Grid>
           </Grid>
         )}

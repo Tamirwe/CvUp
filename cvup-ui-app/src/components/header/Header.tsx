@@ -9,6 +9,7 @@ import {
   MdOutlineContactMail,
   MdOutlineDelete,
   MdOutlineEdit,
+  MdOutlineEditNotifications,
   MdOutlineFileDownload,
   MdOutlineMarkEmailRead,
   MdOutlineMarkEmailUnread,
@@ -213,6 +214,17 @@ export const Header = observer(() => {
                       }}
                     >
                       <MdOutlineFileDownload />
+                    </IconButton>
+                    <IconButton
+                      title="Customer review"
+                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                      size="small"
+                      onClick={() => {
+                        generalStore.showCustomerReviewCandDialog =
+                          !generalStore.showCustomerReviewCandDialog;
+                      }}
+                    >
+                      <MdOutlineEditNotifications />
                     </IconButton>
                   </>
                 )}

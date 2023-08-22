@@ -33,7 +33,6 @@ export interface ICand {
   posCvId?: number;
   review?: string;
   customerReview?: string;
-  allCustomersReviews?: string;
   candidateId: number;
   keyId: string;
   encriptedId: string;
@@ -53,6 +52,7 @@ export interface ICand {
   isSeen: boolean;
   reviewDate?: Date;
   score: number;
+  allCustomersReviews?: ICustomersReviews[];
 }
 
 export interface ICandPosStage {
@@ -62,6 +62,15 @@ export interface ICandPosStage {
   _ec: string;
 }
 
+export interface ICustomersReviews {
+  candId: number;
+  posId: number;
+  custId: number;
+  posName: string;
+  custName: string;
+  review: string;
+  updated?: Date;
+}
 export interface IPosStagesType {
   stageType: string;
   order: number;

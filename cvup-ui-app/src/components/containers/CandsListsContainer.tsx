@@ -195,7 +195,7 @@ export const CandsListsContainer = observer(() => {
                         20
                       )}
                     </div>
-                    <div>type</div>
+                    <div>PT</div>
                   </div>
                 }
                 value={TabsCandsEnum.PositionTypeCands}

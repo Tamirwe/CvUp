@@ -245,6 +245,12 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-       
+        [HttpPut]
+        [Route("SaveCustomerCandReview")]
+        public async Task<CandModel?> SaveCustomerCandReview(CandReviewModel customerCandReview)
+        {
+            await _candPosService.SaveCustomerCandReview(Globals.CompanyId, customerCandReview);
+            return await _candPosService.GetCandidate(Globals.CompanyId, customerCandReview.candidateId);
+        }
     }
 }

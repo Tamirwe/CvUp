@@ -20,13 +20,13 @@ namespace Database.models
         public DateTime? date_updated { get; set; }
         public string? cand_cvs { get; set; }
         public string? customer_review { get; set; }
-        public DateTime? date_cv_sent_to_customer { get; set; }
-        public DateTime? date_interview_customer_request { get; set; }
-        public DateTime? date_sent_talk_request { get; set; }
-        public DateTime? date_rejected { get; set; }
-        public DateTime? date_accepted { get; set; }
-        public DateTime? date_msg_accept_reject_sent { get; set; }
-        public DateTime? date_remove_candidacy { get; set; }
+        public DateTime? date_cv_sent_to_customer_tmp { get; set; }
+        public DateTime? date_interview_customer_request_tmp { get; set; }
+        public DateTime? date_sent_talk_request_tmp { get; set; }
+        public DateTime? date_rejected_tmp { get; set; }
+        public DateTime? date_accepted_tmp { get; set; }
+        public DateTime? date_msg_accept_reject_sent_tmp { get; set; }
+        public DateTime? date_remove_candidacy_tmp { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
         public virtual company company { get; set; } = null!;

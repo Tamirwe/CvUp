@@ -38,6 +38,7 @@ namespace Database.models
         public virtual DbSet<position_type> position_types { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
+        public virtual DbSet<temp_cands_review> temp_cands_reviews { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
         public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; } = null!;
 
@@ -114,6 +115,8 @@ namespace Database.models
 
                 entity.Property(e => e.adress).HasMaxLength(150);
 
+                entity.Property(e => e.customers_reviews).HasColumnType("json");
+
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -144,7 +147,7 @@ namespace Database.models
 
                 entity.Property(e => e.pos_stages).HasColumnType("json");
 
-                entity.Property(e => e.review).HasMaxLength(14000);
+                entity.Property(e => e.review).HasMaxLength(8000);
 
                 entity.Property(e => e.review_date).HasColumnType("datetime");
 
@@ -443,23 +446,23 @@ namespace Database.models
 
                 entity.Property(e => e.customer_review).HasMaxLength(1000);
 
-                entity.Property(e => e.date_accepted).HasColumnType("datetime");
+                entity.Property(e => e.date_accepted_tmp).HasColumnType("datetime");
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.date_cv_sent_to_customer).HasColumnType("datetime");
+                entity.Property(e => e.date_cv_sent_to_customer_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_interview_customer_request).HasColumnType("datetime");
+                entity.Property(e => e.date_interview_customer_request_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_msg_accept_reject_sent).HasColumnType("datetime");
+                entity.Property(e => e.date_msg_accept_reject_sent_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_rejected).HasColumnType("datetime");
+                entity.Property(e => e.date_rejected_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_remove_candidacy).HasColumnType("datetime");
+                entity.Property(e => e.date_remove_candidacy_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_sent_talk_request).HasColumnType("datetime");
+                entity.Property(e => e.date_sent_talk_request_tmp).HasColumnType("datetime");
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
@@ -592,6 +595,15 @@ namespace Database.models
                     .WithMany(p => p.sent_emails)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_sent_emails_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<temp_cands_review>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("temp_cands_review");
+
+                entity.Property(e => e.review).HasMaxLength(14000);
             });
 
             modelBuilder.Entity<user>(entity =>

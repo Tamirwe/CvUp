@@ -394,5 +394,11 @@ namespace CandsPositionsLibrary
         {
             return await _cvsPositionsQueries.GetPositionsTypes(companyId);
         }
-    }
+
+        public async Task SaveCustomerCandReview(int companyId, CandReviewModel customerCandReview)
+        {
+            await _cvsPositionsQueries.SaveCustomerCandReview(companyId, customerCandReview);
+            await _cvsPositionsQueries.UpdateCandCustomersReviews(companyId, customerCandReview.candidateId);
+        }
+}
 }

@@ -56,5 +56,6 @@ namespace CandsPositionsLibrary
         Task<int?> GetPositionTypeId(int companyId, string positionRelated);
         Task<int> AddPositionTypeName(int companyId, string positionRelated);
         Task<List<PositionTypeModel>> GetPositionsTypes(int companyId);
+        Task SaveCustomerCandReview(int companyId, CandReviewModel customerCandReview);
     }
 }

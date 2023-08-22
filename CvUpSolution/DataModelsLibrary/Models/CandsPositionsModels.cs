@@ -85,6 +85,8 @@ namespace DataModelsLibrary.Models
         public string? emailSubject { get; set; } = "";
         public string? review { get; set; } = "";
         public DateTime? reviewDate { get; set; }
+        public string? customerReview { get; set; } = "";
+        public CandCustomersReviewsModel[]? allCustomersReviews { get; set; }
         public string? firstName { get; set; } = "";
         public string? lastName { get; set; } = "";
         public bool hasDuplicates { get; set; }
@@ -113,6 +115,17 @@ namespace DataModelsLibrary.Models
         public int id { get; set; }
         public string typeName { get; set; } = "";
         public DateTime dateUpdated { get; set; }
+    }
+
+    public class CandCustomersReviewsModel
+    {
+        public int candId { get; set; }
+        public int posId { get; set; }
+        public int custId { get; set; }
+        public string posName { get; set; } = "";
+        public string custName { get; set; } = "";
+        public string? review { get; set; } = "";
+        public DateTime? updated { get; set; }
     }
 
     public class CandDetailsModel
@@ -162,6 +175,7 @@ namespace DataModelsLibrary.Models
     {
         public int candidateId { get; set; }
         public string review { get; set; } = "";
+        public int? positionId { get; set; }
     }
 
     public class searchCandCvModel

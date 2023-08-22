@@ -38,6 +38,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
+                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -71,6 +72,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
+                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -105,6 +107,8 @@ namespace DataModelsLibrary.Queries
                              {
                                  cvId = pcv.cv_id,
                                  posCvId = pcv.cv_id,
+                                 customerReview=pcv.customer_review,
+                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  review = cand.review,
                                  reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
@@ -139,6 +143,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
+                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -174,6 +179,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
+                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -1177,5 +1183,62 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task SaveCustomerCandReview(int companyId, CandReviewModel customerCandReview)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                position_candidate? posCand = await dbContext.position_candidates.Where(x => x.company_id == companyId
+                && x.candidate_id == customerCandReview.candidateId
+                && x.position_id == customerCandReview.positionId).FirstOrDefaultAsync();
+
+                if (posCand != null)
+                {
+                    posCand.customer_review = customerCandReview.review.Trim();
+                    posCand.date_updated = DateTime.Now;
+
+                    var result = dbContext.position_candidates.Update(posCand);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task UpdateCandCustomersReviews(int companyId, int candidateId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from p in dbContext.positions
+                            join c in dbContext.customers on p.customer_id equals c.id
+                            join pc in dbContext.position_candidates on p.id equals pc.position_id
+                            where p.company_id == companyId && pc.candidate_id == candidateId && !string.IsNullOrEmpty(pc.customer_review)
+                            orderby pc.date_updated descending
+                            select new CandCustomersReviewsModel
+                            {
+                                candId = pc.candidate_id,
+                                posId = pc.position_id,
+                                custId = c.id,
+                                posName = p.name,
+                                custName = c.name,
+                                review = pc.customer_review,
+                                updated = pc.date_updated,
+                            };
+
+                var CandCustomersReviewsList = await query.ToListAsync();
+
+                if (CandCustomersReviewsList.Count > 0)
+                {
+                    var candCustomersReviews = JsonConvert.SerializeObject(CandCustomersReviewsList);
+
+                    candidate? cand = dbContext.candidates.Where(x => x.id == candidateId).FirstOrDefault();
+
+                    if (cand != null)
+                    {
+                        cand.customers_reviews = candCustomersReviews;
+
+                        var result = dbContext.candidates.Update(cand);
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+        }
     }
 }

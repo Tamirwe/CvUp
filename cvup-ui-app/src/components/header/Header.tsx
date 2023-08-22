@@ -215,17 +215,20 @@ export const Header = observer(() => {
                     >
                       <MdOutlineFileDownload />
                     </IconButton>
-                    <IconButton
-                      title="Customer review"
-                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
-                      size="small"
-                      onClick={() => {
-                        generalStore.showCustomerReviewCandDialog =
-                          !generalStore.showCustomerReviewCandDialog;
-                      }}
-                    >
-                      <MdOutlineEditNotifications />
-                    </IconButton>
+                    {candsStore.candDisplay &&
+                      positionsStore.candDisplayPosition && (
+                        <IconButton
+                          title="Customer review"
+                          sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                          size="small"
+                          onClick={() => {
+                            generalStore.showCustomerReviewCandDialog =
+                              !generalStore.showCustomerReviewCandDialog;
+                          }}
+                        >
+                          <MdOutlineEditNotifications />
+                        </IconButton>
+                      )}
                   </>
                 )}
               </Stack>

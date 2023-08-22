@@ -176,7 +176,8 @@ export class CandsStore {
 
     const res = await this.cvsApi.saveCustomerCandReview(
       review,
-      this.candDisplay?.candidateId!
+      this.candDisplay?.candidateId!,
+      this.rootStore.positionsStore.candDisplayPosition?.id
     );
 
     if (res.isSuccess && res.data) {

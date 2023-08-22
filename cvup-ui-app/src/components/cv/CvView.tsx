@@ -262,6 +262,62 @@ export const CvView = observer(() => {
               </Grid>
             </Grid>
             <Grid item xs={12} lg={12}>
+              {candsStore.candDisplay?.allCustomersReviews && (
+                <div>
+                  <div
+                    style={{
+                      padding: "0.5rem 0 0.2rem 0",
+                    }}
+                  >
+                    <Link
+                      title="Review updated"
+                      sx={{ whiteSpace: "nowrap" }}
+                      href="#"
+                      onClick={() => {
+                        generalStore.showCustomerReviewCandDialog =
+                          !generalStore.showCustomerReviewCandDialog;
+                      }}
+                    >
+                      Customers Reviews
+                    </Link>
+                  </div>
+                  {candsStore.candDisplay?.allCustomersReviews?.map(
+                    (rev, i) => {
+                      return (
+                        <div key={i} style={{ paddingBottom: "0.432rem" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexFlow: "wrap",
+                            }}
+                          >
+                            <div
+                              className={styles.custReviewTitle}
+                              style={{ minWidth: "5.5rem" }}
+                            >
+                              {format(
+                                new Date(rev.updated || ""),
+                                "MMM d, yyyy"
+                              )}{" "}
+                            </div>
+                            <div className={styles.custReviewTitle}>
+                              {rev.posName} -&nbsp;
+                            </div>
+                            <div className={styles.custReviewTitle}>
+                              {rev.custName} :&nbsp;
+                            </div>
+                            <div style={{ paddingRight: "0.53rem" }}>
+                              {rev.review}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+            </Grid>
+            <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.review &&
                 candsStore.candDisplay?.reviewDate && (
                   <div

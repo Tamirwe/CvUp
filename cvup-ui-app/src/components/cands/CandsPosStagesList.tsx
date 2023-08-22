@@ -24,9 +24,6 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
           const posNameCompany = positionsStore.findPosName(stage._pid);
-          const isCurrentPosition =
-            candsSource === CandsSourceEnum.Position &&
-            positionsStore.selectedPosition?.id === stage._pid;
 
           if (!posNameCompany) {
             return;
@@ -40,19 +37,6 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 // [styles.listItemPosStagesCurrent]: isCurrentPosition,
               })}
             >
-              {/* {cand.candidateId === candsStore.candDisplay?.candidateId && (
-                <IconButton
-                  size="small"
-                  sx={{ ml: 1 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    candsStore.detachPosCand(cand, stage._pid);
-                  }}
-                >
-                  <MdRemove />
-                </IconButton>
-              )}{" "} */}
               <div
                 className={classNames({
                   [styles.listItem]: true,
@@ -61,6 +45,7 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 })}
                 style={{
                   color: candsStore.findStageColor(stage._tp),
+                  textAlign: "right",
                 }}
                 title={` ${candsStore.findStageName(stage._tp)} - ${format(
                   new Date(stage._dt),
@@ -87,7 +72,6 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 >
                   {format(new Date(stage._dt), "MMM d, yyyy")}
                 </div>
-                <div>&nbsp;-&nbsp;</div>
                 <div
                   style={{
                     direction: "rtl",

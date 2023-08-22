@@ -81,7 +81,7 @@ export const LeftListsContainer = observer(() => {
           >
             <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
-            <Tab label="Types" value={TabsGeneralEnum.Types} />
+            <Tab label="PT" value={TabsGeneralEnum.Types} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />
           </Tabs>
           <IconButton

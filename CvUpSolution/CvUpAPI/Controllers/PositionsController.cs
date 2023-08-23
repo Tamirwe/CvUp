@@ -77,5 +77,13 @@ namespace CvUpAPI.Controllers
             List<PositionTypeModel> positionTypes = await _cvsPosService.GetPositionsTypes(Globals.CompanyId);
             return Ok(positionTypes);
         }
+
+        [HttpGet]
+        [Route("PositionsTypesCvsCount")]
+        public async Task<IActionResult> PositionsTypesCvsCount()
+        {
+            List<PositionTypeCountModel> positionTypes = await _cvsPosService.PositionsTypesCvsCount(Globals.CompanyId);
+            return Ok(positionTypes);
+        }
     }
 }

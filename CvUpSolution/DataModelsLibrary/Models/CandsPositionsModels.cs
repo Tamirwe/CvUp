@@ -117,6 +117,14 @@ namespace DataModelsLibrary.Models
         public DateTime dateUpdated { get; set; }
     }
 
+    public class PositionTypeCountModel
+    {
+        public int id { get; set; }
+        public string typeName { get; set; } = "";
+        public int? todayCount { get; set; }
+        public int? yesterdayCount { get; set; }
+    }
+
     public class CandCustomersReviewsModel
     {
         public int candId { get; set; }

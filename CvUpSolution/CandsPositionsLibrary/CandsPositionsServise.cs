@@ -400,5 +400,15 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.SaveCustomerCandReview(companyId, customerCandReview);
             await _cvsPositionsQueries.UpdateCandCustomersReviews(companyId, customerCandReview.candidateId);
         }
-}
+
+        public async Task CalculatePositionTypesCount(int companyId)
+        {
+            await _cvsPositionsQueries.CalculatePositionTypesCount(companyId);
+        }
+
+        public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
+        {
+            return await _cvsPositionsQueries.PositionsTypesCvsCount(companyId);
+        }
+    }
 }

@@ -1,3 +1,4 @@
+using CandsPositionsLibrary;
 using ImportCvsLibrary;
 
 namespace CvsWorkerService
@@ -5,11 +6,18 @@ namespace CvsWorkerService
     public class CvsImportWorker : BackgroundService
     {
         private readonly IImportCvs _importCvs;
+        private ICandsPositionsServise _candPosService;
+
         private readonly ILogger<CvsImportWorker> _logger;
-        private bool _isRunning  = false;
-        public CvsImportWorker(IImportCvs importCvs, ILogger<CvsImportWorker> logger)
+        private bool _isRunning = false;
+        private bool _isBuStarted = false;
+        private int _hour = 0;
+        private bool _isHourChanged = false;
+
+        public CvsImportWorker(IImportCvs importCvs, ICandsPositionsServise candPosService, ILogger<CvsImportWorker> logger)
         {
             _importCvs = importCvs;
+            _candPosService = candPosService;
             _logger = logger;
             _isRunning = false;
         }
@@ -18,24 +26,44 @@ namespace CvsWorkerService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                var hour = DateTime.Now.Hour;
 
-                if (!_isRunning)
+                if (hour != _hour)
                 {
-                    _isRunning = true;
-
-                    await _importCvs.ImportFromGmail();
-
-                    _isRunning = false;
+                    _isHourChanged = true;
+                    _hour = hour;
                 }
 
-
-                if (DateTime.Now.Hour == 3 || DateTime.Now.Hour == 16)
+                if (hour > 6 && hour < 23)
                 {
-#if !DEBUG
+                    if (_isHourChanged)
+                    {
+                        await _candPosService.CalculatePositionTypesCount(154);
+                    }
+
+                    if (!_isRunning)
+                    {
+                        _isRunning = true;
+
+                        await _importCvs.ImportFromGmail();
+
+                        _isRunning = false;
+                    }
+                }
+
+                if (hour == 1)
+                {
+                    _isBuStarted = false;
+                }
+
+                if (hour == 3 && !_isBuStarted)
+                {
+                    _isBuStarted = true;
                     _importCvs.BackupDataBase();
-#endif
                 }
+
+                _isHourChanged = false;
+
 
                 await Task.Delay(60000, stoppingToken);
             }

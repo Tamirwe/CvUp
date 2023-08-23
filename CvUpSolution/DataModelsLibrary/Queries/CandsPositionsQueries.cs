@@ -1240,5 +1240,74 @@ namespace DataModelsLibrary.Queries
                 }
             }
         }
+
+        public async Task CalculatePositionTypesCount(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                List<cv> cvsList = await dbContext.cvs.Where(x => x.company_id == companyId && x.date_created  >= DateTime.Now.AddDays(-1)).ToListAsync();
+
+                var posTypesIds = cvsList.Select(x => x.position_type_id).Distinct().ToList();
+                posTypesIds.Remove(posTypesIds.Where(x => x == null).FirstOrDefault());
+
+                var query = (from p in dbContext.position_types
+                             where p.company_id == companyId && posTypesIds.Contains(p.id)
+                             select p);
+                            
+                var positionTypesList = await query.ToListAsync();
+
+                foreach (var pt in posTypesIds)
+                {
+                    int count1 = 0, count2 = 0;
+
+                    foreach (var cv in cvsList)
+                    {
+                        if (cv.position_type_id == pt)
+                        {
+                            if (cv.date_created.Date == DateTime.Now.AddDays(-1).Date)
+                            {
+                                count2++;
+                            }
+                            else
+                            {
+                                count1++;
+                            }
+                        }
+                    }
+
+                    var posType = positionTypesList.Where(x => x.id == pt).First();
+
+                    posType.cvs_today = count1;
+                    posType.cvs_yesterday = count2;
+
+                }
+
+                dbContext.position_types.UpdateRange(positionTypesList);
+                await dbContext.SaveChangesAsync();
+
+            }
+        }
+
+        public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = (from p in dbContext.position_types
+                             where p.company_id == companyId && p.date_updated >= DateTime.Now.AddDays(-1)
+                             orderby p.date_updated descending
+                             select new PositionTypeCountModel
+                             {
+                                 id = p.id,
+                                 typeName = p.type_name,
+                                 todayCount = p.cvs_today,
+                                 yesterdayCount = p.cvs_yesterday
+                             });
+
+                var ptList = await query.ToListAsync();
+
+                return ptList;
+            }
+        }
+
     }
 }

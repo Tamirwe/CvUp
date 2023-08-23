@@ -1,8 +1,6 @@
 import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { PositionsList } from "../components/positions/PositionsList";
 import { createTheme } from "@mui/material";
-import createCache from "@emotion/cache";
-import rtlPlugin from "stylis-plugin-rtl";
 import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
 import { MdAdd } from "react-icons/md";
@@ -18,12 +16,6 @@ export const LeftListsWrapper = observer(() => {
 
   const themeRtl = createTheme({
     direction: "rtl", // Both here and <body dir="rtl">
-  });
-
-  // Create rtl cache
-  const cacheRtl = createCache({
-    key: "muirtl",
-    stylisPlugins: [rtlPlugin],
   });
 
   const handleTabChange = (

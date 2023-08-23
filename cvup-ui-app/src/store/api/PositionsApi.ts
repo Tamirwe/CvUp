@@ -1,4 +1,8 @@
-import { IPosition, IPositionType } from "../../models/GeneralModels";
+import {
+  IPosition,
+  IPositionType,
+  IPositionTypeCount,
+} from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class PositionsApi extends BaseApi {
@@ -49,6 +53,12 @@ export default class PositionsApi extends BaseApi {
   async deletePosition(id: number) {
     return await this.apiWrapper2(async () => {
       return await this.http.delete(`Positions/DeletePosition?id=${id}`);
+    });
+  }
+
+  async getPosTypesCounts() {
+    return await this.apiWrapper2<IPositionTypeCount[]>(async () => {
+      return await this.http.get("Positions/PositionsTypesCvsCount");
     });
   }
 }

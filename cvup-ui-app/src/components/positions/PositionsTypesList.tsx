@@ -15,12 +15,12 @@ export const PositionsTypesList = observer(() => {
   const [posTypesList, setPosTypesList] = useState<IPositionType[]>([]);
 
   useEffect(() => {
-    if (positionsStore.positionsTypesList) {
-      setPosTypesList(positionsStore.positionsTypesList?.slice(0, 50));
+    if (positionsStore.sortedPosTypesList) {
+      setPosTypesList(positionsStore.sortedPosTypesList?.slice(0, 50));
 
       listRef.current.scrollTop = 0;
     }
-  }, [positionsStore.positionsTypesList]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [positionsStore.sortedPosTypesList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
@@ -32,7 +32,7 @@ export const PositionsTypesList = observer(() => {
       if (posTypesList) {
         const numRecords = posTypesList.length;
         const newPosList = posTypesList.concat(
-          positionsStore.positionsTypesList?.slice(numRecords, numRecords + 50)
+          positionsStore.sortedPosTypesList?.slice(numRecords, numRecords + 50)
         );
         setPosTypesList(newPosList);
       }

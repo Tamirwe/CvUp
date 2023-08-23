@@ -14,6 +14,7 @@ import { CompleteRegistration } from "./pages/authentication/CompleteRegistratio
 import { Cv } from "./pages/Cv";
 import { Position } from "./pages/Position";
 import { CvPage } from "./pages/CvPage";
+import { CandidatesReport } from "./pages/CandidatesReport";
 
 const AuthRoutes = () => {
   const rootStore = useStore();
@@ -33,6 +34,7 @@ const Router = () => {
           <Route path="/position/:pid" element={<Position />} />
           {/* <Route path="/h1" element={<Home />} /> */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/candidatesreport" element={<CandidatesReport />} />
         </Route>
       </Route>
       <Route element={<LayoutNotAuth />}>

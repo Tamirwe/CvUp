@@ -1,8 +1,6 @@
 import { Box, IconButton, Paper, Stack, Tab, Tabs } from "@mui/material";
 import { PositionsList } from "../positions/PositionsList";
 import { createTheme } from "@mui/material";
-import createCache from "@emotion/cache";
-import rtlPlugin from "stylis-plugin-rtl";
 import { useStore } from "../../Hooks/useStore";
 import { observer } from "mobx-react";
 import { MdAdd } from "react-icons/md";
@@ -20,12 +18,6 @@ export const LeftListsContainer = observer(() => {
 
   const themeRtl = createTheme({
     direction: "rtl", // Both here and <body dir="rtl">
-  });
-
-  // Create rtl cache
-  const cacheRtl = createCache({
-    key: "muirtl",
-    stylisPlugins: [rtlPlugin],
   });
 
   const handleTabChange = (
@@ -59,6 +51,10 @@ export const LeftListsContainer = observer(() => {
 
   const handlePositionsSearch = (searchVals: ISearchModel) => {
     positionsStore.searchSortPositions(undefined, searchVals);
+  };
+
+  const handlePositionsTypesSearch = (searchVals: ISearchModel) => {
+    positionsStore.searchPositionsTypes(undefined, searchVals);
   };
 
   const handleFoldersSearch = (searchVals: ISearchModel) => {
@@ -112,10 +108,10 @@ export const LeftListsContainer = observer(() => {
       <Box hidden={generalStore.currentLeftDrawerTab !== TabsGeneralEnum.Types}>
         <Box mt={1} ml={1}>
           <SearchControl
-            onSearch={handlePositionsSearch}
-            records={positionsStore.sortedPosList.length}
+            onSearch={handlePositionsTypesSearch}
+            records={positionsStore.sortedPosTypesList.length}
             showSortLeft={true}
-            onSortLeftLists={(dir) => positionsStore.searchSortPositions(dir)}
+            onSortLeftLists={(dir) => positionsStore.searchPositionsTypes(dir)}
           />
         </Box>
         <PositionsTypesList />

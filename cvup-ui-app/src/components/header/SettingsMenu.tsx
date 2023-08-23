@@ -40,7 +40,7 @@ export const SettingsMenu = () => {
   };
 
   const handleReports = () => {
-    navigate(`/`);
+    navigate(`/candidatesreport`);
     setAnchorEl(null);
   };
 
@@ -93,7 +93,7 @@ export const SettingsMenu = () => {
           <Avatar sx={{ bgcolor: green[400] }}>
             <MdOutlineTextSnippet style={{ color: "#fff" }} />
           </Avatar>{" "}
-          Reports
+          Candidates Report
         </MenuItem>
         {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account

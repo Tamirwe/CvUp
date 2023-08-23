@@ -109,6 +109,13 @@ export interface IPosition {
   matchEmailsubject?: string;
 }
 
+export interface IPositionTypeCount {
+  id: number;
+  typeName: string;
+  todayCount?: string;
+  yesterdayCount?: string;
+}
+
 export interface IPositionType {
   id: number;
   typeName: string;

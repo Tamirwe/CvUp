@@ -82,22 +82,23 @@ export default function ComponentStyleOverrides(theme: themeType) {
           paddingTop: "10px",
           paddingBottom: "10px",
           "&.Mui-selected": {
-            color: theme.menuSelected,
-            backgroundColor: theme.menuSelectedBack,
+            // color: theme.menuSelected,
+            backgroundColor: "#ecf1fb",
+            // backgroundColor: "theme.menuSelectedBack",
             "&:hover": {
               backgroundColor: theme.menuSelectedBack,
             },
             "& .MuiListItemIcon-root": {
-              color: theme.menuSelected,
+              // color: theme.menuSelected,
             },
           },
           "&:hover": {
             // backgroundColor: theme.menuSelectedBack,
             backgroundColor: "#efefef",
 
-            color: theme.menuSelected,
+            // color: theme.menuSelected,
             "& .MuiListItemIcon-root": {
-              color: theme.menuSelected,
+              // color: theme.menuSelected,
             },
           },
         },

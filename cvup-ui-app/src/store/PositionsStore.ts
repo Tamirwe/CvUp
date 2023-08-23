@@ -3,6 +3,7 @@ import {
   IAppSettings,
   IPosition,
   IPositionType,
+  IPositionTypeCount,
   ISearchModel,
 } from "../models/GeneralModels";
 import PositionsApi from "./api/PositionsApi";
@@ -13,6 +14,7 @@ import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
 export class PositionsStore {
   private positionApi;
   private positionsList: IPosition[] = [];
+  private positionsTypesList: IPositionType[] = [];
   private positionSelected?: IPosition;
   private positionTypeSelected?: IPositionType;
   private positionEdit?: IPosition;
@@ -20,7 +22,8 @@ export class PositionsStore {
   isSelectedPositionOnTop?: boolean = false;
   candDisplayPosition: IPosition | undefined;
   sortedPosList: IPosition[] = [];
-  positionsTypesList: IPositionType[] = [];
+  sortedPosTypesList: IPositionType[] = [];
+  posTypescountList: IPositionTypeCount[] = [];
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -82,6 +85,41 @@ export class PositionsStore {
           this.sortedPosList.sort(
             (a, b) =>
               new Date(a.updated).getTime() - new Date(b.updated).getTime()
+          );
+        }
+      }
+    });
+  }
+
+  searchPositionsTypes(dir?: string, searchVals?: ISearchModel) {
+    runInAction(() => {
+      if (searchVals) {
+        this.searchPhrase = searchVals;
+      }
+
+      if (this.searchPhrase && this.searchPhrase.value) {
+        this.sortedPosTypesList = this.positionsTypesList.filter((x) =>
+          x.typeName
+            .toLowerCase()
+            .includes(this.searchPhrase!.value!.toLowerCase())
+        );
+      } else {
+        this.sortedPosTypesList = this.positionsTypesList.slice();
+      }
+
+      //positionsList is already sorted desc order
+      if (dir) {
+        if (dir === "desc") {
+          this.sortedPosTypesList.sort(
+            (a, b) =>
+              new Date(b.dateUpdated).getTime() -
+              new Date(a.dateUpdated).getTime()
+          );
+        } else {
+          this.sortedPosTypesList.sort(
+            (a, b) =>
+              new Date(a.dateUpdated).getTime() -
+              new Date(b.dateUpdated).getTime()
           );
         }
       }
@@ -193,6 +231,7 @@ export class PositionsStore {
     const res = await this.positionApi.getPositionsTypesList();
     runInAction(() => {
       this.positionsTypesList = res.data;
+      this.sortedPosTypesList = [...res.data];
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -246,5 +285,14 @@ export class PositionsStore {
     }
 
     return null;
+  }
+
+  async getPosTypesCounts() {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.getPosTypesCounts();
+    runInAction(() => {
+      this.posTypescountList = res.data;
+    });
+    this.rootStore.generalStore.backdrop = false;
   }
 }

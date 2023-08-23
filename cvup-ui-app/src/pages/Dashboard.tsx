@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { CandsSourceEnum } from "../models/GeneralEnums";
 import { ICandsReport } from "../models/GeneralModels";
+import { isMobile } from "react-device-detect";
 
 export const Dashboard = observer(() => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ export const Dashboard = observer(() => {
           <Grid container sx={{ direction: "rtl" }}>
             {positionsStore.posTypescountList.map((item, i) => {
               return (
-                <Grid key={i} item xs={4} p={1}>
+                <Grid key={i} item xs={isMobile ? 6 : 4} p={1}>
                   <Paper
                     sx={{
                       width: "100%",

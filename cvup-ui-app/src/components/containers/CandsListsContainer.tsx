@@ -156,7 +156,10 @@ export const CandsListsContainer = observer(() => {
   };
 
   return (
-    <Paper elevation={3} sx={{ margin: isMobile ? "0" : "0.7rem" }}>
+    <Paper
+      elevation={3}
+      sx={{ margin: isMobile ? "0" : "0.7rem 0.7rem 0 0.7rem" }}
+    >
       <Box>
         {candsStore.currentTabCandsLists !== TabsCandsEnum.None && (
           <Tabs

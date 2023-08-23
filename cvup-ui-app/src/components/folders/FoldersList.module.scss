@@ -6,7 +6,7 @@
   margin-top: 5px;
   height: calc(100vh - 164px);
   overflow-y: scroll;
-  
+  margin-bottom: 0;
   &.isMobile {
     height: calc(100vh - 153px);
 }

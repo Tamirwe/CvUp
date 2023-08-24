@@ -9,10 +9,10 @@ import logo from "../assets/images/CvUpLogo2.png";
 export const DescktopAuthLayout = observer(() => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={0}>
-        <Grid item xs={8}>
+      <Grid container columns={24} spacing={0}>
+        <Grid item xs={17}>
           <Grid container columns={24} spacing={0}>
-            <Grid item xs={9}>
+            <Grid item xs={8}>
               <Grid container spacing={0}>
                 <Grid item xs={12}>
                   <div
@@ -37,7 +37,7 @@ export const DescktopAuthLayout = observer(() => {
               </Grid>
               <LeftListsContainer />
             </Grid>
-            <Grid item xs={15} sx={{ backgroundColor: "#fff" }}>
+            <Grid item xs={16} sx={{ backgroundColor: "#fff" }}>
               <Grid container spacing={0}>
                 <Grid item xs={12}>
                   <Header />
@@ -47,7 +47,7 @@ export const DescktopAuthLayout = observer(() => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4} sx={{ direction: "rtl" }}>
+        <Grid item xs={7} sx={{ direction: "rtl" }}>
           <CandsListsContainer />
         </Grid>
       </Grid>

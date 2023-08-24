@@ -266,7 +266,7 @@ export const CvView = observer(() => {
                 <div>
                   <div
                     style={{
-                      padding: "0.5rem 0 0.2rem 0",
+                      padding: "1.5rem 0 0.2rem 0",
                     }}
                   >
                     <Link

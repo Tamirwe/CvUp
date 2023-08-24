@@ -95,6 +95,17 @@ export const SettingsMenu = () => {
           </Avatar>{" "}
           Candidates Report
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate(`/dashboard`);
+            setAnchorEl(null);
+          }}
+        >
+          <Avatar sx={{ bgcolor: green[400] }}>
+            <MdOutlineTextSnippet style={{ color: "#fff" }} />
+          </Avatar>{" "}
+          Positions Cv`s Report
+        </MenuItem>
         {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem> */}

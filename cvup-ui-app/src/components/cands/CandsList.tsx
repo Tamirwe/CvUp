@@ -208,8 +208,7 @@ export const CandsList = observer(
                       <ListItemIcon
                         sx={{
                           visibility:
-                            cand.hasDuplicates ||
-                            candsSource === CandsSourceEnum.Position
+                            cand.posStages && cand.posStages?.length > 0
                               ? "visible"
                               : "hidden",
                         }}
@@ -222,7 +221,7 @@ export const CandsList = observer(
                           }
 
                           await candsStore.displayCv(cand, candsSource);
-                          await candsStore.getDuplicatesCvsList(cand);
+                          // await candsStore.getDuplicatesCvsList(cand);
 
                           if (dupOpenCandId !== cand.candidateId) {
                             setDupOpenCandId(cand.candidateId);
@@ -245,14 +244,14 @@ export const CandsList = observer(
                       </ListItemIcon>
                     </div>
                   </div>
-                  {candsSource !== CandsSourceEnum.Position &&
+                  {/* {candsSource !== CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && (
                       <CandsPosStagesList
                         cand={cand}
                         candsSource={candsSource}
                       />
-                    )}
+                    )} */}
                 </Box>
               </ListItemButton>
               {dupOpenCandId > 0 && (
@@ -261,20 +260,17 @@ export const CandsList = observer(
                   timeout="auto"
                   unmountOnExit
                 >
-                  {candsSource === CandsSourceEnum.Position &&
+                  {/* {candsSource === CandsSourceEnum.Position &&
                     cand.posStages &&
-                    cand.posStages?.length > 0 && (
-                      <div style={{ border: "1px solid #ffdcdc" }}>
-                        {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
+                    cand.posStages?.length > 0 && ( */}
+                  <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}>
+                    {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
                           Candidate Positions
                         </div> */}
-                        <CandsPosStagesList
-                          cand={cand}
-                          candsSource={candsSource}
-                        />
-                      </div>
-                    )}
-                  <CandDupCvsList candPosCvId={cand.posCvId} />
+                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
+                  </div>
+                  {/* )} */}
+                  {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
                 </Collapse>
               )}
             </ListItem>

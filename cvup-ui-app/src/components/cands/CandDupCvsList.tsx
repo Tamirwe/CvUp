@@ -23,14 +23,10 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
       disablePadding
       dense={true}
       sx={{
-        backgroundColor: "#fffae2",
+        // backgroundColor: "#fffae2",
         border: "1px solid #ffdcdc",
-        maxHeight: "300px",
+        maxHeight: "208px",
         overflowY: "auto",
-
-        // "&:hover ": {
-        //   overflow: "overlay",
-        // },
       }}
     >
       {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>Duplicates</div> */}
@@ -86,9 +82,13 @@ export const CandDupCvsList = observer(({ candPosCvId }: IProps) => {
                     paddingLeft: "1rem",
                   }}
                 >
-                  {dupCv.emailSubject
-                    .replace("מועמדות חדשה מ", "")
-                    .replace(" למשרת ", " - ")}
+                  {
+                    dupCv.emailSubject.substring(
+                      dupCv.emailSubject.indexOf(" למשרת ") + 6
+                    )
+                    // .replace("מועמדות חדשה מ", "")
+                    // .replace(" למשרת ", " - ")
+                  }
                 </div>
               </div>
 

@@ -19,8 +19,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../../models/GeneralModels";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
-import { MdContentCopy } from "react-icons/md";
+import { MdContentCopy, MdExpandMore } from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
+import { CandsPosStagesList } from "../cands/CandsPosStagesList";
+import { CandDupCvsList } from "../cands/CandDupCvsList";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -37,6 +39,7 @@ export const CvView = observer(() => {
       getCandName();
       generalStore.showReviewCandDialog = false;
       setReview(candsStore.candDisplay?.review || "");
+      candsStore.getDuplicatesCvsList(candsStore.candDisplay);
     }
   }, [candsStore.candDisplay]);
 
@@ -281,6 +284,7 @@ export const CvView = observer(() => {
                       Customers Reviews
                     </Link>
                   </div>
+
                   {candsStore.candDisplay?.allCustomersReviews?.map(
                     (rev, i) => {
                       return (
@@ -317,6 +321,7 @@ export const CvView = observer(() => {
                 </div>
               )}
             </Grid>
+
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.review &&
                 candsStore.candDisplay?.reviewDate && (
@@ -410,6 +415,49 @@ export const CvView = observer(() => {
                   ></pre>
                 )}
               </div>
+            </Grid>
+
+            <Grid item xs={12} lg={12}>
+              <Grid container>
+                <Grid item xs={12} lg={6} pl={2}>
+                  <div
+                    style={{
+                      padding: "1.5rem 0 0.2rem 0",
+                      color: "#149bed",
+                      fontSize: "1rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    History
+                  </div>
+                  <div
+                    style={{
+                      border: "1px solid #ffdcdc",
+                      padding: "0.5rem 1rem 1rem 1rem",
+                    }}
+                  >
+                    <CandsPosStagesList
+                      cand={candsStore.candDisplay}
+                      candsSource={CandsSourceEnum.AllCands}
+                    />
+                  </div>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <div
+                    style={{
+                      padding: "1.5rem 0 0.2rem 0",
+                      color: "#149bed",
+                      fontSize: "1rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Duplicates cv`s
+                  </div>
+                  <CandDupCvsList
+                    candPosCvId={candsStore.candDisplay?.posCvId}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         )}

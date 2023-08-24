@@ -19,7 +19,11 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
 
   return (
     <div
-      style={{ direction: "ltr", fontSize: "0.775rem", paddingRight: "0.2rem" }}
+      style={{
+        direction: "ltr",
+        fontSize: "0.775rem",
+        paddingRight: "0.2rem",
+      }}
     >
       {cand.posStages &&
         candsStore.sortPosStage(cand.posStages).map((stage, i) => {
@@ -83,17 +87,6 @@ export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
                 >
                   {posNameCompany}
                 </div>
-
-                {/* {stage._ec && (
-                  <div
-                    title={`Sent to contact on ${format(
-                      new Date(stage._ec),
-                      "MMM d, yyyy"
-                    )}`}
-                  >
-                    <MdOutlineMarkEmailUnread />
-                  </div>
-                )} */}
               </div>
             </div>
           );

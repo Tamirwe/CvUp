@@ -419,44 +419,51 @@ export const CvView = observer(() => {
 
             <Grid item xs={12} lg={12}>
               <Grid container>
-                <Grid item xs={12} lg={6} pl={2}>
-                  <div
-                    style={{
-                      padding: "1.5rem 0 0.2rem 0",
-                      color: "#149bed",
-                      fontSize: "1rem",
-                      fontWeight: 500,
-                    }}
-                  >
-                    History
-                  </div>
-                  <div
-                    style={{
-                      border: "1px solid #ffdcdc",
-                      padding: "0.5rem 1rem 1rem 1rem",
-                    }}
-                  >
-                    <CandsPosStagesList
-                      cand={candsStore.candDisplay}
-                      candsSource={CandsSourceEnum.AllCands}
+                {candsStore.candDisplay.posStages &&
+                candsStore.candDisplay.posStages?.length > 0 ? (
+                  <Grid item xs={12} lg={6} pl={2}>
+                    <div
+                      style={{
+                        padding: "1.5rem 0 0.2rem 0",
+                        color: "#149bed",
+                        fontSize: "1rem",
+                        fontWeight: 500,
+                      }}
+                    >
+                      History
+                    </div>
+                    <div
+                      style={{
+                        border: "1px solid #ffdcdc",
+                        padding: "0.5rem 1rem 1rem 1rem",
+                      }}
+                    >
+                      <CandsPosStagesList
+                        cand={candsStore.candDisplay}
+                        candsSource={CandsSourceEnum.AllCands}
+                      />
+                    </div>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} lg={6} pl={2}></Grid>
+                )}
+                {candsStore.candDisplay.hasDuplicates && (
+                  <Grid item xs={12} lg={6}>
+                    <div
+                      style={{
+                        padding: "1.5rem 0 0.2rem 0",
+                        color: "#149bed",
+                        fontSize: "1rem",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Duplicates cv`s
+                    </div>
+                    <CandDupCvsList
+                      candPosCvId={candsStore.candDisplay?.posCvId}
                     />
-                  </div>
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <div
-                    style={{
-                      padding: "1.5rem 0 0.2rem 0",
-                      color: "#149bed",
-                      fontSize: "1rem",
-                      fontWeight: 500,
-                    }}
-                  >
-                    Duplicates cv`s
-                  </div>
-                  <CandDupCvsList
-                    candPosCvId={candsStore.candDisplay?.posCvId}
-                  />
-                </Grid>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
           </Grid>

@@ -205,6 +205,9 @@ export const SearchControl = ({
                 padding: "5px 3px",
                 fontSize: "1.0rem",
               },
+              "&.MuiToggleButtonGroup-root": {
+                marginRight: "4px",
+              },
             }}
             color="primary"
             value={refreshList}
@@ -214,15 +217,12 @@ export const SearchControl = ({
               event.stopPropagation();
               event.preventDefault();
               setRefreshList(!refreshList);
-              onRefreshLists && onRefreshLists();
               setSearchVals((currentProps) => ({
                 ...currentProps,
                 value: "",
-              }));
-              setSearchVals((currentProps) => ({
-                ...currentProps,
                 advancedValue: "",
               }));
+              onRefreshLists && onRefreshLists();
             }}
             aria-label="Platform"
           >
@@ -243,7 +243,7 @@ export const SearchControl = ({
           </SearchIconWrapper>
           <StyledInputBase
             placeholder="Search…"
-            value={searchVals.value}
+            value={searchVals.value || ""}
             onChange={handleValueChange}
             onKeyDown={handleKeyDown}
           />
@@ -252,12 +252,9 @@ export const SearchControl = ({
             <IconWrapper sx={{ padding: "0 4px" }}>
               <MdOutlineClose
                 onClick={() => {
-                  setSearchVals((currentProps) => ({
-                    ...currentProps,
+                  setSearchVals((prevState) => ({
+                    ...prevState,
                     value: "",
-                  }));
-                  setSearchVals((currentProps) => ({
-                    ...currentProps,
                     advancedValue: "",
                   }));
                 }}
@@ -271,12 +268,9 @@ export const SearchControl = ({
                   onClick={() => {
                     setShowAdvancedSearch(false);
                     onShowAdvanced && onShowAdvanced(false);
-                    setSearchVals((currentProps) => ({
-                      ...currentProps,
+                    setSearchVals((prevState) => ({
+                      ...prevState,
                       advancedValue: "",
-                    }));
-                    setSearchVals((currentProps) => ({
-                      ...currentProps,
                       exact: false,
                     }));
                   }}
@@ -292,7 +286,6 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-
         {showSortLeft && (
           <ToggleButtonGroup
             sx={{

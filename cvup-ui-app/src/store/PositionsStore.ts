@@ -93,15 +93,9 @@ export class PositionsStore {
 
   searchPositionsTypes(dir?: string, searchVals?: ISearchModel) {
     runInAction(() => {
-      if (searchVals) {
-        this.searchPhrase = searchVals;
-      }
-
-      if (this.searchPhrase && this.searchPhrase.value) {
+      if (searchVals && searchVals.value) {
         this.sortedPosTypesList = this.positionsTypesList.filter((x) =>
-          x.typeName
-            .toLowerCase()
-            .includes(this.searchPhrase!.value!.toLowerCase())
+          x.typeName.toLowerCase().includes(searchVals!.value!.toLowerCase())
         );
       } else {
         this.sortedPosTypesList = this.positionsTypesList.slice();

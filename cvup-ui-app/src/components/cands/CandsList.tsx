@@ -12,7 +12,12 @@ import {
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import {
+  MdExpandLess,
+  MdExpandMore,
+  MdHistory,
+  MdOutlineFilterNone,
+} from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum } from "../../models/GeneralEnums";
@@ -205,7 +210,59 @@ export const CandsList = observer(
                           format(new Date(cand.cvSent), "MMM d, yy")
                         )}
                       </div>
-                      <ListItemIcon
+                      {candsSource === CandsSourceEnum.Position ? (
+                        <ListItemIcon
+                          title="Has duplicates cv`s"
+                          sx={{
+                            minWidth: 0,
+                            visibility: "hidden",
+                          }}
+                        >
+                          <IconButton
+                            color="primary"
+                            sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                          >
+                            <MdOutlineFilterNone />
+                          </IconButton>
+                        </ListItemIcon>
+                      ) : (
+                        <>
+                          <ListItemIcon
+                            title="Has duplicates cv`s"
+                            sx={{
+                              minWidth: 0,
+                              visibility: cand.hasDuplicates
+                                ? "visible"
+                                : "hidden",
+                            }}
+                          >
+                            <IconButton
+                              color="primary"
+                              sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                            >
+                              <MdOutlineFilterNone />
+                            </IconButton>
+                          </ListItemIcon>
+                          <ListItemIcon
+                            title="Has history"
+                            sx={{
+                              minWidth: 0,
+                              visibility:
+                                cand.posStages && cand.posStages?.length > 0
+                                  ? "visible"
+                                  : "hidden",
+                            }}
+                          >
+                            <IconButton
+                              color="primary"
+                              sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                            >
+                              <MdHistory />
+                            </IconButton>
+                          </ListItemIcon>
+                        </>
+                      )}
+                      {/* <ListItemIcon
                         sx={{
                           visibility:
                             cand.posStages && cand.posStages?.length > 0
@@ -241,7 +298,7 @@ export const CandsList = observer(
                             <MdExpandMore />
                           )}
                         </IconButton>
-                      </ListItemIcon>
+                      </ListItemIcon> */}
                     </div>
                   </div>
                   {/* {candsSource !== CandsSourceEnum.Position &&
@@ -254,25 +311,25 @@ export const CandsList = observer(
                     )} */}
                 </Box>
               </ListItemButton>
-              {dupOpenCandId > 0 && (
+              {/* {dupOpenCandId > 0 && (
                 <Collapse
                   in={dupOpenCandId === cand.candidateId}
                   timeout="auto"
                   unmountOnExit
-                >
-                  {/* {candsSource === CandsSourceEnum.Position &&
+                > */}
+              {/* {candsSource === CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && ( */}
-                  <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}>
-                    {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
+              {/* <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}> */}
+              {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
                           Candidate Positions
                         </div> */}
-                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
-                  </div>
-                  {/* )} */}
-                  {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
-                </Collapse>
-              )}
+              {/* <CandsPosStagesList cand={cand} candsSource={candsSource} />
+                  </div> */}
+              {/* )} */}
+              {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
+              {/* </Collapse>
+              )} */}
             </ListItem>
           );
         })}

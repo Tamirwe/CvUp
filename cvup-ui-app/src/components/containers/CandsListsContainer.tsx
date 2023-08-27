@@ -247,7 +247,6 @@ export const CandsListsContainer = observer(() => {
               handleSort(sortBy, dir, TabsCandsEnum.AllCands);
             }}
             showRefreshList={true}
-            onRefreshLists={() => candsStore.getCandsList()}
           />
         </Box>
         <CandsList
@@ -271,12 +270,6 @@ export const CandsListsContainer = observer(() => {
               handleSort(sortBy, dir, TabsCandsEnum.PositionCands);
             }}
             showRefreshList={true}
-            onRefreshLists={() =>
-              positionsStore.selectedPosition?.id &&
-              candsStore.getPositionCandsList(
-                positionsStore.selectedPosition?.id
-              )
-            }
           />
         </Box>
         <CandsList
@@ -304,12 +297,6 @@ export const CandsListsContainer = observer(() => {
               handleSort(sortBy, dir, TabsCandsEnum.PositionTypeCands);
             }}
             showRefreshList={true}
-            onRefreshLists={() =>
-              positionsStore.selectedPositionType?.id &&
-              candsStore.getPositionTypeCandsList(
-                positionsStore.selectedPositionType?.id
-              )
-            }
           />
         </Box>
         <CandsList
@@ -332,11 +319,6 @@ export const CandsListsContainer = observer(() => {
             onSort={(sortBy: SortByEnum, dir: string) => {
               handleSort(sortBy, dir, TabsCandsEnum.FolderCands);
             }}
-            // showRefreshList={true}
-            // onRefreshLists={() =>
-            //   positionsStore.selectedPosition?.id &&
-            //   candsStore.getFolderCandsList()
-            // }
           />
         </Box>
         <CandsList

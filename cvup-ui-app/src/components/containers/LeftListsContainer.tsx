@@ -104,6 +104,8 @@ export const LeftListsContainer = observer(() => {
             records={positionsStore.sortedPosList.length}
             showSortLeft={true}
             onSortLeftLists={(dir) => positionsStore.searchSortPositions(dir)}
+            showRefreshList={true}
+            onRefreshLists={() => positionsStore.getPositionsList()}
           />
         </Box>
         <PositionsList />
@@ -115,6 +117,8 @@ export const LeftListsContainer = observer(() => {
             records={positionsStore.sortedPosTypesList.length}
             showSortLeft={true}
             onSortLeftLists={(dir) => positionsStore.searchPositionsTypes(dir)}
+            showRefreshList={true}
+            onRefreshLists={() => positionsStore.getPositionsTypesList()}
           />
         </Box>
         <PositionsTypesList />

@@ -261,10 +261,10 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("AddSearche")]
-        public async Task<IActionResult> AddSearche(search searchVals)
+        [Route("SaveSearche")]
+        public async Task<IActionResult> SaveSearche(search searchVals)
         {
-            await _candPosService.AddSearche(Globals.CompanyId, searchVals);
+            await _candPosService.SaveSearche(Globals.CompanyId, searchVals);
             return Ok();
         }
 

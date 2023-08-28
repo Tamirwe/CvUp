@@ -423,9 +423,9 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetSearches(companyId);
         }
 
-        public async Task AddSearche(int companyId, search searchVals)
+        public async Task SaveSearche(int companyId, search searchVals)
         {
-            await _cvsPositionsQueries.AddSearche(companyId, searchVals);
+            await _cvsPositionsQueries.SaveSearche(companyId, searchVals);
         }
 
         public async Task DeleteSearche(int companyId, int id)

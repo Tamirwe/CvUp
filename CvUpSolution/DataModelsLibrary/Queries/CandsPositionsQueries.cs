@@ -1324,7 +1324,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task AddSearche(int companyId, search searchVals)
+        public async Task SaveSearche(int companyId, search searchVals)
         {
             using (var dbContext = new cvup00001Context())
             {

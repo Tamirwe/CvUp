@@ -19,6 +19,7 @@ namespace DataModelsLibrary.Models
         public string fileExtension { get; set; } = "";
         public string cvTxt { get; set; } = "";
         public string phone { get; set; } = "";
+        public string? city { get; set; }
         public string emailAddress { get; set; } = "";
         public int candidateId { get; set; } = 0;
         public bool isNewCandidate { get; set; } = false;
@@ -35,6 +36,8 @@ namespace DataModelsLibrary.Models
         public bool isSameCvEmailSubject { get; set; } = false;
         public int fileTypeKey { get; set; }
         public int? positionTypeId { get; set; }
+        public string? body { get; set; }
+
     }
 
     [Keyless]
@@ -82,6 +85,7 @@ namespace DataModelsLibrary.Models
         public string fileType { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? email { get; set; } = "";
+        public string? city { get; set; } = "";
         public string? emailSubject { get; set; } = "";
         public string? review { get; set; } = "";
         public DateTime? reviewDate { get; set; }

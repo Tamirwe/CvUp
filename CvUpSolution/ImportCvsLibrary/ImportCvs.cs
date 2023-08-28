@@ -11,6 +11,7 @@ using MailKit.Search;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
+using Spire.Doc;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
@@ -102,10 +103,16 @@ namespace ImportCvsLibrary
                                         string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
                                         int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
+                                      
+
+                                       
+
+
                                         if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                                         {
                                             _importCv = new ImportCvModel
                                             {
+
                                                 companyId = companyId,
                                                 emailId = message.MessageId,
                                                 subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
@@ -114,6 +121,18 @@ namespace ImportCvsLibrary
                                                 fileTypeKey = fileTypeKey,
                                                 dateCreated = dateCreated,
                                             };
+
+                                            var fromAddress = message.From.Mailboxes.Single().Address;
+
+                                            if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
+                                            {
+                                               var txtPart     = (TextPart)message.BodyParts.First();
+
+                                                if (txtPart != null)
+                                                {
+                                                    _importCv.body = txtPart.Text;
+                                                }
+                                            }
 
                                             SaveAttachmentToTemporaryFile(part);
                                             ParseEmailSubject();
@@ -274,6 +293,7 @@ namespace ImportCvsLibrary
 
             GetCandidateEmail();
             GetCandidatePhone();
+            GetCandidateCity();
         }
 
         private async Task CheckIsCvDuplicateOrSameCv()
@@ -430,6 +450,20 @@ namespace ImportCvsLibrary
             if (emailMatches.Count > 0)
             {
                 _importCv.emailAddress = emailMatches[0].Value;
+            }
+        }
+
+        private void GetCandidateCity()
+        {
+            if (_importCv.body != null)
+            {
+                var ind0 = _importCv.body.IndexOf("<!--candidate details-->");
+                var ind1 = _importCv.body.IndexOf("<!--candidate details-->", ind0 + 1);
+                var candDetails = _importCv.body.Substring(ind0, ind1);
+                ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
+                candDetails = candDetails.Substring(ind0 + 8);
+                ind1 = candDetails.IndexOf("</strong>", 0);
+                _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
             }
         }
 

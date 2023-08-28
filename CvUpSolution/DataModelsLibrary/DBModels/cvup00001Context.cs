@@ -115,6 +115,8 @@ namespace Database.models
 
                 entity.Property(e => e.adress).HasMaxLength(150);
 
+                entity.Property(e => e.city).HasMaxLength(50);
+
                 entity.Property(e => e.customers_reviews).HasColumnType("json");
 
                 entity.Property(e => e.date_created)

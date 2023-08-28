@@ -103,6 +103,12 @@ namespace CandsPositionsLibrary
                         isUpdate = true;
                     }
 
+                    if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
+                    {
+                        cand.city = importCv.city.Trim();
+                        isUpdate = true;
+                    }
+
                     if (isUpdate)
                     {
                         await _cvsPositionsQueries.UpdateCandidate(cand);
@@ -119,6 +125,7 @@ namespace CandsPositionsLibrary
                     company_id = importCv.companyId,
                     email = email,
                     phone = importCv.phone,
+                    city = importCv.city,
                     first_name = importCv.firstName,
                     last_name = importCv.lastName
                 };

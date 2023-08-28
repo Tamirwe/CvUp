@@ -38,7 +38,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
-                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -73,7 +73,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
-                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -109,8 +109,8 @@ namespace DataModelsLibrary.Queries
                              {
                                  cvId = pcv.cv_id,
                                  posCvId = pcv.cv_id,
-                                 customerReview=pcv.customer_review,
-                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                                 customerReview = pcv.customer_review,
+                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  review = cand.review,
                                  reviewDate = cand.review_date,
                                  keyId = cvs.key_id,
@@ -146,7 +146,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
-                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -183,7 +183,7 @@ namespace DataModelsLibrary.Queries
                                  cvId = cvs.id,
                                  review = cand.review,
                                  reviewDate = cand.review_date,
-                                 allCustomersReviews= cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
                                  keyId = cvs.key_id,
                                  candidateId = cand.id,
                                  email = cand.email,
@@ -1250,7 +1250,7 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                List<cv> cvsList = await dbContext.cvs.Where(x => x.company_id == companyId && x.date_created  >= DateTime.Now.AddDays(-1)).ToListAsync();
+                List<cv> cvsList = await dbContext.cvs.Where(x => x.company_id == companyId && x.date_created >= DateTime.Now.AddDays(-1)).ToListAsync();
 
                 var posTypesIds = cvsList.Select(x => x.position_type_id).Distinct().ToList();
                 posTypesIds.Remove(posTypesIds.Where(x => x == null).FirstOrDefault());
@@ -1258,7 +1258,7 @@ namespace DataModelsLibrary.Queries
                 var query = (from p in dbContext.position_types
                              where p.company_id == companyId && posTypesIds.Contains(p.id)
                              select p);
-                            
+
                 var positionTypesList = await query.ToListAsync();
 
                 foreach (var pt in posTypesIds)
@@ -1314,5 +1314,45 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<search>> GetSearches(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var searchesList = await dbContext.searches.Where(x => x.company_id == companyId).OrderByDescending(x => x.search_date).Take(300).ToListAsync();
+
+                return searchesList;
+            }
+        }
+
+        public async Task AddSearche(int companyId, search searchVals)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var result = dbContext.searches.Add(new search
+                {
+                    company_id = companyId,
+                     val = searchVals.val,
+                     advanced_val=searchVals.advanced_val,
+                     is_exact=searchVals.is_exact,
+                     search_date = DateTime.Now
+                });
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteSearche(int companyId, int id)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                search? sr = dbContext.searches.Where(x => x.id == id).FirstOrDefault();
+
+                if (sr != null)
+                {
+                    dbContext.searches.Remove(sr);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
     }
 }

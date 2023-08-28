@@ -37,6 +37,7 @@ namespace Database.models
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<position_type> position_types { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
+        public virtual DbSet<search> searches { get; set; } = null!;
         public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
         public virtual DbSet<temp_cands_review> temp_cands_reviews { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
@@ -577,6 +578,27 @@ namespace Database.models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.email).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<search>(entity =>
+            {
+                entity.HasIndex(e => e.search_date, "ix_searches_search_date");
+
+                entity.HasIndex(e => e.company_id, "searches_company_id_companies_id");
+
+                entity.Property(e => e.advanced_val).HasMaxLength(150);
+
+                entity.Property(e => e.search_date)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.val).HasMaxLength(150);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.searches)
+                    .HasForeignKey(d => d.company_id)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("searches_company_id_companies_id");
             });
 
             modelBuilder.Entity<sent_email>(entity =>

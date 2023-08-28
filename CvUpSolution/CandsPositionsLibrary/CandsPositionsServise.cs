@@ -417,5 +417,20 @@ namespace CandsPositionsLibrary
         {
             return await _cvsPositionsQueries.PositionsTypesCvsCount(companyId);
         }
+
+        public async Task<List<search>> GetSearches(int companyId)
+        {
+            return await _cvsPositionsQueries.GetSearches(companyId);
+        }
+
+        public async Task AddSearche(int companyId, search searchVals)
+        {
+            await _cvsPositionsQueries.AddSearche(companyId, searchVals);
+        }
+
+        public async Task DeleteSearche(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeleteSearche(companyId, id);
+        }
     }
 }

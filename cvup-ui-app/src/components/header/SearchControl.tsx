@@ -329,11 +329,11 @@ export const SearchControl = ({
             style={{
               whiteSpace: "nowrap",
               direction: "ltr",
-              padding: "0 5px",
+              padding: "0 3px",
               fontSize: "0.7rem",
             }}
           >
-            {records === 300 ? `300 ...` : `${records} rec`}
+            {records === 300 ? `300...` : `${records} `}
           </div>
         )}
         {shoeAdvancedIcon && (

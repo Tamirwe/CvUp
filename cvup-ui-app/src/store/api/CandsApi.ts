@@ -229,4 +229,10 @@ export default class CandsApi extends BaseApi {
       });
     });
   }
+
+  async saveSearche(searchVals: ISearchModel) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.post(`Cand/SaveSearche`, searchVals);
+    });
+  }
 }

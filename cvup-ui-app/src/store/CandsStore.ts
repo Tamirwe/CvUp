@@ -220,54 +220,70 @@ export class CandsStore {
   }
 
   async searchAllCands(searchVals: ISearchModel) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(searchVals, 0, 0, 0);
-    runInAction(() => {
-      this.allCandsList = res.data;
-    });
-    this.rootStore.generalStore.backdrop = false;
+    if (searchVals.value.trim()) {
+      this.rootStore.generalStore.backdrop = true;
+      const res = await this.cvsApi.searchCands(searchVals, 0, 0, 0);
+      runInAction(() => {
+        this.allCandsList = res.data;
+      });
+      this.rootStore.generalStore.backdrop = false;
+
+      this.cvsApi.saveSearche(searchVals);
+    }
   }
 
   async searchPositionCands(searchVals: ISearchModel) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(
-      searchVals,
-      this.rootStore.positionsStore.selectedPosition?.id,
-      0,
-      0
-    );
-    runInAction(() => {
-      this.posCandsList = res.data;
-    });
-    this.rootStore.generalStore.backdrop = false;
+    if (searchVals.value.trim()) {
+      this.rootStore.generalStore.backdrop = true;
+      const res = await this.cvsApi.searchCands(
+        searchVals,
+        this.rootStore.positionsStore.selectedPosition?.id,
+        0,
+        0
+      );
+      runInAction(() => {
+        this.posCandsList = res.data;
+      });
+      this.rootStore.generalStore.backdrop = false;
+
+      this.cvsApi.saveSearche(searchVals);
+    }
   }
 
   async searchPositionTypeCands(searchVals: ISearchModel) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(
-      searchVals,
-      0,
-      this.rootStore.positionsStore.selectedPositionType?.id,
-      0
-    );
-    runInAction(() => {
-      this.posTypeCandsList = res.data;
-    });
-    this.rootStore.generalStore.backdrop = false;
+    if (searchVals.value.trim()) {
+      this.rootStore.generalStore.backdrop = true;
+      const res = await this.cvsApi.searchCands(
+        searchVals,
+        0,
+        this.rootStore.positionsStore.selectedPositionType?.id,
+        0
+      );
+      runInAction(() => {
+        this.posTypeCandsList = res.data;
+      });
+      this.rootStore.generalStore.backdrop = false;
+
+      this.cvsApi.saveSearche(searchVals);
+    }
   }
 
   async searchFolderCands(searchVals: ISearchModel) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.cvsApi.searchCands(
-      searchVals,
-      0,
-      0,
-      this.rootStore.foldersStore.selectedFolder?.id
-    );
-    runInAction(() => {
-      this.folderCandsList = res.data;
-    });
-    this.rootStore.generalStore.backdrop = false;
+    if (searchVals.value.trim()) {
+      this.rootStore.generalStore.backdrop = true;
+      const res = await this.cvsApi.searchCands(
+        searchVals,
+        0,
+        0,
+        this.rootStore.foldersStore.selectedFolder?.id
+      );
+      runInAction(() => {
+        this.folderCandsList = res.data;
+      });
+      this.rootStore.generalStore.backdrop = false;
+
+      this.cvsApi.saveSearche(searchVals);
+    }
   }
 
   async getCandsList() {

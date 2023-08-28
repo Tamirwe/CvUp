@@ -65,5 +65,8 @@ namespace DataModelsLibrary.Queries
         Task UpdateCandCustomersReviews(int companyId, int candidateId);
         Task CalculatePositionTypesCount(int companyId);
         Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId);
+        Task<List<search>> GetSearches(int companyId);
+        Task AddSearche(int companyId, search searchVals);
+        Task DeleteSearche(int companyId, int id);
     }
 }

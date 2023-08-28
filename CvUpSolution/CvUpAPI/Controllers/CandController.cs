@@ -252,5 +252,28 @@ namespace CvUpAPI.Controllers
             await _candPosService.SaveCustomerCandReview(Globals.CompanyId, customerCandReview);
             return await _candPosService.GetCandidate(Globals.CompanyId, customerCandReview.candidateId);
         }
+
+        [HttpGet]
+        [Route("GetSearches")]
+        public async Task<List<search>> GetSearches()
+        {
+            return await _candPosService.GetSearches(Globals.CompanyId);
+        }
+
+        [HttpPost]
+        [Route("AddSearche")]
+        public async Task<IActionResult> AddSearche(search searchVals)
+        {
+            await _candPosService.AddSearche(Globals.CompanyId, searchVals);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("DeleteSearche")]
+        public async Task<IActionResult> DeleteSearche(int id)
+        {
+            await _candPosService.DeleteSearche(Globals.CompanyId, id);
+            return Ok();
+        }
     }
 }

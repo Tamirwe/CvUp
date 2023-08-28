@@ -11,6 +11,7 @@ using MailKit.Search;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
+using Spire.Doc;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
@@ -33,8 +34,8 @@ namespace ImportCvsLibrary
         string _mailPassword;
         string _cvFolderPath = "";
         string _cvTempFolderPath = "";
-        string _yearFolder="";
-        string _monthFolder="";
+        string _yearFolder = "";
+        string _monthFolder = "";
         string _companyFolder = "";
         //List<company_cvs_email>? _companiesEmail;
         List<ParserRulesModel> _parsersRulesAllCompanies;
@@ -102,10 +103,16 @@ namespace ImportCvsLibrary
                                         string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
                                         int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
+
+
+
+
+
                                         if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                                         {
                                             _importCv = new ImportCvModel
                                             {
+
                                                 companyId = companyId,
                                                 emailId = message.MessageId,
                                                 subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
@@ -114,6 +121,18 @@ namespace ImportCvsLibrary
                                                 fileTypeKey = fileTypeKey,
                                                 dateCreated = dateCreated,
                                             };
+
+                                            var fromAddress = message.From.Mailboxes.Single().Address;
+
+                                            if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
+                                            {
+                                                var txtPart = (TextPart)message.BodyParts.First();
+
+                                                if (txtPart != null)
+                                                {
+                                                    _importCv.body = txtPart.Text;
+                                                }
+                                            }
 
                                             SaveAttachmentToTemporaryFile(part);
                                             ParseEmailSubject();
@@ -183,7 +202,8 @@ namespace ImportCvsLibrary
             {
                 await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
             }
-            else { 
+            else
+            {
                 //await AddPositionName();
                 await AddCvToDb();
                 RenameAndMoveAttachmentToFolder();
@@ -198,7 +218,8 @@ namespace ImportCvsLibrary
         {
             position? matchPos = await _cvsPositionsServise.GetPositionByMatchStr(_importCv.companyId, _importCv.subject);
 
-            if (matchPos != null) {
+            if (matchPos != null)
+            {
                 await _cvsPositionsServise.AttachPosCandCv(new AttachePosCandCvModel
                 {
                     positionId = matchPos.id,
@@ -234,7 +255,7 @@ namespace ImportCvsLibrary
             Directory.CreateDirectory(_cvFolderPath);
         }
 
-        private void SaveAttachmentToTemporaryFile( MimeEntity attachment)
+        private void SaveAttachmentToTemporaryFile(MimeEntity attachment)
         {
             var myUniqueFileName = $@"{DateTime.Now.Ticks}{_importCv.fileExtension}";
             _importCv.tempFilePath = $"{_cvTempFolderPath}\\{myUniqueFileName}";
@@ -256,9 +277,9 @@ namespace ImportCvsLibrary
 
         private void RenameAndMoveAttachmentToFolder()
         {
-                string fileNamePath = GetAttachmentFileNamePath(_importCv.cvId, _importCv.fileExtension, out string cvKey);
-                _importCv.cvKey = cvKey;
-                File.Move(_importCv.tempFilePath, fileNamePath);
+            string fileNamePath = GetAttachmentFileNamePath(_importCv.cvId, _importCv.fileExtension, out string cvKey);
+            _importCv.cvKey = cvKey;
+            File.Move(_importCv.tempFilePath, fileNamePath);
         }
 
         private void ExtractCvProps()
@@ -274,6 +295,7 @@ namespace ImportCvsLibrary
 
             GetCandidateEmail();
             GetCandidatePhone();
+            GetCandidateCity();
         }
 
         private async Task CheckIsCvDuplicateOrSameCv()
@@ -310,7 +332,7 @@ namespace ImportCvsLibrary
             }
         }
 
-        private  void ParseEmailSubject()
+        private void ParseEmailSubject()
         {
             if (_parsersRules.Count > 0)
             {
@@ -351,7 +373,7 @@ namespace ImportCvsLibrary
                             {
                                 case nameof(ParserValueType.Name):
                                     //to be check
-                                    var nameParts = subjectArr[i].Split(' ',StringSplitOptions.RemoveEmptyEntries);
+                                    var nameParts = subjectArr[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
                                     _importCv.firstName = nameParts[nameParts.Length - 1].Trim();
                                     _importCv.lastName = subjectArr[i].Replace(_importCv.firstName, "").Trim();
                                     _importCv.candidateName = subjectArr[i];
@@ -376,7 +398,7 @@ namespace ImportCvsLibrary
 
         private async Task CandidateFindOrCreate()
         {
-           await _cvsPositionsServise.AddUpdateCandidateFromCvImport(_importCv);
+            await _cvsPositionsServise.AddUpdateCandidateFromCvImport(_importCv);
         }
 
         private async Task AddCvToDb()
@@ -430,6 +452,27 @@ namespace ImportCvsLibrary
             if (emailMatches.Count > 0)
             {
                 _importCv.emailAddress = emailMatches[0].Value;
+            }
+        }
+
+        private void GetCandidateCity()
+        {
+            if (_importCv.body != null)
+            {
+                var ind0 = _importCv.body.IndexOf("<!--candidate details-->");
+                var ind1 = _importCv.body.IndexOf("<!--candidate details-->", ind0 + 1);
+                var candDetails = _importCv.body.Substring(ind0, ind1);
+                ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
+
+                if (ind0 > -1)
+                {
+                    candDetails = candDetails.Substring(ind0 + 8);
+                    ind1 = candDetails.IndexOf("</strong>", 0);
+                    if (ind1 > -1)
+                    {
+                        _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
+                    }
+                }
             }
         }
 

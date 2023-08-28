@@ -103,6 +103,12 @@ namespace CandsPositionsLibrary
                         isUpdate = true;
                     }
 
+                    if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
+                    {
+                        cand.city = importCv.city.Trim();
+                        isUpdate = true;
+                    }
+
                     if (isUpdate)
                     {
                         await _cvsPositionsQueries.UpdateCandidate(cand);
@@ -119,6 +125,7 @@ namespace CandsPositionsLibrary
                     company_id = importCv.companyId,
                     email = email,
                     phone = importCv.phone,
+                    city = importCv.city,
                     first_name = importCv.firstName,
                     last_name = importCv.lastName
                 };
@@ -409,6 +416,21 @@ namespace CandsPositionsLibrary
         public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
         {
             return await _cvsPositionsQueries.PositionsTypesCvsCount(companyId);
+        }
+
+        public async Task<List<search>> GetSearches(int companyId)
+        {
+            return await _cvsPositionsQueries.GetSearches(companyId);
+        }
+
+        public async Task AddSearche(int companyId, search searchVals)
+        {
+            await _cvsPositionsQueries.AddSearche(companyId, searchVals);
+        }
+
+        public async Task DeleteSearche(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeleteSearche(companyId, id);
         }
     }
 }

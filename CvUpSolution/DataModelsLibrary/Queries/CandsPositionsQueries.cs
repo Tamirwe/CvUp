@@ -1328,27 +1328,34 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                var existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.val == searchVals.value && x.advanced_val == searchVals.advanced_value).FirstOrDefaultAsync();
+                var sVal = string.IsNullOrEmpty(searchVals.value) ? null: searchVals.value.Trim();
 
-                if (existSearch != null)
+                if (sVal != null)
                 {
-                    existSearch.is_exact = searchVals.is_exact;
-                    existSearch.search_date = DateTime.Now;
-                    dbContext.searches.Update(existSearch);
-                }
-                else
-                {
-                    var result = dbContext.searches.Add(new search
+                    var sAdv = string.IsNullOrEmpty(searchVals.advancedValue) ? null : searchVals.advancedValue.Trim();
+
+                    var existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.val == sVal && x.advanced_val == sAdv).FirstOrDefaultAsync();
+
+                    if (existSearch != null)
                     {
-                        company_id = companyId,
-                        val = searchVals.value,
-                        advanced_val = searchVals.advanced_value,
-                        is_exact = searchVals.is_exact,
-                        search_date = DateTime.Now
-                    });
-                }
+                        existSearch.is_exact = searchVals.exact;
+                        existSearch.search_date = DateTime.Now;
+                        dbContext.searches.Update(existSearch);
+                    }
+                    else
+                    {
+                        var result = dbContext.searches.Add(new search
+                        {
+                            company_id = companyId,
+                            val = sVal,
+                            advanced_val = sAdv,
+                            is_exact = searchVals.exact,
+                            search_date = DateTime.Now
+                        });
+                    }
 
-                await dbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
 

@@ -194,8 +194,8 @@ namespace DataModelsLibrary.Models
     public class SearchModel
     {
         public string? value { get; set; }
-        public string? advanced_value { get; set; }
-        public bool? is_exact { get; set; }
+        public string? advancedValue { get; set; }
+        public bool? exact { get; set; }
     }
 
     public class searchCandCvModel

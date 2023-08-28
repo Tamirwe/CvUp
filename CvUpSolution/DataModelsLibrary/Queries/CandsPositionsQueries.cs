@@ -1324,18 +1324,29 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task AddSearche(int companyId, search searchVals)
+        public async Task SaveSearche(int companyId, SearchModel searchVals)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var result = dbContext.searches.Add(new search
+                var existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.val == searchVals.value && x.advanced_val == searchVals.advanced_value).FirstOrDefaultAsync();
+
+                if (existSearch != null)
                 {
-                    company_id = companyId,
-                     val = searchVals.val,
-                     advanced_val=searchVals.advanced_val,
-                     is_exact=searchVals.is_exact,
-                     search_date = DateTime.Now
-                });
+                    existSearch.is_exact = searchVals.is_exact;
+                    existSearch.search_date = DateTime.Now;
+                    dbContext.searches.Update(existSearch);
+                }
+                else
+                {
+                    var result = dbContext.searches.Add(new search
+                    {
+                        company_id = companyId,
+                        val = searchVals.value,
+                        advanced_val = searchVals.advanced_value,
+                        is_exact = searchVals.is_exact,
+                        search_date = DateTime.Now
+                    });
+                }
 
                 await dbContext.SaveChangesAsync();
             }

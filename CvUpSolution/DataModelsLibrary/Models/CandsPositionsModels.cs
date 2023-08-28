@@ -1,4 +1,5 @@
-﻿using EmailsLibrary.Models;
+﻿using Database.models;
+using EmailsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -188,6 +189,13 @@ namespace DataModelsLibrary.Models
         public int candidateId { get; set; }
         public string review { get; set; } = "";
         public int? positionId { get; set; }
+    }
+
+    public class SearchModel
+    {
+        public string? value { get; set; }
+        public string? advanced_value { get; set; }
+        public bool? is_exact { get; set; }
     }
 
     public class searchCandCvModel

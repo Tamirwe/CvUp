@@ -37,6 +37,7 @@ export interface ICand {
   keyId: string;
   encriptedId: string;
   phone?: string;
+  city?: string;
   email?: string;
   emailSubject: string;
   firstName?: string;

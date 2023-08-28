@@ -95,6 +95,7 @@ interface IProps {
   showSortLeft?: boolean;
   showRefreshList?: boolean;
   onRefreshLists?: () => void;
+  extSearch?: ISearchModel;
 }
 
 export const SearchControl = ({
@@ -107,6 +108,7 @@ export const SearchControl = ({
   showSortLeft = false,
   showRefreshList = false,
   onRefreshLists,
+  extSearch,
 }: IProps) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -134,6 +136,12 @@ export const SearchControl = ({
     setDefaultSort();
     onSearch(searchVals);
   }, [debouncedValue]);
+
+  useEffect(() => {
+    if (extSearch) {
+      setSearchVals(extSearch);
+    }
+  }, [extSearch]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVals((currentProps) => ({

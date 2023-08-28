@@ -41,7 +41,7 @@ export const CandsList = observer(
     const navigate = useNavigate();
 
     const listRef = useRef<any>(null);
-    const [dupOpenCandId, setDupOpenCandId] = useState(0);
+    // const [dupOpenCandId, setDupOpenCandId] = useState(0);
     const [listCands, setListCands] = useState<ICand[]>([]);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export const CandsList = observer(
         ]);
       }
 
-      setDupOpenCandId(0);
+      //setDupOpenCandId(0);
     }, [candsListData]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // useEffect(() => {
@@ -301,6 +301,17 @@ export const CandsList = observer(
                       </ListItemIcon> */}
                     </div>
                   </div>
+                  {cand.city && (
+                    <div
+                      className={classNames({
+                        [styles.listItemCity]: true,
+                        [styles.isMobile]: isMobile,
+                      })}
+                    >
+                      {cand.city}
+                    </div>
+                  )}
+
                   {/* {candsSource !== CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && (

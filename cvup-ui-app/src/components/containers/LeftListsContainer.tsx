@@ -77,10 +77,11 @@ export const LeftListsContainer = observer(() => {
             allowScrollButtonsMobile
             value={generalStore.currentLeftDrawerTab}
             onChange={handleTabChange}
+            sx={{ "& .MuiButtonBase-root": { fontSize: "0.8rem" } }}
           >
             <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
-            <Tab label="PT" value={TabsGeneralEnum.Types} />
+            <Tab label="P.Groups" value={TabsGeneralEnum.Types} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />
           </Tabs>
           <IconButton

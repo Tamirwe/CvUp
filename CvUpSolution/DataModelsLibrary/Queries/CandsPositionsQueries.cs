@@ -1384,7 +1384,7 @@ namespace DataModelsLibrary.Queries
                 if (existSearch != null)
                 {
                     existSearch.is_exact = searchVals.exact;
-                    existSearch.is_starred = searchVals.star;
+                    existSearch.is_starred = !existSearch.is_starred;
                     existSearch.search_date = DateTime.Now;
                     dbContext.searches.Update(existSearch);
                     await dbContext.SaveChangesAsync();

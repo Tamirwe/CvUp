@@ -268,7 +268,7 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("StarSearch")]
         public async Task<IActionResult> StarSearch(SearchModel searchVals)
         {
@@ -276,7 +276,7 @@ namespace CvUpAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpPut]
         [Route("DeleteSearch")]
         public async Task<IActionResult> DeleteSearch(SearchModel searchVals)
         {

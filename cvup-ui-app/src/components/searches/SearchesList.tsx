@@ -41,7 +41,7 @@ export const SearchesList = observer(({ onApplySearch }: IProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                candsStore.starSearch(item);
+                candsStore.deleteSearch(item);
               }}
               sx={{ color: "#d7d2d2" }}
             >
@@ -53,7 +53,7 @@ export const SearchesList = observer(({ onApplySearch }: IProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                candsStore.deleteSearch(item);
+                candsStore.starSearch(item);
               }}
             >
               {item.star ? (

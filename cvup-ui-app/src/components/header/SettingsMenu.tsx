@@ -109,7 +109,7 @@ export const SettingsMenu = () => {
         {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem> */}
-        <Divider />3
+        <Divider />
         <MenuItem
           onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(

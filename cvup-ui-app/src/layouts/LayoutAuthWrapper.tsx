@@ -30,6 +30,7 @@ import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDi
 import { CandFormDialog } from "../components/cands/CandFormDialog";
 import { DescktopAuthLayout } from "./DescktopAuthLayout";
 import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
+import { SearchesListDialog } from "../components/searches/SearchesListDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -146,6 +147,12 @@ export const LayoutAuthWrapper = observer(() => {
         <CandFormDialog
           isOpen={generalStore.showCandFormDialog}
           onClose={() => (generalStore.showCandFormDialog = false)}
+        />
+      )}
+      {generalStore.showSearchesListDialog && (
+        <SearchesListDialog
+          isOpen={generalStore.showSearchesListDialog}
+          onClose={() => (generalStore.showSearchesListDialog = false)}
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}

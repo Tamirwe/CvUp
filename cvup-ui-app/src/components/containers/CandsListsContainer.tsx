@@ -247,6 +247,7 @@ export const CandsListsContainer = observer(() => {
               handleSort(sortBy, dir, TabsCandsEnum.AllCands);
             }}
             showRefreshList={true}
+            extSearch={candsStore.extSearch}
           />
         </Box>
         <CandsList

@@ -123,6 +123,7 @@ export const SearchControl = ({
   const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
   const [sortByLeft, setSortByLeft] = useState(true);
   const [refreshList, setRefreshList] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
@@ -133,8 +134,12 @@ export const SearchControl = ({
   }
 
   useEffect(() => {
-    setDefaultSort();
-    onSearch(searchVals);
+    if (isLoaded) {
+      setDefaultSort();
+      onSearch(searchVals);
+    } else {
+      setIsLoaded(true);
+    }
   }, [debouncedValue]);
 
   useEffect(() => {
@@ -202,8 +207,13 @@ export const SearchControl = ({
         event.stopPropagation();
         event.preventDefault();
       }}
+      sx={{ width: "100%" }}
     >
-      <Stack direction="row" alignItems={"center"} sx={{ direction: "rtl" }}>
+      <Stack
+        direction="row"
+        alignItems={"center"}
+        sx={{ direction: "rtl", width: "100%" }}
+      >
         {showRefreshList && (
           <ToggleButtonGroup
             sx={{

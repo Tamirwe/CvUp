@@ -396,15 +396,13 @@ namespace DataModelsLibrary.Queries
 
                     foreach (var cv in cvsTxtCand)
                     {
-                        sb.Append(" " + cv.email_subject + " " + cv.cv_txt);
+                        sb.Append(cv.cv_txt);
                     }
 
                     item.cvsTxt = sb.ToString();
                 }
 
                 return candsCvs;
-
-
             }
         }
 

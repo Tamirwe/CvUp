@@ -104,7 +104,7 @@ export const CandsList = observer(
         sx={{
           height: isMobile
             ? advancedOpen
-              ? "calc(100vh - 205px)"
+              ? "64vh"
               : "70vh"
             : advancedOpen
             ? "calc(100vh - 173px)"

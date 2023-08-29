@@ -17,6 +17,8 @@ import { RootStore } from "./RootStore";
 export class CandsStore {
   private cvsApi;
   private candIdDuplicateCvs: number = 0;
+  private searchesList: ISearchModel[] = [];
+  private externalSearch?: ISearchModel;
   // private isPdfLoaded: boolean = false;
 
   allCandsList: ICand[] = [];
@@ -26,6 +28,7 @@ export class CandsStore {
   folderCandsList: ICand[] = [];
   pdfUrl: string = "";
   pdfBlobUrl: string = "";
+  sortedSearchesList: ISearchModel[] = [];
 
   // candAllSelected?: ICand;
   candDupSelected?: ICandCv;
@@ -69,6 +72,14 @@ export class CandsStore {
 
   get downloadUrl() {
     return this.appSettings.apiUrl;
+  }
+
+  set extSearch(val) {
+    this.externalSearch = val;
+  }
+
+  get extSearch() {
+    return this.externalSearch;
   }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
@@ -228,7 +239,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearche(searchVals);
+      this.cvsApi.saveSearch(searchVals);
     }
   }
 
@@ -246,7 +257,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearche(searchVals);
+      this.cvsApi.saveSearch(searchVals);
     }
   }
 
@@ -264,7 +275,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearche(searchVals);
+      this.cvsApi.saveSearch(searchVals);
     }
   }
 
@@ -282,7 +293,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearche(searchVals);
+      this.cvsApi.saveSearch(searchVals);
     }
   }
 
@@ -713,5 +724,36 @@ export class CandsStore {
       const res = await this.cvsApi.getPdfFile(keyId);
       return res.data;
     }
+  }
+
+  async getSearches() {
+    const res = await this.cvsApi.getSearches();
+    this.searchesList = res.data;
+    this.sortedSearchesList = [...res.data];
+  }
+
+  findSearches(searchVals?: ISearchModel) {
+    runInAction(() => {
+      const val = searchVals?.value;
+
+      if (val) {
+        this.sortedSearchesList = this.searchesList.filter(
+          (x) =>
+            x.value.toLowerCase().includes(val.toLowerCase()) ||
+            (x.advancedValue &&
+              x.advancedValue.toLowerCase().includes(val.toLowerCase()))
+        );
+      } else {
+        this.sortedSearchesList = this.searchesList.slice();
+      }
+    });
+  }
+
+  async starSearch(searchVals: ISearchModel) {
+    await this.cvsApi.starSearch(searchVals);
+  }
+
+  async deleteSearch(searchVals: ISearchModel) {
+    await this.cvsApi.deleteSearch(searchVals);
   }
 }

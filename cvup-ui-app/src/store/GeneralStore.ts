@@ -34,6 +34,8 @@ export class GeneralStore {
   private isLeftDrawerOpen: boolean = false;
   private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
+  private isshowSearchesListDialog: boolean = false;
+
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
   alertConfirmDialogMessage: string = "";
@@ -186,6 +188,14 @@ export class GeneralStore {
   set alertSnackbarOpen(val) {
     this.isAlertSnackbarOpen = val;
     this.alertSnackbarMessage = "";
+  }
+
+  get showSearchesListDialog() {
+    return this.isshowSearchesListDialog;
+  }
+
+  set showSearchesListDialog(val) {
+    this.isshowSearchesListDialog = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {

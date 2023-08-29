@@ -189,9 +189,12 @@ export interface IFolderNode {
 }
 
 export interface ISearchModel {
+  id?: number;
   value: string;
   exact: boolean;
-  advancedValue: string;
+  star?: boolean;
+  advancedValue?: string;
+  updated?: Date;
 }
 
 export interface ICandsReport {

@@ -173,7 +173,11 @@ export const CandsList = observer(
                     }}
                   >
                     <div
-                      title="Email subject"
+                      title={
+                        candsSource === CandsSourceEnum.AllCands
+                          ? "Email subject"
+                          : ""
+                      }
                       className={classNames({
                         [styles.listItemText]: true,
                         [styles.isMobile]: isMobile,

@@ -230,9 +230,27 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async saveSearche(searchVals: ISearchModel) {
+  async saveSearch(searchVals: ISearchModel) {
     return await this.apiWrapper2(async () => {
-      return await this.http.post(`Cand/SaveSearche`, searchVals);
+      return await this.http.post(`Cand/SaveSearch`, searchVals);
+    });
+  }
+
+  async getSearches() {
+    return await this.apiWrapper2<ISearchModel[]>(async () => {
+      return await this.http.get(`Cand/GetSearches`);
+    });
+  }
+
+  async starSearch(searchVals: ISearchModel) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put(`Cand/StarSearch`, searchVals);
+    });
+  }
+
+  async deleteSearch(searchVals: ISearchModel) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.put(`Cand/DeleteSearch`, searchVals);
     });
   }
 }

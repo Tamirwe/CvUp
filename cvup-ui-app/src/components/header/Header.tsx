@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
 import {
+  MdManageSearch,
   MdOutlineAttachEmail,
   MdOutlineContactMail,
   MdOutlineDelete,
@@ -37,12 +38,14 @@ export const Header = observer(() => {
   useEffect(() => {
     (async () => {
       await Promise.all([
+        candsStore.getCandsList(),
         candsStore.getCandPosStages(),
         positionsStore.getPositionsList(),
         positionsStore.getPositionsTypesList(),
         candsStore.getEmailTemplates(),
         customersContactsStore.getCustomersList(),
         authStore.getUser(),
+        candsStore.getSearches(),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -218,6 +221,7 @@ export const Header = observer(() => {
                   >
                     <MdOutlineFileDownload />
                   </IconButton>
+
                   {candsStore.candDisplay &&
                     positionsStore.candDisplayPosition && (
                       <IconButton
@@ -234,6 +238,17 @@ export const Header = observer(() => {
                     )}
                 </>
               )}
+              <IconButton
+                title="Saved Searches"
+                sx={{ fontSize: "1.54rem" }}
+                size="small"
+                onClick={() =>
+                  (generalStore.showSearchesListDialog =
+                    !generalStore.showSearchesListDialog)
+                }
+              >
+                <MdManageSearch />
+              </IconButton>
             </Stack>
           </Grid>
           <Grid item xs={5} sx={{ textAlign: "right" }} pr={1}>

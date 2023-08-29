@@ -588,6 +588,8 @@ namespace Database.models
 
                 entity.Property(e => e.advanced_val).HasMaxLength(150);
 
+                entity.Property(e => e.is_starred).HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.search_date)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");

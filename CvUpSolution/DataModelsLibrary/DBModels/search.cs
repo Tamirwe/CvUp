@@ -11,6 +11,7 @@ namespace Database.models
         public string? advanced_val { get; set; }
         public bool? is_exact { get; set; }
         public DateTime? search_date { get; set; }
+        public bool? is_starred { get; set; }
 
         public virtual company? company { get; set; }
     }

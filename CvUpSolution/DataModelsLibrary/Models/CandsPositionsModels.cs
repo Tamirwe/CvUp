@@ -193,9 +193,12 @@ namespace DataModelsLibrary.Models
 
     public class SearchModel
     {
+        public int? id { get; set; } 
         public string? value { get; set; }
         public string? advancedValue { get; set; }
         public bool? exact { get; set; }
+        public bool? star { get; set; }
+        public DateTime? updated { get; set; }
     }
 
     public class searchCandCvModel

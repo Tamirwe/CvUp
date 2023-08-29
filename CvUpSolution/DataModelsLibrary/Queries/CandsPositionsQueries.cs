@@ -1312,27 +1312,36 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<search>> GetSearches(int companyId)
+        public async Task<List<SearchModel>> GetSearches(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var searchesList = await dbContext.searches.Where(x => x.company_id == companyId).OrderByDescending(x => x.search_date).Take(300).ToListAsync();
+                var query = (from s in dbContext.searches
+                             where s.company_id == companyId
+                             orderby s.search_date descending
+                             select new SearchModel
+                             {
+                                 id = s.id,
+                                 value = s.val,
+                                 advancedValue = s.advanced_val,
+                                 exact = s.is_exact,
+                                 star = s.is_starred,
+                                 updated = s.search_date
+                             }).Take(300); ;
+
+                var searchesList = await query.ToListAsync();
 
                 return searchesList;
             }
         }
 
-        public async Task SaveSearche(int companyId, SearchModel searchVals)
+        public async Task SaveSearch(int companyId, SearchModel searchVals)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var sVal = string.IsNullOrEmpty(searchVals.value) ? null: searchVals.value.Trim();
-
-                if (sVal != null)
+                if (!string.IsNullOrEmpty(searchVals.value))
                 {
-                    var sAdv = string.IsNullOrEmpty(searchVals.advancedValue) ? null : searchVals.advancedValue.Trim();
-
-                    var existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.val == sVal && x.advanced_val == sAdv).FirstOrDefaultAsync();
+                    var existSearch = await FindSearchByVals(companyId, searchVals);
 
                     if (existSearch != null)
                     {
@@ -1342,11 +1351,11 @@ namespace DataModelsLibrary.Queries
                     }
                     else
                     {
-                        var result = dbContext.searches.Add(new search
+                        dbContext.searches.Add(new search
                         {
                             company_id = companyId,
-                            val = sVal,
-                            advanced_val = sAdv,
+                            val = searchVals.value,
+                            advanced_val = searchVals.advancedValue,
                             is_exact = searchVals.exact,
                             search_date = DateTime.Now
                         });
@@ -1357,18 +1366,70 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task DeleteSearche(int companyId, int id)
+        public async Task StarSearch(int companyId, SearchModel searchVals)
         {
             using (var dbContext = new cvup00001Context())
             {
-                search? sr = dbContext.searches.Where(x => x.id == id).FirstOrDefault();
+                search? existSearch = null;
 
-                if (sr != null)
+                if (searchVals.id != null)
                 {
-                    dbContext.searches.Remove(sr);
+                    existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.id == searchVals.id).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    existSearch = await FindSearchByVals(companyId, searchVals);
+                }
+
+                if (existSearch != null)
+                {
+                    existSearch.is_exact = searchVals.exact;
+                    existSearch.is_starred = searchVals.star;
+                    existSearch.search_date = DateTime.Now;
+                    dbContext.searches.Update(existSearch);
                     await dbContext.SaveChangesAsync();
                 }
             }
         }
+
+        public async Task DeleteSearch(int companyId, SearchModel searchVals)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                search? existSearch = null;
+
+                if (searchVals.id != null)
+                {
+                    existSearch = await dbContext.searches.Where(x => x.company_id == companyId && x.id == searchVals.id).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    existSearch = await FindSearchByVals(companyId, searchVals);
+                }
+
+                if (existSearch != null)
+                {
+                    dbContext.searches.Remove(existSearch);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        private async Task<search?> FindSearchByVals(int companyId, SearchModel searchVals)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var sVal = string.IsNullOrEmpty(searchVals.value) ? null : searchVals.value.Trim();
+
+                if (sVal != null)
+                {
+                    var sAdv = string.IsNullOrEmpty(searchVals.advancedValue) ? null : searchVals.advancedValue.Trim();
+                    return await dbContext.searches.Where(x => x.company_id == companyId && x.val == sVal && x.advanced_val == sAdv).FirstOrDefaultAsync();
+                }
+
+                return null;
+            }
+        }
+
     }
 }

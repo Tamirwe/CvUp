@@ -5,14 +5,15 @@ import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { SearchControl } from "../header/SearchControl";
 import { useStore } from "../../Hooks/useStore";
 import { ISearchModel } from "../../models/GeneralModels";
-import { MdStarOutline } from "react-icons/md";
+import { MdStar, MdStarOutline } from "react-icons/md";
+import { observer } from "mobx-react";
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const SearchesListDialog = ({ isOpen, onClose }: IProps) => {
+export const SearchesListDialog = observer(({ isOpen, onClose }: IProps) => {
   const { candsStore } = useStore();
   const [open, setOpen] = useState(false);
 
@@ -34,12 +35,13 @@ export const SearchesListDialog = ({ isOpen, onClose }: IProps) => {
         <Stack direction="row" sx={{ width: "100%" }}>
           <IconButton
             title="Saved Searches"
-            // onClick={() =>
-            //   (generalStore.showSearchesListDialog =
-            //     !generalStore.showSearchesListDialog)
-            // }
+            onClick={() => candsStore.findStarSearches()}
           >
-            <MdStarOutline />
+            {!candsStore.searchesSearchVals?.star ? (
+              <MdStarOutline />
+            ) : (
+              <MdStar style={{ color: "#4fcdff" }} />
+            )}
           </IconButton>
           <SearchControl
             onSearch={(searchVals) => {
@@ -55,4 +57,4 @@ export const SearchesListDialog = ({ isOpen, onClose }: IProps) => {
       </DialogContent>
     </Dialog>
   );
-};
+});

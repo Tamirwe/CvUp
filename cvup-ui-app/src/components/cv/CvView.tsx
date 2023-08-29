@@ -447,23 +447,21 @@ export const CvView = observer(() => {
                 ) : (
                   <Grid item xs={12} lg={6} pl={2}></Grid>
                 )}
-                {candsStore.candDisplay.hasDuplicates && (
-                  <Grid item xs={12} lg={6}>
-                    <div
-                      style={{
-                        padding: "1.5rem 0 0.2rem 0",
-                        color: "#149bed",
-                        fontSize: "1rem",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Duplicates cv`s
-                    </div>
-                    <CandDupCvsList
-                      candPosCvId={candsStore.candDisplay?.posCvId}
-                    />
-                  </Grid>
-                )}
+                <Grid item xs={12} lg={6}>
+                  <div
+                    style={{
+                      padding: "1.5rem 0 0.2rem 0",
+                      color: "#149bed",
+                      fontSize: "1rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Duplicates cv`s
+                  </div>
+                  <CandDupCvsList
+                    candPosCvId={candsStore.candDisplay?.posCvId}
+                  />
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

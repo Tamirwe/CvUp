@@ -57,7 +57,7 @@ export const SearchesList = observer(({ onApplySearch }: IProps) => {
               }}
             >
               {item.star ? (
-                <MdStar style={{ color: "blue" }} />
+                <MdStar style={{ color: "#4fcdff" }} />
               ) : (
                 <MdStarOutline />
               )}

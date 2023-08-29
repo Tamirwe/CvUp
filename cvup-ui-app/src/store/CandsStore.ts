@@ -19,6 +19,7 @@ export class CandsStore {
   private candIdDuplicateCvs: number = 0;
   private searchesList: ISearchModel[] = [];
   private externalSearch?: ISearchModel;
+  searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
 
   allCandsList: ICand[] = [];
@@ -239,7 +240,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearch(searchVals);
+      this.saveSearch(searchVals);
     }
   }
 
@@ -257,7 +258,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearch(searchVals);
+      this.saveSearch(searchVals);
     }
   }
 
@@ -275,7 +276,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearch(searchVals);
+      this.saveSearch(searchVals);
     }
   }
 
@@ -293,7 +294,7 @@ export class CandsStore {
       });
       this.rootStore.generalStore.backdrop = false;
 
-      this.cvsApi.saveSearch(searchVals);
+      this.saveSearch(searchVals);
     }
   }
 
@@ -732,28 +733,104 @@ export class CandsStore {
     this.sortedSearchesList = [...res.data];
   }
 
+  findStarSearches() {
+    const searchVals = Object.assign({}, this.searchesSearchVals);
+    searchVals.star = !searchVals.star;
+    this.findSearches(searchVals);
+  }
+
   findSearches(searchVals?: ISearchModel) {
+    this.searchesSearchVals = searchVals;
+
     runInAction(() => {
       const val = searchVals?.value;
+      let list;
+
+      if (searchVals?.star) {
+        list = this.searchesList.filter((x) => x.star == true);
+      } else {
+        list = [...this.searchesList];
+      }
 
       if (val) {
-        this.sortedSearchesList = this.searchesList.filter(
+        this.sortedSearchesList = list.filter(
           (x) =>
             x.value.toLowerCase().includes(val.toLowerCase()) ||
             (x.advancedValue &&
               x.advancedValue.toLowerCase().includes(val.toLowerCase()))
         );
       } else {
-        this.sortedSearchesList = this.searchesList.slice();
+        this.sortedSearchesList = list;
       }
     });
   }
 
-  async starSearch(searchVals: ISearchModel) {
-    await this.cvsApi.starSearch(searchVals);
+  findSearchIndex(searchVals: ISearchModel) {
+    let objIndex = -1;
+
+    if (searchVals.id) {
+      objIndex = this.searchesList.findIndex((x) => x.id === searchVals.id);
+    } else {
+      const val = searchVals.value;
+      const adv = searchVals.advancedValue;
+
+      objIndex = this.searchesList.findIndex(
+        (x) => x.value === val && x.advancedValue == adv
+      );
+    }
+
+    return objIndex;
+  }
+
+  saveSearch(searchVals: ISearchModel) {
+    const val = searchVals.value;
+    const list = [...this.searchesList];
+
+    if (val) {
+      const objIndex = this.findSearchIndex(searchVals);
+
+      if (objIndex > -1) {
+        let searchItem = list.splice(objIndex, 1)[0];
+        searchItem.updated = new Date();
+        list.splice(0, 0, searchItem);
+      } else {
+        let searchItem = Object.assign({}, searchVals);
+        searchItem.updated = new Date();
+        list.splice(0, 0, searchItem);
+      }
+
+      this.searchesList = list;
+
+      this.cvsApi.saveSearch(searchVals);
+    }
+  }
+
+  starSearch(searchVals: ISearchModel) {
+    const list = [...this.searchesList];
+
+    const objIndex = this.findSearchIndex(searchVals);
+
+    if (objIndex > -1) {
+      let searchItem = list[objIndex];
+      searchItem.star = !searchItem.star;
+    }
+
+    this.searchesList = list;
+    this.findSearches(this.searchesSearchVals);
+    this.cvsApi.starSearch(searchVals);
   }
 
   async deleteSearch(searchVals: ISearchModel) {
-    await this.cvsApi.deleteSearch(searchVals);
+    const list = [...this.searchesList];
+
+    const objIndex = this.findSearchIndex(searchVals);
+
+    if (objIndex > -1) {
+      list.splice(objIndex, 1);
+    }
+
+    this.searchesList = list;
+    this.findSearches(this.searchesSearchVals);
+    this.cvsApi.deleteSearch(searchVals);
   }
 }

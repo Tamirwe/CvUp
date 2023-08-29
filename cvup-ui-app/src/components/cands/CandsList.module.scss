@@ -3,9 +3,9 @@
   overflow-x: hidden;
   direction: ltr;
 
-  // &.isMobile {
-  //   padding-bottom: 3rem;
-  // }
+  &.isMobile {
+    padding-bottom: 3rem;
+  }
 }
 
 .listItem {

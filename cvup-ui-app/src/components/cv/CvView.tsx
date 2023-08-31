@@ -487,7 +487,7 @@ export const CvView = observer(() => {
         <br />
         <br />
       </div>
-      {/* {isMobile && (
+      {isMobile && (
         <div style={{ position: "fixed", bottom: "1rem", right: "0.1rem" }}>
           <IconButton
             title="Next"
@@ -524,7 +524,7 @@ export const CvView = observer(() => {
             <MdKeyboardArrowDown />
           </IconButton>
         </div>
-      )} */}
+      )}
     </Paper>
   );
 });

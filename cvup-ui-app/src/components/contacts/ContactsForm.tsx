@@ -43,6 +43,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
     lastName: "",
     email: "",
     phone: "",
+    role: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     customerId: "",
@@ -50,6 +51,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
     lastName: "",
     email: "",
     phone: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -168,7 +170,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
                   }
                 : null
             }
-            inputValue={formModel.customerName}
+            inputValue={formModel.customerName || ""}
             onInputChange={(event, newInputValue) => {
               setFormModel((currentProps) => ({
                 ...currentProps,
@@ -240,7 +242,7 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             }}
             error={errModel.firstName !== ""}
             helperText={errModel.firstName}
-            value={formModel.firstName}
+            value={formModel.firstName || ""}
           />
         </Grid>
         <Grid item xs={6}>
@@ -263,7 +265,52 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             }}
             error={errModel.lastName !== ""}
             helperText={errModel.lastName}
-            value={formModel.lastName}
+            value={formModel.lastName || ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} lg={6}>
+          <TextField
+            fullWidth
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="role"
+            label="Role"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                role: e.target.value,
+              }));
+              clearError("role");
+              setIsDirty(true);
+            }}
+            error={errModel.role !== ""}
+            helperText={errModel.role}
+            value={formModel.role || ""}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <TextField
+            fullWidth
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="phone"
+            label="Phone"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                phone: e.target.value,
+              }));
+              clearError("phone");
+              setIsDirty(true);
+            }}
+            error={errModel.phone !== ""}
+            helperText={errModel.phone}
+            value={formModel.phone || ""}
           />
         </Grid>
         <Grid item xs={12}>
@@ -288,33 +335,9 @@ export const ContactsForm = observer(({ onSaved, onCancel }: IProps) => {
             }}
             error={errModel.email !== ""}
             helperText={errModel.email}
-            value={formModel.email}
+            value={formModel.email || ""}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            sx={{ minWidth: 350 }}
-            fullWidth
-            disabled={crudType === CrudTypesEnum.Delete}
-            margin="normal"
-            type="text"
-            id="phone"
-            label="Phone"
-            variant="outlined"
-            onChange={(e) => {
-              setFormModel((currentProps) => ({
-                ...currentProps,
-                phone: e.target.value,
-              }));
-              clearError("phone");
-              setIsDirty(true);
-            }}
-            error={errModel.phone !== ""}
-            helperText={errModel.phone}
-            value={formModel.phone}
-          />
-        </Grid>
-
         <Grid item xs={12}>
           <FormHelperText error>{submitError}</FormHelperText>
         </Grid>

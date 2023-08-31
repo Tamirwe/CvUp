@@ -175,6 +175,7 @@ export interface IContact {
   customerName?: string;
   email: string;
   phone: string;
+  role: string;
 }
 
 export interface IFolder {

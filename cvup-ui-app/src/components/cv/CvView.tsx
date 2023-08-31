@@ -487,7 +487,7 @@ export const CvView = observer(() => {
         <br />
         <br />
       </div>
-      {isMobile && (
+      {isMobile && candsStore.candDisplay && (
         <div style={{ position: "fixed", bottom: "1rem", right: "0.1rem" }}>
           <IconButton
             title="Next"

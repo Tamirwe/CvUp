@@ -238,7 +238,7 @@ export const Header = observer(() => {
                     )}
                 </>
               )}
-              {/* <IconButton
+              <IconButton
                 title="Saved Searches"
                 sx={{ fontSize: "1.54rem" }}
                 size="small"
@@ -248,7 +248,7 @@ export const Header = observer(() => {
                 }
               >
                 <MdManageSearch />
-              </IconButton> */}
+              </IconButton>
             </Stack>
           </Grid>
           <Grid item xs={5} sx={{ textAlign: "right" }} pr={1}>

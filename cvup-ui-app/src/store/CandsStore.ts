@@ -19,6 +19,7 @@ export class CandsStore {
   private candIdDuplicateCvs: number = 0;
   private searchesList: ISearchModel[] = [];
   private externalSearch?: ISearchModel;
+  private isShoePosStages?: boolean = false;
   searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
 
@@ -36,6 +37,7 @@ export class CandsStore {
   // candPosSelected?: ICand;
   // candFolderSelected?: ICand;
   candDisplay?: ICand;
+  candDisplaySource: CandsSourceEnum = 0;
   private tabDisplayCandsLists: TabsCandsEnum = TabsCandsEnum.AllCands;
   posStages?: IPosStagesType[];
   emailTemplates?: IEmailTemplate[];
@@ -83,6 +85,14 @@ export class CandsStore {
     return this.externalSearch;
   }
 
+  set shoePosStages(val) {
+    this.isShoePosStages = val;
+  }
+
+  get shoePosStages() {
+    return this.isShoePosStages;
+  }
+
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
     // if (isMobile) {
@@ -98,6 +108,7 @@ export class CandsStore {
 
     runInAction(() => {
       this.candDisplay = cand;
+      this.candDisplaySource = candsSource;
       this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
         candsSource
       );
@@ -115,6 +126,42 @@ export class CandsStore {
         }
       }
     });
+  }
+
+  async nexePrevCv(indexAdd: number) {
+    let list;
+
+    switch (this.candDisplaySource) {
+      case CandsSourceEnum.Folder:
+        list = this.folderCandsList;
+
+        break;
+      case CandsSourceEnum.Position:
+        list = this.posCandsList;
+
+        break;
+      case CandsSourceEnum.PositionType:
+        list = this.posTypeCandsList;
+
+        break;
+      default:
+        list = this.allCandsList;
+        break;
+    }
+
+    if (list) {
+      let ind = list?.findIndex(
+        (x) => x.candidateId === this.candDisplay?.candidateId
+      );
+
+      if (ind > -1) {
+        ind = ind + indexAdd;
+
+        if (ind > -1 && ind < list?.length) {
+          this.displayCv(list[ind], this.candDisplaySource);
+        }
+      }
+    }
   }
 
   async displayCvDuplicate(candCv: ICandCv) {

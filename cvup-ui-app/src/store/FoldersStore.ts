@@ -46,8 +46,8 @@ export class FoldersStore {
 
   reset() {}
 
-  sortFolders(dir: string) {
-    if (dir === "desc") {
+  sortFolders(isDesc: boolean) {
+    if (isDesc) {
       this.foldersList.sort((a, b) =>
         a.name > b.name ? 1 : b.name > a.name ? -1 : 0
       );

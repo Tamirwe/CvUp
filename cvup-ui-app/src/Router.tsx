@@ -1,6 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
-// import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { LayoutAuthWrapper } from "./layouts/LayoutAuthWrapper";
 import { LayoutNotAuth } from "./layouts/LayoutNotAuth";
@@ -32,7 +31,6 @@ const Router = () => {
           {/* <Route path="/cv" element={<Cv />} /> */}
           <Route path="/cv" element={<CvPage />} />
           <Route path="/position/:pid" element={<Position />} />
-          {/* <Route path="/h1" element={<Home />} /> */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/candidatesreport" element={<CandidatesReport />} />
         </Route>

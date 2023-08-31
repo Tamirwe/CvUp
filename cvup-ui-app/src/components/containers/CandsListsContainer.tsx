@@ -25,32 +25,18 @@ export const CandsListsContainer = observer(() => {
     useState(false);
   const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
-  const sortCandList = (sortBy: SortByEnum, dir: string, list: ICand[]) => {
-    if (sortBy === SortByEnum.cvDate) {
-      const sorted = list.slice();
+  const sortCandList = (isDesc: boolean, list: ICand[]) => {
+    const sorted = list.slice();
 
-      if (dir === "asc") {
-        return sorted.sort((a, b) =>
-          a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
-        );
-      }
-
+    if (isDesc) {
       return sorted.sort((a, b) =>
-        a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
-      );
-    } else {
-      const sorted = list.slice();
-
-      if (dir === "asc") {
-        return sorted.sort((a, b) =>
-          a.score > b.score ? 1 : b.score > a.score ? -1 : 0
-        );
-      }
-
-      return sorted.sort((a, b) =>
-        a.score < b.score ? 1 : b.score < a.score ? -1 : 0
+        a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
       );
     }
+
+    return sorted.sort((a, b) =>
+      a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
+    );
   };
 
   useEffect(() => {
@@ -133,22 +119,19 @@ export const CandsListsContainer = observer(() => {
     }
   };
 
-  const handleSort = (
-    sortBy: SortByEnum,
-    dir: string,
-    ListSource: TabsCandsEnum
-  ) => {
+  const handleSort = (isDesc: boolean, ListSource: TabsCandsEnum) => {
     switch (ListSource) {
       case TabsCandsEnum.AllCands:
-        setAllCandsList(sortCandList(sortBy, dir, candsStore.allCandsList));
+        setAllCandsList(sortCandList(isDesc, candsStore.allCandsList));
+        break;
+      case TabsCandsEnum.PositionTypeCands:
+        setAllCandsList(sortCandList(isDesc, candsStore.posTypeCandsList));
         break;
       case TabsCandsEnum.PositionCands:
-        setCandsPosList(sortCandList(sortBy, dir, candsStore.posCandsList));
+        setCandsPosList(sortCandList(isDesc, candsStore.posCandsList));
         break;
       case TabsCandsEnum.FolderCands:
-        setCandsFolderList(
-          sortCandList(sortBy, dir, candsStore.folderCandsList)
-        );
+        setCandsFolderList(sortCandList(isDesc, candsStore.folderCandsList));
         break;
       default:
         break;
@@ -243,8 +226,9 @@ export const CandsListsContainer = observer(() => {
             onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
             shoeAdvancedIcon={true}
             records={candsStore.allCandsList && candsStore.allCandsList.length}
-            onSort={(sortBy: SortByEnum, dir: string) => {
-              handleSort(sortBy, dir, TabsCandsEnum.AllCands);
+            showSort={true}
+            onSort={(isDesc: boolean) => {
+              handleSort(isDesc, TabsCandsEnum.AllCands);
             }}
             showRefreshList={true}
             extSearch={candsStore.extSearch}
@@ -267,8 +251,9 @@ export const CandsListsContainer = observer(() => {
             }
             shoeAdvancedIcon={true}
             records={candsStore.posCandsList && candsStore.posCandsList.length}
-            onSort={(sortBy: SortByEnum, dir: string) => {
-              handleSort(sortBy, dir, TabsCandsEnum.PositionCands);
+            showSort={true}
+            onSort={(isDesc: boolean) => {
+              handleSort(isDesc, TabsCandsEnum.PositionCands);
             }}
             showRefreshList={true}
           />
@@ -294,8 +279,9 @@ export const CandsListsContainer = observer(() => {
             records={
               candsStore.posTypeCandsList && candsStore.posTypeCandsList.length
             }
-            onSort={(sortBy: SortByEnum, dir: string) => {
-              handleSort(sortBy, dir, TabsCandsEnum.PositionTypeCands);
+            showSort={true}
+            onSort={(isDesc: boolean) => {
+              handleSort(isDesc, TabsCandsEnum.PositionTypeCands);
             }}
             showRefreshList={true}
           />
@@ -317,8 +303,9 @@ export const CandsListsContainer = observer(() => {
             records={
               candsStore.folderCandsList && candsStore.folderCandsList.length
             }
-            onSort={(sortBy: SortByEnum, dir: string) => {
-              handleSort(sortBy, dir, TabsCandsEnum.FolderCands);
+            showSort={true}
+            onSort={(isDesc: boolean) => {
+              handleSort(isDesc, TabsCandsEnum.FolderCands);
             }}
           />
         </Box>

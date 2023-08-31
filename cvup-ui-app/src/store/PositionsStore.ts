@@ -58,7 +58,7 @@ export class PositionsStore {
     this.positionEdit = val;
   }
 
-  searchSortPositions(dir?: string, searchVals?: ISearchModel) {
+  searchSortPositions(isDesc: boolean, searchVals?: ISearchModel) {
     runInAction(() => {
       if (searchVals) {
         this.searchPhrase = searchVals;
@@ -75,23 +75,21 @@ export class PositionsStore {
       }
 
       //positionsList is already sorted desc order
-      if (dir) {
-        if (dir === "desc") {
-          this.sortedPosList.sort(
-            (a, b) =>
-              new Date(b.updated).getTime() - new Date(a.updated).getTime()
-          );
-        } else {
-          this.sortedPosList.sort(
-            (a, b) =>
-              new Date(a.updated).getTime() - new Date(b.updated).getTime()
-          );
-        }
+      if (isDesc) {
+        this.sortedPosList.sort(
+          (a, b) =>
+            new Date(b.updated).getTime() - new Date(a.updated).getTime()
+        );
+      } else {
+        this.sortedPosList.sort(
+          (a, b) =>
+            new Date(a.updated).getTime() - new Date(b.updated).getTime()
+        );
       }
     });
   }
 
-  searchPositionsTypes(dir?: string, searchVals?: ISearchModel) {
+  searchPositionsTypes(isDesc: boolean, searchVals?: ISearchModel) {
     runInAction(() => {
       if (searchVals && searchVals.value) {
         this.sortedPosTypesList = this.positionsTypesList.filter((x) =>
@@ -102,20 +100,18 @@ export class PositionsStore {
       }
 
       //positionsList is already sorted desc order
-      if (dir) {
-        if (dir === "desc") {
-          this.sortedPosTypesList.sort(
-            (a, b) =>
-              new Date(b.dateUpdated).getTime() -
-              new Date(a.dateUpdated).getTime()
-          );
-        } else {
-          this.sortedPosTypesList.sort(
-            (a, b) =>
-              new Date(a.dateUpdated).getTime() -
-              new Date(b.dateUpdated).getTime()
-          );
-        }
+      if (isDesc) {
+        this.sortedPosTypesList.sort(
+          (a, b) =>
+            new Date(b.dateUpdated).getTime() -
+            new Date(a.dateUpdated).getTime()
+        );
+      } else {
+        this.sortedPosTypesList.sort(
+          (a, b) =>
+            new Date(a.dateUpdated).getTime() -
+            new Date(b.dateUpdated).getTime()
+        );
       }
     });
   }

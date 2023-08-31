@@ -50,11 +50,11 @@ export const LeftListsContainer = observer(() => {
   };
 
   const handlePositionsSearch = (searchVals: ISearchModel) => {
-    positionsStore.searchSortPositions(undefined, searchVals);
+    positionsStore.searchSortPositions(true, searchVals);
   };
 
   const handlePositionsTypesSearch = (searchVals: ISearchModel) => {
-    positionsStore.searchPositionsTypes(undefined, searchVals);
+    positionsStore.searchPositionsTypes(true, searchVals);
   };
 
   const handleFoldersSearch = (searchVals: ISearchModel) => {
@@ -103,8 +103,10 @@ export const LeftListsContainer = observer(() => {
           <SearchControl
             onSearch={handlePositionsSearch}
             records={positionsStore.sortedPosList.length}
-            showSortLeft={true}
-            onSortLeftLists={(dir) => positionsStore.searchSortPositions(dir)}
+            showSort={true}
+            onSort={(isDesc: boolean) =>
+              positionsStore.searchSortPositions(isDesc)
+            }
             showRefreshList={true}
             onRefreshLists={() => positionsStore.getPositionsList()}
           />
@@ -116,8 +118,10 @@ export const LeftListsContainer = observer(() => {
           <SearchControl
             onSearch={handlePositionsTypesSearch}
             records={positionsStore.sortedPosTypesList.length}
-            showSortLeft={true}
-            onSortLeftLists={(dir) => positionsStore.searchPositionsTypes(dir)}
+            showSort={true}
+            onSort={(isDesc: boolean) =>
+              positionsStore.searchPositionsTypes(isDesc)
+            }
             showRefreshList={true}
             onRefreshLists={() => positionsStore.getPositionsTypesList()}
           />
@@ -131,8 +135,8 @@ export const LeftListsContainer = observer(() => {
           <SearchControl
             onSearch={handleFoldersSearch}
             records={foldersStore.sortedFolders.length}
-            showSortLeft={true}
-            onSortLeftLists={(dir) => foldersStore.sortFolders(dir)}
+            showSort={true}
+            onSort={(isDesc: boolean) => foldersStore.sortFolders(isDesc)}
           />
         </Box>
         <FoldersList />
@@ -144,9 +148,9 @@ export const LeftListsContainer = observer(() => {
           <SearchControl
             onSearch={handleContactsSearch}
             records={customersContactsStore.contactsListSorted.length}
-            showSortLeft={true}
-            onSortLeftLists={(dir) =>
-              (customersContactsStore.contactsListSortDirection = dir)
+            showSort={true}
+            onSort={(isDesc: boolean) =>
+              (customersContactsStore.contactsListSortDesc = isDesc)
             }
           />
         </Box>

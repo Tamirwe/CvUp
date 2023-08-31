@@ -1,9 +1,4 @@
-import {
-  InputBase,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { InputBase, Stack, ToggleButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import {
@@ -12,7 +7,6 @@ import {
   MdOutlineClose,
   MdOutlineSearch,
   MdRefresh,
-  MdRule,
   MdSort,
 } from "react-icons/md";
 import useDebounce from "../../Hooks/useDebounce";
@@ -39,8 +33,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   cursor: "pointer",
   padding: theme.spacing(0, 2),
   height: "100%",
-  // position: "absolute",
-  // pointerEvents: "none",
+
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -54,8 +47,7 @@ const IconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   right: 0,
   height: "100%",
-  // position: "absolute",
-  // pointerEvents: "none",
+
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -72,9 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: 0,
     margin: "0",
     direction: "rtl",
-    // vertical padding + font size from searchIcon
-    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    // paddingRight: `calc(1em + ${theme.spacing(4)})`,
+
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("sm")]: {
@@ -90,9 +80,8 @@ interface IProps {
   onSearch: (value: ISearchModel) => void;
   onShowAdvanced?: (isShow: boolean) => void;
   records?: number;
-  onSort?: (sortBy: SortByEnum, dir: string) => void;
-  onSortLeftLists?: (dir: string) => void;
-  showSortLeft?: boolean;
+  onSort?: (isDesc: boolean) => void;
+  showSort?: boolean;
   showRefreshList?: boolean;
   onRefreshLists?: () => void;
   extSearch?: ISearchModel;
@@ -104,8 +93,7 @@ export const SearchControl = ({
   shoeAdvancedIcon = false,
   records,
   onSort,
-  onSortLeftLists,
-  showSortLeft = false,
+  showSort = false,
   showRefreshList = false,
   onRefreshLists,
   extSearch,
@@ -121,9 +109,10 @@ export const SearchControl = ({
   const [sortBy, setSortBy] = useState(SortByEnum.score);
   const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
   const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
-  const [sortByLeft, setSortByLeft] = useState(true);
+  const [sortAsc, setSortAsc] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isExactSearch, setIsExactSearch] = useState(true);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
@@ -176,38 +165,13 @@ export const SearchControl = ({
     onSearch(searchVals);
   };
 
-  const handleSort = (cvDateSortClick: boolean, ScoreSortClick: boolean) => {
-    let sortDir = "";
-
-    if (cvDateSortClick) {
-      if (sortByCvDateDesc) {
-        sortDir = "asc";
-      } else {
-        sortDir = "desc";
-      }
-
-      setSortByScoreDesc(false);
-      setSortBy(SortByEnum.cvDate);
-      onSort && onSort(SortByEnum.cvDate, sortDir);
-    } else {
-      if (sortByScoreDesc) {
-        sortDir = "asc";
-      } else {
-        sortDir = "desc";
-      }
-      setSortByCvDateDesc(false);
-      setSortBy(SortByEnum.score);
-      onSort && onSort(SortByEnum.score, sortDir);
-    }
-  };
-
   return (
     <Stack
       onClick={(event) => {
         event.stopPropagation();
         event.preventDefault();
       }}
-      sx={{ width: "100%" }}
+      sx={{ width: "100%", paddingRight: "3px" }}
     >
       <Stack
         direction="row"
@@ -215,22 +179,17 @@ export const SearchControl = ({
         sx={{ direction: "rtl", width: "100%" }}
       >
         {showRefreshList && (
-          <ToggleButtonGroup
+          <ToggleButton
             sx={{
               direction: "ltr",
-              marginLeft: 0.5,
-              "& .MuiButtonBase-root": {
+              "&.MuiButtonBase-root": {
                 padding: "5px 3px",
-                fontSize: "1.0rem",
-              },
-              "&.MuiToggleButtonGroup-root": {
-                marginRight: "4px",
+                fontSize: "1.1rem",
               },
             }}
+            value="check"
             color="primary"
-            value={refreshList}
-            exclusive
-            size="small"
+            selected={true}
             onChange={(event) => {
               event.stopPropagation();
               event.preventDefault();
@@ -242,12 +201,9 @@ export const SearchControl = ({
               }));
               onRefreshLists && onRefreshLists();
             }}
-            aria-label="Platform"
           >
-            <ToggleButton value={true} title="Load new cv's">
-              <MdRefresh />
-            </ToggleButton>
-          </ToggleButtonGroup>
+            <MdRefresh />
+          </ToggleButton>
         )}
         <Search sx={{ direction: "rtl" }}>
           <SearchIconWrapper>
@@ -286,11 +242,14 @@ export const SearchControl = ({
                   onClick={() => {
                     setShowAdvancedSearch(false);
                     onShowAdvanced && onShowAdvanced(false);
-                    setSearchVals((prevState) => ({
-                      ...prevState,
-                      advancedValue: "",
-                      exact: false,
-                    }));
+
+                    if (searchVals.advancedValue) {
+                      setSearchVals((prevState) => ({
+                        ...prevState,
+                        advancedValue: "",
+                        exact: false,
+                      }));
+                    }
                   }}
                 />
               ) : (
@@ -304,31 +263,52 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-        {showSortLeft && (
-          <ToggleButtonGroup
+        {shoeAdvancedIcon && (
+          <ToggleButton
             sx={{
               direction: "ltr",
-              "& .MuiButtonBase-root": {
-                padding: "5px 3px",
-                fontSize: "1.0rem",
+              "&.MuiButtonBase-root": {
+                padding: "2px 3px",
+                fontSize: "0.8rem",
               },
             }}
-            color={sortByLeft ? "primary" : "secondary"}
-            value={sortByLeft}
-            exclusive
-            size="small"
+            value="check"
+            color="primary"
+            selected={searchVals.exact}
             onChange={(event) => {
               event.stopPropagation();
               event.preventDefault();
-              setSortByLeft(!sortByLeft);
-              onSortLeftLists && onSortLeftLists(sortByLeft ? "asc" : "desc");
+              setSearchVals((currentProps) => ({
+                ...currentProps,
+                exact: !searchVals.exact,
+              }));
             }}
-            aria-label="Platform"
           >
-            <ToggleButton value={true} title="Sort by updated date">
-              <MdSort />
-            </ToggleButton>
-          </ToggleButtonGroup>
+            Ex
+          </ToggleButton>
+        )}
+        {showSort && (
+          <ToggleButton
+            sx={{
+              direction: "ltr",
+              "&.MuiButtonBase-root": {
+                padding: "5px 2px",
+                fontSize: "1.1rem",
+              },
+            }}
+            title="Sort by date"
+            value="check"
+            color="primary"
+            selected={sortAsc}
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSortAsc(!sortAsc);
+              onSort && onSort(sortAsc);
+            }}
+          >
+            <MdSort />
+          </ToggleButton>
         )}
         {((searchVals.value && records !== undefined) ||
           (!shoeAdvancedIcon && records !== undefined)) && (
@@ -345,34 +325,6 @@ export const SearchControl = ({
           >
             {records === 300 ? `300...` : `${records} `}
           </div>
-        )}
-        {shoeAdvancedIcon && (
-          <ToggleButtonGroup
-            sx={{
-              direction: "ltr",
-              "& .MuiButtonBase-root": { padding: "3px", fontSize: "0.7rem" },
-            }}
-            color="primary"
-            value={searchVals.exact ? "exact" : "approximate"}
-            exclusive
-            size="small"
-            onChange={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              setSearchVals((currentProps) => ({
-                ...currentProps,
-                exact: !searchVals.exact,
-              }));
-            }}
-            aria-label="Platform"
-          >
-            <ToggleButton value="approximate" title="Approximate Search">
-              AP
-            </ToggleButton>
-            <ToggleButton value="exact" title="Exact Search">
-              Ex
-            </ToggleButton>
-          </ToggleButtonGroup>
         )}
       </Stack>
       {showAdvancedSearch && (
@@ -401,58 +353,6 @@ export const SearchControl = ({
               </IconWrapper>
             )}
           </Search>
-
-          <ToggleButtonGroup
-            sx={{
-              direction: "ltr",
-              "& .MuiButtonBase-root": {
-                padding: "5px 3px",
-                fontSize: "1.0rem",
-              },
-            }}
-            color={sortByCvDateDesc ? "primary" : "secondary"}
-            value={sortBy}
-            exclusive
-            size="small"
-            onChange={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              setSortByCvDateDesc(!sortByCvDateDesc);
-              handleSort(true, false);
-            }}
-            aria-label="Platform"
-          >
-            <ToggleButton
-              value={SortByEnum.cvDate}
-              title="Sort by cv sent date"
-            >
-              <MdSort />
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <ToggleButtonGroup
-            sx={{
-              direction: "ltr",
-              "& .MuiButtonBase-root": {
-                padding: "5px 3px",
-                fontSize: "1.0rem",
-              },
-            }}
-            color={sortByScoreDesc ? "primary" : "secondary"}
-            value={sortBy}
-            exclusive
-            size="small"
-            onChange={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              setSortByScoreDesc(!sortByScoreDesc);
-              handleSort(false, true);
-            }}
-            aria-label="Platform"
-          >
-            <ToggleButton value={SortByEnum.score} title="Sort by score">
-              <MdRule />
-            </ToggleButton>
-          </ToggleButtonGroup>
         </Stack>
       )}
     </Stack>

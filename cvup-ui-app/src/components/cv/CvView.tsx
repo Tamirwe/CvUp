@@ -7,6 +7,7 @@ import {
   Button,
   FormControl,
   Grid,
+  IconButton,
   Link,
   MenuItem,
   Paper,
@@ -19,13 +20,21 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ICandPosStage } from "../../models/GeneralModels";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
-import { MdContentCopy, MdExpandMore } from "react-icons/md";
+import {
+  MdContentCopy,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+} from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
 import { CandsPosStagesList } from "../cands/CandsPosStagesList";
 import { CandDupCvsList } from "../cands/CandDupCvsList";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
+  const navigate = useNavigate();
+  let location = useLocation();
+
   const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
   const [candidateName, setCandidateName] = useState("");
   const [review, setReview] = useState("");
@@ -128,7 +137,14 @@ export const CvView = observer(() => {
       <div
         ref={scrollRef}
         className={styles.scrollCv}
-        style={{ marginTop: "0.5rem" }}
+        style={{
+          marginTop: "0.5rem",
+          overflow:
+            isMobile &&
+            (generalStore.rightDrawerOpen || generalStore.leftDrawerOpen)
+              ? "hidden"
+              : "scroll",
+        }}
       >
         {candsStore.candDisplay && (
           <Grid
@@ -471,6 +487,44 @@ export const CvView = observer(() => {
         <br />
         <br />
       </div>
+      {/* {isMobile && (
+        <div style={{ position: "fixed", bottom: "1rem", right: "0.1rem" }}>
+          <IconButton
+            title="Next"
+            sx={{ display: "block", fontSize: "3rem", color: "#b700ff" }}
+            size="medium"
+            onClick={async (event) => {
+              event.stopPropagation();
+              event.preventDefault();
+
+              if (location.pathname !== "/cv") {
+                navigate(`/cv`);
+              }
+
+              await candsStore.nexePrevCv(-1);
+            }}
+          >
+            <MdKeyboardArrowUp />
+          </IconButton>
+          <IconButton
+            title="Previous"
+            sx={{ display: "block", fontSize: "3rem", color: "#b700ff" }}
+            size="medium"
+            onClick={async (event) => {
+              event.stopPropagation();
+              event.preventDefault();
+
+              if (location.pathname !== "/cv") {
+                navigate(`/cv`);
+              }
+
+              await candsStore.nexePrevCv(1);
+            }}
+          >
+            <MdKeyboardArrowDown />
+          </IconButton>
+        </div>
+      )} */}
     </Paper>
   );
 });

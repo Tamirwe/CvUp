@@ -15,6 +15,7 @@ import {
   MdGroup,
   MdOutlineDelete,
   MdOutlineTextSnippet,
+  MdRule,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
@@ -110,6 +111,17 @@ export const SettingsMenu = () => {
           <Avatar /> My account
         </MenuItem> */}
         <Divider />
+        <MenuItem
+          onClick={async () => {
+            
+              candsStore.shoePosStages = !candsStore.shoePosStages;
+          }}
+        >
+          <Avatar>
+            <MdRule />
+          </Avatar>
+          Show Candidate History
+        </MenuItem>
         <MenuItem
           onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(

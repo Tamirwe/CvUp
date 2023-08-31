@@ -1,32 +1,23 @@
 import {
   Box,
-  Collapse,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
-  Stack,
 } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  MdExpandLess,
-  MdExpandMore,
-  MdHistory,
-  MdOutlineFilterNone,
-} from "react-icons/md";
+import { MdHistory, MdOutlineFilterNone } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum } from "../../models/GeneralEnums";
 import { ICand } from "../../models/GeneralModels";
-import { CandDupCvsList } from "./CandDupCvsList";
-import { CandsPosStagesList } from "./CandsPosStagesList";
 import { isMobile } from "react-device-detect";
 import styles from "./CandsList.module.scss";
 import classNames from "classnames";
+import { CandsPosStagesList } from "./CandsPosStagesList";
 
 interface IProps {
   candsListData: ICand[];
@@ -315,7 +306,9 @@ export const CandsList = observer(
                       {cand.city}
                     </div>
                   )}
-
+                  {candsStore.shoePosStages && (
+                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
+                  )}
                   {/* {candsSource !== CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && (

@@ -23,12 +23,11 @@ import { CustomersListDialog } from "../components/customers/CustomersListDialog
 import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 import { BrowserView, MobileView, isMobile } from "react-device-detect";
-import { BrowserAuthLayout } from "./BrowserAuthLayout";
-import { MobileAuthLayout2 } from "./MobileAuthLayout2";
+import { MobileAuthLayout } from "./MobileAuthLayout";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
 import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
 import { CandFormDialog } from "../components/cands/CandFormDialog";
-import { DescktopAuthLayout } from "./DescktopAuthLayout";
+import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
 import { SearchesListDialog } from "../components/searches/SearchesListDialog";
 
@@ -179,11 +178,10 @@ export const LayoutAuthWrapper = observer(() => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <BrowserView>
-        {/* <BrowserAuthLayout /> */}
-        <DescktopAuthLayout />
+        <BrowserAuthLayout />
       </BrowserView>
       <MobileView>
-        <MobileAuthLayout2 />
+        <MobileAuthLayout />
       </MobileView>
     </Box>
   );

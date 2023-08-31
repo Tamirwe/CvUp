@@ -253,4 +253,10 @@ export default class CandsApi extends BaseApi {
       return await this.http.put(`Cand/DeleteSearch`, searchVals);
     });
   }
+
+  async deleteAllNotStarSearches() {
+    return await this.apiWrapper2<ISearchModel[]>(async () => {
+      return await this.http.put(`Cand/DeleteAllNotStarSearches`);
+    });
+  }
 }

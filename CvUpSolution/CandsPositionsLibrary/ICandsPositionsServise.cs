@@ -63,5 +63,6 @@ namespace CandsPositionsLibrary
         Task SaveSearch(int companyId, SearchModel searchVals);
         Task StarSearch(int companyId, SearchModel searchVals);
         Task DeleteSearch(int companyId, SearchModel searchVals);
+        Task DeleteAllNotStarSearches(int companyId);
     }
 }

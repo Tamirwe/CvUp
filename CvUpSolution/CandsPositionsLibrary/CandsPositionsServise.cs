@@ -437,5 +437,10 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.DeleteSearch(companyId, searchVals);
         }
+
+        public async Task DeleteAllNotStarSearches(int companyId)
+        {
+            await _cvsPositionsQueries.DeleteAllNotStarSearches(companyId);
+        }
     }
 }

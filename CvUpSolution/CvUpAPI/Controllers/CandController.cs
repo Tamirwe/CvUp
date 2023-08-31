@@ -283,5 +283,13 @@ namespace CvUpAPI.Controllers
             await _candPosService.DeleteSearch(Globals.CompanyId, searchVals);
             return Ok();
         }
+
+        [HttpPut]
+        [Route("DeleteAllNotStarSearches")]
+        public async Task<List<SearchModel>> DeleteAllNotStarSearches()
+        {
+            await _candPosService.DeleteAllNotStarSearches(Globals.CompanyId);
+            return await _candPosService.GetSearches(Globals.CompanyId);
+        }
     }
 }

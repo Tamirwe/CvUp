@@ -1415,11 +1415,21 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task DeleteAllNotStarSearches(int companyId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var searchesToDelete = await dbContext.searches.Where(x => x.company_id == companyId && x.is_starred == false).ToListAsync();
+                dbContext.searches.RemoveRange(searchesToDelete);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
         private async Task<search?> FindSearchByVals(int companyId, SearchModel searchVals)
         {
             using (var dbContext = new cvup00001Context())
             {
-                var sVal = string.IsNullOrEmpty(searchVals.value) ? null : searchVals.value.Trim();
+                var sVal = string.IsNullOrEmpty(searchVals.value) ? "" : searchVals.value.Trim();
 
                 if (sVal != null)
                 {

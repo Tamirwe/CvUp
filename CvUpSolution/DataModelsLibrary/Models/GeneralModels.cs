@@ -65,5 +65,6 @@ namespace DataModelsLibrary.Models
         public string email { get; set; } = string.Empty;
         public string? phone { get; set; } = string.Empty;
         public string customerName { get; set; } = string.Empty;
+        public string? role { get; set; } = string.Empty;
     }
 }

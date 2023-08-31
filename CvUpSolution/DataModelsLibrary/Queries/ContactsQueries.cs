@@ -24,6 +24,7 @@ namespace DataModelsLibrary.Queries
                     last_name = data.lastName,
                     email = data.email,
                     phone= data.phone,
+                    role=data.role,
                 };
 
                 dbContext.contacts.Add(cont);
@@ -45,6 +46,7 @@ namespace DataModelsLibrary.Queries
                     last_name = data.lastName,
                     email = data.email,
                     phone= data.phone,
+                    role= data.role,
                 };
 
                 dbContext.contacts.Update(fdr);
@@ -87,7 +89,8 @@ namespace DataModelsLibrary.Queries
                                 email = c.email,
                                 phone = c.phone,
                                 customerId = c.customer_id,
-                                customerName = r.name
+                                customerName = r.name,
+                                role = c.role,
                             };
 
                 return await query.ToListAsync();

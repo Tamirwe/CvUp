@@ -880,4 +880,11 @@ export class CandsStore {
     this.findSearches(this.searchesSearchVals);
     this.cvsApi.deleteSearch(searchVals);
   }
+
+  async deleteAllNotStarSearches() {
+    const res = await this.cvsApi.deleteAllNotStarSearches();
+
+    this.searchesList = res.data;
+    this.sortedSearchesList = [...res.data];
+  }
 }

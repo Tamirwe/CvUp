@@ -5,7 +5,7 @@ import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { SearchControl } from "../header/SearchControl";
 import { useStore } from "../../Hooks/useStore";
 import { ISearchModel } from "../../models/GeneralModels";
-import { MdStar, MdStarOutline } from "react-icons/md";
+import { MdOutlineDelete, MdStar, MdStarOutline } from "react-icons/md";
 import { observer } from "mobx-react";
 
 interface IProps {
@@ -33,6 +33,12 @@ export const SearchesListDialog = observer(({ isOpen, onClose }: IProps) => {
       </BootstrapDialogTitle>
       <DialogContent>
         <Stack direction="row" sx={{ width: "100%" }}>
+          <IconButton
+            title="Delete not saved searches"
+            onClick={() => candsStore.deleteAllNotStarSearches()}
+          >
+            <MdOutlineDelete />
+          </IconButton>
           <IconButton
             title="Saved Searches"
             onClick={() => candsStore.findStarSearches()}

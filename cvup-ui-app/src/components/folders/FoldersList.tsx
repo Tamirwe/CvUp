@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Fab, IconButton, Slide } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { CiEdit } from "react-icons/ci";
 import { useStore } from "../../Hooks/useStore";
@@ -9,7 +9,11 @@ import {
 } from "../../models/GeneralEnums";
 import { IFolder, IFolderNode } from "../../models/GeneralModels";
 import styles from "./FoldersList.module.scss";
-import { MdPersonAddAlt1, MdPersonRemove } from "react-icons/md";
+import {
+  MdKeyboardArrowUp,
+  MdPersonAddAlt1,
+  MdPersonRemove,
+} from "react-icons/md";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import classNames from "classnames";
@@ -18,6 +22,7 @@ export const FoldersList = observer(() => {
   const { foldersStore, candsStore, generalStore } = useStore();
   const listRef = useRef<any>(null);
   const [rootFoldersList, setRootFoldersList] = useState<IFolder[]>([]);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     if (!foldersStore.foldersList.length) {
@@ -42,11 +47,15 @@ export const FoldersList = observer(() => {
 
   const onScroll = useCallback(() => {
     const instance = listRef.current;
+    const sTop = instance.scrollTop;
 
-    if (
-      instance.scrollHeight - instance.clientHeight <
-      instance.scrollTop + 150
-    ) {
+    if (sTop > 50) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+
+    if (instance.scrollHeight - instance.clientHeight < sTop + 150) {
       if (rootFoldersList) {
         const numRecords = rootFoldersList.length;
         const newPosList = rootFoldersList.concat(
@@ -54,8 +63,6 @@ export const FoldersList = observer(() => {
         );
         setRootFoldersList(newPosList);
       }
-
-      console.log(instance.scrollTop);
     }
   }, [rootFoldersList]);
 
@@ -197,20 +204,40 @@ export const FoldersList = observer(() => {
   };
 
   return (
-    <ul
-      className={classNames({
-        [styles.ulRoot]: true,
-        [styles.isMobile]: isMobile,
-      })}
-      role="tree"
-      ref={listRef}
-    >
-      {renderChildren({
-        folder: {
-          ...foldersStore.rootFolder,
-        },
-        children: rootFoldersList.filter((x) => x.parentId === 0),
-      })}
-    </ul>
+    <>
+      <ul
+        className={classNames({
+          [styles.ulRoot]: true,
+          [styles.isMobile]: isMobile,
+        })}
+        role="tree"
+        ref={listRef}
+      >
+        {renderChildren({
+          folder: {
+            ...foldersStore.rootFolder,
+          },
+          children: rootFoldersList.filter((x) => x.parentId === 0),
+        })}
+      </ul>
+      <Slide direction="up" in={isScrolled} mountOnEnter unmountOnExit>
+        <Fab
+          size="medium"
+          color="primary"
+          sx={{
+            zIndex: 999,
+            position: "fixed",
+            bottom: "7rem",
+            left: "4rem",
+            fontSize: "2rem",
+          }}
+          onClick={() => {
+            listRef.current.scrollTop = 0;
+          }}
+        >
+          <MdKeyboardArrowUp />
+        </Fab>
+      </Slide>
+    </>
   );
 });

@@ -1,15 +1,21 @@
 import {
   Box,
+  Fab,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
+  Slide,
 } from "@mui/material";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MdHistory, MdOutlineFilterNone } from "react-icons/md";
+import {
+  MdHistory,
+  MdKeyboardArrowUp,
+  MdOutlineFilterNone,
+} from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum } from "../../models/GeneralEnums";
@@ -34,6 +40,7 @@ export const CandsList = observer(
     const listRef = useRef<any>(null);
     // const [dupOpenCandId, setDupOpenCandId] = useState(0);
     const [listCands, setListCands] = useState<ICand[]>([]);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
       if (candsListData) {
@@ -59,11 +66,15 @@ export const CandsList = observer(
 
     const onScroll = useCallback(() => {
       const instance = listRef.current;
+      const sTop = instance.scrollTop;
 
-      if (
-        instance.scrollHeight - instance.clientHeight <
-        instance.scrollTop + 50
-      ) {
+      if (sTop > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+
+      if (instance.scrollHeight - instance.clientHeight < sTop + 50) {
         if (listCands) {
           const numRecords = listCands.length;
 
@@ -89,146 +100,129 @@ export const CandsList = observer(
     }, [onScroll]);
 
     return (
-      <List
-        ref={listRef}
-        dense={true}
-        sx={{
-          height: isMobile
-            ? advancedOpen
-              ? "64vh"
-              : "70vh"
-            : advancedOpen
-            ? "calc(100vh - 173px)"
-            : "calc(100vh - 125px)",
-        }}
-        className={classNames({
-          [styles.candList]: true,
-          [styles.isMobile]: isMobile,
-        })}
-      >
-        {listCands.map((cand, i) => {
-          const posStage = cand.posStages?.find(
-            (x) => x._pid === positionsStore.selectedPosition?.id
-          );
-          return (
-            <ListItem
-              key={`${cand.candidateId}${i}`}
-              dense
-              disablePadding
-              component="nav"
-              sx={{
-                flexDirection: "column",
-                alignItems: "normal",
-                direction: "rtl",
-                pl: "2px",
-              }}
-            >
-              <ListItemButton
+      <>
+        <List
+          ref={listRef}
+          dense={true}
+          sx={{
+            height: isMobile
+              ? advancedOpen
+                ? "64vh"
+                : "70vh"
+              : advancedOpen
+              ? "calc(100vh - 173px)"
+              : "calc(100vh - 125px)",
+          }}
+          className={classNames({
+            [styles.candList]: true,
+            [styles.isMobile]: isMobile,
+          })}
+        >
+          {listCands.map((cand, i) => {
+            const posStage = cand.posStages?.find(
+              (x) => x._pid === positionsStore.selectedPosition?.id
+            );
+            return (
+              <ListItem
+                key={`${cand.candidateId}${i}`}
+                dense
+                disablePadding
+                component="nav"
                 sx={{
-                  pl: 0,
-                  fontWeight: "bold",
-                  color: posStage
-                    ? candsStore.findStageColor(posStage._tp)
-                    : cand.isSeen
-                    ? "unset"
-                    : "green",
-                }}
-                selected={
-                  cand.candidateId === candsStore.candDisplay?.candidateId
-                }
-                onClick={async (event) => {
-                  event.stopPropagation();
-                  event.preventDefault();
-
-                  if (location.pathname !== "/cv") {
-                    navigate(`/cv`);
-                  }
-
-                  await candsStore.displayCv(cand, candsSource);
-
-                  if (isMobile) {
-                    generalStore.rightDrawerOpen = false;
-                  }
+                  flexDirection: "column",
+                  alignItems: "normal",
+                  direction: "rtl",
+                  pl: "2px",
                 }}
               >
-                <Box
+                <ListItemButton
                   sx={{
-                    width: "100%",
+                    pl: 0,
+                    fontWeight: "bold",
+                    color: posStage
+                      ? candsStore.findStageColor(posStage._tp)
+                      : cand.isSeen
+                      ? "unset"
+                      : "green",
+                  }}
+                  selected={
+                    cand.candidateId === candsStore.candDisplay?.candidateId
+                  }
+                  onClick={async (event) => {
+                    event.stopPropagation();
+                    event.preventDefault();
+
+                    if (location.pathname !== "/cv") {
+                      navigate(`/cv`);
+                    }
+
+                    await candsStore.displayCv(cand, candsSource);
+
+                    if (isMobile) {
+                      generalStore.rightDrawerOpen = false;
+                    }
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                  <Box
+                    sx={{
+                      width: "100%",
                     }}
                   >
                     <div
-                      title={
-                        candsSource === CandsSourceEnum.AllCands
-                          ? "Email subject"
-                          : ""
-                      }
-                      className={classNames({
-                        [styles.listItemText]: true,
-                        [styles.isMobile]: isMobile,
-                      })}
-                    >
-                      {candsSource === CandsSourceEnum.AllCands
-                        ? cand.emailSubject
-                            .replace("מועמדות חדשה מ", "")
-                            .replace(" למשרת ", " - ")
-                        : `${cand.firstName || ""} ${cand.lastName || ""}`}
-                    </div>
-
-                    <div
                       style={{
                         display: "flex",
+                        justifyContent: "space-between",
                         alignItems: "center",
                       }}
                     >
                       <div
-                        title="Cv received"
+                        title={
+                          candsSource === CandsSourceEnum.AllCands
+                            ? "Email subject"
+                            : ""
+                        }
                         className={classNames({
-                          [styles.listItemDate]: true,
+                          [styles.listItemText]: true,
                           [styles.isMobile]: isMobile,
                         })}
                       >
-                        {posStage ? (
-                          <div style={{ width: "100%", textAlign: "right" }}>
-                            {` ${format(
-                              new Date(posStage._dt),
-                              "MMM d, yyyy"
-                            )} - ${candsStore.findStageName(posStage._tp)} `}
-                          </div>
-                        ) : (
-                          format(new Date(cand.cvSent), "MMM d, yy")
-                        )}
+                        {candsSource === CandsSourceEnum.AllCands
+                          ? cand.emailSubject
+                              .replace("מועמדות חדשה מ", "")
+                              .replace(" למשרת ", " - ")
+                          : `${cand.firstName || ""} ${cand.lastName || ""}`}
                       </div>
-                      {candsSource === CandsSourceEnum.Position ? (
-                        <ListItemIcon
-                          title="Has duplicates cv`s"
-                          sx={{
-                            minWidth: 0,
-                            visibility: "hidden",
-                          }}
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div
+                          title="Cv received"
+                          className={classNames({
+                            [styles.listItemDate]: true,
+                            [styles.isMobile]: isMobile,
+                          })}
                         >
-                          <IconButton
-                            color="primary"
-                            sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
-                          >
-                            <MdOutlineFilterNone />
-                          </IconButton>
-                        </ListItemIcon>
-                      ) : (
-                        <>
+                          {posStage ? (
+                            <div style={{ width: "100%", textAlign: "right" }}>
+                              {` ${format(
+                                new Date(posStage._dt),
+                                "MMM d, yyyy"
+                              )} - ${candsStore.findStageName(posStage._tp)} `}
+                            </div>
+                          ) : (
+                            format(new Date(cand.cvSent), "MMM d, yy")
+                          )}
+                        </div>
+                        {candsSource === CandsSourceEnum.Position ? (
                           <ListItemIcon
                             title="Has duplicates cv`s"
                             sx={{
                               minWidth: 0,
-                              visibility: cand.hasDuplicates
-                                ? "visible"
-                                : "hidden",
+                              visibility: "hidden",
                             }}
                           >
                             <IconButton
@@ -238,26 +232,44 @@ export const CandsList = observer(
                               <MdOutlineFilterNone />
                             </IconButton>
                           </ListItemIcon>
-                          <ListItemIcon
-                            title="Has history"
-                            sx={{
-                              minWidth: 0,
-                              visibility:
-                                cand.posStages && cand.posStages?.length > 0
+                        ) : (
+                          <>
+                            <ListItemIcon
+                              title="Has duplicates cv`s"
+                              sx={{
+                                minWidth: 0,
+                                visibility: cand.hasDuplicates
                                   ? "visible"
                                   : "hidden",
-                            }}
-                          >
-                            <IconButton
-                              color="primary"
-                              sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                              }}
                             >
-                              <MdHistory />
-                            </IconButton>
-                          </ListItemIcon>
-                        </>
-                      )}
-                      {/* <ListItemIcon
+                              <IconButton
+                                color="primary"
+                                sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                              >
+                                <MdOutlineFilterNone />
+                              </IconButton>
+                            </ListItemIcon>
+                            <ListItemIcon
+                              title="Has history"
+                              sx={{
+                                minWidth: 0,
+                                visibility:
+                                  cand.posStages && cand.posStages?.length > 0
+                                    ? "visible"
+                                    : "hidden",
+                              }}
+                            >
+                              <IconButton
+                                color="primary"
+                                sx={{ fontSize: "0.8rem", paddingLeft: "1px" }}
+                              >
+                                <MdHistory />
+                              </IconButton>
+                            </ListItemIcon>
+                          </>
+                        )}
+                        {/* <ListItemIcon
                         sx={{
                           visibility:
                             cand.posStages && cand.posStages?.length > 0
@@ -294,22 +306,25 @@ export const CandsList = observer(
                           )}
                         </IconButton>
                       </ListItemIcon> */}
+                      </div>
                     </div>
-                  </div>
-                  {cand.city && (
-                    <div
-                      className={classNames({
-                        [styles.listItemCity]: true,
-                        [styles.isMobile]: isMobile,
-                      })}
-                    >
-                      {cand.city}
-                    </div>
-                  )}
-                  {candsStore.shoePosStages && (
-                    <CandsPosStagesList cand={cand} candsSource={candsSource} />
-                  )}
-                  {/* {candsSource !== CandsSourceEnum.Position &&
+                    {cand.city && (
+                      <div
+                        className={classNames({
+                          [styles.listItemCity]: true,
+                          [styles.isMobile]: isMobile,
+                        })}
+                      >
+                        {cand.city}
+                      </div>
+                    )}
+                    {candsStore.shoePosStages && (
+                      <CandsPosStagesList
+                        cand={cand}
+                        candsSource={candsSource}
+                      />
+                    )}
+                    {/* {candsSource !== CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && (
                       <CandsPosStagesList
@@ -317,31 +332,50 @@ export const CandsList = observer(
                         candsSource={candsSource}
                       />
                     )} */}
-                </Box>
-              </ListItemButton>
-              {/* {dupOpenCandId > 0 && (
+                  </Box>
+                </ListItemButton>
+                {/* {dupOpenCandId > 0 && (
                 <Collapse
                   in={dupOpenCandId === cand.candidateId}
                   timeout="auto"
                   unmountOnExit
                 > */}
-              {/* {candsSource === CandsSourceEnum.Position &&
+                {/* {candsSource === CandsSourceEnum.Position &&
                     cand.posStages &&
                     cand.posStages?.length > 0 && ( */}
-              {/* <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}> */}
-              {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
+                {/* <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}> */}
+                {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
                           Candidate Positions
                         </div> */}
-              {/* <CandsPosStagesList cand={cand} candsSource={candsSource} />
+                {/* <CandsPosStagesList cand={cand} candsSource={candsSource} />
                   </div> */}
-              {/* )} */}
-              {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
-              {/* </Collapse>
+                {/* )} */}
+                {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
+                {/* </Collapse>
               )} */}
-            </ListItem>
-          );
-        })}
-      </List>
+              </ListItem>
+            );
+          })}
+        </List>
+        <Slide direction="up" in={isScrolled} mountOnEnter unmountOnExit>
+          <Fab
+            size="medium"
+            color="primary"
+            sx={{
+              zIndex: 999,
+              position: "fixed",
+              bottom: "7rem",
+              right: "4rem",
+              fontSize: "2rem",
+            }}
+            onClick={() => {
+              listRef.current.scrollTop = 0;
+            }}
+          >
+            <MdKeyboardArrowUp />
+          </Fab>
+        </Slide>
+      </>
     );
   }
 );

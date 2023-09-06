@@ -16,6 +16,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                       builder =>  builder.WithOrigins("http://localhost:3030",
                      "http://192.168.1.23:8020",
                      "http://82.166.239.93:8020",
+                     "http://10.100.102.23:8020",
                      "http://82.166.239.93:8030",
                      "http://192.168.1.23:8030",
                      "https://localhost:7218").AllowAnyHeader().AllowAnyMethod()));
@@ -80,6 +81,13 @@ builder.Services.RegisterServices(builder);
 var app = builder.Build();
 
 app.UseCors(CorsPolicy);
+//app.UseCors(builder =>
+//{
+//    builder
+//    .AllowAnyOrigin()
+//    .AllowAnyMethod()
+//    .AllowAnyHeader();
+//});
 
 // Configure the HTTP request pipeline.
 app.ConfigureSwagger();

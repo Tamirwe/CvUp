@@ -25,6 +25,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICustomersContactsService, CustomersContactsService>();
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+            services.AddTransient<ITranslateService, TranslateService>();
             return services;
         }
     }

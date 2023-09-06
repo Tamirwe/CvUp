@@ -29,6 +29,8 @@ namespace Database.models
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
         public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
+        public virtual DbSet<keyword> keywords { get; set; } = null!;
+        public virtual DbSet<keywords_group> keywords_groups { get; set; } = null!;
         public virtual DbSet<parser> parsers { get; set; } = null!;
         public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
@@ -362,6 +364,47 @@ namespace Database.models
                     .WithMany(p => p.folders_cands)
                     .HasForeignKey(d => d.folder_id)
                     .HasConstraintName("fk_folders_cands_folder_id_folders_id");
+            });
+
+            modelBuilder.Entity<keyword>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "keywords_company_id_companies_id");
+
+                entity.HasIndex(e => e.group_id, "keywords_group_id_keywords_groups_id");
+
+                entity.Property(e => e.name_en).HasMaxLength(150);
+
+                entity.Property(e => e.name_he).HasMaxLength(150);
+
+                entity.Property(e => e.updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.keywords)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("keywords_company_id_companies_id");
+
+                entity.HasOne(d => d.group)
+                    .WithMany(p => p.keywords)
+                    .HasForeignKey(d => d.group_id)
+                    .HasConstraintName("keywords_group_id_keywords_groups_id");
+            });
+
+            modelBuilder.Entity<keywords_group>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "keywords_groups_company_id_companies_id");
+
+                entity.Property(e => e.name).HasMaxLength(100);
+
+                entity.Property(e => e.updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.keywords_groups)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("keywords_groups_company_id_companies_id");
             });
 
             modelBuilder.Entity<parser>(entity =>

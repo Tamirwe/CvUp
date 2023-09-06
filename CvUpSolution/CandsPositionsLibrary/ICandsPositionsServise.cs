@@ -16,7 +16,7 @@ namespace CandsPositionsLibrary
         Task DeleteCandidate(int companyId, int candidateId);
         Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
         Task IndexCompanyCvs(int companyId);
-        Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds);
+        Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds);
         Task<int> AddPosition(PositionModel data, int companyId, int userId);
         Task<int> UpdatePosition(PositionModel data, int companyId, int userId);
         Task<List<PositionModel>> GetPositionsList(int companyId);
@@ -64,5 +64,11 @@ namespace CandsPositionsLibrary
         Task StarSearch(int companyId, SearchModel searchVals);
         Task DeleteSearch(int companyId, SearchModel searchVals);
         Task DeleteAllNotStarSearches(int companyId);
+        Task<List<keywordsGroupModel>> GetKeywordsGroups(int companyId);
+        Task SaveKeywordsGroup(int companyId, keywordsGroupModel keywordsGroup);
+        Task DeleteKeywordsGroup(int companyId, int id);
+        Task<List<keywordModel>> GetKeywords(int companyId);
+        Task SaveKeyword(int companyId, keywordModel keyword);
+        Task DeleteKeyword(int companyId, int id);
     }
 }

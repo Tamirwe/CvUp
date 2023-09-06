@@ -42,7 +42,7 @@ namespace CvUpAPI.Controllers
         [Route("GetCandsList")]
         public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 200)
         {
-            return await _candPosService.GetCandsList(Globals.CompanyId, page, take, null);
+            return await _candPosService.GetCandsList(Globals.CompanyId, null);
         }
 
         [HttpGet]
@@ -66,7 +66,7 @@ namespace CvUpAPI.Controllers
             List<CandModel?> candsList = new List<CandModel?>();
             var results = await _candPosService.SearchCands(Globals.CompanyId, searchVals);
 
-            var candsIds = results.Select(e => e.Id).Take(300).ToList();
+            var candsIds = results.Select(e => e.Id).ToList();
 
             if (searchVals.folderId > 0)
             {
@@ -85,7 +85,7 @@ namespace CvUpAPI.Controllers
             }
             else
             {
-                candsList = await _candPosService.GetCandsList(Globals.CompanyId, 1, 300, candsIds);
+                candsList = await _candPosService.GetCandsList(Globals.CompanyId, candsIds.GetRange(0, 299));
             }
 
             foreach (var res in results)
@@ -267,6 +267,14 @@ namespace CvUpAPI.Controllers
             await _candPosService.SaveSearch(Globals.CompanyId, searchVals);
             return Ok();
         }
+      
+        [HttpPut]
+        [Route("DeleteSearch")]
+        public async Task<IActionResult> DeleteSearch(SearchModel searchVals)
+        {
+            await _candPosService.DeleteSearch(Globals.CompanyId, searchVals);
+            return Ok();
+        }
 
         [HttpPut]
         [Route("StarSearch")]
@@ -277,19 +285,60 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPut]
-        [Route("DeleteSearch")]
-        public async Task<IActionResult> DeleteSearch(SearchModel searchVals)
-        {
-            await _candPosService.DeleteSearch(Globals.CompanyId, searchVals);
-            return Ok();
-        }
-
-        [HttpPut]
         [Route("DeleteAllNotStarSearches")]
         public async Task<List<SearchModel>> DeleteAllNotStarSearches()
         {
             await _candPosService.DeleteAllNotStarSearches(Globals.CompanyId);
             return await _candPosService.GetSearches(Globals.CompanyId);
+        }
+
+        [HttpGet]
+        [Route("GetKeywordsGroups")]
+        public async Task<List<keywordsGroupModel>> GetKeywordsGroups()
+        {
+            return await _candPosService.GetKeywordsGroups(Globals.CompanyId);
+        }
+
+        [HttpPost]
+        [Route("SaveKeywordsGroup")]
+        public async Task<IActionResult> SaveKeywordsGroup(keywordsGroupModel keywordsGroup)
+        {
+            await _candPosService.SaveKeywordsGroup(Globals.CompanyId, keywordsGroup);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("DeleteKeywordsGroup")]
+        public async Task<IActionResult> DeleteKeywordsGroup(int id)
+        {
+            await _candPosService.DeleteKeywordsGroup(Globals.CompanyId, id);
+            return Ok();
+        }
+
+
+
+
+        [HttpGet]
+        [Route("GetKeywords")]
+        public async Task<List<keywordModel>> GetKeywords()
+        {
+            return await _candPosService.GetKeywords(Globals.CompanyId);
+        }
+
+        [HttpPost]
+        [Route("SaveKeyword")]
+        public async Task<IActionResult> SaveKeyword(keywordModel keyword)
+        {
+            await _candPosService.SaveKeyword(Globals.CompanyId, keyword);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("DeleteKeyword")]
+        public async Task<IActionResult> DeleteKeyword(int id)
+        {
+            await _candPosService.DeleteKeyword(Globals.CompanyId, id);
+            return Ok();
         }
     }
 }

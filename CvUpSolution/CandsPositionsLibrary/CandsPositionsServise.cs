@@ -5,6 +5,7 @@ using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using EmailsLibrary.Models;
 using LuceneLibrary;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.Design;
 
@@ -147,9 +148,9 @@ namespace CandsPositionsLibrary
             return result;
         }
 
-        public async Task<List<CandModel?>> GetCandsList(int companyId, int page, int take, List<int>? candsIds)
+        public async Task<List<CandModel?>> GetCandsList(int companyId,  List<int>? candsIds)
         {
-            var result = await _cvsPositionsQueries.GetCandsList(companyId, _configuration["GlobalSettings:cvsEncryptorKey"], page, take, candsIds);
+            var result = await _cvsPositionsQueries.GetCandsList(companyId,  candsIds);
             return result;
         }
 
@@ -442,5 +443,36 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.DeleteAllNotStarSearches(companyId);
         }
+
+        public async Task<List<keywordsGroupModel>> GetKeywordsGroups(int companyId)
+        {
+            return await _cvsPositionsQueries.GetKeywordsGroups(companyId);
+        }
+
+        public async Task SaveKeywordsGroup(int companyId, keywordsGroupModel keywordsGroup)
+        {
+            await _cvsPositionsQueries.SaveKeywordsGroup(companyId, keywordsGroup);
+        }
+
+        public async Task DeleteKeywordsGroup(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeleteKeywordsGroup(companyId, id);
+        }
+
+        public async Task<List<keywordModel>> GetKeywords(int companyId)
+        {
+            return await _cvsPositionsQueries.GetKeywords(companyId);
+        }
+
+        public async Task SaveKeyword(int companyId, keywordModel keyword)
+        {
+            await _cvsPositionsQueries.SaveKeyword(companyId, keyword);
+        }
+
+        public async Task DeleteKeyword(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeleteKeyword(companyId, id);
+        }
+
     }
 }

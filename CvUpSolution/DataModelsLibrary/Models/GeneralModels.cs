@@ -43,6 +43,13 @@ namespace DataModelsLibrary.Models
     //    public int[] interviewersIds { get; set; } = new int[] { };
     //}
 
+    public class TranslateModel
+    {
+        public string? txt { get; set; }
+        public List<string>? txtList { get; set; }
+        public string? lang { get; set; }
+    }
+
     public class FolderModel
     {
         public int id { get; set; } = 0;

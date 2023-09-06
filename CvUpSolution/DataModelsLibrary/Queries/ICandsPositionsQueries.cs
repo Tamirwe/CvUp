@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
          Task<candidate?> GetCandidateByEmail(string email);
          Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
-        Task<List<CandModel?>> GetCandsList(int companyId, string encriptKey, int page, int take, List<int>? candsIds);
+        Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
@@ -70,5 +70,11 @@ namespace DataModelsLibrary.Queries
         Task StarSearch(int companyId, SearchModel searchVals);
         Task DeleteSearch(int companyId, SearchModel searchVals);
         Task DeleteAllNotStarSearches(int companyId);
+        Task<List<keywordsGroupModel>> GetKeywordsGroups(int companyId);
+        Task SaveKeywordsGroup(int companyId, keywordsGroupModel keywordsGroup);
+        Task DeleteKeywordsGroup(int companyId, int id);
+        Task<List<keywordModel>> GetKeywords(int companyId);
+        Task SaveKeyword(int companyId, keywordModel keyword);
+        Task DeleteKeyword(int companyId, int id);
     }
 }

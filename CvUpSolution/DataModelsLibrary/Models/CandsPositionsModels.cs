@@ -201,6 +201,21 @@ namespace DataModelsLibrary.Models
         public DateTime? updated { get; set; }
     }
 
+    public class keywordsGroupModel
+    {
+        public int? id { get; set; }
+        public string name { get; set; } = "";
+    }
+
+    public class keywordModel
+    {
+        public int? id { get; set; }
+        public string? nameHe { get; set; }
+        public string? nameEn { get; set; }
+        public int groupId { get; set; }
+        public DateTime? updated { get; set; }
+    }
+
     public class searchCandCvModel
     {
         public string value { get; set; } = "";

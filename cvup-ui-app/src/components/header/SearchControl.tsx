@@ -6,12 +6,15 @@ import {
   MdKeyboardArrowUp,
   MdOutlineClose,
   MdOutlineSearch,
+  MdOutlineTranslate,
   MdRefresh,
   MdSort,
 } from "react-icons/md";
 import useDebounce from "../../Hooks/useDebounce";
 import { ISearchModel } from "../../models/GeneralModels";
 import { SortByEnum } from "../../models/GeneralEnums";
+import { translate } from "../../utils/GeneralUtils";
+import { useStore } from "../../Hooks/useStore";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -98,33 +101,22 @@ export const SearchControl = ({
   onRefreshLists,
   extSearch,
 }: IProps) => {
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const { generalStore } = useStore();
 
-  //const [value, setValue] = useState("");
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [searchVals, setSearchVals] = useState<ISearchModel>({
     value: "",
     exact: true,
     advancedValue: "",
   });
-  const [sortBy, setSortBy] = useState(SortByEnum.score);
-  const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
-  const [sortByCvDateDesc, setSortByCvDateDesc] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isExactSearch, setIsExactSearch] = useState(true);
 
   const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
-  function setDefaultSort() {
-    setSortBy(SortByEnum.score);
-    setSortByScoreDesc(true);
-    setSortByCvDateDesc(false);
-  }
-
   useEffect(() => {
     if (isLoaded) {
-      setDefaultSort();
       onSearch(searchVals);
     } else {
       setIsLoaded(true);
@@ -161,7 +153,6 @@ export const SearchControl = ({
   };
 
   const search = () => {
-    setDefaultSort();
     onSearch(searchVals);
   };
 
@@ -263,6 +254,48 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
+        <ToggleButton
+          sx={{
+            direction: "ltr",
+            "&.MuiButtonBase-root": {
+              padding: "7px 5px",
+              fontSize: "0.8rem",
+            },
+          }}
+          value="check"
+          color="primary"
+          selected={false}
+          onChange={async (event) => {
+            const transList: string[] = [];
+
+            let advEn = "";
+
+            if (searchVals.value) {
+              transList.push(searchVals.value);
+
+              //const valEn = await translate(searchVals.value);
+
+              if (searchVals.advancedValue) {
+                transList.push(searchVals.advancedValue);
+
+                //advEn = await translate(searchVals.advancedValue);
+              }
+
+              const res = await generalStore.translateMultiLines(
+                transList,
+                "en"
+              );
+
+              setSearchVals((prevState) => ({
+                ...prevState,
+                value: res[0],
+                advancedValue: res.length === 2 ? res[1] : "",
+              }));
+            }
+          }}
+        >
+          <MdOutlineTranslate />
+        </ToggleButton>
         {shoeAdvancedIcon && (
           <ToggleButton
             sx={{

@@ -46,6 +46,7 @@ export const Header = observer(() => {
         customersContactsStore.getCustomersList(),
         authStore.getUser(),
         candsStore.getSearches(),
+        //generalStore.translate("שרשרת הספקה מהנדס תהליך"),
       ]);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -249,6 +250,17 @@ export const Header = observer(() => {
               >
                 <MdManageSearch />
               </IconButton>
+              {/* <IconButton
+                title="Saved Searches"
+                sx={{ fontSize: "1.54rem" }}
+                size="small"
+                onClick={() =>
+                  (generalStore.showEditSearchesListDialog =
+                    !generalStore.showEditSearchesListDialog)
+                }
+              >
+                <MdManageSearch />
+              </IconButton> */}
             </Stack>
           </Grid>
           <Grid item xs={5} sx={{ textAlign: "right" }} pr={1}>

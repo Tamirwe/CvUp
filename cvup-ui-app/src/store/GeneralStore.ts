@@ -34,7 +34,8 @@ export class GeneralStore {
   private isLeftDrawerOpen: boolean = false;
   private isRightDrawerOpen: boolean = false;
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
-  private isshowSearchesListDialog: boolean = false;
+  private isShowSearchesListDialog: boolean = false;
+  private isShowEditSearchesListDialog: boolean = false;
 
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
@@ -191,11 +192,19 @@ export class GeneralStore {
   }
 
   get showSearchesListDialog() {
-    return this.isshowSearchesListDialog;
+    return this.isShowSearchesListDialog;
   }
 
   set showSearchesListDialog(val) {
-    this.isshowSearchesListDialog = val;
+    this.isShowSearchesListDialog = val;
+  }
+
+  get showEditSearchesListDialog() {
+    return this.isShowEditSearchesListDialog;
+  }
+
+  set showEditSearchesListDialog(val) {
+    this.isShowEditSearchesListDialog = val;
   }
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
@@ -307,5 +316,15 @@ export class GeneralStore {
     const response = await this.generalApi.deleteHrCompany(hrCompanyId);
     this.rootStore.generalStore.backdrop = false;
     return response;
+  }
+
+  async translateSingleLine(txt: string, lang: string) {
+    const response = await this.generalApi.translateSingleLine(txt, lang);
+    return response.data;
+  }
+
+  async translateMultiLines(txtList: string[], lang: string) {
+    const response = await this.generalApi.translateMultiLines(txtList, lang);
+    return response.data;
   }
 }

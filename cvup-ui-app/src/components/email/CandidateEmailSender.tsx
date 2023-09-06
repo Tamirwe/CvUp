@@ -70,16 +70,17 @@ export const CandidateEmailSender = observer((props: IProps) => {
     body: "",
   });
 
-  const filterEmailContacts = () => {
+  const addCandidateEmail = () => {
     if (candsStore.candDisplay) {
+      const candName = `${candsStore.candDisplay?.firstName?.trim() || ""} ${
+        candsStore.candDisplay?.lastName?.trim() || ""
+      }`;
+
       const emailsList = [
         {
           id: 1,
           Address: candsStore.candDisplay?.email || "",
-          Name:
-            (candsStore.candDisplay?.firstName || "") +
-            " " +
-            (candsStore.candDisplay?.lastName || ""),
+          Name: candName.trim() ? candName : candsStore.candDisplay?.email,
         },
       ];
 
@@ -131,7 +132,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
   };
 
   useEffect(() => {
-    filterEmailContacts();
+    addCandidateEmail();
     generateDynamicDataForEmailTemplate();
   }, []);
 

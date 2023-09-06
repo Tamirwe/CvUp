@@ -30,6 +30,7 @@ import { CandFormDialog } from "../components/cands/CandFormDialog";
 import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
 import { SearchesListDialog } from "../components/searches/SearchesListDialog";
+import { EditSearchesListDialog } from "../components/searches/EditSearchesListDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -152,6 +153,12 @@ export const LayoutAuthWrapper = observer(() => {
         <SearchesListDialog
           isOpen={generalStore.showSearchesListDialog}
           onClose={() => (generalStore.showSearchesListDialog = false)}
+        />
+      )}
+      {generalStore.showEditSearchesListDialog && (
+        <EditSearchesListDialog
+          isOpen={generalStore.showEditSearchesListDialog}
+          onClose={() => (generalStore.showEditSearchesListDialog = false)}
         />
       )}
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { IIdName } from "../models/AuthModels";
 
 type EnumType = { [s: number]: string };
@@ -17,9 +18,9 @@ export const enumToArrays = (en: EnumType) => {
   return enumArr;
 };
 
-export const delay= (time: number)=> {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
+export const delay = (time: number) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
 // await this.delay(1000);
 
 export const copyToClipBoard = async (copyMe: string) => {
@@ -39,4 +40,13 @@ export const numArrRemoveItem = (id: number, numArr?: number[]) => {
       numArr.splice(index, 1);
     }
   }
+};
+
+export const translate = async (text: string) => {
+  let res = await axios.post(
+    `https://translation.googleapis.com/language/translate/v2?key=AIzaSyBWNywjQE_XJvKq8XEJ50_tetaoDLI9O4M`,
+    { q: text, target: "en", source: "iw" }
+  );
+  let translation = res.data.data.translations[0].translatedText;
+  return translation;
 };

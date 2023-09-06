@@ -1,3 +1,4 @@
+import axios from "axios";
 import { IIdName } from "../../models/AuthModels";
 import BaseApi from "./BaseApi";
 
@@ -35,6 +36,21 @@ export default class GeneralApi extends BaseApi {
   async getIsAuthorized() {
     return await this.apiWrapper2(async () => {
       return await this.http.get(`Cand/GetIsAuthorized`);
+    });
+  }
+
+  async translateSingleLine(txt: string, lang: string) {
+    return await this.apiWrapper2<string>(async () => {
+      return await this.http.post(`General/TranslateSingleLine`, { txt, lang });
+    });
+  }
+
+  async translateMultiLines(txtList: string[], lang: string) {
+    return await this.apiWrapper2<string[]>(async () => {
+      return await this.http.post(`General/TranslateMultiLines`, {
+        txtList,
+        lang,
+      });
     });
   }
 }

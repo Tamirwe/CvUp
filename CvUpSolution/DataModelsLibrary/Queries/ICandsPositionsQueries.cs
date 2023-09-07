@@ -52,10 +52,10 @@ namespace DataModelsLibrary.Queries
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
         Task<cand_pos_stage?> getPosStage(int companyId, string stageType);
-        Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId);
-        Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId);
-        Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId);
-        Task UpdatePositionDate(int companyId, int positionId);
+        //Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId);
+        //Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId);
+        //Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId);
+        Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount);
         Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
         Task AddSendEmail(SendEmailModel emailData, int userId);
         Task<int?> GetPositionTypeId(int companyId, string positionRelated);

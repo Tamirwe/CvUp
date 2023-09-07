@@ -126,7 +126,17 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 isSeen = Convert.ToBoolean(cvs.is_seen)
+                                 isSeen = Convert.ToBoolean(cvs.is_seen),
+                                 candPosHistory = new CandPosHistoryModel
+                                 {
+                                     accepted = pcv.accepted,
+                                     callEmailToCandidate = pcv.call_email_to_candidate,
+                                     customerInterview = pcv.customer_interview,
+                                     emailToContact = pcv.email_to_contact,
+                                     rejected = pcv.rejected,
+                                     rejectEmailToCandidate = pcv.reject_email_to_candidate,
+                                     removeCandidacy = pcv.remove_candidacy,
+                                 }
                              });
 
                 return await query.ToListAsync();
@@ -582,6 +592,7 @@ namespace DataModelsLibrary.Queries
                                 updated = p.date_updated,
                                 customerName = c.name,
                                 customerId = p.customer_id,
+                                candsCount = p.cands_count
                             };
 
                 return await query.ToListAsync();
@@ -853,25 +864,6 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == posStatus.companyId
-                  && x.candidate_id == posStatus.candidateId && x.position_id == posStatus.positionId).FirstOrDefaultAsync();
-
-                if (candPos != null)
-                {
-                    candPos.stage_type = posStatus.stageType;
-                    candPos.stage_date = DateTime.Now;
-                    candPos.date_updated = DateTime.Now;
-
-                    dbContext.position_candidates.Update(candPos);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
-
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
         {
             using (var dbContext = new cvup00001Context())
@@ -1029,56 +1021,112 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId)
+        public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
         {
             using (var dbContext = new cvup00001Context())
             {
-                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == posStatus.companyId
+                  && x.candidate_id == posStatus.candidateId && x.position_id == posStatus.positionId).FirstOrDefaultAsync();
 
                 if (candPos != null)
                 {
-                    candPos.call_email_to_candidate = DateTime.Now;
+                    //cand_pos_stage? posSatge = await getPosStage(posStatus.companyId, posStatus.stageType);
+
+                    switch (posStatus.stageType)
+                    {
+                        case "call_email_to_candidate":
+                            candPos.call_email_to_candidate = DateTime.Now;
+                            break;
+                        case "email_to_customer":
+                            candPos.email_to_contact = DateTime.Now;
+                            break;
+                        case "rejected_email_sent":
+                            candPos.reject_email_to_candidate = DateTime.Now;
+                            candPos.rejected = DateTime.Now;
+                            break;
+                        case "customer_interview":
+                            candPos.customer_interview = DateTime.Now;
+                            break;
+                        case "withdraw_candidacy":
+                            candPos.remove_candidacy = DateTime.Now;
+                            break;
+                        case "rejected":
+                            candPos.rejected = DateTime.Now;
+                            break;
+                        case "accepted":
+                            candPos.accepted = DateTime.Now;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    candPos.stage_type = posStatus.stageType;
+                    candPos.stage_date = DateTime.Now;
+                    candPos.date_updated = DateTime.Now;
+
                     dbContext.position_candidates.Update(candPos);
                     await dbContext.SaveChangesAsync();
                 }
             }
         }
 
-        public async Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId)
+        //public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId)
+        //{
+        //    using (var dbContext = new cvup00001Context())
+        //    {
+        //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+
+        //        if (candPos != null)
+        //        {
+        //            candPos.call_email_to_candidate = DateTime.Now;
+        //            dbContext.position_candidates.Update(candPos);
+        //            await dbContext.SaveChangesAsync();
+        //        }
+        //    }
+        //}
+
+        //public async Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId)
+        //{
+        //    using (var dbContext = new cvup00001Context())
+        //    {
+        //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+
+        //        if (candPos != null)
+        //        {
+        //            candPos.email_to_contact = DateTime.Now;
+        //            dbContext.position_candidates.Update(candPos);
+        //            await dbContext.SaveChangesAsync();
+        //        }
+        //    }
+        //}
+        //public async Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId)
+        //{
+        //    using (var dbContext = new cvup00001Context())
+        //    {
+        //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+
+        //        if (candPos != null)
+        //        {
+        //            candPos.reject_email_to_candidate = DateTime.Now;
+        //            dbContext.position_candidates.Update(candPos);
+        //            await dbContext.SaveChangesAsync();
+        //        }
+        //    }
+        //}
+
+        public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
         {
             using (var dbContext = new cvup00001Context())
             {
-                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
+               
 
-                if (candPos != null)
-                {
-                    candPos.email_to_contact = DateTime.Now;
-                    dbContext.position_candidates.Update(candPos);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
-        public async Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
-                position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
-
-                if (candPos != null)
-                {
-                    candPos.reject_email_to_candidate = DateTime.Now;
-                    dbContext.position_candidates.Update(candPos);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
-
-        public async Task UpdatePositionDate(int companyId, int positionId)
-        {
-            using (var dbContext = new cvup00001Context())
-            {
                 position? pos = dbContext.positions.Where(x => x.company_id == companyId && x.id == positionId).First();
                 pos.date_updated = DateTime.Now;
+                if (isUpdateCount)
+                {
+                    var count = dbContext.position_candidates.Where(x => x.company_id == companyId && x.position_id == positionId).Count();
+                    pos.cands_count = count;
+                }
                 var result = dbContext.positions.Update(pos);
                 await dbContext.SaveChangesAsync();
             }

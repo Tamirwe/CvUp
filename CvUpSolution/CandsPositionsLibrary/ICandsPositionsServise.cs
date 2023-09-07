@@ -50,7 +50,7 @@ namespace CandsPositionsLibrary
         Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
-        Task UpdatePositionDate(int companyId, int positionId);
+        Task UpdatePositionDate(int companyId, int positionId,bool isUpdateCount);
         Task<position?> GetPositionByMatchStr(int companyId, string matchStr);
         Task AddSendEmail(SendEmailModel emailData, int userId);
         Task<int?> GetPositionTypeId(int companyId, string positionRelated);

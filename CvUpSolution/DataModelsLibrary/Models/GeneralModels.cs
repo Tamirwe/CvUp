@@ -29,6 +29,7 @@ namespace DataModelsLibrary.Models
         public string? emailsubjectAddon { get; set; } = string.Empty;
         public string? remarks { get; set; } = string.Empty;
         public string? matchEmailsubject { get; set; } = string.Empty;
+        public int? candsCount { get; set; } = 0;
     }
 
     //public class PositionClientModel

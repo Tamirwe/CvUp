@@ -101,7 +101,18 @@ namespace DataModelsLibrary.Models
         public int[]? candFoldersIds { get; set; }
         public bool isSeen { get; set; }
         public int? score { get; set; }
+        public CandPosHistoryModel? candPosHistory { get; set; }
+    }
 
+    public class CandPosHistoryModel
+    {
+        public DateTime? callEmailToCandidate { get; set; }
+        public DateTime? emailToContact { get; set; }
+        public DateTime? rejectEmailToCandidate { get; set; }
+        public DateTime? customerInterview { get; set; }
+        public DateTime? removeCandidacy { get; set; }
+        public DateTime? rejected { get; set; }
+        public DateTime? accepted { get; set; }
     }
 
     public class CandReportModel

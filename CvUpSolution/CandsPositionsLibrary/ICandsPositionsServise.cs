@@ -21,6 +21,7 @@ namespace CandsPositionsLibrary
         Task<int> UpdatePosition(PositionModel data, int companyId, int userId);
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
+        Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId);
         Task<List<CandCvModel>> GetCandCvsList(int companyId,  int candidateId);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
@@ -47,7 +48,9 @@ namespace CandsPositionsLibrary
         Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
         Task UpdateCandDetails(CandDetailsModel candDetails);
         Task SendEmail(SendEmailModel emailData, UserModel? user);
-        Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
+        Task UpdateCandPositionStatus(CandPosStageTypeUpdateModel posStatus);
+        Task UpdatePosStageDate(CandPosStageTypeUpdateModel posStatus);
+        Task RemovePosStage(CandPosStageTypeUpdateModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
         Task UpdatePositionDate(int companyId, int positionId,bool isUpdateCount);

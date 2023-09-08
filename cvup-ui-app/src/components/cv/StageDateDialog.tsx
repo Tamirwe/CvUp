@@ -34,9 +34,18 @@ export const StageDateDialog = ({
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateCalendar
             sx={{ border: "1px solid #e1eaff" }}
-            onChange={(newValue) =>
-              onNewStageDate(new Date(newValue as string))
-            }
+            onChange={(newValue) => {
+              const newDate = newValue as Date;
+              onNewStageDate(
+                new Date(
+                  Date.UTC(
+                    newDate.getFullYear(),
+                    newDate.getMonth(),
+                    newDate.getDate()
+                  )
+                )
+              );
+            }}
           />
         </LocalizationProvider>
         <Grid container pt={4}>

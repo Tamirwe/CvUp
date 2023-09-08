@@ -246,12 +246,13 @@ namespace DataModelsLibrary.Models
         public string? keyId { get; set; } = "";
     }
 
-    public class CandPosStatusUpdateCvModel
+    public class CandPosStageTypeUpdateModel
     {
-        public int companyId { get; set; }
+        public int companyId { get; set; } = 0;
         public int positionId { get; set; }
         public int candidateId { get; set; }
         public string stageType { get; set; } = "";
+        public DateTime? newDate { get; set; }
     }
 
     public class SendEmailModel

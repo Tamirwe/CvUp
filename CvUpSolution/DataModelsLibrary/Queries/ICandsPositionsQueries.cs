@@ -11,6 +11,7 @@ namespace DataModelsLibrary.Queries
          Task<candidate?> GetCandidateByEmail(string email);
          Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
+        Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId);
         Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds);
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
@@ -48,7 +49,9 @@ namespace DataModelsLibrary.Queries
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task UpdateCandDetails(CandDetailsModel candDetails);
-        Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus);
+        Task UpdateCandPositionStatus(CandPosStageTypeUpdateModel posStatus);
+        Task UpdatePosStageDate(CandPosStageTypeUpdateModel posStatus);
+        Task RemovePosStage(CandPosStageTypeUpdateModel posStatus);
         Task UpdateIsSeen(int companyId, int cvId);
         Task<List<CandReportModel?>> CandsReport(int companyId, string stageType);
         Task<cand_pos_stage?> getPosStage(int companyId, string stageType);

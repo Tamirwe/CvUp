@@ -139,7 +139,7 @@ namespace CvUpAPI.Controllers
             posCv.companyId = Globals.CompanyId;
             await _candPosService.AttachPosCandCv(posCv);
             await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
-            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
+            return await _candPosService.GetPositionCandidate(posCv.companyId, posCv.candidateId, posCv.positionId);
 
         }
 
@@ -150,7 +150,7 @@ namespace CvUpAPI.Controllers
             posCv.companyId = Globals.CompanyId;
             await _candPosService.DetachPosCand(posCv);
             await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
-            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
+            return await _candPosService.GetPositionCandidate(posCv.companyId, posCv.candidateId, posCv.positionId);
         }
 
         [HttpGet]
@@ -173,12 +173,32 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("UpdateCandPositionStatus")]
-        public async Task<CandModel?> UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
+        public async Task<CandModel?> UpdateCandPositionStatus(CandPosStageTypeUpdateModel posStatus)
         {
             posStatus.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandPositionStatus(posStatus);
             await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
-            return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
+            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+        }
+
+        [HttpPost]
+        [Route("UpdatePosStageDate")]
+        public async Task<CandModel?> UpdatePosStageDate(CandPosStageTypeUpdateModel posStatus)
+        {
+            posStatus.companyId = Globals.CompanyId;
+            await _candPosService.UpdatePosStageDate(posStatus);
+            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
+            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+        }
+
+        [HttpPost]
+        [Route("RemovePosStage")]
+        public async Task<CandModel?> RemovePosStage(CandPosStageTypeUpdateModel posStatus)
+        {
+            posStatus.companyId = Globals.CompanyId;
+            await _candPosService.RemovePosStage(posStatus);
+            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
+            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
         }
 
         [HttpGet]
@@ -315,9 +335,6 @@ namespace CvUpAPI.Controllers
             await _candPosService.DeleteKeywordsGroup(Globals.CompanyId, id);
             return Ok();
         }
-
-
-
 
         [HttpGet]
         [Route("GetKeywords")]

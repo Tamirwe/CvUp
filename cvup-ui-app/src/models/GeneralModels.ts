@@ -225,4 +225,3 @@ export interface ICandsReport {
   positionName?: string;
   stageDate?: Date;
 }
-

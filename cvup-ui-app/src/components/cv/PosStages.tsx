@@ -10,13 +10,15 @@ import { isMobile } from "react-device-detect";
 import { StageDateDialog } from "./StageDateDialog";
 
 export const PosStages = observer(() => {
-  const { candsStore, positionsStore, generalStore } = useStore();
+  const { candsStore, positionsStore } = useStore();
 
   const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
   const [showStageDateDialog, setShowStageDateDialog] = useState(false);
   const [stageTypeToEdit, setStageTypeToEdit] = useState("");
   const [posHistory, setPosHistory] =
-    useState<{ name: string; stageDate?: Date; color?: string }[]>();
+    useState<
+      { name: string; type: string; stageDate?: Date; color?: string }[]
+    >();
 
   useEffect(() => {
     const candDisplay = candsStore.candDisplay;
@@ -37,6 +39,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Call request",
+          type: "sent_candidate_call_request",
           stageDate: candDisplay.candPosHistory?.callEmailToCandidate,
           color,
         });
@@ -47,6 +50,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Sent to customer",
+          type: "cv_sent_to_customer",
           stageDate: candDisplay.candPosHistory?.emailToContact,
           color,
         });
@@ -57,6 +61,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Customer interview",
+          type: "customer_interview",
           stageDate: candDisplay.candPosHistory?.customerInterview,
           color,
         });
@@ -67,6 +72,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Withdraw candidacy",
+          type: "withdraw_candidacy",
           stageDate: candDisplay.candPosHistory?.removeCandidacy,
           color,
         });
@@ -77,6 +83,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Rejected",
+          type: "rejected",
           stageDate: candDisplay.candPosHistory?.rejected,
           color,
         });
@@ -87,6 +94,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Accepted",
+          type: "accepted",
           stageDate: candDisplay.candPosHistory?.accepted,
           color,
         });
@@ -97,6 +105,7 @@ export const PosStages = observer(() => {
         )?.color;
         history.push({
           name: "Rejected email sent",
+          type: "rejected_email_sent",
           stageDate: candDisplay.candPosHistory?.rejectEmailToCandidate,
           color,
         });
@@ -213,7 +222,7 @@ export const PosStages = observer(() => {
               cursor: "pointer",
               fontWeight: "bold",
             }}
-            onClick={() => handlePosStageClick("sent_candidate_call_request")}
+            onClick={() => handlePosStageClick(item.type)}
           >
             <span style={{ direction: "ltr" }}>{item.name}:</span>
             <span style={{ fontSize: "0.7rem" }}>

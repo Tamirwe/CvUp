@@ -5,19 +5,15 @@ import { useStore } from "../../Hooks/useStore";
 import styles from "./CvView.module.scss";
 import {
   Button,
-  FormControl,
   Grid,
   IconButton,
   Link,
-  MenuItem,
   Paper,
-  Select,
   Stack,
   TextField,
 } from "@mui/material";
 import { CandsSourceEnum, EmailTypeEnum } from "../../models/GeneralEnums";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ICandPosStage } from "../../models/GeneralModels";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
 import {
@@ -29,13 +25,12 @@ import { copyToClipBoard } from "../../utils/GeneralUtils";
 import { CandsPosStagesList } from "../cands/CandsPosStagesList";
 import { CandDupCvsList } from "../cands/CandDupCvsList";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PosStages } from "./PosStages";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
   const navigate = useNavigate();
   let location = useLocation();
-
-  const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
   const [candidateName, setCandidateName] = useState("");
   const [review, setReview] = useState("");
 
@@ -51,16 +46,6 @@ export const CvView = observer(() => {
       candsStore.getDuplicatesCvsList(candsStore.candDisplay);
     }
   }, [candsStore.candDisplay]);
-
-  useEffect(() => {
-    if (candsStore.candDisplay?.posStages) {
-      setPosStage(
-        candsStore.candDisplay?.posStages.find(
-          (x) => x._pid === positionsStore.candDisplayPosition?.id
-        )
-      );
-    }
-  }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
   useEffect(() => {
     if (candsStore.candDisplay) {
@@ -96,41 +81,6 @@ export const CvView = observer(() => {
     },
     []
   );
-
-  const candStatusSelectBox = useCallback(() => {
-    return (
-      <FormControl variant="standard" sx={{ minWidth: 120 }}>
-        <Select
-          sx={{
-            direction: "ltr",
-            "& .MuiSelect-select": {
-              color: candsStore.posStages?.find(
-                (x) => x.stageType === posStage?._tp
-              )?.color,
-              fontWeight: "bold",
-            },
-          }}
-          value={posStage?._tp}
-          onChange={async (e) => {
-            await candsStore.updateCandPositionStatus(e.target.value);
-          }}
-        >
-          {candsStore.posStages?.map((item, ind) => {
-            // console.log(key, index);
-            return (
-              <MenuItem
-                sx={{ color: item.color }}
-                key={ind}
-                value={item.stageType}
-              >
-                {item.name}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-    );
-  }, [posStage]);
 
   return (
     <Paper elevation={3} sx={{ margin: "0rem" }}>
@@ -215,8 +165,8 @@ export const CvView = observer(() => {
                         <Link
                           title="Copy email"
                           href="#"
-                          onClick={() => {
-                            copyToClipBoard(
+                          onClick={async () => {
+                            await copyToClipBoard(
                               candsStore.candDisplay?.email || ""
                             );
                           }}
@@ -235,50 +185,7 @@ export const CvView = observer(() => {
               </Grid>
             </Grid>
             <Grid item xs={12} lg={6}>
-              <Grid container>
-                {posStage?._dt && (
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      textAlign: "left",
-                      flexDirection: "row-reverse",
-                      gap: 1.5,
-                      paddingTop: isMobile ? 1.5 : 0,
-                    }}
-                  >
-                    <span style={{ direction: "ltr" }}>Status:</span>
-                    {candStatusSelectBox()}
-                    <span style={{ whiteSpace: "nowrap", fontSize: "0.75rem" }}>
-                      {" "}
-                      {format(new Date(posStage?._dt), "MMM d, yyyy")}{" "}
-                    </span>
-                  </Grid>
-                )}
-                {posStage?._ec && (
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      textAlign: "left",
-                      flexDirection: "row-reverse",
-                      gap: 1,
-                      paddingTop: "1rem",
-                    }}
-                  >
-                    <span style={{ direction: "ltr" }}>Sent to customer:</span>
-                    <span>
-                      {" "}
-                      {posStage?._ec &&
-                        format(new Date(posStage?._ec), "MMM d, yyyy")}{" "}
-                    </span>
-                  </Grid>
-                )}
-              </Grid>
+              <PosStages />
             </Grid>
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.allCustomersReviews && (

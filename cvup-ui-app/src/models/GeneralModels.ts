@@ -54,6 +54,17 @@ export interface ICand {
   reviewDate?: Date;
   score: number;
   allCustomersReviews?: ICustomersReviews[];
+  candPosHistory?: ICandPosHistory;
+}
+
+export interface ICandPosHistory {
+  callEmailToCandidate?: Date;
+  emailToContact?: Date;
+  rejectEmailToCandidate?: Date;
+  customerInterview?: Date;
+  removeCandidacy?: Date;
+  rejected?: Date;
+  accepted?: Date;
 }
 
 export interface ICandPosStage {

@@ -44,7 +44,7 @@ export const numArrRemoveItem = (id: number, numArr?: number[]) => {
 
 export const translate = async (text: string) => {
   let res = await axios.post(
-    `https://translation.googleapis.com/language/translate/v2?key=AIzaSyBWNywjQE_XJvKq8XEJ50_tetaoDLI9O4M`,
+    `https://translation.googleapis.com/language/translate/v2?key=`,
     { q: text, target: "en", source: "iw" }
   );
   let translation = res.data.data.translations[0].translatedText;

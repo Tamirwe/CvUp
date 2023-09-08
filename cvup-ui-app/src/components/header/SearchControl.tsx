@@ -254,7 +254,7 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-        <ToggleButton
+        {/* <ToggleButton
           sx={{
             direction: "ltr",
             "&.MuiButtonBase-root": {
@@ -286,16 +286,19 @@ export const SearchControl = ({
                 "en"
               );
 
-              setSearchVals((prevState) => ({
-                ...prevState,
-                value: res[0],
-                advancedValue: res.length === 2 ? res[1] : "",
-              }));
+              if (res.length) {
+                setSearchVals((prevState) => ({
+                  ...prevState,
+                  value: res[0],
+                  advancedValue: res.length === 2 ? res[1] : "",
+                }));
+              }
+              
             }
           }}
         >
           <MdOutlineTranslate />
-        </ToggleButton>
+        </ToggleButton> */}
         {shoeAdvancedIcon && (
           <ToggleButton
             sx={{

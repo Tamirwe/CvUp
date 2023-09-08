@@ -340,8 +340,8 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                             <BrowserView>
                               <Link
                                 href="#"
-                                onClick={() => {
-                                  copyToClipBoard(`[${txt}]`);
+                                onClick={async () => {
+                                  await copyToClipBoard(`[${txt}]`);
                                 }}
                               >
                                 {`[${txt}]`}

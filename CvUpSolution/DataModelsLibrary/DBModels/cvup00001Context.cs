@@ -486,13 +486,15 @@ namespace Database.models
 
                 entity.HasIndex(e => e.stage_id, "fk_position_candidates_stage_id_position_candidate_stages_id");
 
+                entity.Property(e => e.accepted).HasColumnType("datetime");
+
                 entity.Property(e => e.call_email_to_candidate).HasColumnType("datetime");
 
                 entity.Property(e => e.cand_cvs).HasColumnType("json");
 
-                entity.Property(e => e.customer_review).HasMaxLength(1000);
+                entity.Property(e => e.customer_interview).HasColumnType("datetime");
 
-                entity.Property(e => e.date_accepted_tmp).HasColumnType("datetime");
+                entity.Property(e => e.customer_review).HasMaxLength(1000);
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
@@ -500,13 +502,7 @@ namespace Database.models
 
                 entity.Property(e => e.date_cv_sent_to_customer_tmp).HasColumnType("datetime");
 
-                entity.Property(e => e.date_interview_customer_request_tmp).HasColumnType("datetime");
-
                 entity.Property(e => e.date_msg_accept_reject_sent_tmp).HasColumnType("datetime");
-
-                entity.Property(e => e.date_rejected_tmp).HasColumnType("datetime");
-
-                entity.Property(e => e.date_remove_candidacy_tmp).HasColumnType("datetime");
 
                 entity.Property(e => e.date_sent_talk_request_tmp).HasColumnType("datetime");
 
@@ -515,6 +511,10 @@ namespace Database.models
                 entity.Property(e => e.email_to_contact).HasColumnType("datetime");
 
                 entity.Property(e => e.reject_email_to_candidate).HasColumnType("datetime");
+
+                entity.Property(e => e.rejected).HasColumnType("datetime");
+
+                entity.Property(e => e.remove_candidacy).HasColumnType("datetime");
 
                 entity.Property(e => e.stage_date).HasColumnType("datetime");
 

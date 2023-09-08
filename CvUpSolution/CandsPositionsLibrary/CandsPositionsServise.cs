@@ -255,28 +255,27 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandPositionStatus(CandPosStatusUpdateCvModel posStatus)
         {
             await _cvsPositionsQueries.UpdateCandPositionStatus(posStatus);
-
             await _cvsPositionsQueries.UpdateCandPosArrays(posStatus.companyId, posStatus.candidateId);
 
-            cand_pos_stage? posSatge = await _cvsPositionsQueries.getPosStage(posStatus.companyId, posStatus.stageType);
+            //cand_pos_stage? posSatge = await _cvsPositionsQueries.getPosStage(posStatus.companyId, posStatus.stageType);
 
-            if (posSatge != null)
-            {
-                switch (posSatge.stage_event)
-                {
-                    case "call_email_to_candidate":
-                        await _cvsPositionsQueries.updateCandPosCallEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
-                        break;
-                    case "email_to_customer":
-                        await _cvsPositionsQueries.updateCandPosEmailToCustomer(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
-                        break;
-                    case "reject_email_to_candidate":
-                        await _cvsPositionsQueries.updateCandPosRejectEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            //if (posSatge != null)
+            //{
+            //    switch (posSatge.stage_event)
+            //    {
+            //        case "call_email_to_candidate":
+            //            await _cvsPositionsQueries.updateCandPosCallEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            //            break;
+            //        case "email_to_customer":
+            //            await _cvsPositionsQueries.updateCandPosEmailToCustomer(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            //            break;
+            //        case "reject_email_to_candidate":
+            //            await _cvsPositionsQueries.updateCandPosRejectEmailToCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
         }
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
@@ -374,9 +373,9 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.CandsReport(companyId, stageType);
         }
 
-        public async Task UpdatePositionDate(int companyId, int positionId)
+        public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
         {
-            await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId);
+            await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId, isUpdateCount);
         }
         public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
         {

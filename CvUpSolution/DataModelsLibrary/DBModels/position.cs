@@ -30,6 +30,7 @@ namespace Database.models
         public int? contact_id { get; set; }
         public string? customer_pos_num { get; set; }
         public string? match_email_subject { get; set; }
+        public int? cands_count { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual contact? contact { get; set; }

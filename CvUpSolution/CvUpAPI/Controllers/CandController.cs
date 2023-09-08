@@ -85,7 +85,8 @@ namespace CvUpAPI.Controllers
             }
             else
             {
-                candsList = await _candPosService.GetCandsList(Globals.CompanyId, candsIds.GetRange(0, 299));
+                var firstRows = candsIds.GetRange(0, candsIds.Count > 300 ? 300: candsIds.Count);
+                candsList = await _candPosService.GetCandsList(Globals.CompanyId, firstRows);
             }
 
             foreach (var res in results)
@@ -137,7 +138,7 @@ namespace CvUpAPI.Controllers
         {
             posCv.companyId = Globals.CompanyId;
             await _candPosService.AttachPosCandCv(posCv);
-            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId);
+            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
             return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
 
         }
@@ -148,7 +149,7 @@ namespace CvUpAPI.Controllers
         {
             posCv.companyId = Globals.CompanyId;
             await _candPosService.DetachPosCand(posCv);
-            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId);
+            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
             return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
         }
 
@@ -176,7 +177,7 @@ namespace CvUpAPI.Controllers
         {
             posStatus.companyId = Globals.CompanyId;
             await _candPosService.UpdateCandPositionStatus(posStatus);
-            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId);
+            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
             return await _candPosService.GetCandidate(posStatus.companyId, posStatus.candidateId);
         }
 

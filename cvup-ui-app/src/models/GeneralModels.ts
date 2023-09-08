@@ -160,6 +160,13 @@ export interface IEmailTemplate {
   stageToUpdate?: string;
 }
 
+export interface ICandPosStageTypeUpdate {
+  positionId: number;
+  candidateId: number;
+  stageType: string;
+  newDate?: Date;
+}
+
 export interface ISendEmail {
   toAddresses: IEmailsAddress[];
   subject: string;

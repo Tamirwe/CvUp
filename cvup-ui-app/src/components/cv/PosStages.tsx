@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 import { ICandPosHistory, ICandPosStage } from "../../models/GeneralModels";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
+import { StageDateDialog } from "./StageDateDialog";
 
 export const PosStages = observer(() => {
-  const { candsStore, positionsStore } = useStore();
+  const { candsStore, positionsStore, generalStore } = useStore();
 
   const [posStage, setPosStage] = useState<ICandPosStage | undefined>();
+  const [showStageDateDialog, setShowStageDateDialog] = useState(false);
+  const [stageTypeToEdit, setStageTypeToEdit] = useState("");
   const [posHistory, setPosHistory] =
     useState<{ name: string; stageDate?: Date; color?: string }[]>();
 
@@ -103,10 +106,31 @@ export const PosStages = observer(() => {
     }
   }, [candsStore.candDisplay, positionsStore.candDisplayPosition]);
 
-  const handlePosStageClick = (stageType: string) => {};
+  const handlePosStageClick = (stageType: string) => {
+    setStageTypeToEdit(stageType);
+    setShowStageDateDialog(true);
+  };
+
+  const handleRemoveStage = async () => {
+    setShowStageDateDialog(false);
+    await candsStore.removePosStage(stageTypeToEdit);
+  };
+
+  const handleUpdateStageDate = async (newDate: Date) => {
+    setShowStageDateDialog(false);
+    await candsStore.updatePosStageDate(stageTypeToEdit, newDate);
+  };
 
   return (
     <Grid container>
+      {showStageDateDialog && (
+        <StageDateDialog
+          isOpen={showStageDateDialog}
+          onClose={() => setShowStageDateDialog(false)}
+          onRemoveStage={handleRemoveStage}
+          onNewStageDate={handleUpdateStageDate}
+        />
+      )}
       {posStage?._dt && (
         <Grid
           item
@@ -159,7 +183,7 @@ export const PosStages = observer(() => {
         </Grid>
       )}
 
-      {posHistory?.length && (
+      {posHistory?.length ? (
         <Grid
           item
           xs={12}
@@ -171,10 +195,13 @@ export const PosStages = observer(() => {
         >
           Stages history:
         </Grid>
+      ) : (
+        ""
       )}
       {posHistory?.map((item, ind) => {
         return (
           <Grid
+            key={ind}
             item
             xs={12}
             sx={{

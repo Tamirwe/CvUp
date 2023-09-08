@@ -31,6 +31,7 @@ import { BrowserAuthLayout } from "./BrowserAuthLayout";
 import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
 import { SearchesListDialog } from "../components/searches/SearchesListDialog";
 import { EditSearchesListDialog } from "../components/searches/EditSearchesListDialog";
+import { StageDateDialog } from "../components/cv/StageDateDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -161,6 +162,7 @@ export const LayoutAuthWrapper = observer(() => {
           onClose={() => (generalStore.showEditSearchesListDialog = false)}
         />
       )}
+
       {generalStore.alertConfirmDialogOpen && <AlertConfirmDialog />}
 
       <Snackbar

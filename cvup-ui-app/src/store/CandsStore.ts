@@ -569,17 +569,64 @@ export class CandsStore {
     });
   }
 
-  async updateCandPositionStatus(stageType: string | ICandPosStage) {
+  async updateCandPositionStatus(stageType: string) {
     this.rootStore.generalStore.backdrop = true;
     const candDisplayPosition =
       this.rootStore.positionsStore.candDisplayPosition;
 
     if (this.candDisplay?.candidateId && candDisplayPosition?.id) {
-      const res = await this.cvsApi.updateCandPositionStatus(
-        stageType.toString(),
-        this.candDisplay?.candidateId,
-        candDisplayPosition?.id
-      );
+      const res = await this.cvsApi.updateCandPositionStatus({
+        stageType,
+        candidateId: this.candDisplay?.candidateId,
+        positionId: candDisplayPosition?.id,
+      });
+
+      runInAction(() => {
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateLists(res.data);
+        }
+      });
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async updatePosStageDate(stageType: string, newDate: Date) {
+    this.rootStore.generalStore.backdrop = true;
+    const candDisplayPosition =
+      this.rootStore.positionsStore.candDisplayPosition;
+
+    if (this.candDisplay?.candidateId && candDisplayPosition?.id) {
+      const res = await this.cvsApi.updatePosStageDate({
+        stageType,
+        candidateId: this.candDisplay?.candidateId,
+        positionId: candDisplayPosition?.id,
+        newDate,
+      });
+
+      runInAction(() => {
+        if (res.isSuccess && res.data) {
+          this.candDisplay = { ...res.data };
+          this.updateLists(res.data);
+        }
+      });
+    }
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async removePosStage(stageType: string) {
+    this.rootStore.generalStore.backdrop = true;
+    const candDisplayPosition =
+      this.rootStore.positionsStore.candDisplayPosition;
+
+    if (this.candDisplay?.candidateId && candDisplayPosition?.id) {
+      const res = await this.cvsApi.removePosStage({
+        stageType,
+        candidateId: this.candDisplay?.candidateId,
+        positionId: candDisplayPosition?.id,
+      });
 
       runInAction(() => {
         if (res.isSuccess && res.data) {

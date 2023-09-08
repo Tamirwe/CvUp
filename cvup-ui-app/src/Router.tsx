@@ -10,7 +10,6 @@ import { Terms } from "./components/authentication/Terms";
 import { PasswordReset } from "./pages/authentication/PasswordReset";
 import { useStore } from "./Hooks/useStore";
 import { CompleteRegistration } from "./pages/authentication/CompleteRegistration";
-import { Cv } from "./pages/Cv";
 import { Position } from "./pages/Position";
 import { CvPage } from "./pages/CvPage";
 import { CandidatesReport } from "./pages/CandidatesReport";
@@ -28,7 +27,6 @@ const Router = () => {
       <Route element={<AuthRoutes />}>
         <Route element={<LayoutAuthWrapper />}>
           <Route path="/" element={<Dashboard />} />
-          {/* <Route path="/cv" element={<Cv />} /> */}
           <Route path="/cv" element={<CvPage />} />
           <Route path="/position/:pid" element={<Position />} />
           <Route path="/dashboard" element={<Dashboard />} />

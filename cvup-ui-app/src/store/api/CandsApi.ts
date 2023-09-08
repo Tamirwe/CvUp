@@ -5,6 +5,7 @@ import {
   ISendEmail,
   ISearchModel,
   ICandsReport,
+  ICandPosStageTypeUpdate,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -172,17 +173,24 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async updateCandPositionStatus(
-    stageType: string,
-    candidateId: number,
-    positionId: number
-  ) {
+  async updateCandPositionStatus(stageToUpdate: ICandPosStageTypeUpdate) {
     return await this.apiWrapper2<ICand>(async () => {
-      return await this.http.post(`Cand/UpdateCandPositionStatus`, {
-        stageType,
-        candidateId,
-        positionId,
-      });
+      return await this.http.post(
+        `Cand/UpdateCandPositionStatus`,
+        stageToUpdate
+      );
+    });
+  }
+
+  async updatePosStageDate(stageToUpdate: ICandPosStageTypeUpdate) {
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.post(`Cand/UpdatePosStageDate`, stageToUpdate);
+    });
+  }
+
+  async removePosStage(stageToUpdate: ICandPosStageTypeUpdate) {
+    return await this.apiWrapper2<ICand>(async () => {
+      return await this.http.post(`Cand/RemovePosStage`, stageToUpdate);
     });
   }
 

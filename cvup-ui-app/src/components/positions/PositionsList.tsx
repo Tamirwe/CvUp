@@ -92,8 +92,6 @@ export const PositionsList = observer(() => {
 
   const handleAttachDeattach = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>, posId: number) => {
-      console.log(event.target.checked);
-
       if (event.target.checked) {
         await candsStore.attachPosCandCv(posId);
         await positionsStore.positionClick(posId, true);
@@ -145,7 +143,20 @@ export const PositionsList = observer(() => {
                 </div>
                 <ListItemText
                   primary={pos.name}
-                  secondary={pos.customerName}
+                  secondary={
+                    <span
+                      style={{ display: "flex", flexDirection: "row-reverse" }}
+                    >
+                      <span>{pos.customerName}</span>
+                      {pos.candsCount && (
+                        <span
+                          style={{ fontSize: "0.7rem", fontWeight: "bold" }}
+                        >
+                          {`(${pos.candsCount})  `}&nbsp;
+                        </span>
+                      )}
+                    </span>
+                  }
                   sx={{
                     textAlign: "right",
                     paddingRight: 2,

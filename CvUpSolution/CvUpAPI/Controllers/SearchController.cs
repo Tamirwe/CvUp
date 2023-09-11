@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SearchController : ControllerBase
@@ -23,7 +22,6 @@ namespace CvUpAPI.Controllers
             //_luceneService.BuildIndex();
             //_luceneService.WarmupSearch();
             //_luceneService.Search("הסכם");
-            var cid = Globals.CompanyId;
 
             return new string[] { "value1", "value2" };
         }

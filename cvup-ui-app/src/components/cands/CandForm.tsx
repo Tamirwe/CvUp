@@ -99,7 +99,7 @@ export const CandForm = observer(({ onSaved, onCancel }: IProps) => {
           <Grid item xs={12} lg={6}>
             <TextField
               sx={{
-                direction: "rtl",
+                direction: "ltr",
               }}
               fullWidth
               margin="dense"

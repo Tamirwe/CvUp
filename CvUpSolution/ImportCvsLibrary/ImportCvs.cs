@@ -54,117 +54,114 @@ namespace ImportCvsLibrary
 
         public async Task ImportFromGmail()
         {
-            try
-            {
-                _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
 
-                using (var client = new ImapClient())
+
+            _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
+
+            using (var client = new ImapClient())
+            {
+                try
                 {
                     client.Connect("imap.gmail.com", 993, true);
                     client.Authenticate(_gmailUserName, _mailPassword);
-                    var inbox = client.Inbox;
-                    inbox.Open(FolderAccess.ReadWrite);
-                    var uids = client.Inbox.Search(SearchQuery.NotSeen);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+               
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadWrite);
+                var uids = client.Inbox.Search(SearchQuery.NotSeen);
 
 
 
-                    foreach (var uid in uids)
+                foreach (var uid in uids)
+                {
+                    try
                     {
-                        try
+                        var message = client.Inbox.GetMessage(uid);
+
+                        Console.WriteLine("Subject: {0}", message.Subject);
+
+                        // no need because app is only for bella
+                        //int companyId = GetCompanyIdFromAddress(message.To);
+                        int companyId = 154;
+
+
+
+                        if (companyId > 0)
                         {
-                            var message = client.Inbox.GetMessage(uid);
+                            _companyFolder = companyId.ToString();
+                            var dateCreated = DateTime.Now;
+                            _yearFolder = dateCreated.Year.ToString("0000");
+                            _monthFolder = dateCreated.Month.ToString("00");
 
-                            Console.WriteLine("Subject: {0}", message.Subject);
+                            CreateCvFolder(companyId);
+                            _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
 
-                            // no need because app is only for bella
-                            //int companyId = GetCompanyIdFromAddress(message.To);
-                            int companyId = 154;
-
-
-
-                            if (companyId > 0)
+                            foreach (var bodyPart in message.BodyParts)
                             {
-                                _companyFolder = companyId.ToString();
-                                var dateCreated = DateTime.Now;
-                                _yearFolder = dateCreated.Year.ToString("0000");
-                                _monthFolder = dateCreated.Month.ToString("00");
+                                var contentBase = bodyPart.ContentDisposition;
 
-                                CreateCvFolder(companyId);
-                                _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
-
-                                foreach (var bodyPart in message.BodyParts)
+                                if (bodyPart.ContentType.Name != null)
                                 {
-                                    var contentBase = bodyPart.ContentDisposition;
+                                    var part = (MimePart)bodyPart;
+                                    var originalFileName = part.FileName;
+                                    string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+                                    int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
-                                    if (bodyPart.ContentType.Name != null)
+
+
+
+
+
+                                    if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                                     {
-                                        var part = (MimePart)bodyPart;
-                                        var originalFileName = part.FileName;
-                                        string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
-                                        int fileTypeKey = Utils.FileTypeKey(fileExtension);
-
-
-
-
-
-
-                                        if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                                        _importCv = new ImportCvModel
                                         {
-                                            _importCv = new ImportCvModel
+
+                                            companyId = companyId,
+                                            emailId = message.MessageId,
+                                            subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
+                                            from = message.From.ToString(),
+                                            fileExtension = fileExtension,
+                                            fileTypeKey = fileTypeKey,
+                                            dateCreated = dateCreated,
+                                        };
+
+                                        var fromAddress = message.From.Mailboxes.Single().Address;
+
+                                        if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
+                                        {
+                                            var txtPart = (TextPart)message.BodyParts.First();
+
+                                            if (txtPart != null)
                                             {
-
-                                                companyId = companyId,
-                                                emailId = message.MessageId,
-                                                subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
-                                                from = message.From.ToString(),
-                                                fileExtension = fileExtension,
-                                                fileTypeKey = fileTypeKey,
-                                                dateCreated = dateCreated,
-                                            };
-
-                                            var fromAddress = message.From.Mailboxes.Single().Address;
-
-                                            if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
-                                            {
-                                                var txtPart = (TextPart)message.BodyParts.First();
-
-                                                if (txtPart != null)
-                                                {
-                                                    _importCv.body = txtPart.Text;
-                                                }
+                                                _importCv.body = txtPart.Text;
                                             }
-
-                                            SaveAttachmentToTemporaryFile(part);
-                                            ParseEmailSubject();
-                                            await CvExtractDataAndSave();
                                         }
+
+                                        SaveAttachmentToTemporaryFile(part);
+                                        ParseEmailSubject();
+                                        await CvExtractDataAndSave();
                                     }
                                 }
-
-                                inbox.SetFlags(uid, MessageFlags.Seen, true);
                             }
 
-                        }
-                        catch (Exception ex)
-                        {
                             inbox.SetFlags(uid, MessageFlags.Seen, true);
-
-                            Console.WriteLine(ex.ToString());
-                            addEventLogEntry(ex);
                         }
+
                     }
-
-                    client.Disconnect(true);
-
+                    catch (Exception ex)
+                    {
+                        addEventLogEntry(ex);
+                        Console.WriteLine(ex.ToString());
+                        inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                using (EventLog eventLog = new())
-                {
-                    eventLog.WriteEntry("Gmail connection error" + ex.ToString(), EventLogEntryType.Information);
-                }
+
+                client.Disconnect(true);
             }
         }
 

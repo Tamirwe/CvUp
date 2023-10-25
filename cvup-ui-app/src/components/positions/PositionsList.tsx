@@ -94,10 +94,12 @@ export const PositionsList = observer(() => {
     async (event: React.ChangeEvent<HTMLInputElement>, posId: number) => {
       if (event.target.checked) {
         await candsStore.attachPosCandCv(posId);
-        await positionsStore.positionClick(posId, true);
-        positionsStore.setRelatedPositionToCandDisplay();
-        candsStore.setDisplayCandOntopPCList();
-        candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+        if (candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands) {
+          await positionsStore.positionClick(posId, true);
+          positionsStore.setRelatedPositionToCandDisplay();
+          candsStore.setDisplayCandOntopPCList();
+          candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+        }
       } else {
         candsStore.detachPosCand(candsStore.candDisplay, posId);
       }

@@ -1,5 +1,7 @@
 using CandsPositionsLibrary;
 using ImportCvsLibrary;
+using MailKit;
+using System.Diagnostics;
 
 namespace CvsWorkerService
 {
@@ -26,44 +28,61 @@ namespace CvsWorkerService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var hour = DateTime.Now.Hour;
-
-                if (hour != _hour)
+                try
                 {
-                    _isHourChanged = true;
-                    _hour = hour;
-                }
+                    var hour = DateTime.Now.Hour;
 
-                if (hour > 6 && hour < 23)
-                {
-                    if (_isHourChanged)
+                    if (hour != _hour)
                     {
-                        await _candPosService.CalculatePositionTypesCount(154);
+                        _isHourChanged = true;
+                        _hour = hour;
                     }
 
-                    if (!_isRunning)
+                    if (hour > 6 && hour < 23)
                     {
-                        _isRunning = true;
+                        if (_isHourChanged)
+                        {
+                            await _candPosService.CalculatePositionTypesCount(154);
+                        }
 
-                        await _importCvs.ImportFromGmail();
 
-                        _isRunning = false;
+                        if (!_isRunning)
+                        {
+                            _isRunning = true;
+
+                            await _importCvs.ImportFromGmail();
+
+                            _isRunning = false;
+                        }
+
+                    }
+
+                    if (hour == 1)
+                    {
+                        _isBuStarted = false;
+                    }
+
+                    if (hour == 3 && !_isBuStarted)
+                    {
+                        _isBuStarted = true;
+                        _importCvs.BackupDataBase();
+                    }
+
+                    _isHourChanged = false;
+                }
+                catch (Exception ex)
+                {
+                    using (EventLog eventLog = new())
+                    {
+                        if (!EventLog.SourceExists("CvUpImport"))
+                        {
+                            EventLog.CreateEventSource("CvUpImport", "CvUpImport");
+                        }
+
+                        eventLog.Source = "CvUpImport";
+                        eventLog.WriteEntry(ex.Message + ", " + ex.ToString(), EventLogEntryType.Information);
                     }
                 }
-
-                if (hour == 1)
-                {
-                    _isBuStarted = false;
-                }
-
-                if (hour == 3 && !_isBuStarted)
-                {
-                    _isBuStarted = true;
-                    _importCvs.BackupDataBase();
-                }
-
-                _isHourChanged = false;
-
 
                 await Task.Delay(60000, stoppingToken);
             }

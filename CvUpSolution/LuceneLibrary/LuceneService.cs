@@ -124,6 +124,8 @@ namespace LuceneLibrary
                         string managedKeyWords = txtIndexMange(searchVals.value);
                         var keyWordsToSearch = managedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToList();
 
+                        // Define a regular expression pattern to match quoted phrases
+                        //מנכל מפעל "שרשרת הספקה"
                         string pattern = "\"([^\"]*)\"";
 
                         // Match the pattern in the input string

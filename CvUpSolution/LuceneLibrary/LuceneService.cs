@@ -88,15 +88,15 @@ namespace LuceneLibrary
 
                 foreach (var word in words)
                 {
-                    if (searchVals.exact)
-                    {
-                        var query = mQueryParser.Parse(word.ToLower());
-                        aggregateQuery.Add(query, Occur.MUST);
-                    }
-                    else
-                    {
+                    //if (searchVals.exact)
+                    //{
+                    //    var query = mQueryParser.Parse(word.ToLower());
+                    //    aggregateQuery.Add(query, Occur.MUST);
+                    //}
+                    //else
+                    //{
                         aggregateQuery.Add(new WildcardQuery(new Term("CV", "*" + word.ToLower() + "*")), Occur.MUST);
-                    }
+                    //}
                 }
 
                 if (mIndexSearcher != null)

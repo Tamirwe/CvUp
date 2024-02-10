@@ -226,7 +226,7 @@ export const SearchControl = ({
               />
             </IconWrapper>
           )}
-          {shoeAdvancedIcon && (
+          {/* {shoeAdvancedIcon && (
             <IconWrapper sx={{ padding: "0 4px" }}>
               {showAdvancedSearch ? (
                 <MdKeyboardArrowUp
@@ -252,7 +252,7 @@ export const SearchControl = ({
                 />
               )}
             </IconWrapper>
-          )}
+          )} */}
         </Search>
         {/* <ToggleButton
           sx={{
@@ -320,7 +320,7 @@ export const SearchControl = ({
               }));
             }}
           >
-            Ex
+            EX
           </ToggleButton>
         )}
         {showSort && (

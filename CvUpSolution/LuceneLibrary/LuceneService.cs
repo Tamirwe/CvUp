@@ -101,7 +101,7 @@ namespace LuceneLibrary
 
                 if (mIndexSearcher != null)
                 {
-                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(aggregateQuery, null, 5000).ScoreDocs);
+                    ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(aggregateQuery, null, 10000).ScoreDocs);
                     //ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 5000).ScoreDocs);
 
                     for ( int i = 0; i < hitIdxs.Length; i++)
@@ -116,13 +116,48 @@ namespace LuceneLibrary
                         });
                     }
 
-                    string advancedKeyWords = txtIndexMange(searchVals.advancedValue);
-                    string[] advancedWords = advancedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                    foreach (var word in advancedWords)
+
+                    if (searchVals.exact)
                     {
-                        result = result.Where(x => x.CV.Contains(word)).ToList();
+
+                        string managedKeyWords = txtIndexMange(searchVals.value);
+                        var keyWordsToSearch = managedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                        string pattern = "\"([^\"]*)\"";
+
+                        // Match the pattern in the input string
+                        MatchCollection matches = Regex.Matches(searchVals.value, pattern);
+
+                        // Output each matched phrase
+                        foreach (Match match in matches)
+                        {
+                            string phrase = match.Groups[1].Value;
+                            keyWordsToSearch.Add(phrase);
+                        }
+
+                        foreach (var word in keyWordsToSearch)
+                        {
+                            result = result.Where(x => x.CV.Contains(word)).ToList();
+                        }
+
                     }
+
+
+
+
+
+
+
+
+
+                    //string advancedKeyWords = txtIndexMange(searchVals.advancedValue);
+                    //string[] advancedWords = advancedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                    //foreach (var word in advancedWords)
+                    //{
+                    //    result = result.Where(x => x.CV.Contains(word)).ToList();
+                    //}
                 }
             };
 
@@ -161,7 +196,9 @@ namespace LuceneLibrary
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
-            string txtToIndex = $"{nn(cvCand.email)} {nn(cvCand.phone)} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.cvsTxt)}";
+            var phoneNumbersOnly = string.Concat(nn(cvCand.phone).Where(char.IsNumber));
+
+            string txtToIndex = $"{nn(cvCand.email)} {phoneNumbersOnly} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.cvsTxt)}";
             txtToIndex = txtIndexMange(txtToIndex);
 
             var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES) },

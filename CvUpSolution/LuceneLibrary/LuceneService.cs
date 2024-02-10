@@ -135,7 +135,7 @@ namespace LuceneLibrary
                         foreach (Match match in matches)
                         {
                             string phrase = match.Groups[1].Value;
-                            keyWordsToSearch.Add(phrase);
+                            keyWordsToSearch.Add(txtIndexMange(phrase));
                         }
 
                         foreach (var word in keyWordsToSearch)

@@ -62,7 +62,7 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                string keyWords = txtIndexMange(searchVals.value);
+                string managedKeyWords = txtIndexMange(searchVals.value);
 
                 //var query = mQueryParser.Parse(searchQuery.ToLower());
 
@@ -84,7 +84,7 @@ namespace LuceneLibrary
 
                 BooleanQuery aggregateQuery = new BooleanQuery();
 
-                string[] words = keyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                string[] words = managedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var word in words)
                 {
@@ -121,7 +121,7 @@ namespace LuceneLibrary
                     if (searchVals.exact)
                     {
 
-                        string managedKeyWords = txtIndexMange(searchVals.value);
+                        //string managedKeyWords = txtIndexMange(searchVals.value);
                         var keyWordsToSearch = managedKeyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToList();
 
                         // Define a regular expression pattern to match quoted phrases
@@ -240,9 +240,9 @@ namespace LuceneLibrary
 
             //var word_query =(from string word in words orderby word select word).Distinct();
 
-            string[] result = words.Distinct().ToArray();
+            //string[] result = words.Distinct().ToArray();
 
-            var cvWords = string.Join(" ", result);
+            var cvWords = string.Join(" ", words);
 
             return cvWords;
         }

@@ -20,7 +20,13 @@ export const CandFormDialog = ({ isOpen, onClose }: IProps) => {
       onClose={() => onClose(false)}
       fullWidth
       maxWidth={"md"}
-      sx={{}}
+      sx={{
+        "& .MuiDialog-container": {
+          alignItems: "flex-start",
+          justifyContent: "left",
+          padding: 2,
+        },
+      }}
     >
       <DialogTitle>Candidate Details</DialogTitle>
       <DialogContent>

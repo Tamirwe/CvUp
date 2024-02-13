@@ -360,6 +360,7 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandDetails(CandDetailsModel candDetails)
         {
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
+            await SaveCandidateToIndex(candDetails.companyId, candDetails.candidateId);
         }
 
         public async Task UpdateIsSeen(int companyId, int cvId)

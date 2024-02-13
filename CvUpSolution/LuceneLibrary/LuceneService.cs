@@ -143,8 +143,16 @@ namespace LuceneLibrary
                             result = result.Where(x => x.CV.Contains(word)).ToList();
                         }
 
-                    }
+                        if (matches.Count == 0 && keyWordsToSearch.Count > 1)
+                        {
+                            foreach (var item in result.Where(x => x.CV.Contains(managedKeyWords)))
+                            {
+                                item.Score = 1000;
+                            }
+                        }
 
+                        result = result.OrderByDescending(x => x.Score).ToList();
+                    }
 
 
 

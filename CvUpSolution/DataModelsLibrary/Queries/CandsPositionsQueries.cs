@@ -441,17 +441,29 @@ namespace DataModelsLibrary.Queries
 
                 List<CvsToIndexModel> candsCvs = await query.ToListAsync();
 
-                List<cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
+                var cvsTxtQuery = from cv in dbContext.cvs_txts
+                                  where cv.company_id == companyId && candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
+                                  select new CvTxtModel
+                                  {
+                                      id = cv.id,
+                                      candidateId = cv.candidate_id ?? 0,
+                                      cvTxt = cv.cv_txt,
+                                      asciiSum = cv.ascii_sum,
+                                  };
+
+                List<CvTxtModel> cvsTxts = await cvsTxtQuery.ToListAsync();
+
+                //List <cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
 
                 foreach (var item in candsCvs)
                 {
-                    var cvsTxtCand = cvsTxts.Where(x => x.candidate_id == item.candidateId).ToList();
+                    var asciiGroup = cvsTxts.Where(x => x.candidateId == item.candidateId).GroupBy(x => x.asciiSum).Select(x => x.First()).ToList();
 
                     StringBuilder sb = new StringBuilder();
 
-                    foreach (var cv in cvsTxtCand)
+                    foreach (var group in asciiGroup)
                     {
-                        sb.Append(cv.cv_txt);
+                        sb.Append(group.cvTxt + " ");
                     }
 
                     item.cvsTxt = sb.ToString();

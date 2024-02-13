@@ -67,6 +67,14 @@ namespace DataModelsLibrary.Models
         public int? cvdbid { get; set; }
     }
 
+    public class CvTxtModel
+    {
+        public int id { get; set; }
+        public int? candidateId { get; set; }
+        public string? cvTxt { get; set; } = "";
+        public int? asciiSum { get; set; }
+    }
+
     public class CandCvModel
     {
         public int candidateId { get; set; }

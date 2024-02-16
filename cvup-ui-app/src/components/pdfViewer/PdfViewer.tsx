@@ -20,14 +20,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import { useStore } from "../../Hooks/useStore";
-import { CiEdit } from "react-icons/ci";
-import { IconButton } from "@mui/material";
-import {
-  MdOutlineAttachEmail,
-  MdOutlineContactMail,
-  MdOutlineEdit,
-} from "react-icons/md";
-import { EmailTypeEnum } from "../../models/GeneralEnums";
+import { searchPlugin } from "@react-pdf-viewer/search";
 
 export const PdfViewer = observer(() => {
   const { candsStore } = useStore();
@@ -49,6 +42,10 @@ export const PdfViewer = observer(() => {
   //   // SwitchTheme: () => <></>,
   //   // SwitchThemeMenuItem: () => <></>,
   // });
+  const searchPluginInstance = searchPlugin({
+    keyword: candsStore.keywordsHighLight.split(" ").filter((i) => i),
+  });
+
   const toolbarPluginInstance = toolbarPlugin();
   const { Toolbar } = toolbarPluginInstance;
 
@@ -239,7 +236,7 @@ export const PdfViewer = observer(() => {
             // defaultScale={SpecialZoomLevel.PageWidth}
             defaultScale={SpecialZoomLevel.PageWidth}
             fileUrl={candsStore.pdfBlobUrl}
-            plugins={[toolbarPluginInstance]}
+            plugins={[toolbarPluginInstance, searchPluginInstance]}
             renderError={renderError}
             theme={{
               direction: TextDirection.RightToLeft,

@@ -42,6 +42,7 @@ export class CandsStore {
   posStages?: IPosStagesType[];
   emailTemplates?: IEmailTemplate[];
   candsReportData?: ICandsReport[];
+  lastSearchVals: string = "";
 
   constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
     makeAutoObservable(this);
@@ -93,18 +94,24 @@ export class CandsStore {
     return this.isShoePosStages;
   }
 
+  get keywordsHighLight() {
+    const keywordsarray = this.lastSearchVals.replaceAll('"', " ");
+
+    return keywordsarray;
+  }
+
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {
     //in mobile when cand review take all screen pdf viewr not load cv because it not in screan
     // if (isMobile) {
     //   this.candDisplay = undefined;
     // }
 
-    if (
-      this.candDisplay?.candidateId !== cand.candidateId ||
-      this.candDisplay?.cvId !== cand.cvId
-    ) {
-      await this.getPdf(cand.keyId);
-    }
+    // if (
+    //   this.candDisplay?.candidateId !== cand.candidateId ||
+    //   this.candDisplay?.cvId !== cand.cvId
+    // ) {
+    await this.getPdf(cand.keyId);
+    // }
 
     runInAction(() => {
       this.candDisplay = cand;
@@ -279,7 +286,9 @@ export class CandsStore {
   }
 
   async searchAllCands(searchVals: ISearchModel) {
-    if (searchVals.value.trim()) {
+    const searchKeywords = searchVals.value.trim();
+
+    if (searchKeywords) {
       this.rootStore.generalStore.backdrop = true;
       const res = await this.cvsApi.searchCands(searchVals, 0, 0, 0);
       runInAction(() => {
@@ -289,10 +298,14 @@ export class CandsStore {
 
       this.saveSearch(searchVals);
     }
+
+    this.lastSearchVals = searchKeywords;
   }
 
   async searchPositionCands(searchVals: ISearchModel) {
-    if (searchVals.value.trim()) {
+    const searchKeywords = searchVals.value.trim();
+
+    if (searchKeywords) {
       this.rootStore.generalStore.backdrop = true;
       const res = await this.cvsApi.searchCands(
         searchVals,
@@ -307,10 +320,14 @@ export class CandsStore {
 
       this.saveSearch(searchVals);
     }
+
+    this.lastSearchVals = searchKeywords;
   }
 
   async searchPositionTypeCands(searchVals: ISearchModel) {
-    if (searchVals.value.trim()) {
+    const searchKeywords = searchVals.value.trim();
+
+    if (searchKeywords) {
       this.rootStore.generalStore.backdrop = true;
       const res = await this.cvsApi.searchCands(
         searchVals,
@@ -325,10 +342,14 @@ export class CandsStore {
 
       this.saveSearch(searchVals);
     }
+
+    this.lastSearchVals = searchKeywords;
   }
 
   async searchFolderCands(searchVals: ISearchModel) {
-    if (searchVals.value.trim()) {
+    const searchKeywords = searchVals.value.trim();
+
+    if (searchKeywords) {
       this.rootStore.generalStore.backdrop = true;
       const res = await this.cvsApi.searchCands(
         searchVals,
@@ -343,6 +364,8 @@ export class CandsStore {
 
       this.saveSearch(searchVals);
     }
+
+    this.lastSearchVals = searchKeywords;
   }
 
   async getCandsList() {

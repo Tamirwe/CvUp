@@ -67,6 +67,8 @@ namespace ImportCvsLibrary
                 }
                 catch (Exception)
                 {
+                    client.Disconnect(true);
+                    client.Dispose();
                     return;
                 }
                
@@ -155,6 +157,10 @@ namespace ImportCvsLibrary
                     }
                     catch (Exception ex)
                     {
+                        client.Disconnect(true);
+                        client.Dispose();
+
+
                         addEventLogEntry(ex);
                         Console.WriteLine(ex.ToString());
                         inbox.SetFlags(uid, MessageFlags.Seen, true);

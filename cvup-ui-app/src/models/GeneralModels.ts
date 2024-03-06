@@ -197,6 +197,14 @@ export interface IContact {
   role: string;
 }
 
+export interface ICustomer {
+  id: number;
+  name: string;
+  address?: string;
+  descr?: string;
+  created?: Date;
+}
+
 export interface IFolder {
   id: number;
   name: string;

@@ -9,6 +9,9 @@ import {
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { textFieldValidte, validateTxt } from "../../utils/Validation";
+import { ICustomer } from "../../models/GeneralModels";
+import { isMobile } from "react-device-detect";
+import { format } from "date-fns";
 
 interface IProps {
   onSaved: () => void;
@@ -20,9 +23,11 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
-  const [formModel, setFormModel] = useState<IIdName>({
+  const [formModel, setFormModel] = useState<ICustomer>({
     id: 0,
     name: "",
+    descr: "",
+    address: "",
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     name: "",
@@ -107,8 +112,8 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
             disabled={crudType === CrudTypesEnum.Delete}
             margin="normal"
             type="text"
-            id="title"
-            label="Team Name"
+            id="name"
+            label="Name"
             variant="outlined"
             onChange={(e) => {
               setFormModel((currentProps) => ({
@@ -121,6 +126,73 @@ export const CustomerForm = ({ onSaved, onCancel }: IProps) => {
             error={errModel.name !== ""}
             helperText={errModel.name}
             value={formModel.name}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
+            sx={{ minWidth: 350, direction: "rtl" }}
+            inputProps={{ maxLength: 255 }}
+            fullWidth
+            autoFocus
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="address"
+            label="Address"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                address: e.target.value,
+              }));
+              setIsDirty(true);
+            }}
+            value={formModel.address}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            sx={{
+              minWidth: 350,
+              direction: "rtl",
+            }}
+            multiline
+            rows={5}
+            inputProps={{ maxLength: 255 }}
+            fullWidth
+            autoFocus
+            disabled={crudType === CrudTypesEnum.Delete}
+            margin="normal"
+            type="text"
+            id="descr"
+            label="Description"
+            variant="outlined"
+            onChange={(e) => {
+              setFormModel((currentProps) => ({
+                ...currentProps,
+                descr: e.target.value,
+              }));
+              setIsDirty(true);
+            }}
+            value={formModel.descr}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            sx={{ minWidth: 350 }}
+            fullWidth
+            autoFocus
+            disabled={true}
+            margin="normal"
+            type="text"
+            id="created"
+            label="Created"
+            variant="outlined"
+            value={
+              formModel.created &&
+              format(new Date(formModel.created), "MMM d, yyyy")
+            }
           />
         </Grid>
         <Grid item xs={12}>

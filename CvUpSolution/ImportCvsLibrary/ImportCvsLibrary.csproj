@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="FreeSpire.Doc" Version="10.8.0" />
     <PackageReference Include="FreeSpire.PDF" Version="8.6.0" />
-    <PackageReference Include="MailKit" Version="4.1.0" />
+    <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="7.0.0" />
     <PackageReference Include="System.Security.Permissions" Version="7.0.0" />

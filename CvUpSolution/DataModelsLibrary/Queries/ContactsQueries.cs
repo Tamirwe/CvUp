@@ -97,14 +97,16 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
+        public async Task<customer> AddCustomer(CustomerModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var dep = new customer
                 {
+                    company_id = companyId,
                     name = data.name,
-                    company_id = companyId
+                    descr = data.descr,
+                    address = data.address
                 };
 
                 var result = dbContext.customers.Add(dep);
@@ -113,28 +115,31 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
+        public async Task<customer?> UpdateCustomer(CustomerModel data, int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                customer dep = new customer { id = data.id, name = data.name, company_id = companyId };
+                customer dep = new customer { id = data.id, name = data.name, descr=data.descr,address=data.address, company_id = companyId };
                 var result = dbContext.customers.Update(dep);
                 await dbContext.SaveChangesAsync();
                 return result.Entity;
             }
         }
 
-        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
+        public async Task<List<CustomerModel>> GetCustomersList(int companyId)
         {
             using (var dbContext = new cvup00001Context())
             {
                 var query = from dep in dbContext.customers
                             where dep.company_id == companyId
                             orderby dep.name
-                            select new IdNameModel
+                            select new CustomerModel
                             {
                                 id = dep.id,
                                 name = dep.name,
+                                address = dep.address,
+                                descr = dep.descr,
+                                created = dep.date_created,
                             };
 
                 return await query.ToListAsync();

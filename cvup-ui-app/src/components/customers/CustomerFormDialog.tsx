@@ -17,7 +17,7 @@ export const CustomerFormDialog = ({ isOpen, onClose }: IProps) => {
 
   useEffect(() => {
     if (customersContactsStore.selectedCustomer) {
-      setFormTitle("Edit Contact");
+      setFormTitle("Edit Customer");
     }
     setOpen(isOpen);
   }, [isOpen]);

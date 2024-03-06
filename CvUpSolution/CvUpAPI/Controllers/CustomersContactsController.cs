@@ -55,15 +55,15 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("AddCustomer")]
-        public async Task<IActionResult> AddCustomer(IdNameModel data)
+        public async Task<IActionResult> AddCustomer(CustomerModel data)
         {
             customer newRec =await _customersContactsService.AddCustomer(data, Globals.CompanyId);
-            return Ok(new IdNameModel { id= newRec.id, name=newRec.name });
+            return Ok(new CustomerModel { id= newRec.id, name=newRec.name });
         }
 
         [HttpPut]
         [Route("UpdateCustomer")]
-        public async Task<IActionResult> UpdateCustomer(IdNameModel data)
+        public async Task<IActionResult> UpdateCustomer(CustomerModel data)
         {
             customer? newRec = await _customersContactsService.UpdateCustomer(data, Globals.CompanyId);
 
@@ -80,7 +80,7 @@ namespace CvUpAPI.Controllers
         [Route("GetCustomersList")]
         public async Task<IActionResult> GetCustomersList()
         {
-            List<IdNameModel> customers = await _customersContactsService.GetCustomersList(Globals.CompanyId);
+            List<CustomerModel> customers = await _customersContactsService.GetCustomersList(Globals.CompanyId);
             return Ok(customers);
         }
 

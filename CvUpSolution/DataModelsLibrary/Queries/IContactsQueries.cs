@@ -9,9 +9,9 @@ namespace DataModelsLibrary.Queries
         Task Deletecontact(int companyId, int id);
         Task<List<ContactModel>> GetContacts(int companyId);
         Task<contact> UpdateContact(int companyId, ContactModel data);
-        public Task<customer> AddCustomer(IdNameModel data, int companyId);
-        public Task<customer?> UpdateCustomer(IdNameModel data, int companyId);
-        public Task<List<IdNameModel>> GetCustomersList(int companyId);
+        public Task<customer> AddCustomer(CustomerModel data, int companyId);
+        public Task<customer?> UpdateCustomer(CustomerModel data, int companyId);
+        public Task<List<CustomerModel>> GetCustomersList(int companyId);
         public Task DeleteCustomer(int companyId, int id);
     }
 }

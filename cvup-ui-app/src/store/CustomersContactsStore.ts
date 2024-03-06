@@ -1,6 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
-import { IAppSettings, IContact, ISearchModel } from "../models/GeneralModels";
+import {
+  IAppSettings,
+  IContact,
+  ICustomer,
+  ISearchModel,
+} from "../models/GeneralModels";
 import ContactsApi from "./api/CustomersContactsApi";
 import { RootStore } from "./RootStore";
 
@@ -127,14 +132,14 @@ export class CustomersContactsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async addCustomer(customer: IIdName) {
+  async addCustomer(customer: ICustomer) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.contactsApi.addCustomer(customer);
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
 
-  async updateCustomer(customer: IIdName) {
+  async updateCustomer(customer: ICustomer) {
     this.rootStore.generalStore.backdrop = true;
     const response = await this.contactsApi.updateCustomer(customer);
     this.rootStore.generalStore.backdrop = false;

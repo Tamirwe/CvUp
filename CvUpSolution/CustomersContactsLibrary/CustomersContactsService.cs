@@ -37,21 +37,21 @@ namespace CustomersContactsLibrary
             return await _contactsQueries.GetContacts(companyId);
         }
 
-        public async Task<customer> AddCustomer(IdNameModel data, int companyId)
+        public async Task<customer> AddCustomer(CustomerModel data, int companyId)
         {
             customer newRec = await _contactsQueries.AddCustomer(data, companyId);
             return newRec;
         }
 
-        public async Task<customer?> UpdateCustomer(IdNameModel data, int companyId)
+        public async Task<customer?> UpdateCustomer(CustomerModel data, int companyId)
         {
             customer? updRec = await _contactsQueries.UpdateCustomer(data, companyId);
             return updRec;
         }
 
-        public async Task<List<IdNameModel>> GetCustomersList(int companyId)
+        public async Task<List<CustomerModel>> GetCustomersList(int companyId)
         {
-            List<IdNameModel> depList = await _contactsQueries.GetCustomersList(companyId);
+            List<CustomerModel> depList = await _contactsQueries.GetCustomersList(companyId);
             return depList;
         }
 

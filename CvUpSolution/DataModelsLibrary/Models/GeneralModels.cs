@@ -75,4 +75,13 @@ namespace DataModelsLibrary.Models
         public string customerName { get; set; } = string.Empty;
         public string? role { get; set; } = string.Empty;
     }
+
+    public class CustomerModel
+    {
+        public int id { get; set; } = 0;
+        public string name { get; set; } = string.Empty;
+        public string? address { get; set; } = string.Empty;
+        public string? descr { get; set; } = string.Empty;
+        public DateTime? created { get; set; }
+    }
 }

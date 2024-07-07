@@ -80,7 +80,7 @@ export const LoginForm = ({ loginType }: IProps) => {
       window.location.href.indexOf("10.100") === -1 &&
       window.location.href.indexOf("localhost") === -1
     ) {
-      setLocalStorageIP("http://" + window.location.hostname + ":8030/api/");
+      setLocalStorageIP("http://" + window.location.hostname + ":8079/api/");
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

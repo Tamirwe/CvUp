@@ -626,7 +626,8 @@ namespace DataModelsLibrary.Queries
                                 emailsubjectAddon = p.customer_pos_num,
                                 remarks = p.remarks,
                                 matchEmailsubject = p.match_email_subject,
-                                updated = p.date_updated
+                                updated = p.date_updated,
+                                created = p.date_created
                             };
 
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -706,6 +707,7 @@ namespace DataModelsLibrary.Queries
                                 name = p.name,
                                 status = System.Enum.Parse<PositionStatusEnum>(p.status),
                                 updated = p.date_updated,
+                                created = p.date_created,
                                 customerName = c.name,
                                 customerId = p.customer_id,
                                 candsCount = p.cands_count

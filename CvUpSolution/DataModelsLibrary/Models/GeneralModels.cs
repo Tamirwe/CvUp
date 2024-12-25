@@ -23,6 +23,7 @@ namespace DataModelsLibrary.Models
         public string? requirements { get; set; } = string.Empty;
         public PositionStatusEnum status { get; set; } = PositionStatusEnum.Active;
         public DateTime? updated { get; set; }
+        public DateTime? created { get; set; }
         public int? customerId { get; set; } = 0;
         public List<int>? contactsIds { get; set; }
         public int[] interviewersIds { get; set; } = new int[] { };

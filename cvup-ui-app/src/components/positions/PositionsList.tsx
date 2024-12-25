@@ -141,7 +141,15 @@ export const PositionsList = observer(() => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {pos.updated && format(new Date(pos.updated), "MMM d, yyyy")}
+                  <span title="updated">
+                    {pos.updated &&
+                      format(new Date(pos.updated), "MMM d, yyyy")}
+                  </span>
+                  <br></br>
+                  <span title="created">
+                    {pos.created &&
+                      format(new Date(pos.created), "MMM d, yyyy")}
+                  </span>
                 </div>
                 <ListItemText
                   primary={pos.name}

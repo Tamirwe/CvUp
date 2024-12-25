@@ -5,6 +5,7 @@ using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Google.Protobuf;
+using ImportCvsLibrary.RegularExpressions;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
@@ -539,6 +540,328 @@ namespace ImportCvsLibrary
             var fileNamePath = $"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}\\{fileName}";
             return fileNamePath;
         }
+
+        #region Candidate Name
+
+        private void GetCandidateName()
+        {
+            string[] cvWords = _importCv.cvTxt.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string firstName = "";
+            string lastName1 = "";
+            string lastName2 = "";
+
+
+            for (int i = 0; i < cvWords.Length - 10; i++)
+            {
+                firstName= cvWords[i];
+                lastName1 = cvWords[i + 1];
+
+                if (isCanBeFirstOrLastName(firstName) && isCanBeFirstOrLastName(lastName1))
+                {
+                    
+
+                    if (isCanBeFirstOrLastName(cvWords[i + 2]))
+                    {
+                        lastName2 = cvWords[i + 2];
+                    }
+                    else if (isCanBeFirstOrLastName(cvWords[i + 3]))
+                    {
+                        lastName2 = cvWords[i + 3];
+                    }
+                }
+                
+            }
+
+            string hebChars = Rx.RemoveNoneHebChars(_importCv.cvTxt);
+
+            if (hebChars.Length > 50)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            //string name;
+            //List<string> lines;
+
+            //lines = getCvLines(_importCv.cvTxt);
+            //if (lines.Count < 6)//cv contains less then 5 rows
+            //{
+            //    return;
+            //}
+
+            //name = findNameByPrefixPattern(lines);
+
+            //if (name == string.Empty)
+            //{
+            //    name = findNameByNamesList(lines);
+            //}
+
+
+        }
+
+        private void potentialLastNames(string lastName1, string lastName2, string lastName3)
+        {
+            string lastName = "";
+
+            if (isCanBeFirstOrLastName(lastName1))
+            {
+                if (isCanBeFirstOrLastName(lastName2))
+                {
+
+                }
+                else if (isCanBeFirstOrLastName(lastName3))
+                {
+
+                }
+            }
+            else if (isCanBeFirstOrLastName(lastName2))
+            {
+
+            }
+        }
+
+        private bool isCanBeFirstOrLastName(string name)
+        {
+            bool isAble = true;
+
+            if (name.Length < 2)
+            {
+                isAble = false;
+            }
+
+            return isAble;
+        }
+
+        //private string findNameByPrefixPattern(List<string> lines)
+        //{
+        //    //שם: שמלא
+        //    //שם: שמפרטי
+        //    //משפחה: שמשפחה
+        //    //שם פרטי: שמפרטי
+        //    //שם משפחה: שמשפחה
+
+        //    string line, name = "";
+
+        //    for (int i = 0; i < 6; i++)
+        //    {
+        //        name = "";
+        //        line = lines[i];
+        //        line = Rx.MultipleSpacesToOneSpace(line);
+        //        line = Rx.RemoveEnglishLetters(line);
+        //        line = Rx.RemoveSpacesBeforeColon(line);
+
+        //        if (line.IndexOf("שם:") > -1)
+        //        {
+        //            line = line.Replace("שם:", "");
+        //            name = getNameFromString(line);
+        //            break;
+        //        }
+        //        else if (line.IndexOf("שם מלא") > -1)
+        //        {
+        //            line = line.Replace("שם מלא", "");
+        //            name = getNameFromString(line);
+        //            break;
+        //        }
+        //        else if (line.IndexOf("שם ומשפחה") > -1)
+        //        {
+        //            line = line.Replace("שם ומשפחה", "");
+        //            name = getNameFromString(line);
+        //            break;
+        //        }
+        //        else if (line.IndexOf("שם פרטי:") > -1)
+        //        {
+
+        //        }
+        //        else if (line.IndexOf("משפחה") > -1)
+        //        {
+
+        //        }
+        //        else if (line.IndexOf("שם") > -1)
+        //        {
+        //            line = line.Replace("שם", "");
+        //            name = getNameFromString(line);
+        //            break;
+        //        }
+        //    }
+
+        //    return name;
+        //}
+
+        //private string findNameByNamesList(List<string> lines)
+        //{
+        //    string name1 = "", name2 = "", name3 = "", name4 = "";
+
+        //    for (int i = 0; i < 6; i++)
+        //    {
+        //        if (name1 != "" && name2 != "")
+        //        {
+        //            if (name3 != "")
+        //            {
+        //                return name1 + " " + name2 + " " + name3;
+        //            }
+        //            else
+        //            {
+        //                return name1 + " " + name2;
+        //            }
+        //        }
+
+        //        name1 = "";
+
+        //        var lineTxt = Rx.ReplaceNoneHebNameCharsToSpace(lines[i]);
+        //        lineTxt = lineTxt.Replace("קורות חיים", " ");
+        //        lineTxt = lineTxt.Replace("תז", " ");
+
+        //        var lineSplited = lineTxt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        //        foreach (var name in lineSplited)
+        //        {
+        //            if (UniqueCandNames.Contains(rp(name)))
+        //            {
+        //                if (name1 == "")
+        //                {
+        //                    name1 = name;
+        //                }
+        //                else if (name2 == "")
+        //                {
+        //                    name2 = name;
+        //                }
+        //                else if (name3 == "")
+        //                {
+        //                    name3 = name;
+        //                }
+        //                else if (name4 == "")
+        //                {
+        //                    name4 = name;
+        //                    return name1 + " " + name2 + " " + name3 + " " + name4;
+        //                }
+        //            }
+        //            else if (name1 != "" && name2 != "")
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+
+        //    return "";
+        //}
+
+        //private string getNameFromString(string line)
+        //{
+        //    string name = "";
+        //    string[] lineArr;
+
+        //    if (line.IndexOf(',') > -1)
+        //    {
+        //        line = line.Substring(0, line.IndexOf(','));
+        //    }
+
+        //    line = removeNotNamesWords(line);
+        //    line = Rx.TrimNoneAlfabeit(line);
+
+        //    line = Rx.RemoveSpacesBeforeAfterDash(line);//בן - ארי , בן-ארי
+        //    lineArr = line.Split(new char[] { ' ' });
+
+        //    if (lineArr.Length > 4)
+        //    {
+        //        name = "";
+        //    }
+        //    else
+        //    {
+        //        foreach (var item in lineArr)
+        //        {
+        //            if (Rx.IsHebrewCharsExist(item))
+        //            {
+        //                name += Rx.TrimNoneAlfabeit(item) + " ";
+        //            }
+        //        }
+        //        name = name.Trim();
+        //    }
+        //    return name;
+        //}
+
+        //private List<string> getCvLines(string cvText)
+        //{
+        //    List<string> lines = new List<string>();
+
+        //    using (System.IO.StringReader reader = new System.IO.StringReader(cvText))
+        //    {
+        //        string line;
+        //        while ((line = reader.ReadLine()) != null)
+        //        {
+        //            if (line.Trim() != string.Empty)
+        //            {
+        //                lines.Add(line.Trim());
+        //            }
+        //        }
+        //    }
+        //    return lines;
+        //}
+
+        //private string removeNotNamesWords(string str)
+        //{
+        //    string newStr = "";
+        //    str = str.Replace("\t", " ");
+        //    str = str.Replace("\v", " ");
+        //    str = str.Replace("-", "").Replace("\"", "");//בן-דוד TO בןדוד, באב"ד TO באבד
+
+        //    foreach (var item in notNameMultiWordsBefore)
+        //    {
+        //        str = str.Replace(item, "");
+        //    }
+
+        //    foreach (var item in notNameMultiWordsAfter)
+        //    {
+        //        if (str.IndexOf(item) > -1)
+        //        {
+        //            str = str.Substring(0, str.IndexOf(item));
+        //        }
+        //    }
+
+        //    //str = rx.RemovePunctuation(str);
+        //    str = Rx.RemoveDigits(str);
+        //    str = str.Trim();
+
+        //    if (str.Length > 0)
+        //    {
+        //        string[] wordsArr = str.Split(new char[] { ' ' });
+
+        //        for (int i = 0; i < wordsArr.Length; i++)
+        //        {
+        //            if (notNameWordsBefore.Contains(Rx.RemovePunctuation(wordsArr[i])))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                newStr += wordsArr[i] + " ";
+        //            }
+        //        }
+
+        //        wordsArr = newStr.Trim().Split(new char[] { ' ' });
+        //        newStr = "";
+
+        //        for (int i = 0; i < wordsArr.Length; i++)
+        //        {
+        //            if (notNameWordsAfter.Contains(Rx.RemovePunctuation(wordsArr[i])))
+        //            {
+        //                for (int j = i; j < wordsArr.Length; j++)
+        //                {
+        //                    wordsArr[j] = "";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                newStr += wordsArr[i] + " ";
+        //            }
+        //        }
+        //    }
+
+        //    return newStr.Trim();
+        //}
+
+        #endregion
 
         //private int GetCompanyIdFromAddress(InternetAddressList addressList)
         //{

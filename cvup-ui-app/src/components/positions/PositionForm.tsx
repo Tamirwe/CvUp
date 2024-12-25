@@ -47,6 +47,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
     descr: undefined,
     requirements: undefined,
     updated: new Date(),
+    created: new Date(),
     status: PositionStatusEnum.Active,
     customerId: 0,
     customerName: "",
@@ -209,36 +210,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     value={formModel.name}
                   />
                 </Grid>
-                <Grid item xs={12} lg={2}>
-                  <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel id="permissionlabel">status</InputLabel>
-                    <Select
-                      sx={{ direction: "ltr" }}
-                      disabled={crudType === CrudTypesEnum.Delete}
-                      labelId="permissionlabel"
-                      id="permissionTypeSelect"
-                      label="status"
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          status: e.target.value as PositionStatusEnum,
-                        }));
-                        setIsDirty(true);
-                      }}
-                      value={formModel.status}
-                    >
-                      {Object.keys(PositionStatusEnum)
-                        .filter((x) => isNaN(Number(x)))
-                        .map((key, i) => {
-                          return (
-                            <MenuItem key={i} value={i}>
-                              {key.replace("_", " ")}
-                            </MenuItem>
-                          );
-                        })}
-                    </Select>
-                  </FormControl>
-                </Grid>
+
                 <Grid item xs={12} lg={2}>
                   <TextField
                     sx={{
@@ -253,6 +225,23 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     variant="outlined"
                     value={
                       format(new Date(formModel.updated), "MMM d, yyyy") || ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} lg={2}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    disabled={true}
+                    margin="normal"
+                    type="text"
+                    id="created"
+                    label="Created"
+                    variant="outlined"
+                    value={
+                      format(new Date(formModel.created), "MMM d, yyyy") || ""
                     }
                   />
                 </Grid>
@@ -352,6 +341,81 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </Grid>
 
                 <Grid item xs={12} lg={3}>
+                  <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="permissionlabel">status</InputLabel>
+                    <Select
+                      sx={{ direction: "ltr" }}
+                      disabled={crudType === CrudTypesEnum.Delete}
+                      labelId="permissionlabel"
+                      id="permissionTypeSelect"
+                      label="status"
+                      onChange={(e) => {
+                        setFormModel((currentProps) => ({
+                          ...currentProps,
+                          status: e.target.value as PositionStatusEnum,
+                        }));
+                        setIsDirty(true);
+                      }}
+                      value={formModel.status}
+                    >
+                      {Object.keys(PositionStatusEnum)
+                        .filter((x) => isNaN(Number(x)))
+                        .map((key, i) => {
+                          return (
+                            <MenuItem key={i} value={i}>
+                              {key.replace("_", " ")}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} lg={4}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="matchEmailsubject"
+                    label="Match text email subject"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        matchEmailsubject: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.matchEmailsubject || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <TextField
+                    sx={{
+                      direction: "rtl",
+                    }}
+                    fullWidth
+                    required
+                    margin="normal"
+                    type="text"
+                    id="remarks"
+                    label="Remarks for position"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        remarks: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.remarks || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
                   <TextField
                     sx={{
                       direction: "rtl",
@@ -374,51 +438,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     value={formModel.emailsubjectAddon || ""}
                   />
                 </Grid>
-                <Grid item xs={12} lg={6}>
-                  <TextField
-                    sx={{
-                      direction: "rtl",
-                    }}
-                    fullWidth
-                    required
-                    margin="normal"
-                    type="text"
-                    id="matchEmailsubject"
-                    label="Match text email subject"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setFormModel((currentProps) => ({
-                        ...currentProps,
-                        matchEmailsubject: e.target.value,
-                      }));
-                      setIsDirty(true);
-                    }}
-                    value={formModel.matchEmailsubject || ""}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <TextField
-                    sx={{
-                      direction: "rtl",
-                    }}
-                    fullWidth
-                    required
-                    margin="normal"
-                    type="text"
-                    id="remarks"
-                    label="Remarks for position"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setFormModel((currentProps) => ({
-                        ...currentProps,
-                        remarks: e.target.value,
-                      }));
-                      setIsDirty(true);
-                    }}
-                    value={formModel.remarks || ""}
-                  />
-                </Grid>
-
                 <Grid item xs={12} lg={6}>
                   <TextField
                     sx={{

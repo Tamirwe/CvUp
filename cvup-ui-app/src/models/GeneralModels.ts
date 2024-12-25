@@ -111,6 +111,7 @@ export interface IPosition {
   descr?: string;
   requirements?: string;
   updated: Date;
+  created: Date;
   status: PositionStatusEnum;
   customerId: number;
   customerName: string;

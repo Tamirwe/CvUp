@@ -346,51 +346,61 @@ namespace ImportCvsLibrary
                     string subject = _importCv.subject;
                     bool isCorrectParser = false;
 
-                    foreach (var rule in parserRules)
+                    string firstDelimiter = parserRules[0].delimiter;
+
+                    if (firstDelimiter == subject.Substring(0, firstDelimiter.Length))
                     {
-                        if (subject.IndexOf(rule.delimiter) > -1)
+                        foreach (var rule in parserRules)
                         {
-                            subject = subject.Replace(rule.delimiter, seperator);
-                            isCorrectParser = true;
-                        }
-                        else
-                        {
-                            if (rule.must_metch)
+                            if (subject.IndexOf(rule.delimiter) > -1)
                             {
-                                isCorrectParser = false;
-                                break;
+                                subject = subject.Replace(rule.delimiter, seperator);
+                                isCorrectParser = true;
+                            }
+                            else
+                            {
+                                if (rule.must_metch)
+                                {
+                                    isCorrectParser = false;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (isCorrectParser)
-                    {
-                        string[] subjectArr = subject.Split(seperator);
-                        subjectArr = subjectArr.Skip(1).ToArray();//remove first entry, we take the value after the seperator.
-
-                        for (int i = 0; i < subjectArr.Length; i++)
+                        if (isCorrectParser)
                         {
-                            switch (parserRules[i].value_type)
+                            string newSubject = _importCv.subject;
+                            string[] subjectArr = subject.Split(seperator);
+                            subjectArr = subjectArr.Skip(1).ToArray();//remove first entry, we take the value after the seperator.
+
+                            for (int i = 0; i < subjectArr.Length; i++)
                             {
-                                case nameof(ParserValueType.Name):
-                                    //to be check
-                                    var nameParts = subjectArr[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                    _importCv.firstName = nameParts[nameParts.Length - 1].Trim();
-                                    _importCv.lastName = subjectArr[i].Replace(_importCv.firstName, "").Trim();
-                                    _importCv.candidateName = subjectArr[i];
-                                    break;
-                                case nameof(ParserValueType.Position):
-                                    _importCv.positionRelated = subjectArr[i].Trim();
-                                    break;
-                                case nameof(ParserValueType.CompanyType):
+                                string delimiterStr = parserRules[i].delimiter;
 
-                                    break;
-                                case nameof(ParserValueType.Address):
-
-                                    break;
-                                default:
-                                    break;
+                                switch (parserRules[i].value_type)
+                                {
+                                    case nameof(ParserValueType.Name):
+                                        //to be check
+                                        var nameParts = subjectArr[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                        _importCv.firstName = nameParts[nameParts.Length - 1].Trim();
+                                        _importCv.lastName = subjectArr[i].Replace(_importCv.firstName, "").Trim();
+                                        _importCv.candidateName = subjectArr[i];
+                                        newSubject = newSubject.Replace(delimiterStr, "");
+                                        break;
+                                    case nameof(ParserValueType.Position):
+                                        _importCv.positionRelated = subjectArr[i].Trim();
+                                        newSubject = newSubject.Replace(delimiterStr, " - ");
+                                        break;
+                                    case nameof(ParserValueType.CompanyType):
+                                        break;
+                                    case nameof(ParserValueType.Address):
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
+
+                            _importCv.subject = newSubject;
                         }
                     }
                 }

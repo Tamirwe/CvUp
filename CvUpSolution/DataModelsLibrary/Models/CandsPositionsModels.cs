@@ -55,7 +55,7 @@ namespace DataModelsLibrary.Models
         public string? lastName { get; set; } = "";
         public string? reviewText { get; set; } = "";
         public string? cvsTxt { get; set; } = "";
-
+        public DateTime? lastCvSent { get; set; }
     }
 
     public class CvPropsToIndexModel

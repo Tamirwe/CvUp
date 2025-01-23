@@ -348,7 +348,7 @@ namespace ImportCvsLibrary
 
                     string firstDelimiter = parserRules[0].delimiter;
 
-                    if (firstDelimiter == subject.Substring(0, firstDelimiter.Length))
+                    if (subject.Contains(firstDelimiter) && firstDelimiter == subject.Substring(0, firstDelimiter.Length))
                     {
                         foreach (var rule in parserRules)
                         {

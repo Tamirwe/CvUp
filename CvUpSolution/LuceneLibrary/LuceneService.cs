@@ -1,4 +1,5 @@
 ﻿using DataModelsLibrary.Models;
+using Google.Protobuf.WellKnownTypes;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Standard;
@@ -101,6 +102,9 @@ namespace LuceneLibrary
 
                 if (mIndexSearcher != null)
                 {
+
+                    //var sort = new Sort(new SortField("Updated", SortFieldType.INT64,true));
+
                     ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(aggregateQuery, null, 10000).ScoreDocs);
                     //ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 5000).ScoreDocs);
 
@@ -111,11 +115,15 @@ namespace LuceneLibrary
                         result.Add(new SearchEntry
                         {
                             Id = Convert.ToInt32(doc.Get("Id")),
+                            UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
+                            //Updated = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(doc.Get("Updated"))).UtcDateTime,
                             CV = doc.Get("CV"),
                             Score= (int)Math.Round(hitIdxs[i].Score*100,0)
                         });
                     }
 
+                    //find by id
+                    //result.Where(x => x.Id == 348337)
 
 
                     if (searchVals.exact)
@@ -145,7 +153,9 @@ namespace LuceneLibrary
 
                         if (matches.Count == 0 && keyWordsToSearch.Count > 1)
                         {
-                            foreach (var item in result.Where(x => x.CV.Contains(managedKeyWords)))
+                            var resultMatch = result.Where(x => x.CV.Contains(managedKeyWords));
+
+                            foreach (var item in resultMatch)
                             {
                                 item.Score = 1000;
                             }
@@ -155,7 +165,7 @@ namespace LuceneLibrary
                     }
 
 
-
+                    result = result.OrderByDescending(x => x.UpdatedTs).ToList();
 
 
 
@@ -211,8 +221,11 @@ namespace LuceneLibrary
             string txtToIndex = $"{nn(cvCand.email)} {phoneNumbersOnly} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.cvsTxt)}";
             txtToIndex = txtIndexMange(txtToIndex);
 
-            var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES) },
-                {new TextField("CV", txtToIndex, Field.Store.YES) }};
+            var updatedDate = cvCand.lastCvSent != null ? ((DateTimeOffset)cvCand.lastCvSent).ToUnixTimeSeconds() : 0;
+
+            var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Lucene.Net.Documents.Field.Store.YES) },
+                { new StoredField("Updated",updatedDate)},
+                {new TextField("CV", txtToIndex, Lucene.Net.Documents.Field.Store.YES) }};
 
             return doc;
         }
@@ -336,6 +349,8 @@ namespace LuceneLibrary
     {
         public int Id { get; set; }
         public string CV { get; set; } = String.Empty;
+        public long UpdatedTs { get; set; }
+        public DateTime Updated { get; set; }
         public int Score { get; set; }
     }
 }

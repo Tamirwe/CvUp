@@ -438,6 +438,7 @@ namespace DataModelsLibrary.Queries
                                 email = cand.email,
                                 phone = cand.phone,
                                 reviewText = cand.review,
+                                lastCvSent = cand.last_cv_sent
                             };
 
                 List<CvsToIndexModel> candsCvs = await query.ToListAsync();

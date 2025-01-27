@@ -62,26 +62,26 @@ export const LoginForm = ({ loginType }: IProps) => {
 
     const apiUrlFlag = localStorage.getItem("apiUrlOn");
 
-    if (apiUrlFlag === "on") {
-      setApiUrlsSelectBoxShow(apiUrlFlag === "on");
-      const storedSettings = localStorage.getItem("settings");
-      const settingsObj: IAppSettings = JSON.parse(storedSettings || "");
-      setApiUrl(settingsObj.apiUrl);
+    // if (apiUrlFlag === "on") {
+    // setApiUrlsSelectBoxShow(apiUrlFlag === "on");
+    const storedSettings = localStorage.getItem("settings");
+    const settingsObj: IAppSettings = JSON.parse(storedSettings || "");
+    setApiUrl(settingsObj.apiUrl);
 
-      fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
-        .then((res) => res.json())
-        .then((data: IAppSettingsFile) => {
-          setServersApi(data.servers);
-          Object.freeze(serversApi);
-        });
-    }
+    fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
+      .then((res) => res.json())
+      .then((data: IAppSettingsFile) => {
+        setServersApi(data.servers);
+        Object.freeze(serversApi);
+      });
+    // }
 
-    if (
-      window.location.href.indexOf("10.100") === -1 &&
-      window.location.href.indexOf("localhost") === -1
-    ) {
-      setLocalStorageIP("http://" + window.location.hostname + ":8079/api/");
-    }
+    // if (
+    //   window.location.href.indexOf("10.100") === -1 &&
+    //   window.location.href.indexOf("localhost") === -1
+    // ) {
+    //   setLocalStorageIP("http://" + window.location.hostname + ":8079/api/");
+    // }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
@@ -101,8 +101,6 @@ export const LoginForm = ({ loginType }: IProps) => {
   };
 
   const handleSubmit = async () => {
-    let response;
-
     setIsDirty(false);
     setSubmitError("");
 
@@ -115,6 +113,10 @@ export const LoginForm = ({ loginType }: IProps) => {
         setSubmitError("Incorrect email address or password.");
       }
     }
+  };
+
+  const handleShowServersList = () => {
+    setApiUrlsSelectBoxShow(!apiUrlsSelectBoxShow);
   };
 
   const setLocalStorageIP = (ip: string) => {
@@ -138,6 +140,7 @@ export const LoginForm = ({ loginType }: IProps) => {
               onChange={(e) => {
                 setApiUrl(e.target.value);
                 setLocalStorageIP(e.target.value);
+                window.location.reload();
               }}
               value={apiUrl}
             >
@@ -270,6 +273,20 @@ export const LoginForm = ({ loginType }: IProps) => {
               Sign in
             </Button>
           </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            mt: 3,
+            textAlign: "right",
+            color: "#9e9e9e",
+            cursor: "pointer",
+            fontSize: "0.75rem",
+          }}
+          onClick={handleShowServersList}
+        >
+          {apiUrl || "Select Server"}
         </Grid>
       </Grid>
     </form>

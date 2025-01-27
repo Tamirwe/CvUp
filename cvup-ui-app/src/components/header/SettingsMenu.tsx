@@ -113,8 +113,7 @@ export const SettingsMenu = () => {
         <Divider />
         <MenuItem
           onClick={async () => {
-            
-              candsStore.shoePosStages = !candsStore.shoePosStages;
+            candsStore.shoePosStages = !candsStore.shoePosStages;
           }}
         >
           <Avatar>
@@ -191,6 +190,9 @@ export const SettingsMenu = () => {
             <CiLogout />
           </ListItemIcon>
           Logout
+        </MenuItem>
+        <MenuItem sx={{ pt: 2, fontSize: "0.75rem" }}>
+          {candsStore.downloadUrl}
         </MenuItem>
       </Menu>
     </>

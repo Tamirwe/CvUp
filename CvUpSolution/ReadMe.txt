@@ -47,6 +47,8 @@ CvUp Installation on a new pc
 			1. select the pc Ip address and set port like 8075.
 			2. add one more binding just with port like 8075.
 	5. run "yarn build:deploy"
+	6. Install  "URL Rewrite"
+	7. install "hosting bundle https://dotnet.microsoft.com/en-us/download/dotnet/3.1" (click the "Hosting Bundle" link)
 
 5) Add port Forwording on cellcom router
 ----------------------------------------
@@ -58,4 +60,4 @@ CvUp Installation on a new pc
 6) Import Database
 ------------------
 	1. copy the last file from "C:\JobsLomda-GDrive\CvUp\dataBaseBackupFiles" and un zip it.
-	2. 
+	2. Import DB

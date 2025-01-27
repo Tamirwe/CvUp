@@ -60,7 +60,7 @@ export const LoginForm = ({ loginType }: IProps) => {
     generalStore.reset();
     positionsStore.reset();
 
-    const apiUrlFlag = localStorage.getItem("apiUrlOn");
+    // const apiUrlFlag = localStorage.getItem("apiUrlOn");
 
     // if (apiUrlFlag === "on") {
     // setApiUrlsSelectBoxShow(apiUrlFlag === "on");

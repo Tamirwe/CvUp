@@ -38,7 +38,7 @@ namespace LuceneLibrary
         public LuceneService(IConfiguration config)
         {
             _filesRootFolder = $"{config["GlobalSettings:CvUpFilesRootFolder"]}";
-            System.IO.Directory.CreateDirectory($"{_filesRootFolder}\\luceneIndex");
+            //System.IO.Directory.CreateDirectory($"{_filesRootFolder}\\luceneIndex");
             mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
             //mAnalyzer = new ClassicAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
 

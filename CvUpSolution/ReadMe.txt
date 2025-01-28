@@ -61,3 +61,9 @@ CvUp Installation on a new pc
 ------------------
 	1. copy the last file from "C:\JobsLomda-GDrive\CvUp\dataBaseBackupFiles" and un zip it.
 	2. Import DB
+
+7) Lucene Indexing
+------------------
+	1. Run IndexCvsConsoleApp project
+
+

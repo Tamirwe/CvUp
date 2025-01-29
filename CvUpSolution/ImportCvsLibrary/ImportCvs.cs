@@ -31,6 +31,7 @@ namespace ImportCvsLibrary
 
         ICandsPositionsServise _cvsPositionsServise;
         string _filesRootFolder;
+        string _cvupNotBackedUpRootFolder;
         string _gmailUserName;
         string _mailPassword;
         string _cvFolderPath = "";
@@ -48,6 +49,8 @@ namespace ImportCvsLibrary
             _cvsPositionsServise = cvsPositionsServise;
 
             _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
+            _cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
+
             //Directory.CreateDirectory(_filesRootFolder);
             _gmailUserName = config["GlobalSettings:ImportGmailUserName"];
             _mailPassword = config["GlobalSettings:ImportGmailPassword"];
@@ -249,7 +252,7 @@ namespace ImportCvsLibrary
         private void CreateCvFolder(int companyId)
         {
             Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs");
-            _cvTempFolderPath = $"{_filesRootFolder}\\_{_companyFolder}\\temp";
+            _cvTempFolderPath = $"{_cvupNotBackedUpRootFolder}\\_{_companyFolder}\\temp";
             Directory.CreateDirectory(_cvTempFolderPath);
             Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}");
             _cvFolderPath = $"{_filesRootFolder}\\_{_companyFolder}\\cvs\\{_yearFolder}\\{_monthFolder}";

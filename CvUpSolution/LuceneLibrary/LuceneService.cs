@@ -27,7 +27,7 @@ namespace LuceneLibrary
     public class LuceneService : ILuceneService, IDisposable
     {
         //string _luceneIndexesRootFolder;
-        string _filesRootFolder;
+        string _cvupNotBackedUpRootFolder;
 
         Analyzer? mAnalyzer;
         IndexSearcher? mIndexSearcher;
@@ -37,7 +37,7 @@ namespace LuceneLibrary
 
         public LuceneService(IConfiguration config)
         {
-            _filesRootFolder = $"{config["GlobalSettings:CvUpFilesRootFolder"]}";
+            _cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
             //System.IO.Directory.CreateDirectory($"{_filesRootFolder}\\luceneIndex");
             mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
             //mAnalyzer = new ClassicAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
@@ -48,7 +48,7 @@ namespace LuceneLibrary
 
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
+            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
             mIndexDirectory = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
@@ -188,7 +188,7 @@ namespace LuceneLibrary
         {
             try
             {
-                string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
+                string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
 
                 using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
                 {
@@ -274,7 +274,7 @@ namespace LuceneLibrary
         private async Task DocumentDelete(int companyId, int id)
         {
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
+            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
 
             using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
             {
@@ -291,7 +291,7 @@ namespace LuceneLibrary
         public void SearchBoolean(int companyId, long collectionId, string text)
         {
             //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_filesRootFolder}\\_{companyId}\\luceneIndex";
+            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
             Console.WriteLine();
             Console.WriteLine("SEARCH EXAMPLE");
             Console.WriteLine("SEARCHING FOR: \"" + text + "\" IN COLLECTION " + collectionId);

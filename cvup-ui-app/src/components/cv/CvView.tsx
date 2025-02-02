@@ -147,7 +147,12 @@ export const CvView = observer(() => {
                           generalStore.showCandFormDialog = true;
                         }}
                       >
-                        {candidateName}
+                        {candidateName}{" "}
+                        {candsStore.candDisplay?.city && (
+                          <span style={{ color: "gray" }}>
+                            {" - "} {candsStore.candDisplay?.city}
+                          </span>
+                        )}
                       </Link>
                     </Grid>
                     <Grid item>

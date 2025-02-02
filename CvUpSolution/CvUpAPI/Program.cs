@@ -13,7 +13,8 @@ builder.Services.AddControllers();
 string CorsPolicy = "_corsPolicy";
 
 builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
-                      builder =>  builder.WithOrigins("http://localhost:7218",
+                      builder =>  builder.WithOrigins("http://localhost:3030",
+                        "http://localhost:3031",
                         "http://82.166.239.93:8078",
                         "http://192.168.1.26:8078",
                         "http://10.100.102.26:8078",

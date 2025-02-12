@@ -475,16 +475,20 @@ namespace ImportCvsLibrary
             {
                 var ind0 = _importCv.body.IndexOf("<!--candidate details-->");
                 var ind1 = _importCv.body.IndexOf("<!--candidate details-->", ind0 + 1);
-                var candDetails = _importCv.body.Substring(ind0, ind1);
-                ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
 
-                if (ind0 > -1)
+                if (ind0 > -1 && ind1 > -1)
                 {
-                    candDetails = candDetails.Substring(ind0 + 8);
-                    ind1 = candDetails.IndexOf("</strong>", 0);
-                    if (ind1 > -1)
+                    var candDetails = _importCv.body.Substring(ind0, ind1);
+                    ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
+
+                    if (ind0 > -1)
                     {
-                        _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
+                        candDetails = candDetails.Substring(ind0 + 8);
+                        ind1 = candDetails.IndexOf("</strong>", 0);
+                        if (ind1 > -1)
+                        {
+                            _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
+                        }
                     }
                 }
             }

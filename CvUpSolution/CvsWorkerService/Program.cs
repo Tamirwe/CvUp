@@ -15,7 +15,9 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
-        services.AddSingleton<IImportCvs, ImportCvs>();
+        services.AddTransient<IImportCvs, ImportCvs>();
+        services.AddTransient<IDataBaseBackup, DataBaseBackup>();
+        //services.AddSingleton<IImportCvs, ImportCvs>();
         services.AddHostedService<CvsImportWorker>();
     })
     .UseWindowsService()

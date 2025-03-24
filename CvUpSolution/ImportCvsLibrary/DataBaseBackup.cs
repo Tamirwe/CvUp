@@ -1,9 +1,16 @@
-﻿using System.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace ImportCvsLibrary
 {
-    public partial class ImportCvs : IImportCvs
+    public  class DataBaseBackup : IDataBaseBackup
     {
+        string _filesRootFolder;
+
+        public DataBaseBackup(IConfiguration config)
+        {
+            _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
+        }
+
         public void BackupDataBase()
         {
             try

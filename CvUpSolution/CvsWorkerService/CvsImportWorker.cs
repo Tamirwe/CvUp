@@ -8,6 +8,7 @@ namespace CvsWorkerService
     public class CvsImportWorker : BackgroundService
     {
         private readonly IImportCvs _importCvs;
+        private readonly IDataBaseBackup _dataBaseBackup;
         private ICandsPositionsServise _candPosService;
 
         private readonly ILogger<CvsImportWorker> _logger;
@@ -16,9 +17,10 @@ namespace CvsWorkerService
         private int _hour = 0;
         private bool _isHourChanged = false;
 
-        public CvsImportWorker(IImportCvs importCvs, ICandsPositionsServise candPosService, ILogger<CvsImportWorker> logger)
+        public CvsImportWorker(IImportCvs importCvs, IDataBaseBackup dataBaseBackup, ICandsPositionsServise candPosService, ILogger<CvsImportWorker> logger)
         {
             _importCvs = importCvs;
+            _dataBaseBackup = dataBaseBackup;
             _candPosService = candPosService;
             _logger = logger;
             _isRunning = false;
@@ -65,7 +67,7 @@ namespace CvsWorkerService
                     if (hour == 3 && !_isBuStarted)
                     {
                         _isBuStarted = true;
-                        _importCvs.BackupDataBase();
+                        _dataBaseBackup.BackupDataBase();
                     }
 
                     _isHourChanged = false;

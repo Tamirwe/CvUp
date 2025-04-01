@@ -50,7 +50,7 @@ export const RestoreReviewDialog = ({ isOpen, onClose }: IProps) => {
         Restore Candidate Review
       </BootstrapDialogTitle>
       <DialogContent sx={{ overflow: "hidden", paddingBottom: "15px" }}>
-        {cand1?.candidateId! > 0 || cand2?.candidateId! > 0 ? (
+        {cand1?.candId! > 0 || cand2?.candId! > 0 ? (
           <div
             style={{
               direction: "rtl",

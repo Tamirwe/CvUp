@@ -49,6 +49,7 @@ export const CvView = observer(() => {
     scrollRef.current.scrollTop = 0;
 
     if (candsStore.candDisplay) {
+      setIsLoaded(false);
       getCandName();
       generalStore.showReviewCandDialog = false;
       setReview(candsStore.candDisplay?.review || "");

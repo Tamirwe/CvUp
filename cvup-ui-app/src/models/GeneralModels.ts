@@ -237,7 +237,7 @@ export interface ICandsReport {
 }
 
 export interface IRestoreCandDetails {
-  candidateId: number;
+  candId: number;
   firstName: string;
   lastName: string;
   positionId?: number;

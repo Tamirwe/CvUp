@@ -3,6 +3,5 @@
     public interface IImportCvs
     {
         Task ImportFromGmail();
-        void BackupDataBase();
     }
 }

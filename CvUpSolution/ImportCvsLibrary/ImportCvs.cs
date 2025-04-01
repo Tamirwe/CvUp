@@ -26,7 +26,7 @@ using static DataModelsLibrary.GlobalConstant;
 
 namespace ImportCvsLibrary
 {
-    public partial class ImportCvs : IImportCvs
+    public class ImportCvs : IImportCvs
     {
 
         ICandsPositionsServise _cvsPositionsServise;
@@ -58,11 +58,6 @@ namespace ImportCvsLibrary
 
         public async Task ImportFromGmail()
         {
-            IList<UniqueId>? uids = null;
-            IMailFolder? inbox = null;
-
-            _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
-
             using (var client = new ImapClient())
             {
                 try
@@ -70,150 +65,151 @@ namespace ImportCvsLibrary
                     client.Connect("imap.gmail.com", 993, true);
                     client.Authenticate(_gmailUserName, _mailPassword);
 
-                    inbox = client.Inbox;
-                    inbox.Open(FolderAccess.ReadWrite);
-                    uids = client.Inbox.Search(SearchQuery.NotSeen);
-                }
-                catch (Exception)
-                {
-                    if (client != null)
+                    if (client != null && client.IsConnected)
                     {
-                        client.Disconnect(true);
-                        client.Dispose();
+                        await processUnReadEmails(client);
+                        _importCv.exceptionRow = "1800";
+
                     }
+                    _importCv.exceptionRow = "1900";
 
-                    return;
                 }
-
-                if (client != null && client.IsConnected)
+                catch (Exception ex)
                 {
-                    foreach (var uid in uids)
+                    addEventLogEntry(ex, 380);
+                }
+            }
+        }
+
+        private async Task processUnReadEmails(ImapClient client)
+        {
+            IList<UniqueId>? uids = null;
+            IMailFolder? inbox = null;
+
+            inbox = client.Inbox;
+            inbox.Open(FolderAccess.ReadWrite);
+            uids = client.Inbox.Search(SearchQuery.NotSeen);
+
+            if (uids != null && uids.Count > 0)
+            {
+                _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
+
+                foreach (var uid in uids)
+                {
+                    try
                     {
-                        try
+                        var message = client.Inbox.GetMessage(uid);
+
+                        Console.WriteLine("Subject: {0}", message.Subject);
+
+                        // no need because app is only for bella
+                        //int companyId = GetCompanyIdFromAddress(message.To);
+                        int companyId = 154;
+
+                        if (companyId > 0)
                         {
-                            var message = client.Inbox.GetMessage(uid);
+                            _companyFolder = companyId.ToString();
+                            var dateCreated = DateTime.Now;
+                            _yearFolder = dateCreated.Year.ToString("0000");
+                            _monthFolder = dateCreated.Month.ToString("00");
 
-                            Console.WriteLine("Subject: {0}", message.Subject);
+                            CreateCvFolder(companyId);
+                            _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
 
-                            // no need because app is only for bella
-                            //int companyId = GetCompanyIdFromAddress(message.To);
-                            int companyId = 154;
-
-                            if (companyId > 0)
+                            foreach (var bodyPart in message.BodyParts)
                             {
-                                _companyFolder = companyId.ToString();
-                                var dateCreated = DateTime.Now;
-                                _yearFolder = dateCreated.Year.ToString("0000");
-                                _monthFolder = dateCreated.Month.ToString("00");
+                                var contentBase = bodyPart.ContentDisposition;
 
-                                CreateCvFolder(companyId);
-                                _parsersRules = _parsersRulesAllCompanies.Where(x => x.company_id == companyId).ToList();
-
-                                foreach (var bodyPart in message.BodyParts)
+                                if (bodyPart.ContentType.Name != null)
                                 {
-                                    var contentBase = bodyPart.ContentDisposition;
+                                    var part = (MimePart)bodyPart;
+                                    var originalFileName = part.FileName;
+                                    string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
+                                    int fileTypeKey = Utils.FileTypeKey(fileExtension);
 
-                                    if (bodyPart.ContentType.Name != null)
+                                    if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
                                     {
-                                        var part = (MimePart)bodyPart;
-                                        var originalFileName = part.FileName;
-                                        string fileExtension = System.IO.Path.GetExtension(originalFileName).ToLower();
-                                        int fileTypeKey = Utils.FileTypeKey(fileExtension);
-
-                                        if (fileExtension == DOC_EXTENSION || fileExtension == DOCX_EXTENSION || fileExtension == PDF_EXTENSION)
+                                        _importCv = new ImportCvModel
                                         {
-                                            _importCv = new ImportCvModel
+                                            companyId = companyId,
+                                            emailId = message.MessageId,
+                                            subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
+                                            from = message.From.ToString(),
+                                            fileExtension = fileExtension,
+                                            fileTypeKey = fileTypeKey,
+                                            dateCreated = dateCreated,
+                                            exceptionRow = "100"
+                                        };
+
+                                        var fromAddress = message.From.Mailboxes.Single().Address;
+
+                                        if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
+                                        {
+                                            var txtPart = (TextPart)message.BodyParts.First();
+
+                                            if (txtPart != null)
                                             {
-
-                                                companyId = companyId,
-                                                emailId = message.MessageId,
-                                                subject = Regex.Replace(message.Subject, "fwd:", "", RegexOptions.IgnoreCase).Trim(),
-                                                from = message.From.ToString(),
-                                                fileExtension = fileExtension,
-                                                fileTypeKey = fileTypeKey,
-                                                dateCreated = dateCreated,
-                                            };
-
-                                            var fromAddress = message.From.Mailboxes.Single().Address;
-
-                                            if (fromAddress == "alljobs@alljob.co.il" && message.BodyParts.Count() > 0)
-                                            {
-                                                var txtPart = (TextPart)message.BodyParts.First();
-
-                                                if (txtPart != null)
-                                                {
-                                                    _importCv.body = txtPart.Text;
-                                                }
+                                                _importCv.body = txtPart.Text;
                                             }
-
-                                            SaveAttachmentToTemporaryFile(part);
-                                            ParseEmailSubject();
-                                            await CvExtractDataAndSave();
                                         }
+
+                                        _importCv.exceptionRow = "200";
+                                        SaveAttachmentToTemporaryFile(part);
+                                        _importCv.exceptionRow = "300";
+                                        ParseEmailSubject();
+                                        _importCv.exceptionRow = "400";
+                                        await CvExtractDataAndSave();
+                                        _importCv.exceptionRow = "1500";
+
                                     }
                                 }
-
-                                inbox.SetFlags(uid, MessageFlags.Seen, true);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            client.Disconnect(true);
-                            client.Dispose();
 
-                            addEventLogEntry(ex);
-                            Console.WriteLine(ex.ToString());
                             inbox.SetFlags(uid, MessageFlags.Seen, true);
+                            _importCv.exceptionRow = "1600";
                         }
+
+                        _importCv.exceptionRow = "1700";
                     }
-
-                    client.Disconnect(true);
+                    catch (Exception ex)
+                    {
+                        addEventLogEntry(ex, 471);
+                        Console.WriteLine(ex.ToString());
+                        inbox.SetFlags(uid, MessageFlags.Seen, true);
+                    }
                 }
             }
         }
-
-        private void addEventLogEntry(Exception ex)
-        {
-            using (EventLog eventLog = new())
-            {
-                if (!EventLog.SourceExists("CvUpImport"))
-                {
-                    EventLog.CreateEventSource("CvUpImport", "CvUpImport");
-                }
-
-                string cvData = "";
-
-                if (_importCv != null)
-                {
-                    cvData = @$"candidateId: {_importCv.candidateId}, cvId: {_importCv.cvId}, 
-                                        candName: {_importCv.firstName} {_importCv.lastName}, emailId: {_importCv.emailId}, ";
-                }
-
-                eventLog.Source = "CvUpImport";
-                eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
-            }
-        }
-
 
         private async Task CvExtractDataAndSave()
         {
             ExtractCvProps();
+            _importCv.exceptionRow = "500";
             await CandidateFindOrCreate();
+            _importCv.exceptionRow = "600";
             GetCvAsciiSum();
+            _importCv.exceptionRow = "700";
             await CheckIsCvDuplicateOrSameCv();
 
             if (_importCv.isSameCvEmailSubject)
             {
+                _importCv.exceptionRow = "800";
                 await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
             }
             else
             {
                 //await AddPositionName();
+                _importCv.exceptionRow = "900";
                 await AddCvToDb();
+                _importCv.exceptionRow = "1000";
                 RenameAndMoveAttachmentToFolder();
+                _importCv.exceptionRow = "1100";
                 await _cvsPositionsServise.UpdateCvKeyId(_importCv);
+                _importCv.exceptionRow = "1200";
                 await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
+                _importCv.exceptionRow = "1300";
                 await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
+                _importCv.exceptionRow = "1400";
                 await AddCandToMatchPosition();
             }
         }
@@ -475,16 +471,20 @@ namespace ImportCvsLibrary
             {
                 var ind0 = _importCv.body.IndexOf("<!--candidate details-->");
                 var ind1 = _importCv.body.IndexOf("<!--candidate details-->", ind0 + 1);
-                var candDetails = _importCv.body.Substring(ind0, ind1);
-                ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
 
-                if (ind0 > -1)
+                if (ind0 > -1 && ind1 > -1)
                 {
-                    candDetails = candDetails.Substring(ind0 + 8);
-                    ind1 = candDetails.IndexOf("</strong>", 0);
-                    if (ind1 > -1)
+                    var candDetails = _importCv.body.Substring(ind0, ind1);
+                    ind0 = candDetails.IndexOf("<strong>", candDetails.IndexOf("<strong>", 0) + 1);
+
+                    if (ind0 > -1)
                     {
-                        _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
+                        candDetails = candDetails.Substring(ind0 + 8);
+                        ind1 = candDetails.IndexOf("</strong>", 0);
+                        if (ind1 > -1)
+                        {
+                            _importCv.city = System.Net.WebUtility.HtmlDecode(candDetails.Substring(0, ind1));
+                        }
                     }
                 }
             }
@@ -554,6 +554,28 @@ namespace ImportCvsLibrary
             return fileNamePath;
         }
 
+        private void addEventLogEntry(Exception ex, int id)
+        {
+            using (EventLog eventLog = new())
+            {
+                if (!EventLog.SourceExists("CvUpImport"))
+                {
+                    EventLog.CreateEventSource("CvUpImport", "CvUpImport");
+                }
+
+                string cvData = "";
+
+                if (_importCv != null)
+                {
+                    cvData = @$"Exception Row: {_importCv.exceptionRow}, candidateId: {_importCv.candidateId}, cvId: {_importCv.cvId}, 
+                                        candName: {_importCv.firstName} {_importCv.lastName}, emailId: {_importCv.emailId}, ";
+                }
+
+                eventLog.Source = "CvUpImport";
+                eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
+            }
+        }
+
         #region Candidate Name
 
         private void GetCandidateName()
@@ -566,12 +588,12 @@ namespace ImportCvsLibrary
 
             for (int i = 0; i < cvWords.Length - 10; i++)
             {
-                firstName= cvWords[i];
+                firstName = cvWords[i];
                 lastName1 = cvWords[i + 1];
 
                 if (isCanBeFirstOrLastName(firstName) && isCanBeFirstOrLastName(lastName1))
                 {
-                    
+
 
                     if (isCanBeFirstOrLastName(cvWords[i + 2]))
                     {
@@ -582,7 +604,7 @@ namespace ImportCvsLibrary
                         lastName2 = cvWords[i + 3];
                     }
                 }
-                
+
             }
 
             string hebChars = Rx.RemoveNoneHebChars(_importCv.cvTxt);

@@ -18,12 +18,15 @@ builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                         "http://82.166.239.93:8078",
                         "http://192.168.1.26:8078",
                         "http://10.100.102.26:8078",
+                        "http://localhost:8078",
                         "http://82.166.239.93:8075",
                         "http://192.168.1.30:8075",
                         "http://10.100.102.30:8075",
+                        "http://localhost:8075",
                         "http://82.166.239.93:8011",
                         "http://192.168.1.20:8011",
-                        "http://10.100.102.20:8011").AllowAnyHeader().AllowAnyMethod()));
+                        "http://10.100.102.20:8011",
+                        "http://localhost:8011").AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddAuthentication(options =>
 {

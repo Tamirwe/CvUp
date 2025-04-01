@@ -27,7 +27,9 @@ export class GeneralStore {
   private isAlertConfirmDialogOpen: boolean = false;
   private isPositionFormDialogOpen: boolean = false;
   private isShowReviewCandDialog: boolean = false;
+  private isShowInterviewFullDialog: boolean = false;
   private isShowCustomerReviewCandDialog: boolean = false;
+  private isShowRestoreReviewDialog: boolean = false;
   private isShowEmailTemplatesDialog: boolean = false;
   private isShowCandFormDialog: boolean = false;
   private isAlertSnackbarOpen: boolean = false;
@@ -36,6 +38,7 @@ export class GeneralStore {
   private confirmDialogResolve?: (isOk: boolean | PromiseLike<boolean>) => void;
   private isShowSearchesListDialog: boolean = false;
   private isShowEditSearchesListDialog: boolean = false;
+  private spinnerTimeOut: any;
 
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
@@ -61,6 +64,7 @@ export class GeneralStore {
   }
 
   set backdrop(val) {
+    clearTimeout(this.spinnerTimeOut);
     this.isShowBackdrop = val;
   }
 
@@ -158,12 +162,28 @@ export class GeneralStore {
     this.isShowReviewCandDialog = val;
   }
 
+  get showInterviewFullDialog() {
+    return this.isShowInterviewFullDialog;
+  }
+
+  set showInterviewFullDialog(val) {
+    this.isShowInterviewFullDialog = val;
+  }
+
   get showCustomerReviewCandDialog() {
     return this.isShowCustomerReviewCandDialog;
   }
 
   set showCustomerReviewCandDialog(val) {
     this.isShowCustomerReviewCandDialog = val;
+  }
+
+  get showRestoreReviewDialog() {
+    return this.isShowRestoreReviewDialog;
+  }
+
+  set showRestoreReviewDialog(val) {
+    this.isShowRestoreReviewDialog = val;
   }
 
   get showEmailTemplatesDialog() {
@@ -217,6 +237,18 @@ export class GeneralStore {
   reset() {
     this.hrCompaniesList = [];
     this.isShowBackdrop = false;
+  }
+
+  startSpinnerTimeout() {
+    clearTimeout(this.spinnerTimeOut);
+
+    this.spinnerTimeOut = setTimeout(() => {
+      this.isShowBackdrop = false;
+      clearTimeout(this.spinnerTimeOut);
+      alert(
+        "Internet Error - please click OK and copy the interview summary text before closing the page."
+      );
+    }, 20000);
   }
 
   alertConfirmDialog(

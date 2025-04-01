@@ -90,6 +90,19 @@ export const SettingsMenu = () => {
           <Avatar />{" "}
           {`${authStore.currentUser?.firstName} ${authStore.currentUser?.lastName}`}
         </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            generalStore.showRestoreReviewDialog =
+              !generalStore.showRestoreReviewDialog;
+          }}
+        >
+          <Avatar>
+            <MdRule />
+          </Avatar>
+          Restore last interview
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={handleReports}>
           <Avatar sx={{ bgcolor: green[400] }}>
             <MdOutlineTextSnippet style={{ color: "#fff" }} />

@@ -235,3 +235,12 @@ export interface ICandsReport {
   positionName?: string;
   stageDate?: Date;
 }
+
+export interface IRestoreCandDetails {
+  candidateId: number;
+  firstName: string;
+  lastName: string;
+  positionId?: number;
+  customerName?: number;
+  positionName?: string;
+}

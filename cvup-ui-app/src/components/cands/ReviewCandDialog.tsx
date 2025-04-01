@@ -19,7 +19,7 @@ export const ReviewCandDialog = ({ isOpen, onClose }: IProps) => {
     <Dialog
       open={open}
       // onClose={() => onClose(false)}
-      fullWidth
+      fullScreen
       maxWidth={"md"}
       sx={{}}
     >

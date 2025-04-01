@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { isMobile } from "react-device-detect";
+import useDebounce from "../../Hooks/useDebounce";
 
 interface IProps {
   onSaved: () => void;
@@ -13,6 +14,14 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
   const { candsStore } = useStore();
   const [review, setReview] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const debouncedValue = useDebounce<string>(review, 2000);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded) {
+      candsStore.saveReviewToLocalStorage(review);
+    }
+  }, [debouncedValue]);
 
   useEffect(() => {
     setReview(candsStore.candDisplay?.review || "");
@@ -30,17 +39,30 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
 
   return (
     <>
-      <form noValidate spellCheck="false">
-        <Grid container sx={{ direction: "rtl" }} gap={0}>
-          <Grid item xs={12} lg={12}>
+      <form
+        noValidate
+        spellCheck="false"
+        style={{ height: "100%", width: "100%" }}
+      >
+        <Grid container sx={{ direction: "rtl", height: "100%" }} gap={0}>
+          <Grid item xs={12} lg={12} style={{ minHeight: "90%" }}>
             <TextField
+              inputProps={{
+                style: {
+                  height: "94%",
+                  overflow: "auto",
+                },
+              }}
               sx={{
                 direction: "rtl",
-                "& .MuiInputBase-input": { maxHeight: "calc(100% - 21rem)" },
+                height: "100%",
+                "& .MuiInputBase-root": { height: "100%" },
+                "& .MuiInputBase-input": { height: "100%" },
               }}
               fullWidth
               multiline
-              rows={isMobile ? 18 : 27}
+              // rows={isMobile ? 18 : 27}
+              // rows={100}
               margin="normal"
               type="text"
               id="description"
@@ -48,6 +70,7 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
               variant="outlined"
               onChange={(e) => {
                 setReview(e.target.value);
+                !isLoaded && setIsLoaded(true);
               }}
               value={review}
             />
@@ -62,7 +85,7 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
           )}
 
           <Grid item xs={12} mt={4}>
-            <Grid container justifyContent="space-between">
+            <Grid container justifyContent="end">
               <Grid item>
                 <Stack direction="row" alignItems="center" gap={1}>
                   <Button

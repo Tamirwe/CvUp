@@ -26,6 +26,7 @@ import { CandsPosStagesList } from "../cands/CandsPosStagesList";
 import { CandDupCvsList } from "../cands/CandDupCvsList";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PosStages } from "./PosStages";
+import useDebounce from "../../Hooks/useDebounce";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -33,8 +34,16 @@ export const CvView = observer(() => {
   let location = useLocation();
   const [candidateName, setCandidateName] = useState("");
   const [review, setReview] = useState("");
+  const debouncedValue = useDebounce<string>(review, 2000);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const scrollRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (isLoaded) {
+      candsStore.saveReviewToLocalStorage(review);
+    }
+  }, [debouncedValue]);
 
   useEffect(() => {
     scrollRef.current.scrollTop = 0;
@@ -298,6 +307,7 @@ export const CvView = observer(() => {
                         variant="outlined"
                         onChange={(e) => {
                           setReview(e.target.value);
+                          !isLoaded && setIsLoaded(true);
                         }}
                         value={review}
                       />

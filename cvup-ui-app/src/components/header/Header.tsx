@@ -1,27 +1,20 @@
 import { useStore } from "../../Hooks/useStore";
-import { Grid, IconButton, Link, Stack } from "@mui/material";
+import { Grid, IconButton, Stack } from "@mui/material";
 import { SettingsMenu } from "./SettingsMenu";
 import { useEffect } from "react";
 import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
 import {
   MdManageSearch,
-  MdOutlineAttachEmail,
-  MdOutlineContactMail,
-  MdOutlineDelete,
-  MdOutlineEdit,
   MdOutlineEditNotifications,
   MdOutlineFileDownload,
-  MdOutlineMarkEmailRead,
   MdOutlineMarkEmailUnread,
 } from "react-icons/md";
-import {
-  AlertConfirmDialogEnum,
-  EmailTypeEnum,
-} from "../../models/GeneralEnums";
-import { CiEdit, CiMail } from "react-icons/ci";
+import { EmailTypeEnum } from "../../models/GeneralEnums";
+import { CiEdit } from "react-icons/ci";
 import { observer } from "mobx-react";
 import { useLocation } from "react-router-dom";
+import expandIcon from "../../assets/expand.svg";
 
 export const Header = observer(() => {
   const location = useLocation();
@@ -161,6 +154,19 @@ export const Header = observer(() => {
                   >
                     <CiEdit />
                   </IconButton>
+                  {!isMobile && (
+                    <IconButton
+                      title="Full window Review"
+                      sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                      size="small"
+                      onClick={() => {
+                        generalStore.showInterviewFullDialog =
+                          !generalStore.showInterviewFullDialog;
+                      }}
+                    >
+                      <img src={expandIcon} alt="Interview full window" />
+                    </IconButton>
+                  )}
                   <IconButton
                     title="Email to customer"
                     sx={{ fontSize: "1.54rem" }}
@@ -250,6 +256,17 @@ export const Header = observer(() => {
               >
                 <MdManageSearch />
               </IconButton>
+              {/* <IconButton
+                title="Restore last interview"
+                sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
+                size="small"
+                onClick={() => {
+                  generalStore.showRestoreReviewDialog =
+                    !generalStore.showRestoreReviewDialog;
+                }}
+              >
+                <MdOutlineEditNotifications />
+              </IconButton> */}
               {/* <IconButton
                 title="Saved Searches"
                 sx={{ fontSize: "1.54rem" }}

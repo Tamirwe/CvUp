@@ -12,85 +12,89 @@ import { isMobile } from "react-device-detect";
 interface IProps {
   candsSource: CandsSourceEnum;
   cand: ICand;
+  isCanNavigate?: boolean;
 }
 
-export const CandsPosStagesList = observer(({ candsSource, cand }: IProps) => {
-  const { candsStore, positionsStore } = useStore();
+export const CandsPosStagesList = observer(
+  ({ candsSource, cand, isCanNavigate = true }: IProps) => {
+    const { candsStore, positionsStore } = useStore();
 
-  return (
-    <div
-      style={{
-        direction: "ltr",
-        fontSize: "0.775rem",
-        paddingRight: "0.2rem",
-      }}
-    >
-      {cand.posStages &&
-        candsStore.sortPosStage(cand.posStages).map((stage, i) => {
-          const posNameCompany = positionsStore.findPosName(stage._pid);
+    return (
+      <div
+        style={{
+          direction: "ltr",
+          fontSize: "0.775rem",
+          paddingRight: "0.2rem",
+        }}
+      >
+        {cand.posStages &&
+          candsStore.sortPosStage(cand.posStages).map((stage, i) => {
+            const posNameCompany = positionsStore.findPosName(stage._pid);
 
-          if (!posNameCompany) {
-            return;
-          }
+            if (!posNameCompany) {
+              return;
+            }
 
-          return (
-            <div
-              key={i}
-              className={classNames({
-                [styles.listItemPosStages]: true,
-                // [styles.listItemPosStagesCurrent]: isCurrentPosition,
-              })}
-            >
+            return (
               <div
+                key={i}
                 className={classNames({
-                  [styles.listItem]: true,
-                  [styles.listItemSelected]:
-                    cand.candidateId === candsStore.candDisplay?.candidateId,
-                })}
-                style={{
-                  color: candsStore.findStageColor(stage._tp),
-                  textAlign: "right",
-                }}
-                title={` ${candsStore.findStageName(stage._tp)} - ${format(
-                  new Date(stage._dt),
-                  "MMM d, yyyy"
-                )}`}
-                {...(cand.candidateId ===
-                  candsStore.candDisplay?.candidateId && {
-                  onClick: async (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-
-                    const posId = stage._pid;
-                    await positionsStore.positionClick(posId, true);
-                    positionsStore.setRelatedPositionToCandDisplay();
-                    candsStore.setDisplayCandOntopPCList();
-                  },
+                  [styles.listItemPosStages]: true,
+                  // [styles.listItemPosStagesCurrent]: isCurrentPosition,
                 })}
               >
                 <div
                   className={classNames({
-                    [styles.listItemDate]: true,
-                    [styles.isMobile]: isMobile,
+                    [styles.listItem]: true,
+                    [styles.listItemSelected]:
+                      cand.candidateId === candsStore.candDisplay?.candidateId,
                   })}
-                >
-                  {format(new Date(stage._dt), "MMM d, yyyy")}
-                </div>
-                <div
                   style={{
-                    direction: "rtl",
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                    paddingLeft: "1rem",
+                    color: candsStore.findStageColor(stage._tp),
+                    textAlign: "right",
                   }}
+                  title={` ${candsStore.findStageName(stage._tp)} - ${format(
+                    new Date(stage._dt),
+                    "MMM d, yyyy"
+                  )}`}
+                  {...(cand.candidateId ===
+                    candsStore.candDisplay?.candidateId &&
+                    isCanNavigate && {
+                      onClick: async (event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+
+                        const posId = stage._pid;
+                        await positionsStore.positionClick(posId, true);
+                        positionsStore.setRelatedPositionToCandDisplay();
+                        candsStore.setDisplayCandOntopPCList();
+                      },
+                    })}
                 >
-                  {posNameCompany}
+                  <div
+                    className={classNames({
+                      [styles.listItemDate]: true,
+                      [styles.isMobile]: isMobile,
+                    })}
+                  >
+                    {format(new Date(stage._dt), "MMM d, yyyy")}
+                  </div>
+                  <div
+                    style={{
+                      direction: "rtl",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      paddingLeft: "1rem",
+                    }}
+                  >
+                    {posNameCompany}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-    </div>
-  );
-});
+            );
+          })}
+      </div>
+    );
+  }
+);

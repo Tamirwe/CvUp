@@ -20,6 +20,7 @@ export class CandsStore {
   private searchesList: ISearchModel[] = [];
   private externalSearch?: ISearchModel;
   private isShoePosStages?: boolean = false;
+  private lastReviewCandId: number = 0;
   searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
 
@@ -220,6 +221,7 @@ export class CandsStore {
 
   async saveCandReview(review: string) {
     this.rootStore.generalStore.backdrop = true;
+    this.rootStore.generalStore.startSpinnerTimeout();
 
     const res = await this.cvsApi.saveCandReview(
       review,
@@ -235,6 +237,35 @@ export class CandsStore {
 
     this.rootStore.generalStore.backdrop = false;
     return res;
+  }
+
+  saveReviewToLocalStorage(review: string) {
+    if (this.candDisplay?.candidateId !== this.lastReviewCandId) {
+      localStorage.setItem(
+        "PrevReview",
+        localStorage.getItem("LastReview") || ""
+      );
+      localStorage.setItem(
+        "PrevReviewCandDetails",
+        localStorage.getItem("LastReviewCandDetails") || ""
+      );
+    }
+
+    this.lastReviewCandId = this.candDisplay?.candidateId!;
+
+    localStorage.setItem("LastReview", review);
+    localStorage.setItem(
+      "LastReviewCandDetails",
+      JSON.stringify({
+        candId: this.candDisplay?.candidateId!,
+        positionId: this.rootStore.positionsStore.candDisplayPosition?.id,
+        firstName: this.candDisplay?.firstName,
+        lastName: this.candDisplay?.lastName,
+        customerName:
+          this.rootStore.positionsStore.candDisplayPosition?.customerName,
+        positionName: this.rootStore.positionsStore.candDisplayPosition?.name,
+      })
+    );
   }
 
   async saveCustomerCandReview(review: string) {

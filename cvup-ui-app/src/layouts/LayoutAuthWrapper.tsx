@@ -32,6 +32,8 @@ import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCand
 import { SearchesListDialog } from "../components/searches/SearchesListDialog";
 import { EditSearchesListDialog } from "../components/searches/EditSearchesListDialog";
 import { StageDateDialog } from "../components/cv/StageDateDialog";
+import { InterviewFullDialog } from "../components/cands/InterviewFullDialog";
+import { RestoreReviewDialog } from "../components/cands/RestoreReviewDialog";
 
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
@@ -132,6 +134,12 @@ export const LayoutAuthWrapper = observer(() => {
           onClose={() => (generalStore.showReviewCandDialog = false)}
         />
       )}
+      {generalStore.showInterviewFullDialog && (
+        <InterviewFullDialog
+          isOpen={generalStore.showInterviewFullDialog}
+          onClose={() => (generalStore.showInterviewFullDialog = false)}
+        />
+      )}
       {generalStore.showCustomerReviewCandDialog && (
         <CustomerReviewCandDialog
           isOpen={generalStore.showCustomerReviewCandDialog}
@@ -154,6 +162,12 @@ export const LayoutAuthWrapper = observer(() => {
         <SearchesListDialog
           isOpen={generalStore.showSearchesListDialog}
           onClose={() => (generalStore.showSearchesListDialog = false)}
+        />
+      )}
+      {generalStore.showRestoreReviewDialog && (
+        <RestoreReviewDialog
+          isOpen={generalStore.showRestoreReviewDialog}
+          onClose={() => (generalStore.showRestoreReviewDialog = false)}
         />
       )}
       {generalStore.showEditSearchesListDialog && (

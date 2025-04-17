@@ -11,7 +11,7 @@ interface IProps {
 }
 
 export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
-  const { candsStore } = useStore();
+  const { candsStore, generalStore } = useStore();
   const [review, setReview] = useState("");
   const [submitError, setSubmitError] = useState("");
   const debouncedValue = useDebounce<string>(review, 2000);
@@ -36,6 +36,12 @@ export const ReviewCandForm = observer(({ onSaved, onCancel }: IProps) => {
       setSubmitError(res?.errorData?.message);
     }
   };
+
+  useEffect(() => {
+    if (!isMobile && generalStore.showInterviewFullDialog) {
+      setReview(candsStore.candReviewSync);
+    }
+  }, [generalStore.showInterviewFullDialog]);
 
   return (
     <>

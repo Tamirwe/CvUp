@@ -16,7 +16,7 @@ interface IProps {
 }
 
 export const InterviewFullDialog = observer(({ isOpen, onClose }: IProps) => {
-  const { candsStore, authStore, generalStore, positionsStore } = useStore();
+  const { candsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [isShowHistory, setIsShowHistory] = useState(false);
 

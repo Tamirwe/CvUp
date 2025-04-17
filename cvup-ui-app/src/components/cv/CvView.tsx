@@ -49,6 +49,7 @@ export const CvView = observer(() => {
     scrollRef.current.scrollTop = 0;
 
     if (candsStore.candDisplay) {
+      candsStore.candReviewSync = "";
       setIsLoaded(false);
       getCandName();
       generalStore.showReviewCandDialog = false;
@@ -91,6 +92,14 @@ export const CvView = observer(() => {
     },
     []
   );
+
+  useEffect(() => {
+    if (generalStore.showInterviewFullDialog) {
+      candsStore.candReviewSync = review;
+    } else if (candsStore.candReviewSync !== "") {
+      setReview(candsStore.candReviewSync);
+    }
+  }, [generalStore.showInterviewFullDialog]);
 
   return (
     <Paper elevation={3} sx={{ margin: "0rem" }}>
@@ -318,6 +327,7 @@ export const CvView = observer(() => {
                         <Button
                           color="secondary"
                           onClick={() => {
+                            setReview(candsStore.candDisplay?.review || "");
                             generalStore.showReviewCandDialog = false;
                           }}
                         >

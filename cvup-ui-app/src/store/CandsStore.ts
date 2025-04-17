@@ -21,6 +21,7 @@ export class CandsStore {
   private externalSearch?: ISearchModel;
   private isShoePosStages?: boolean = false;
   private lastReviewCandId: number = 0;
+  private syncCandReview: string = "";
   searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
 
@@ -99,6 +100,14 @@ export class CandsStore {
     const keywordsarray = this.lastSearchVals.replaceAll('"', " ");
 
     return keywordsarray;
+  }
+
+  get candReviewSync() {
+    return this.syncCandReview;
+  }
+
+  set candReviewSync(val) {
+    this.syncCandReview = val;
   }
 
   async displayCv(cand: ICand, candsSource: CandsSourceEnum) {

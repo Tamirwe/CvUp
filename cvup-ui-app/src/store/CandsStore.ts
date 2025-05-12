@@ -510,6 +510,7 @@ export class CandsStore {
         if (res.isSuccess && res.data) {
           this.candDisplay = { ...res.data };
           this.updateLists(res.data);
+          this.rootStore.positionsStore.setRelatedPositionToCandDisplay();
         }
       });
     }
@@ -532,6 +533,7 @@ export class CandsStore {
             this.rootStore.positionsStore.selectedPosition?.id === positionId
           ) {
             this.removePosCandList(res.data);
+            this.rootStore.positionsStore.removeCandDisplayPosition();
           }
         }
       });

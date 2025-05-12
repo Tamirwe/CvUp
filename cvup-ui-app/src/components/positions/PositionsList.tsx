@@ -97,12 +97,12 @@ export const PositionsList = observer(() => {
     async (event: React.ChangeEvent<HTMLInputElement>, posId: number) => {
       if (event.target.checked) {
         await candsStore.attachPosCandCv(posId);
-        if (candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands) {
-          await positionsStore.positionClick(posId, true);
-          positionsStore.setRelatedPositionToCandDisplay();
-          candsStore.setDisplayCandOntopPCList();
-          candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
-        }
+        // if (candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands) {
+        await positionsStore.positionClick(posId, true);
+        positionsStore.setRelatedPositionToCandDisplay();
+        candsStore.setDisplayCandOntopPCList();
+        candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
+        // }
         generalStore.alertSnackbar("success", "Candidate attached to position");
       } else {
         const isDelete = await generalStore.alertConfirmDialog(
@@ -117,6 +117,7 @@ export const PositionsList = observer(() => {
             "success",
             "Candidate detached from position."
           );
+          await positionsStore.positionClick(posId);
         }
       }
     },

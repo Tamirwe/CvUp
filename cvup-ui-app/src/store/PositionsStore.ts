@@ -130,6 +130,10 @@ export class PositionsStore {
     }
   }
 
+  removeCandDisplayPosition() {
+    this.candDisplayPosition = undefined;
+  }
+
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
     this.positionSelected = this.positionsList.find((x) => x.id === posId);
 

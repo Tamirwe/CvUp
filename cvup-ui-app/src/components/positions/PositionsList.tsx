@@ -117,7 +117,7 @@ export const PositionsList = observer(() => {
             "success",
             "Candidate detached from position."
           );
-          await positionsStore.positionClick(posId);
+          // await positionsStore.positionClick(posId);
         }
       }
     },

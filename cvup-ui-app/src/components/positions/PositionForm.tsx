@@ -162,8 +162,8 @@ export const PositionForm = observer(({ onClose }: IProps) => {
   const deletePosition = async () => {
     const isDelete = await generalStore.alertConfirmDialog(
       AlertConfirmDialogEnum.Confirm,
-      "Delete User",
-      "Are you sure you want to delete this user?"
+      "Delete Position",
+      "Are you sure you want to delete the Position?"
     );
 
     if (isDelete) {

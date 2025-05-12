@@ -20,7 +20,10 @@ import {
 } from "react-icons/md";
 import { format } from "date-fns";
 import styles from "./PositionsList.module.scss";
-import { TabsCandsEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  TabsCandsEnum,
+} from "../../models/GeneralEnums";
 import { IPosition } from "../../models/GeneralModels";
 import classNames from "classnames";
 import { isMobile } from "react-device-detect";
@@ -100,8 +103,21 @@ export const PositionsList = observer(() => {
           candsStore.setDisplayCandOntopPCList();
           candsStore.currentTabCandsLists = TabsCandsEnum.PositionCands;
         }
+        generalStore.alertSnackbar("success", "Candidate attached to position");
       } else {
-        candsStore.detachPosCand(candsStore.candDisplay, posId);
+        const isDelete = await generalStore.alertConfirmDialog(
+          AlertConfirmDialogEnum.Confirm,
+          "Detach Candidate from position",
+          "Are you sure you want to detach the candidate from  this position?"
+        );
+
+        if (isDelete) {
+          await candsStore.detachPosCand(candsStore.candDisplay, posId);
+          generalStore.alertSnackbar(
+            "success",
+            "Candidate detached from position."
+          );
+        }
       }
     },
     []

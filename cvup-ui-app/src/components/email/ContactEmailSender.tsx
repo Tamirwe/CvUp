@@ -101,7 +101,6 @@ export const ContactEmailSender = (props: IProps) => {
   useEffect(() => {
     generateBodyHtml();
     filterEmailContacts();
-
   }, []);
 
   const validateForm = () => {
@@ -162,6 +161,19 @@ export const ContactEmailSender = (props: IProps) => {
         Send Email To Contact
       </BootstrapDialogTitle>
       <DialogContent>
+        {!positionsStore.candDisplayPosition && (
+          <div
+            style={{
+              color: "red",
+              fontWeight: "bold",
+              padding: "5px 0",
+              fontSize: "0.95rem",
+            }}
+          >
+            This email is not related to a position. And it won't be added to
+            the candidate history.
+          </div>
+        )}
         <Grid container>
           <Grid item xs={12} lg={12} pt={1}>
             <EmailsToControl

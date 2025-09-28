@@ -29,6 +29,8 @@ namespace Database.models
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
         public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
+        public virtual DbSet<futures_ohlc_daily_datum> futures_ohlc_daily_data { get; set; } = null!;
+        public virtual DbSet<futures_statistic> futures_statistics { get; set; } = null!;
         public virtual DbSet<keyword> keywords { get; set; } = null!;
         public virtual DbSet<keywords_group> keywords_groups { get; set; } = null!;
         public virtual DbSet<parser> parsers { get; set; } = null!;
@@ -50,7 +52,7 @@ namespace Database.models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.33-mysql"));
+                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
             }
         }
 
@@ -366,6 +368,20 @@ namespace Database.models
                     .HasConstraintName("fk_folders_cands_folder_id_folders_id");
             });
 
+            modelBuilder.Entity<futures_ohlc_daily_datum>(entity =>
+            {
+                entity.Property(e => e.statistic_date).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<futures_statistic>(entity =>
+            {
+                entity.Property(e => e.descr).HasMaxLength(500);
+
+                entity.Property(e => e.name).HasMaxLength(50);
+
+                entity.Property(e => e.update_date).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<keyword>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "keywords_company_id_companies_id");
@@ -444,7 +460,7 @@ namespace Database.models
 
                 entity.Property(e => e.date_updated).HasColumnType("datetime");
 
-                entity.Property(e => e.descr).HasMaxLength(2000);
+                entity.Property(e => e.descr).HasMaxLength(6000);
 
                 entity.Property(e => e.match_email_subject).HasMaxLength(250);
 
@@ -452,7 +468,7 @@ namespace Database.models
 
                 entity.Property(e => e.remarks).HasMaxLength(500);
 
-                entity.Property(e => e.requirements).HasMaxLength(2000);
+                entity.Property(e => e.requirements).HasMaxLength(6000);
 
                 entity.Property(e => e.status).HasColumnType("enum('Active','Not_Active','Completed')");
 

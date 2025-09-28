@@ -26,7 +26,7 @@
     "react-icons": "^4.7.1",
     "react-quill": "^2.0.0",
     "react-router-dom": "6",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-window": "^1.8.8",
     "sass": "^1.58.0",
     "stylis": "^4.1.3",

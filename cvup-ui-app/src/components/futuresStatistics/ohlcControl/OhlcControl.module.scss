@@ -1,0 +1,43 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  width: fit-content;
+  padding: 2px;
+  .inputWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .dateInput {
+      width: 9rem;
+      height: 40px;
+      border: 1px solid #c5c5c5;
+      outline: none;
+
+      // padding-left: 0.5rem;
+      // border: none;
+      // border-bottom: 1px solid;
+      // margin-bottom: 6px;
+      // color: aqua;
+    }
+    .ohlcInput {
+      width: 14rem;
+      height: 40px;
+      border: 1px solid #c5c5c5;
+      outline: none;
+      // padding-left: 0.5rem;
+      // border: none;
+      // border-bottom: 1px solid;
+      // margin-bottom: 6px;
+      // color: aqua;
+    }
+    .error {
+      color: rgb(196, 102, 102);
+      padding-top: 3px;
+      height: 21px;
+    }
+  }
+  // .txtInput:focus {
+  //   // outline: none;
+  // }
+}

@@ -13,6 +13,7 @@ import { CompleteRegistration } from "./pages/authentication/CompleteRegistratio
 import { Position } from "./pages/Position";
 import { CvPage } from "./pages/CvPage";
 import { CandidatesReport } from "./pages/CandidatesReport";
+import { FuturesStatistics } from "./pages/FuturesStatistics";
 
 const AuthRoutes = () => {
   const rootStore = useStore();
@@ -44,6 +45,7 @@ const Router = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/password-reset" element={<PasswordReset />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/fustat" element={<FuturesStatistics />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

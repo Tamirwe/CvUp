@@ -1,0 +1,24 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  background-color: white;
+
+  .inputWrapper {
+    width: 25%;
+    padding-left: 0.5rem;
+    div {
+      padding-left: 0.3rem;
+    }
+    .txtInput {
+      width: 3rem;
+      padding-left: 0.5rem;
+      border: none;
+      border-bottom: 1px solid;
+      margin-bottom: 6px;
+      height: 20px;
+    }
+    .txtInput:focus {
+      outline: none;
+    }
+  }
+}

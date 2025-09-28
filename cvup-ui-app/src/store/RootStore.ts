@@ -5,6 +5,7 @@ import { GeneralStore } from "./GeneralStore";
 import { PositionsStore } from "./PositionsStore";
 import { CustomersContactsStore } from "./CustomersContactsStore";
 import { FoldersStore } from "./FoldersStore";
+import { FuturesStatisticStore } from "./FuturesStatisticsStore";
 
 export class RootStore {
   authStore: AuthStore;
@@ -13,6 +14,7 @@ export class RootStore {
   customersContactsStore: CustomersContactsStore;
   foldersStore: FoldersStore;
   candsStore: CandsStore;
+  futuresStatisticStore: FuturesStatisticStore;
 
   constructor(appSettings: IAppSettings) {
     this.authStore = new AuthStore(this, appSettings);
@@ -21,5 +23,6 @@ export class RootStore {
     this.customersContactsStore = new CustomersContactsStore(this, appSettings);
     this.foldersStore = new FoldersStore(this, appSettings);
     this.candsStore = new CandsStore(this, appSettings);
+    this.futuresStatisticStore = new FuturesStatisticStore(this, appSettings);
   }
 }

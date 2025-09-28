@@ -9,6 +9,7 @@
     "@fontsource/roboto": "^4.5.8",
     "@mui/material": "^5.11.5",
     "@mui/x-date-pickers": "^6.12.1",
+    "@react-input/mask": "^2.0.4",
     "@react-pdf-viewer/core": "^3.9.0",
     "@react-pdf-viewer/default-layout": "^3.9.0",
     "@types/react-window": "^1.8.5",

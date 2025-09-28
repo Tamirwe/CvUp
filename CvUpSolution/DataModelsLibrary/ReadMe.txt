@@ -1,4 +1,6 @@
-﻿1. git commit and push 
+﻿Update DataModelLibrary from data base
+
+1. git commit and push 
 2. make sure solution compile successfully
 3. set ""DataModelsLibrary"" as startup project
 4. open package manager console and select default project "DataModelsLibrary" from the drop down 

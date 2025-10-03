@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.models
 {
-    public partial class futures_ohlc_daily_datum
+    public partial class futures_ohlc
     {
         public int id { get; set; }
         public DateTime statistic_date { get; set; }

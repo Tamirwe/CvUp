@@ -85,4 +85,23 @@ namespace DataModelsLibrary.Models
         public string? descr { get; set; } = string.Empty;
         public DateTime? created { get; set; }
     }
+
+    public class FuturesOhlcModel
+    {
+        public int id { get; set; } = 0;
+        public DateTime statisticDate { get; set; }
+        public int open { get; set; } 
+        public int high { get; set; } 
+        public int low { get; set; } 
+        public int close { get; set; }
+    }
+
+    public class FuturesStatisticsModel
+    {
+        public int id { get; set; } = 0;
+        public string name { get; set; } = string.Empty;
+        public float? value { get; set; } = 0;
+        public string descr { get; set; } = string.Empty;
+        public DateTime updateDate { get; set; }
+    }
 }

@@ -1,91 +1,92 @@
 import { Button, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useFormErrors } from "../../Hooks/useFormErrors";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
-import {
-  AlertConfirmDialogEnum,
-  CrudTypesEnum,
-  TextValidateTypeEnum,
-} from "../../models/GeneralEnums";
-import { validateTxt } from "../../utils/Validation";
-import { ICustomer } from "../../models/GeneralModels";
 import { Iohlc } from "../../models/FuStatModel";
-import { OhlcControl } from "./ohlcControl/OhlcControl";
+import { OhlcControl, OhlcControlRefType } from "./ohlcControl/OhlcControl";
 import styles from "./EditOHLC.module.scss";
 
 interface IProps {
   statDate?: Date;
-  // onSaved: () => void;
-  // onCancel: () => void;
 }
 
-export const EditOHLC = ({ statDate = new Date() }: IProps) => {
-  const { customersContactsStore, generalStore } = useStore();
-  const [isDirty, setIsDirty] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
-  const [formModel, setFormModel] = useState<ICustomer>({
-    id: 0,
-    name: "",
-    descr: "",
-    address: "",
-  });
-  const [updateFieldError, clearError, errModel] = useFormErrors({
-    name: "",
-  });
+export interface EditOHLCRefType {
+  editRow: (ohlcRow: Iohlc) => void;
+}
 
-  useEffect(() => {
-    if (customersContactsStore.selectedCustomer) {
-      setCrudType(CrudTypesEnum.Update);
-      setFormModel({ ...customersContactsStore.selectedCustomer });
-    }
-  }, []);
+export const EditOHLC = forwardRef<EditOHLCRefType, IProps>(
+  ({ statDate = new Date() }: IProps, ref) => {
+    const ohlcControlRef = useRef<OhlcControlRefType>(null);
+    const [ohlcControlData, setOhlcControlData] = useState<Iohlc | null>(null);
 
-  const validateForm = () => {
-    let isFormValid = true,
-      err = "";
+    useImperativeHandle(ref, () => ({
+      editRow,
+    }));
 
-    err = validateTxt(formModel.name, [
-      TextValidateTypeEnum.notEmpty,
-      TextValidateTypeEnum.twoCharsMin,
-      TextValidateTypeEnum.startWithTwoLetters,
-    ]);
-    isFormValid = updateFieldError("name", err) && isFormValid;
+    const { futuresStatisticStore } = useStore();
+    const [ohlcFormData, setOhlcFormData] = useState<Iohlc | null>(null);
 
-    return isFormValid;
-  };
-
-  const handleSubmit = async () => {
-    setIsDirty(false);
-    if (validateForm()) {
-      let response;
-
-      if (crudType === CrudTypesEnum.Insert) {
-        response = await customersContactsStore.addCustomer(formModel);
-      } else {
-        response = await customersContactsStore.updateCustomer(formModel);
+    const validateForm = () => {
+      if (ohlcFormData) {
+        return true;
       }
 
-      if (response.isSuccess) {
-        customersContactsStore.setCustomerAddedUpdated(response.data);
-        //onSaved();
+      return false;
+    };
+
+    const handleSubmit = async () => {
+      if (validateForm()) {
+        let response;
+
+        if (ohlcFormData?.id === 0) {
+          response = await futuresStatisticStore.addDayOhlc(ohlcFormData!);
+        } else {
+          response = await futuresStatisticStore.updateDayOhlc(ohlcFormData!);
+        }
+
+        if (!response.isSuccess) {
+          const responseErrorData = response.errorData.response.data;
+          alert(
+            `${responseErrorData} - ` +
+              "An Error Occurred Please Try Again Later."
+          );
+        }
       } else {
-        return setSubmitError("An Error Occurred Please Try Again Later.");
+        alert("Form not valid.");
       }
-    }
-  };
+    };
 
-  return (
-    <form noValidate spellCheck="false" className={styles.wrapper}>
-      <Grid container>
-        <Grid item sx={{ display: "flex" }}>
-          <OhlcControl />
+    const handleOhlcChange = (ohlc: Iohlc | null) => {
+      setOhlcFormData(ohlc);
+    };
 
-          <Button color="secondary" onClick={handleSubmit}>
-            Save
-          </Button>
+    const handleCancel = () => {
+      ohlcControlRef.current?.resetData();
+    };
+
+    const editRow = (ohlcRow: Iohlc) => {
+      setOhlcControlData(ohlcRow);
+    };
+
+    return (
+      <form noValidate spellCheck="false" className={styles.wrapper}>
+        <Grid container>
+          <Grid item sx={{ display: "flex" }}>
+            <OhlcControl
+              editData={ohlcControlData}
+              onChange={handleOhlcChange}
+              onSave={handleSubmit}
+              ref={ohlcControlRef}
+            />
+
+            <Button color="primary" onClick={handleSubmit}>
+              Save
+            </Button>
+            <Button color="warning" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
-  );
-};
+      </form>
+    );
+  }
+);

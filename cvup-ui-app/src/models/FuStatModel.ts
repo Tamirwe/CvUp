@@ -1,6 +1,6 @@
 export interface Iohlc {
   id?: number;
-  dayDate?: Date;
+  statisticDate?: Date;
   open?: number;
   high?: number;
   low?: number;

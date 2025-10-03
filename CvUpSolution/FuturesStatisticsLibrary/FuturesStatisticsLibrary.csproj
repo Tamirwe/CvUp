@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+  </ItemGroup>
+
 </Project>

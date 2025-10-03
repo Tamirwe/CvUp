@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IAppSettings } from "../models/GeneralModels";
 import { Iohlc } from "../models/FuStatModel";
-import FuStatApi from "./api/FuturesStatisticsApi";
+import FuturesStatisticsApi from "./api/FuturesStatisticsApi";
 import { RootStore } from "./RootStore";
 
 export class FuturesStatisticStore {
-  private fuStatApi;
+  private futuresStatisticsApi;
 
   private statDayInputData?: Iohlc;
 
@@ -13,37 +13,42 @@ export class FuturesStatisticStore {
 
   constructor(private rootStore: RootStore, appSettings: IAppSettings) {
     makeAutoObservable(this);
-    this.fuStatApi = new FuStatApi(appSettings);
+    this.futuresStatisticsApi = new FuturesStatisticsApi(appSettings);
   }
 
   reset() {}
 
-  async getDailyStatList() {
+  async getDayOhlcList() {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.fuStatApi.getDailyStatList();
+    const res = await this.futuresStatisticsApi.getDayOhlcList();
     runInAction(() => {
       this.dailyStatList = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async addDailyStat(contactModel: Iohlc) {
+  async addDayOhlc(ohlcFormData: Iohlc) {
     this.rootStore.generalStore.backdrop = true;
-    const response = await this.fuStatApi.addDailyStat(contactModel);
+    const response = await this.futuresStatisticsApi.addDayOhlc(ohlcFormData);
+    this.getDayOhlcList();
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
 
-  async updateDailyStat(contactModel: Iohlc) {
+  async updateDayOhlc(ohlcFormData: Iohlc) {
     this.rootStore.generalStore.backdrop = true;
-    const response = await this.fuStatApi.updateDailyStat(contactModel);
+    const response = await this.futuresStatisticsApi.updateDayOhlc(
+      ohlcFormData
+    );
+    this.getDayOhlcList();
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
 
-  async deleteDailyStat(id: number) {
+  async deleteDayOhlc(id: number) {
     this.rootStore.generalStore.backdrop = true;
-    const response = await this.fuStatApi.deleteDailyStat(id);
+    const response = await this.futuresStatisticsApi.deleteDayOhlc(id);
+    this.getDayOhlcList();
     this.rootStore.generalStore.backdrop = false;
     return response;
   }

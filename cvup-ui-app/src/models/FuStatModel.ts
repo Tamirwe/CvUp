@@ -5,4 +5,5 @@ export interface Iohlc {
   high?: number;
   low?: number;
   close?: number;
+  dayPoints?: number;
 }

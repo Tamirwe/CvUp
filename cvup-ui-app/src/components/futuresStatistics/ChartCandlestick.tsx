@@ -18,7 +18,9 @@ export const ChartCandlestick = observer(({}: IProps) => {
 
   const loadChartData = () => {
     const chartTitle = [["Day", "LOW", "OPEN", "CLOSE", "HIGH"]];
-    const reversedArray = [...futuresStatisticStore.dailyStatList].reverse();
+    const reversedArray = [...futuresStatisticStore.dailyStatList]
+      .slice(0, 30)
+      .reverse();
 
     const chartData = reversedArray.map((item, i) => {
       return [
@@ -35,7 +37,7 @@ export const ChartCandlestick = observer(({}: IProps) => {
     });
 
     setChartDataAndTitle([...chartTitle, ...chartData]);
-    console.log(chartDataAndTitle);
+    // console.log(chartDataAndTitle);
   };
 
   const data = [
@@ -60,8 +62,8 @@ export const ChartCandlestick = observer(({}: IProps) => {
     <div>
       <Chart
         chartType="CandlestickChart"
-        width="700px"
-        height="700px"
+        width="100%"
+        height="90vh"
         data={chartDataAndTitle}
         options={options}
       />

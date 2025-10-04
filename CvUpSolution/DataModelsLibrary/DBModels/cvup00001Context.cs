@@ -442,6 +442,9 @@ namespace Database.models
 
             modelBuilder.Entity<futures_statistic>(entity =>
             {
+                entity.HasIndex(e => e.update_date, "uq_futures_statistics_update_date")
+                    .IsUnique();
+
                 entity.Property(e => e.descr).HasMaxLength(500);
 
                 entity.Property(e => e.name).HasMaxLength(50);

@@ -29,6 +29,7 @@ namespace DataModelsLibrary.Queries
                                 high = d.high,
                                 low = d.low,
                                 close = d.close,
+                                dayPoints = d.day_points
                             };
 
                 return await query.ToListAsync();
@@ -46,6 +47,7 @@ namespace DataModelsLibrary.Queries
                     high = data.high,
                     low = data.low,
                     close = data.close,
+                    day_points = data.high - data.low,
                 };
 
                 dbContext.futures_ohlcs.Add(query);
@@ -65,6 +67,7 @@ namespace DataModelsLibrary.Queries
                     high = data.high,
                     low = data.low,
                     close = data.close,
+                    day_points = data.high - data.low,
                 };
 
                 var result = dbContext.futures_ohlcs.Update(query);

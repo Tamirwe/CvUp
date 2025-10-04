@@ -52,4 +52,27 @@ export class FuturesStatisticStore {
     this.rootStore.generalStore.backdrop = false;
     return response;
   }
+
+  calculateAverageMedian() {
+    if (!this.dailyStatList || this.dailyStatList.length === 0) {
+      return null;
+    }
+
+    let sum = 0;
+    const dayPointsArr: number[] = [];
+
+    this.dailyStatList.forEach((item) => {
+      dayPointsArr.push(item.dayPoints!);
+      sum = sum + item.dayPoints!;
+    });
+
+    const average = Math.round(sum / this.dailyStatList.length);
+
+    const sortedArr = [...dayPointsArr].sort((a, b) => a - b);
+    const length = sortedArr.length;
+    const midpoint = Math.floor(length / 2);
+    const median = sortedArr[midpoint];
+
+    return { average: average, median: median };
+  }
 }

@@ -11,5 +11,6 @@ namespace Database.models
         public int high { get; set; }
         public int low { get; set; }
         public int close { get; set; }
+        public int day_points { get; set; }
     }
 }

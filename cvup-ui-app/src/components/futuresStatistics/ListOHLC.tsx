@@ -30,6 +30,7 @@ export const ListOHLC = observer(({ onEdit }: IProps) => {
               <th>HIGH</th>
               <th>LOW</th>
               <th>CLOSE</th>
+              <th>Points</th>
             </tr>
           </thead>
           <tbody>
@@ -75,8 +76,9 @@ const TableRow = ({ item, onEdit, onDelete }: ITableRowProps) => {
       <td>{item.open}</td>
       <td>{item.high}</td>
       <td>{item.low}</td>
+      <td>{item.close}</td>
       <td>
-        {item.close}
+        {item.dayPoints}
         {isHovered && (
           <div className={styles.deleteButtonWrapper}>
             <div>

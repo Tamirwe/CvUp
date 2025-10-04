@@ -20,6 +20,18 @@ export const FuturesStatistics = observer(() => {
     futuresStatisticStore.getDayOhlcList();
   }, []);
 
+  useEffect(() => {
+    const averageMedian = futuresStatisticStore.calculateAverageMedian();
+
+    averageMedian &&
+      console.log(
+        "average: " +
+          averageMedian.average +
+          "    median: " +
+          averageMedian.median
+      );
+  }, [futuresStatisticStore.dailyStatList]);
+
   return (
     <Grid container className={styles.pageContainer}>
       <Grid item xs={12} md={4}>
@@ -30,7 +42,7 @@ export const FuturesStatistics = observer(() => {
           }}
         />
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid item xs={12} md={6}>
         <ChartCandlestick />
       </Grid>
     </Grid>

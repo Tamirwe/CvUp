@@ -94,6 +94,7 @@ namespace DataModelsLibrary.Models
         public int high { get; set; } 
         public int low { get; set; } 
         public int close { get; set; }
+        public int dayPoints { get; set; }
     }
 
     public class FuturesStatisticsModel

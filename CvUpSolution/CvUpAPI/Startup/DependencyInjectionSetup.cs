@@ -6,6 +6,8 @@ using CandsPositionsLibrary;
 using FoldersLibrary;
 using CustomersContactsLibrary;
 using CvFilesLibrary;
+using FuturesStatisticsLibrary;
+using ModuleGeneratorLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -26,6 +28,9 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();
+            services.AddTransient<IFuturesStatisticsService, FuturesStatisticsService>();
+            services.AddTransient<IModuleGeneratorService, ModuleGeneratorService>();
+            services.AddTransient<IFuturesQueries, FuturesQueries>();
             return services;
         }
     }

@@ -2,30 +2,30 @@ import { Iohlc } from "../../models/FuStatModel";
 import BaseApi from "./BaseApi";
 
 export default class FuStatApi extends BaseApi {
-  async getDailyStatList() {
+  async getDayOhlcList() {
     return await this.apiWrapper2<Iohlc[]>(async () => {
-      return await this.http.get("CustomersContacts/GetContacts");
+      return await this.http.get("FuturesStatistics/GetDayOhlcList");
     });
   }
 
-  async addDailyStat(contactModel: Iohlc) {
+  async addDayOhlc(contactModel: Iohlc) {
     return await this.apiWrapper2(async () => {
-      return await this.http.post("CustomersContacts/AddContact", contactModel);
+      return await this.http.post("FuturesStatistics/AddDayOhlc", contactModel);
     });
   }
 
-  async updateDailyStat(contactModel: Iohlc) {
+  async updateDayOhlc(contactModel: Iohlc) {
     return await this.apiWrapper2(async () => {
       return await this.http.put(
-        "CustomersContacts/UpdateContact",
+        "FuturesStatistics/UpdateDayOhlc",
         contactModel
       );
     });
   }
 
-  async deleteDailyStat(id: number) {
+  async deleteDayOhlc(id: number) {
     return await this.apiWrapper2(async () => {
-      return await this.http.delete("CustomersContacts/DeleteContact?id=" + id);
+      return await this.http.delete("FuturesStatistics/deleteDayOhlc?id=" + id);
     });
   }
 }

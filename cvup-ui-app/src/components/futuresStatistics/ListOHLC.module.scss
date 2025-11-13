@@ -1,0 +1,78 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  width: 100%;
+  button {
+    border: none;
+    background: white;
+    cursor: pointer;
+    color: orange;
+    font-size: medium;
+  }
+
+  button[data-color="edit"] {
+    color: #2196f3;
+  }
+  button[data-color="delete"] {
+    color: #ffab91;
+  }
+  .tableWrapper {
+    overflow-y: auto;
+    max-height: 85vh;
+
+    .deleteButtonWrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      background-color: white;
+      div {
+        display: flex;
+        height: 100%;
+      }
+    }
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    // border-radius: 8px;
+    overflow: hidden; /* Ensures border-radius works with content */
+  }
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+  }
+
+  th {
+    background-color: #009879;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    position: relative;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f3f3f3;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  caption {
+    caption-side: top;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-bottom: 10px;
+  }
+}

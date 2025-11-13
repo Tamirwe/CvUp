@@ -1,0 +1,59 @@
+﻿using Database.models;
+using DataModelsLibrary.Models;
+using FuturesStatisticsLibrary;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace CvUpAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NameController : ControllerBase
+    {
+        private IConfiguration _configuration;
+        //private IFuturesStatisticsService _futuresStatisticsService;
+        private IServiceName _nameService;
+
+        //public FuturesStatisticsController(IConfiguration config, IFuturesStatisticsService futuresStatisticsService)
+        public FuturesStatisticsController(IConfiguration config, IServiceName nameService)
+        {
+            _configuration = config;
+            _nameService = nameService;
+        }
+
+
+        [HttpGet]
+        //[Route("GetDayOhlcList")]
+        [Route("GetFuncName")]
+        //public async Task<IActionResult> GetDayOhlcList()
+        public async Task<IActionResult> GetFuncName()
+        {
+            List<nameModuleModel> result = await _nameService.GetFuncName();
+            return Ok(folders);
+        }
+
+        [HttpPost]
+        [Route("AddFuncName")]
+        public async Task<IActionResult> AddFuncName(nameModel data)
+        {
+            dbModelName result = await _nameService.AddFuncName(data);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("UpdateFuncName")]
+        public async Task<IActionResult> UpdateFuncName(nameModuleModel data)
+        {
+            dbModelName updateData = await _nameService.UpdateOhlc(data);
+            return Ok(updateData);
+        }
+
+        [HttpDelete]
+        [Route("DeleteFuncName")]
+        public async Task<IActionResult> DeleteFuncName(int id)
+        {
+            await _nameService.DeleteOhlc(id);
+            return Ok();
+        }
+    }
+}

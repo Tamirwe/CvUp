@@ -1,8 +1,13 @@
 export interface Iohlc {
   id?: number;
-  dayDate?: Date;
+  statisticDate?: Date;
   open?: number;
   high?: number;
   low?: number;
   close?: number;
+  dayPoints?: number;
+  highOverlap?: number;
+  lowOverlap?: number;
+  overlapPoints?: number;
+  overlapPercent?: number;
 }

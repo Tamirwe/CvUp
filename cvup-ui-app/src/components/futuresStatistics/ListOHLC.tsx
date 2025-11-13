@@ -10,6 +10,7 @@ interface IProps {
 
 export const ListOHLC = observer(({ onEdit }: IProps) => {
   const { futuresStatisticStore } = useStore();
+  const [isShowAllCols, setIsShowAllCols] = useState(false);
 
   const handleEditRow = (ohlcRow: Iohlc) => {
     onEdit(ohlcRow);
@@ -21,6 +22,15 @@ export const ListOHLC = observer(({ onEdit }: IProps) => {
 
   return (
     <div className={styles.wrapper}>
+      <button
+        style={{ width: "9rem" }}
+        data-color={"edit"}
+        onClick={() => {
+          setIsShowAllCols(!isShowAllCols);
+        }}
+      >
+        Show All Columns
+      </button>
       <div className={styles.tableWrapper}>
         <table>
           <thead>
@@ -31,6 +41,13 @@ export const ListOHLC = observer(({ onEdit }: IProps) => {
               <th>LOW</th>
               <th>CLOSE</th>
               <th>Points</th>
+              {isShowAllCols && <th>Overlap High</th>}
+              {isShowAllCols && <th>Overlap Low</th>}
+              <th>
+                Overlap
+                <br />
+                Points/Percent
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -41,6 +58,7 @@ export const ListOHLC = observer(({ onEdit }: IProps) => {
                   onEdit={handleEditRow}
                   onDelete={handleDeleteRow}
                   key={item.id}
+                  isShowAllCols={isShowAllCols}
                 />
               );
             })}
@@ -53,11 +71,17 @@ export const ListOHLC = observer(({ onEdit }: IProps) => {
 
 interface ITableRowProps {
   item: Iohlc;
+  isShowAllCols: boolean;
   onEdit: (ohlcRow: Iohlc) => void;
   onDelete: (id: number) => void;
 }
 
-const TableRow = ({ item, onEdit, onDelete }: ITableRowProps) => {
+const TableRow = ({
+  item,
+  onEdit,
+  onDelete,
+  isShowAllCols = false,
+}: ITableRowProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -72,13 +96,6 @@ const TableRow = ({ item, onEdit, onDelete }: ITableRowProps) => {
             day: "2-digit",
             month: "short",
           })}
-      </td>
-      <td>{item.open}</td>
-      <td>{item.high}</td>
-      <td>{item.low}</td>
-      <td>{item.close}</td>
-      <td>
-        {item.dayPoints}
         {isHovered && (
           <div className={styles.deleteButtonWrapper}>
             <div>
@@ -94,6 +111,16 @@ const TableRow = ({ item, onEdit, onDelete }: ITableRowProps) => {
             </div>
           </div>
         )}
+      </td>
+      <td>{item.open}</td>
+      <td>{item.high}</td>
+      <td>{item.low}</td>
+      <td>{item.close}</td>
+      <td>{item.dayPoints}</td>
+      {isShowAllCols && <td>{item.highOverlap}</td>}
+      {isShowAllCols && <td>{item.lowOverlap}</td>}
+      <td>
+        {item.overlapPoints} / {item.overlapPercent}%
       </td>
     </tr>
   );

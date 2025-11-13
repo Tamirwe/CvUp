@@ -95,6 +95,7 @@ namespace DataModelsLibrary.Models
         public int low { get; set; } 
         public int close { get; set; }
         public int dayPoints { get; set; }
+
     }
 
     public class FuturesStatisticsModel
@@ -104,5 +105,15 @@ namespace DataModelsLibrary.Models
         public float? value { get; set; } = 0;
         public string descr { get; set; } = string.Empty;
         public DateTime updateDate { get; set; }
+    }
+
+    public class ModuleGenerateRequestModel
+    {
+        public string name { get; set; } = string.Empty;
+    }
+
+    public class ModuleGenerateResponseModel
+    {
+        public string path { get; set; } = string.Empty;
     }
 }

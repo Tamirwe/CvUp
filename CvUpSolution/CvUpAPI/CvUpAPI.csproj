@@ -36,6 +36,7 @@
     <ProjectReference Include="..\FuturesStatisticsLibrary\FuturesStatisticsLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
+    <ProjectReference Include="..\ModuleGeneratorLibrary\ModuleGeneratorLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

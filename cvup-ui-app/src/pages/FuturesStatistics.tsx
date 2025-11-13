@@ -21,20 +21,12 @@ export const FuturesStatistics = observer(() => {
   }, []);
 
   useEffect(() => {
-    const averageMedian = futuresStatisticStore.calculateAverageMedian();
-
-    averageMedian &&
-      console.log(
-        "average: " +
-          averageMedian.average +
-          "    median: " +
-          averageMedian.median
-      );
+    futuresStatisticStore.calculateAveragesMedians();
   }, [futuresStatisticStore.dailyStatList]);
 
   return (
     <Grid container className={styles.pageContainer}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={5}>
         <EditOHLC ref={editOHLCRef} />
         <ListOHLC
           onEdit={(ohlcRow: Iohlc) => {

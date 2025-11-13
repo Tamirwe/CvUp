@@ -6,4 +6,8 @@ export interface Iohlc {
   low?: number;
   close?: number;
   dayPoints?: number;
+  highOverlap?: number;
+  lowOverlap?: number;
+  overlapPoints?: number;
+  overlapPercent?: number;
 }

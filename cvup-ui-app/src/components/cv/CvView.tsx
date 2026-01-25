@@ -27,6 +27,8 @@ import { CandDupCvsList } from "../cands/CandDupCvsList";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PosStages } from "./PosStages";
 import useDebounce from "../../Hooks/useDebounce";
+import { CiEdit } from "react-icons/ci";
+import { FiEdit } from "react-icons/fi";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -61,7 +63,7 @@ export const CvView = observer(() => {
   useEffect(() => {
     if (candsStore.candDisplay) {
       const posCand = candsStore.posCandsList.find(
-        (x) => x.candidateId === candsStore.candDisplay?.candidateId
+        (x) => x.candidateId === candsStore.candDisplay?.candidateId,
       );
 
       if (posCand) {
@@ -86,11 +88,11 @@ export const CvView = observer(() => {
     async (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       await positionsStore.positionClick(
         positionsStore.candDisplayPosition!.id,
-        true
+        true,
       );
       candsStore.setDisplayCandOntopPCList();
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -191,7 +193,7 @@ export const CvView = observer(() => {
                           href="#"
                           onClick={async () => {
                             await copyToClipBoard(
-                              candsStore.candDisplay?.email || ""
+                              candsStore.candDisplay?.email || "",
                             );
                           }}
                         >
@@ -248,7 +250,7 @@ export const CvView = observer(() => {
                             >
                               {format(
                                 new Date(rev.updated || ""),
-                                "MMM d, yyyy"
+                                "MMM d, yyyy",
                               )}{" "}
                             </div>
                             <div className={styles.custReviewTitle}>
@@ -263,9 +265,29 @@ export const CvView = observer(() => {
                           </div>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
+              )}
+            </Grid>
+
+            <Grid item xs={12}>
+              {!isMobile && (
+                <IconButton
+                  title="Full window Review"
+                  sx={{
+                    fontSize: "1.54rem",
+                    paddingTop: "0.4rem",
+                    paddingBottom: 0,
+                  }}
+                  size="small"
+                  onClick={() => {
+                    generalStore.showInterviewFullDialog =
+                      !generalStore.showInterviewFullDialog;
+                  }}
+                >
+                  <FiEdit />
+                </IconButton>
               )}
             </Grid>
 
@@ -293,7 +315,7 @@ export const CvView = observer(() => {
                       <span style={{ direction: "ltr" }}></span>
                       {format(
                         new Date(candsStore.candDisplay?.reviewDate),
-                        "MMM d, yyyy"
+                        "MMM d, yyyy",
                       )}{" "}
                     </Link>
                   </div>

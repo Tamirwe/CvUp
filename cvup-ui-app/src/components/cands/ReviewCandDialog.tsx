@@ -10,6 +10,7 @@ interface IProps {
 
 export const ReviewCandDialog = ({ isOpen, onClose }: IProps) => {
   const [open, setOpen] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -32,6 +33,7 @@ export const ReviewCandDialog = ({ isOpen, onClose }: IProps) => {
             onClose(true);
           }}
           onCancel={() => onClose(false)}
+          onIsDirty={() => setIsDirty(true)}
         />
       </DialogContent>
     </Dialog>

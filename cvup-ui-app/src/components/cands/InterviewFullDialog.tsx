@@ -7,7 +7,10 @@ import { observer } from "mobx-react";
 import { useStore } from "../../Hooks/useStore";
 import { CandsPosStagesList } from "./CandsPosStagesList";
 import { CandDupCvsList } from "./CandDupCvsList";
-import { CandsSourceEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  CandsSourceEnum,
+} from "../../models/GeneralEnums";
 import { PersonalDetails } from "./PersonalDetails";
 
 interface IProps {
@@ -16,9 +19,10 @@ interface IProps {
 }
 
 export const InterviewFullDialog = observer(({ isOpen, onClose }: IProps) => {
-  const { candsStore } = useStore();
+  const { generalStore, candsStore } = useStore();
   const [open, setOpen] = useState(false);
   const [isShowHistory, setIsShowHistory] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -26,6 +30,22 @@ export const InterviewFullDialog = observer(({ isOpen, onClose }: IProps) => {
 
   const handleShowHistory = () => {
     setIsShowHistory(!isShowHistory);
+  };
+
+  const handleBeforeOnClose = async () => {
+    if (isDirty) {
+      const isConfirm = await generalStore.alertConfirmDialog(
+        AlertConfirmDialogEnum.Confirm,
+        "Unsaved Changes / Changes Will Be Lost",
+        "Are you sure you want to leave? Your changes may not be saved.",
+      );
+
+      if (isConfirm) {
+        onClose(false);
+      }
+    } else {
+      onClose(false);
+    }
   };
 
   return (
@@ -36,7 +56,7 @@ export const InterviewFullDialog = observer(({ isOpen, onClose }: IProps) => {
       maxWidth={"md"}
       sx={{}}
     >
-      <BootstrapDialogTitle id="dialog-title" onClose={() => onClose(false)}>
+      <BootstrapDialogTitle id="dialog-title" onClose={handleBeforeOnClose}>
         Candidate Interview
       </BootstrapDialogTitle>
       <DialogContent sx={{ overflow: "hidden", paddingBottom: "15px" }}>
@@ -81,7 +101,8 @@ export const InterviewFullDialog = observer(({ isOpen, onClose }: IProps) => {
                   onSaved={() => {
                     onClose(true);
                   }}
-                  onCancel={() => onClose(false)}
+                  onCancel={handleBeforeOnClose}
+                  onIsDirty={() => setIsDirty(true)}
                 />
               </div>
               <div

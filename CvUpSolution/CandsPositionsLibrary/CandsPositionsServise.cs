@@ -333,7 +333,10 @@ namespace CandsPositionsLibrary
         public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
-            await SaveCandidateToIndex(companyId, candReview.candidateId);
+            //await SaveCandidateToIndex(companyId, candReview.candidateId);
+
+            Task backgroundTask =   Task.Run(() => SaveCandidateToIndex(companyId, candReview.candidateId));
+
         }
 
         public async Task SaveCandidateToIndex(int companyId, int candidateId)

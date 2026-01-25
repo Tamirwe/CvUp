@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.StaticFiles;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ComponentModel.Design;
+using System.IO;
 
 
 namespace CvUpAPI.Controllers
@@ -234,12 +235,19 @@ namespace CvUpAPI.Controllers
             return await _candPosService.GetCandidate(candDetails.companyId, candDetails.candidateId);
         }
 
+        //[HttpGet]
+        //[Route("UpdateIsSeen")]
+        //public async Task<IActionResult> UpdateIsSeen(int cvId)
+        //{
+        //    await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
+        //    return Ok();
+        //}
+
         [HttpGet]
         [Route("UpdateIsSeen")]
-        public async Task<IActionResult> UpdateIsSeen(int cvId)
+        public void UpdateIsSeen(int cvId)
         {
-            await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
-            return Ok();
+            Task backgroundTask = Task.Run(() => _candPosService.UpdateIsSeen(Globals.CompanyId, cvId));
         }
 
         [HttpGet]

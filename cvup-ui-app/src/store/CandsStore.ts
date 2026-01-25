@@ -46,7 +46,10 @@ export class CandsStore {
   candsReportData?: ICandsReport[];
   lastSearchVals: string = "";
 
-  constructor(private rootStore: RootStore, private appSettings: IAppSettings) {
+  constructor(
+    private rootStore: RootStore,
+    private appSettings: IAppSettings,
+  ) {
     makeAutoObservable(this);
     this.cvsApi = new CandsApi(appSettings);
   }
@@ -127,21 +130,21 @@ export class CandsStore {
       this.candDisplay = cand;
       this.candDisplaySource = candsSource;
       this.rootStore.positionsStore.setRelatedPositionToCandDisplay(
-        candsSource
+        candsSource,
       );
 
-      if (
-        this.rootStore.authStore.currentUser?.email !== "tamir.we+a1@gmail.com"
-      ) {
-        if (!cand.isSeen) {
-          this.cvsApi.updateIsSeen(cand.cvId);
-          cand.isSeen = true;
+      // if (
+      //   this.rootStore.authStore.currentUser?.email !== "tamir.we+a1@gmail.com"
+      // ) {
+      if (!cand.isSeen) {
+        this.cvsApi.updateIsSeen(cand.cvId);
+        cand.isSeen = true;
 
-          //not must but any way
-          const updatedCand = Object.assign({}, cand);
-          this.updateLists(updatedCand);
-        }
+        //not must but any way
+        const updatedCand = Object.assign({}, cand);
+        this.updateLists(updatedCand);
       }
+      // }
     });
   }
 
@@ -168,7 +171,7 @@ export class CandsStore {
 
     if (list) {
       let ind = list?.findIndex(
-        (x) => x.candidateId === this.candDisplay?.candidateId
+        (x) => x.candidateId === this.candDisplay?.candidateId,
       );
 
       if (ind > -1) {
@@ -234,7 +237,7 @@ export class CandsStore {
 
     const res = await this.cvsApi.saveCandReview(
       review,
-      this.candDisplay?.candidateId!
+      this.candDisplay?.candidateId!,
     );
 
     if (res.isSuccess && res.data) {
@@ -252,11 +255,11 @@ export class CandsStore {
     if (this.candDisplay?.candidateId !== this.lastReviewCandId) {
       localStorage.setItem(
         "PrevReview",
-        localStorage.getItem("LastReview") || ""
+        localStorage.getItem("LastReview") || "",
       );
       localStorage.setItem(
         "PrevReviewCandDetails",
-        localStorage.getItem("LastReviewCandDetails") || ""
+        localStorage.getItem("LastReviewCandDetails") || "",
       );
     }
 
@@ -273,7 +276,7 @@ export class CandsStore {
         customerName:
           this.rootStore.positionsStore.candDisplayPosition?.customerName,
         positionName: this.rootStore.positionsStore.candDisplayPosition?.name,
-      })
+      }),
     );
   }
 
@@ -283,7 +286,7 @@ export class CandsStore {
     const res = await this.cvsApi.saveCustomerCandReview(
       review,
       this.candDisplay?.candidateId!,
-      this.rootStore.positionsStore.candDisplayPosition?.id
+      this.rootStore.positionsStore.candDisplayPosition?.id,
     );
 
     if (res.isSuccess && res.data) {
@@ -301,7 +304,7 @@ export class CandsStore {
     firstName: string,
     lastName: string,
     email: string,
-    phone: string
+    phone: string,
   ) {
     this.rootStore.generalStore.backdrop = true;
 
@@ -311,7 +314,7 @@ export class CandsStore {
         firstName,
         lastName,
         email,
-        phone
+        phone,
       );
 
       runInAction(() => {
@@ -351,7 +354,7 @@ export class CandsStore {
         searchVals,
         this.rootStore.positionsStore.selectedPosition?.id,
         0,
-        0
+        0,
       );
       runInAction(() => {
         this.posCandsList = res.data;
@@ -373,7 +376,7 @@ export class CandsStore {
         searchVals,
         0,
         this.rootStore.positionsStore.selectedPositionType?.id,
-        0
+        0,
       );
       runInAction(() => {
         this.posTypeCandsList = res.data;
@@ -395,7 +398,7 @@ export class CandsStore {
         searchVals,
         0,
         0,
-        this.rootStore.foldersStore.selectedFolder?.id
+        this.rootStore.foldersStore.selectedFolder?.id,
       );
       runInAction(() => {
         this.folderCandsList = res.data;
@@ -473,7 +476,7 @@ export class CandsStore {
         const candsList = [...this.posCandsList];
 
         const objIndex = candsList.findIndex(
-          (x) => x.candidateId === this.candDisplay?.candidateId
+          (x) => x.candidateId === this.candDisplay?.candidateId,
         );
 
         if (objIndex > -1) {
@@ -488,7 +491,7 @@ export class CandsStore {
   async getFolderCandsList() {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.getFolderCandsList(
-      this.rootStore.foldersStore.selectedFolder?.id!
+      this.rootStore.foldersStore.selectedFolder?.id!,
     );
     runInAction(() => {
       this.tabDisplayCandsLists = TabsCandsEnum.FolderCands;
@@ -503,7 +506,7 @@ export class CandsStore {
         this.candDisplay.candidateId,
         this.candDisplay.cvId,
         positionId,
-        this.candDisplay.keyId
+        this.candDisplay.keyId,
       );
 
       runInAction(() => {
@@ -521,7 +524,7 @@ export class CandsStore {
       const res = await this.cvsApi.detachPosCand(
         detachCand.candidateId,
         detachCand.cvId,
-        positionId
+        positionId,
       );
 
       runInAction(() => {
@@ -549,7 +552,7 @@ export class CandsStore {
   updateCandAllList(cand: ICand) {
     const candsList = [...this.allCandsList];
     const index = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
 
     if (index > -1) {
@@ -562,7 +565,7 @@ export class CandsStore {
     const updatedCand = { ...cand };
     const candsList = [...this.posCandsList];
     const index = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
 
     if (index > -1) {
@@ -580,7 +583,7 @@ export class CandsStore {
   updateFolderCandList(cand: ICand) {
     const candsList = [...this.folderCandsList];
     const index = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
 
     if (index > -1) {
@@ -592,7 +595,7 @@ export class CandsStore {
   removePosCandList(cand: ICand) {
     const candsList = [...this.posCandsList];
     const index = this.posCandsList.findIndex(
-      (x) => x.candidateId === cand.candidateId
+      (x) => x.candidateId === cand.candidateId,
     );
     candsList.splice(index, 1);
     this.posCandsList = candsList;
@@ -602,7 +605,7 @@ export class CandsStore {
     const varToPreventTsError: any = {};
 
     const cand = this.allCandsList.find(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
     return cand ? cand : varToPreventTsError;
   }
@@ -611,7 +614,7 @@ export class CandsStore {
     const varToPreventTsError: any = {};
 
     const cand = this.posCandsList.find(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
     return cand ? cand : varToPreventTsError;
   }
@@ -620,7 +623,7 @@ export class CandsStore {
     const varToPreventTsError: any = {};
 
     const cand = this.folderCandsList.find(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
     return cand ? cand : varToPreventTsError;
   }
@@ -762,7 +765,7 @@ export class CandsStore {
 
   async sendEmailToCandidate(
     emailData: ISendEmail,
-    emailTemplate: IEmailTemplate
+    emailTemplate: IEmailTemplate,
   ) {
     this.rootStore.generalStore.backdrop = true;
     const res = await this.cvsApi.sendEmail(emailData);
@@ -806,7 +809,7 @@ export class CandsStore {
 
     const res = await this.cvsApi.deleteCv(
       this.candDisplay?.candidateId,
-      this.candDisplay?.cvId
+      this.candDisplay?.cvId,
     );
 
     if (res.isSuccess) {
@@ -829,7 +832,7 @@ export class CandsStore {
     this.rootStore.generalStore.backdrop = true;
 
     const res = await this.cvsApi.deleteCandidate(
-      this.candDisplay?.candidateId
+      this.candDisplay?.candidateId,
     );
 
     runInAction(() => {
@@ -853,7 +856,7 @@ export class CandsStore {
 
     candsList = [...this.posCandsList];
     index = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
 
     if (index > -1) {
@@ -863,7 +866,7 @@ export class CandsStore {
 
     candsList = [...this.folderCandsList];
     index = candsList.findIndex(
-      (x) => x.candidateId === this.candDisplay?.candidateId
+      (x) => x.candidateId === this.candDisplay?.candidateId,
     );
 
     if (index > -1) {
@@ -916,7 +919,7 @@ export class CandsStore {
           (x) =>
             x.value.toLowerCase().includes(val.toLowerCase()) ||
             (x.advancedValue &&
-              x.advancedValue.toLowerCase().includes(val.toLowerCase()))
+              x.advancedValue.toLowerCase().includes(val.toLowerCase())),
         );
       } else {
         this.sortedSearchesList = list;
@@ -934,7 +937,7 @@ export class CandsStore {
       const adv = searchVals.advancedValue;
 
       objIndex = this.searchesList.findIndex(
-        (x) => x.value === val && x.advancedValue == adv
+        (x) => x.value === val && x.advancedValue == adv,
       );
     }
 

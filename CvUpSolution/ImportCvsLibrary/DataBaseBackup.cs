@@ -73,7 +73,7 @@ namespace ImportCvsLibrary
                 foreach (string file in files)
                 {
                     FileInfo fi = new FileInfo(file);
-                    if (fi.LastAccessTime < DateTime.Now.AddMonths(-1))
+                    if (fi.LastAccessTime < DateTime.Now.AddMonths(0))
                         fi.Delete();
                 }
             }

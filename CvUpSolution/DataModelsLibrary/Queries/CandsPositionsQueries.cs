@@ -540,6 +540,7 @@ namespace DataModelsLibrary.Queries
                 var query = (from cvs in dbContext.cvs
                              where cvs.company_id == companyId
                              && cvs.candidate_id == candidateId
+                             && cvs.date_created >= DateTime.Now.AddDays(-30)
                              orderby cvs.date_created descending
                              select new CandCvModel
                              {

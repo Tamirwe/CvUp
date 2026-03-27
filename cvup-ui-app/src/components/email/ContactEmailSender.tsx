@@ -34,16 +34,18 @@ export const ContactEmailSender = (props: IProps) => {
   const [bodyHtml, setBodyHtml] = useState("");
 
   const [emailsOptionsList, setEmailsOptionsList] = useState<IEmailsAddress[]>(
-    []
+    [],
   );
   const [toEmailsList, setToEmailsList] = useState<IEmailsAddress[]>([]);
   const [formModel, setFormModel] = useState<IEmailForm>({
     subject: `${candsStore.candDisplay?.firstName} ${candsStore.candDisplay?.lastName} - ${positionsStore.candDisplayPosition?.name}`,
     body: "",
+    subjectAdditionalText: `${positionsStore.candDisplayPosition?.emailsubjectAddon}`,
   });
   const [updateFieldError, clearError, errModel] = useFormErrors({
     subject: "",
     body: "",
+    subjectAdditionalText: "",
   });
 
   const filterEmailContacts = () => {
@@ -52,7 +54,8 @@ export const ContactEmailSender = (props: IProps) => {
 
       if (positionsStore.candDisplayPosition) {
         contacts = customersContactsStore.contactsListSorted.filter(
-          (x) => x.customerId === positionsStore.candDisplayPosition?.customerId
+          (x) =>
+            x.customerId === positionsStore.candDisplayPosition?.customerId,
         );
       }
 
@@ -79,7 +82,7 @@ export const ContactEmailSender = (props: IProps) => {
               contact.customerName || ""
             }`,
           };
-        }
+        },
       );
 
       setToEmailsList(emailsToList || []);
@@ -138,7 +141,7 @@ export const ContactEmailSender = (props: IProps) => {
 
       const emailData: ISendEmail = {
         toAddresses: toEmailsList,
-        subject: formModel.subject,
+        subject: `${formModel.subject} - ${formModel.subjectAdditionalText}`,
         body: emailBody,
         attachCvs: [attachment],
       };
@@ -184,7 +187,28 @@ export const ContactEmailSender = (props: IProps) => {
               }}
             />
           </Grid>
-          <Grid item xs={12} lg={12} pt={2}>
+          <Grid item xs={12} lg={3} pt={2}>
+            <TextField
+              sx={{
+                mt: 0,
+              }}
+              fullWidth
+              margin="normal"
+              type="text"
+              id="subjectAdditionalText"
+              label="Additional Text"
+              variant="outlined"
+              onChange={(e) => {
+                setFormModel((currentProps) => ({
+                  ...currentProps,
+                  subjectAdditionalText: e.target.value,
+                }));
+                clearError("subjectAdditionalText");
+              }}
+              value={formModel.subjectAdditionalText}
+            />
+          </Grid>
+          <Grid item xs={12} lg={9} pt={2}>
             <TextField
               sx={{
                 mt: 0,
@@ -209,6 +233,7 @@ export const ContactEmailSender = (props: IProps) => {
               value={formModel.subject}
             />
           </Grid>
+
           <Grid item xs={12} lg={12} pt={1}>
             <QuillRte ref={refQuill} quillHtml={bodyHtml} />
           </Grid>

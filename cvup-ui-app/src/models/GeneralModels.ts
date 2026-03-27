@@ -151,6 +151,7 @@ export interface IEmailsAddress {
 
 export interface IEmailForm {
   subject: string;
+  subjectAdditionalText?: string;
   body: string;
 }
 

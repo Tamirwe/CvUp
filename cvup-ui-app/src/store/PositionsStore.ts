@@ -25,7 +25,10 @@ export class PositionsStore {
   sortedPosTypesList: IPositionType[] = [];
   posTypescountList: IPositionTypeCount[] = [];
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(
+    private rootStore: RootStore,
+    appSettings: IAppSettings,
+  ) {
     makeAutoObservable(this);
     this.positionApi = new PositionsApi(appSettings);
   }
@@ -67,8 +70,8 @@ export class PositionsStore {
       if (this.searchPhrase && this.searchPhrase.value) {
         this.sortedPosList = this.positionsList.filter((x) =>
           this.searchStringPositions(x).includes(
-            this.searchPhrase!.value!.toLowerCase()
-          )
+            this.searchPhrase!.value!.toLowerCase(),
+          ),
         );
       } else {
         this.sortedPosList = this.positionsList.slice();
@@ -78,12 +81,12 @@ export class PositionsStore {
       if (isDesc) {
         this.sortedPosList.sort(
           (a, b) =>
-            new Date(b.updated).getTime() - new Date(a.updated).getTime()
+            new Date(b.updated).getTime() - new Date(a.updated).getTime(),
         );
       } else {
         this.sortedPosList.sort(
           (a, b) =>
-            new Date(a.updated).getTime() - new Date(b.updated).getTime()
+            new Date(a.updated).getTime() - new Date(b.updated).getTime(),
         );
       }
     });
@@ -93,7 +96,7 @@ export class PositionsStore {
     runInAction(() => {
       if (searchVals && searchVals.value) {
         this.sortedPosTypesList = this.positionsTypesList.filter((x) =>
-          x.typeName.toLowerCase().includes(searchVals!.value!.toLowerCase())
+          x.typeName.toLowerCase().includes(searchVals!.value!.toLowerCase()),
         );
       } else {
         this.sortedPosTypesList = this.positionsTypesList.slice();
@@ -104,13 +107,13 @@ export class PositionsStore {
         this.sortedPosTypesList.sort(
           (a, b) =>
             new Date(b.dateUpdated).getTime() -
-            new Date(a.dateUpdated).getTime()
+            new Date(a.dateUpdated).getTime(),
         );
       } else {
         this.sortedPosTypesList.sort(
           (a, b) =>
             new Date(a.dateUpdated).getTime() -
-            new Date(b.dateUpdated).getTime()
+            new Date(b.dateUpdated).getTime(),
         );
       }
     });
@@ -121,7 +124,7 @@ export class PositionsStore {
   };
 
   setRelatedPositionToCandDisplay(
-    candsSource: CandsSourceEnum = CandsSourceEnum.Position
+    candsSource: CandsSourceEnum = CandsSourceEnum.Position,
   ) {
     this.candDisplayPosition = undefined;
 
@@ -130,12 +133,21 @@ export class PositionsStore {
     }
   }
 
+  updateSelectedPosition(posId: number) {
+    this.positionSelected = undefined;
+
+    this.positionSelected = Object.assign(
+      {},
+      this.positionsList.find((x) => x.id === posId),
+    );
+  }
+
   removeCandDisplayPosition() {
     this.candDisplayPosition = undefined;
   }
 
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
-    this.positionSelected = this.positionsList.find((x) => x.id === posId);
+    this.updateSelectedPosition(posId);
 
     if (posId) {
       await this.getPositionContacts(posId);
@@ -157,7 +169,7 @@ export class PositionsStore {
         const posList = [...this.sortedPosList];
 
         const objIndex = posList.findIndex(
-          (x) => x.id === this.selectedPosition?.id
+          (x) => x.id === this.selectedPosition?.id,
         );
 
         if (objIndex > -1) {
@@ -165,7 +177,7 @@ export class PositionsStore {
         }
 
         const posObj = this.positionsList.find(
-          (x) => x.id === this.selectedPosition?.id
+          (x) => x.id === this.selectedPosition?.id,
         );
 
         const clonedPos = Object.assign({}, posObj);
@@ -181,7 +193,7 @@ export class PositionsStore {
 
   async positionTypeClick(posTypeId: number) {
     this.positionTypeSelected = this.positionsTypesList.find(
-      (x) => x.id === posTypeId
+      (x) => x.id === posTypeId,
     );
     await this.rootStore.candsStore.getPositionTypeCandsList(posTypeId);
 
@@ -216,6 +228,10 @@ export class PositionsStore {
     runInAction(() => {
       this.positionsList = res.data;
       this.sortedPosList = [...res.data];
+      if (this.positionSelected) {
+        this.updateSelectedPosition(this.positionSelected.id);
+        this.rootStore.positionsStore.setRelatedPositionToCandDisplay();
+      }
     });
     this.rootStore.generalStore.backdrop = false;
   }

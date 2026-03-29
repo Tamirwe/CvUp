@@ -324,10 +324,6 @@ namespace ImportCvsLibrary
             {
                 List<CandCvModel> cvs = await _cvsPositionsServise.GetCandCvsList(_importCv.companyId, _importCv.candidateId);
 
-                //Tamir to be check 
-                //cvs = cvs.Where(x => x.cvSent >= DateTime.Now.AddDays(-30)) .ToList();
-
-
                 if (cvs.Count > 0)
                 {
                     _importCv.isDuplicate = true;
@@ -335,7 +331,7 @@ namespace ImportCvsLibrary
 
                     foreach (var cv in cvs)
                     {
-                        if (cv.emailSubject == _importCv.subject)
+                        if (cv.emailSubject == _importCv.subject && cv.cvSent >= DateTime.Now.AddDays(-30))
                         {
                             isSubjectduplicate = true;
                             break;

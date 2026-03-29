@@ -17,6 +17,7 @@ namespace Database.models
         }
 
         public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
+        public virtual DbSet<black_cand> black_cands { get; set; } = null!;
         public virtual DbSet<cand_pos_stage> cand_pos_stages { get; set; } = null!;
         public virtual DbSet<candidate> candidates { get; set; } = null!;
         public virtual DbSet<company> companies { get; set; } = null!;
@@ -88,6 +89,15 @@ namespace Database.models
                     .WithMany(p => p.auth_out_emails)
                     .HasForeignKey(d => d.user_id)
                     .HasConstraintName("fk_auth_out_emails_user_id_users_id");
+            });
+
+            modelBuilder.Entity<black_cand>(entity =>
+            {
+                entity.Property(e => e.email).HasMaxLength(150);
+
+                entity.Property(e => e.name).HasMaxLength(101);
+
+                entity.Property(e => e.remarks).HasMaxLength(160);
             });
 
             modelBuilder.Entity<cand_pos_stage>(entity =>

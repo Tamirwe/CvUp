@@ -540,7 +540,7 @@ namespace DataModelsLibrary.Queries
                 var query = (from cvs in dbContext.cvs
                              where cvs.company_id == companyId
                              && cvs.candidate_id == candidateId
-                             && cvs.date_created >= DateTime.Now.AddDays(-30)
+                             //&& cvs.date_created >= DateTime.Now.AddDays(-30)
                              orderby cvs.date_created descending
                              select new CandCvModel
                              {
@@ -712,7 +712,8 @@ namespace DataModelsLibrary.Queries
                                 created = p.date_created,
                                 customerName = c.name,
                                 customerId = p.customer_id,
-                                candsCount = p.cands_count
+                                candsCount = p.cands_count,
+                                emailsubjectAddon = p.customer_pos_num,
                             };
 
                 return await query.ToListAsync();

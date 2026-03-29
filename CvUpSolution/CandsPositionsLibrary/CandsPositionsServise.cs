@@ -88,7 +88,7 @@ namespace CandsPositionsLibrary
             {
                 importCv.candidateId = cand.id;
 
-                if (cand != null)
+                if (cand.is_blocked == 0)
                 {
                     bool isUpdate = false;
 
@@ -114,6 +114,10 @@ namespace CandsPositionsLibrary
                     {
                         await _cvsPositionsQueries.UpdateCandidate(cand);
                     }
+                }
+                else
+                {
+                    importCv.is_blocked = true;
                 }
             }
 

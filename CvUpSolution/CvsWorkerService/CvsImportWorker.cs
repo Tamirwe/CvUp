@@ -16,6 +16,7 @@ namespace CvsWorkerService
         private bool _isBuStarted = false;
         private int _hour = 0;
         private bool _isHourChanged = false;
+        private List<string> _blackCandidatesList;
 
         public CvsImportWorker(IImportCvs importCvs, IDataBaseBackup dataBaseBackup, ICandsPositionsServise candPosService, ILogger<CvsImportWorker> logger)
         {
@@ -28,6 +29,8 @@ namespace CvsWorkerService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _blackCandidatesList = await _candPosService.GetBlackCandidatesList();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -52,7 +55,7 @@ namespace CvsWorkerService
                         {
                             _isRunning = true;
 
-                            await _importCvs.ImportFromGmail();
+                            await _importCvs.ImportFromGmail(_blackCandidatesList);
 
                             _isRunning = false;
                         }

@@ -1577,5 +1577,13 @@ namespace DataModelsLibrary.Queries
                 return ptList;
             }
         }
+
+        public async Task<List<string>> GetBlackCandidatesList()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                return await dbContext.black_cands.Select(c => c.email).ToListAsync();
+            }
+        }
     }
 }

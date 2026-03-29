@@ -2,6 +2,6 @@
 {
     public interface IImportCvs
     {
-        Task ImportFromGmail();
+        Task ImportFromGmail(List<string> blackCandidatesList);
     }
 }

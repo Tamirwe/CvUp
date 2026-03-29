@@ -43,6 +43,7 @@ namespace ImportCvsLibrary
         List<ParserRulesModel> _parsersRulesAllCompanies;
         List<ParserRulesModel> _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
+        private List<string> _blackCandidatesList;
 
         public ImportCvs(IConfiguration config, ICandsPositionsServise cvsPositionsServise)
         {
@@ -56,8 +57,10 @@ namespace ImportCvsLibrary
             _mailPassword = config["GlobalSettings:ImportGmailPassword"];
         }
 
-        public async Task ImportFromGmail()
+        public async Task ImportFromGmail( List<string> blackCandidatesList)
         {
+            _blackCandidatesList = blackCandidatesList;
+
             using (var client = new ImapClient())
             {
                 try
@@ -183,35 +186,51 @@ namespace ImportCvsLibrary
 
         private async Task CvExtractDataAndSave()
         {
+            bool isBlackEmail = false;
+
             ExtractCvProps();
-            _importCv.exceptionRow = "500";
-            await CandidateFindOrCreate();
 
-            _importCv.exceptionRow = "600";
-            GetCvAsciiSum();
-            _importCv.exceptionRow = "700";
-            await CheckIsCvDuplicateOrSameCv();
-
-            if (_importCv.isSameCvEmailSubject)
+            if (!string.IsNullOrEmpty(_importCv.emailAddress))
             {
-                _importCv.exceptionRow = "800";
-                await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
+                string?  blackEmail = _blackCandidatesList.Where(x => x == _importCv.emailAddress).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(blackEmail))
+                {
+                    isBlackEmail = true;
+                }
             }
-            else
+
+            if (!isBlackEmail)
             {
-                //await AddPositionName();
-                _importCv.exceptionRow = "900";
-                await AddCvToDb();
-                _importCv.exceptionRow = "1000";
-                RenameAndMoveAttachmentToFolder();
-                _importCv.exceptionRow = "1100";
-                await _cvsPositionsServise.UpdateCvKeyId(_importCv);
-                _importCv.exceptionRow = "1200";
-                await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
-                _importCv.exceptionRow = "1300";
-                await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
-                _importCv.exceptionRow = "1400";
-                await AddCandToMatchPosition();
+                _importCv.exceptionRow = "500";
+                await CandidateFindOrCreate();
+
+                _importCv.exceptionRow = "600";
+                GetCvAsciiSum();
+                _importCv.exceptionRow = "700";
+                await CheckIsCvDuplicateOrSameCv();
+
+                if (_importCv.isSameCvEmailSubject)
+                {
+                    _importCv.exceptionRow = "800";
+                    await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
+                }
+                else
+                {
+                    //await AddPositionName();
+                    _importCv.exceptionRow = "900";
+                    await AddCvToDb();
+                    _importCv.exceptionRow = "1000";
+                    RenameAndMoveAttachmentToFolder();
+                    _importCv.exceptionRow = "1100";
+                    await _cvsPositionsServise.UpdateCvKeyId(_importCv);
+                    _importCv.exceptionRow = "1200";
+                    await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
+                    _importCv.exceptionRow = "1300";
+                    await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
+                    _importCv.exceptionRow = "1400";
+                    await AddCandToMatchPosition();
+                }
             }
         }
 

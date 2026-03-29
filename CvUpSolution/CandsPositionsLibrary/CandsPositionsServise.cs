@@ -472,5 +472,10 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeleteKeyword(companyId, id);
         }
 
+        public async Task<List<string>> GetBlackCandidatesList()
+        {
+            return await _cvsPositionsQueries.GetBlackCandidatesList();
+        }
+
     }
 }

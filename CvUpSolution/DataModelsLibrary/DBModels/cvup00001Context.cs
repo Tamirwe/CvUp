@@ -140,8 +140,6 @@ namespace Database.models
 
                 entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.is_blocked).HasDefaultValueSql("'0'");
-
                 entity.Property(e => e.last_cv_sent)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");

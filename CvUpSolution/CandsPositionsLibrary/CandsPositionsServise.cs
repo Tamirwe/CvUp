@@ -88,36 +88,29 @@ namespace CandsPositionsLibrary
             {
                 importCv.candidateId = cand.id;
 
-                if (cand.is_blocked == 0)
+                bool isUpdate = false;
+
+                if (string.IsNullOrEmpty(cand.first_name))
                 {
-                    bool isUpdate = false;
-
-                    if (string.IsNullOrEmpty(cand.first_name))
-                    {
-                        cand.first_name = importCv.firstName.Trim();
-                        isUpdate = true;
-                    }
-
-                    if (string.IsNullOrEmpty(cand.last_name))
-                    {
-                        cand.last_name = importCv.lastName.Trim();
-                        isUpdate = true;
-                    }
-
-                    if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
-                    {
-                        cand.city = importCv.city.Trim();
-                        isUpdate = true;
-                    }
-
-                    if (isUpdate)
-                    {
-                        await _cvsPositionsQueries.UpdateCandidate(cand);
-                    }
+                    cand.first_name = importCv.firstName.Trim();
+                    isUpdate = true;
                 }
-                else
+
+                if (string.IsNullOrEmpty(cand.last_name))
                 {
-                    importCv.is_blocked = true;
+                    cand.last_name = importCv.lastName.Trim();
+                    isUpdate = true;
+                }
+
+                if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
+                {
+                    cand.city = importCv.city.Trim();
+                    isUpdate = true;
+                }
+
+                if (isUpdate)
+                {
+                    await _cvsPositionsQueries.UpdateCandidate(cand);
                 }
             }
 

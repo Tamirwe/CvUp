@@ -39,8 +39,6 @@ namespace DataModelsLibrary.Models
         public int? positionTypeId { get; set; }
         public string? body { get; set; }
         public string? exceptionRow { get; set; }
-        public bool is_blocked { get; set; } = false;
-
     }
 
     [Keyless]

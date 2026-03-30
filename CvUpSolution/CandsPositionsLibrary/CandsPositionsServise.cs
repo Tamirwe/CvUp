@@ -472,10 +472,14 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeleteKeyword(companyId, id);
         }
 
-        public async Task<List<string>> GetBlackCandidatesList()
+        public async Task<List<blackCandModel>> GetBlackCandidatesList()
         {
             return await _cvsPositionsQueries.GetBlackCandidatesList();
         }
 
+        public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
+        {
+             await _cvsPositionsQueries.UpdateBlackCandidateEmailCount( blackCand);
+        }
     }
 }

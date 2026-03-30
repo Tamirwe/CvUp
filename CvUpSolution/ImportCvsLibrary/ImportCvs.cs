@@ -43,7 +43,7 @@ namespace ImportCvsLibrary
         List<ParserRulesModel> _parsersRulesAllCompanies;
         List<ParserRulesModel> _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
-        private List<string> _blackCandidatesList;
+        private List<blackCandModel> _blackCandidatesList;
 
         public ImportCvs(IConfiguration config, ICandsPositionsServise cvsPositionsServise)
         {
@@ -57,7 +57,7 @@ namespace ImportCvsLibrary
             _mailPassword = config["GlobalSettings:ImportGmailPassword"];
         }
 
-        public async Task ImportFromGmail( List<string> blackCandidatesList)
+        public async Task ImportFromGmail( List<blackCandModel> blackCandidatesList)
         {
             _blackCandidatesList = blackCandidatesList;
 
@@ -186,21 +186,11 @@ namespace ImportCvsLibrary
 
         private async Task CvExtractDataAndSave()
         {
-            bool isBlackEmail = false;
-
             ExtractCvProps();
 
-            if (!string.IsNullOrEmpty(_importCv.emailAddress))
-            {
-                string?  blackEmail = _blackCandidatesList.Where(x => x == _importCv.emailAddress).FirstOrDefault();
+            bool isBlackCand = CheckIsBlackCand();
 
-                if (!string.IsNullOrEmpty(blackEmail))
-                {
-                    isBlackEmail = true;
-                }
-            }
-
-            if (!isBlackEmail)
+            if (!isBlackCand)
             {
                 _importCv.exceptionRow = "500";
                 await CandidateFindOrCreate();
@@ -316,6 +306,32 @@ namespace ImportCvsLibrary
             GetCandidateEmail();
             GetCandidatePhone();
             GetCandidateCity();
+        }
+
+        private bool CheckIsBlackCand()
+        {
+            bool isBlackCand = false;
+            blackCandModel? blackCand = null;
+
+            if (!string.IsNullOrEmpty(_importCv.emailAddress))
+            {
+                blackCand = _blackCandidatesList.FirstOrDefault(x => x.email == _importCv.emailAddress);
+
+             
+            }
+            else if (!string.IsNullOrEmpty(_importCv.phone))
+            {
+                blackCand = _blackCandidatesList.FirstOrDefault(x => x.phone == _importCv.phone);
+            }
+
+            if (blackCand != null)
+            {
+                isBlackCand = true;
+                blackCand.cvs_count = blackCand.cvs_count + 1;
+                Task.Run(() => _cvsPositionsServise.UpdateBlackCandidateEmailCount(blackCand));
+            }
+
+            return isBlackCand;
         }
 
         private async Task CheckIsCvDuplicateOrSameCv()

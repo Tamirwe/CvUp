@@ -1578,12 +1578,44 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<string>> GetBlackCandidatesList()
+        public async Task<List<blackCandModel>> GetBlackCandidatesList()
         {
             using (var dbContext = new cvup00001Context())
             {
-                return await dbContext.black_cands.Select(c => c.email).ToListAsync();
+
+                var query = (from b in dbContext.black_cands
+                             select new blackCandModel
+                             {
+                                 id = b.id,
+                                 candidate_id = b.candidate_id,
+                                 email = b.email,
+                                 phone = b.phone,
+                                 cvs_count = b.cvs_count
+                             });
+
+                var bList = await query.ToListAsync();
+
+                return bList;
             }
         }
+
+        public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                black_cand? bCand = dbContext.black_cands.Where(x => x.candidate_id == blackCand.candidate_id).FirstOrDefault();
+
+                if (bCand != null)
+                {
+                    bCand.cvs_count = blackCand.cvs_count;
+                    bCand.updated = DateTime.Now;
+                    var result = dbContext.black_cands.Update(bCand);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }
+
+

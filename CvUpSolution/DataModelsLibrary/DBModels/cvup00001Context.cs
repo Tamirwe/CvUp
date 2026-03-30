@@ -97,7 +97,13 @@ namespace Database.models
 
                 entity.Property(e => e.name).HasMaxLength(101);
 
+                entity.Property(e => e.phone).HasMaxLength(20);
+
                 entity.Property(e => e.remarks).HasMaxLength(160);
+
+                entity.Property(e => e.updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
             modelBuilder.Entity<cand_pos_stage>(entity =>
@@ -149,6 +155,8 @@ namespace Database.models
                 entity.Property(e => e.folders_ids).HasColumnType("json");
 
                 entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.is_black_list).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.last_cv_sent)
                     .HasColumnType("datetime")

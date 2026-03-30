@@ -33,6 +33,7 @@ namespace Database.models
         public string? folders_ids { get; set; }
         public string? customers_reviews { get; set; }
         public string? city { get; set; }
+        public bool? is_black_list { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<cv> cvs { get; set; }

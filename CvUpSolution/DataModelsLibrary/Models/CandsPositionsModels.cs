@@ -110,6 +110,7 @@ namespace DataModelsLibrary.Models
         public bool isSeen { get; set; }
         public int? score { get; set; }
         public CandPosHistoryModel? candPosHistory { get; set; }
+        public bool isBlackList { get; set; } = false;
     }
 
     public class CandPosHistoryModel

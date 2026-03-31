@@ -133,7 +133,8 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 isSeen = Convert.ToBoolean(cvs.is_seen)
+                                 isSeen = Convert.ToBoolean(cvs.is_seen),
+                                 isBlackList = Convert.ToBoolean(cand.is_black_list)
                              }).Take(300);
 
                 var result = await query.ToListAsync();

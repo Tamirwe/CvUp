@@ -34,9 +34,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C3A2B07B-2A06-4640-B6D0-57069D12EAC9}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.txt = ReadMe.txt
+		ReadMe2.txt = ReadMe2.txt
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuturesStatisticsLibrary", "FuturesStatisticsLibrary\FuturesStatisticsLibrary.csproj", "{8AF26C7E-B4F5-4354-912D-19FD5B11F2CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleGeneratorLibrary", "ModuleGeneratorLibrary\ModuleGeneratorLibrary.csproj", "{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}"
 EndProject
@@ -102,10 +101,6 @@ Global
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AF26C7E-B4F5-4354-912D-19FD5B11F2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AF26C7E-B4F5-4354-912D-19FD5B11F2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AF26C7E-B4F5-4354-912D-19FD5B11F2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AF26C7E-B4F5-4354-912D-19FD5B11F2CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -88,32 +88,29 @@ namespace CandsPositionsLibrary
             {
                 importCv.candidateId = cand.id;
 
-                if (cand != null)
+                bool isUpdate = false;
+
+                if (string.IsNullOrEmpty(cand.first_name))
                 {
-                    bool isUpdate = false;
+                    cand.first_name = importCv.firstName.Trim();
+                    isUpdate = true;
+                }
 
-                    if (string.IsNullOrEmpty(cand.first_name))
-                    {
-                        cand.first_name = importCv.firstName.Trim();
-                        isUpdate = true;
-                    }
+                if (string.IsNullOrEmpty(cand.last_name))
+                {
+                    cand.last_name = importCv.lastName.Trim();
+                    isUpdate = true;
+                }
 
-                    if (string.IsNullOrEmpty(cand.last_name))
-                    {
-                        cand.last_name = importCv.lastName.Trim();
-                        isUpdate = true;
-                    }
+                if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
+                {
+                    cand.city = importCv.city.Trim();
+                    isUpdate = true;
+                }
 
-                    if (string.IsNullOrEmpty(cand.city) && importCv.city != null)
-                    {
-                        cand.city = importCv.city.Trim();
-                        isUpdate = true;
-                    }
-
-                    if (isUpdate)
-                    {
-                        await _cvsPositionsQueries.UpdateCandidate(cand);
-                    }
+                if (isUpdate)
+                {
+                    await _cvsPositionsQueries.UpdateCandidate(cand);
                 }
             }
 
@@ -475,5 +472,14 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeleteKeyword(companyId, id);
         }
 
+        public async Task<List<blackCandModel>> GetBlackCandidatesList()
+        {
+            return await _cvsPositionsQueries.GetBlackCandidatesList();
+        }
+
+        public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
+        {
+             await _cvsPositionsQueries.UpdateBlackCandidateEmailCount( blackCand);
+        }
     }
 }

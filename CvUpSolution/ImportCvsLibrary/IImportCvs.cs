@@ -1,7 +1,9 @@
-﻿namespace ImportCvsLibrary
+﻿using DataModelsLibrary.Models;
+
+namespace ImportCvsLibrary
 {
     public interface IImportCvs
     {
-        Task ImportFromGmail();
+        Task ImportFromGmail(List<blackCandModel> blackCandidatesList);
     }
 }

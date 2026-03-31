@@ -79,5 +79,7 @@ namespace DataModelsLibrary.Queries
         Task<List<keywordModel>> GetKeywords(int companyId);
         Task SaveKeyword(int companyId, keywordModel keyword);
         Task DeleteKeyword(int companyId, int id);
+        Task<List<blackCandModel>> GetBlackCandidatesList();
+        Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
     }
 }

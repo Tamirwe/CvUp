@@ -18,31 +18,31 @@ namespace FuturesStatisticsLibrary
             _futuresQueries = futuresQueries;
         }
 
-        public async Task<List<FuturesOhlcModel>> GetOhlcList()
-        {
-            return await _futuresQueries.GetOhlcList();
-        }
+        //public async Task<List<FuturesOhlcModel>> GetOhlcList()
+        //{
+        //    return await _futuresQueries.GetOhlcList();
+        //}
 
-        public async Task<futures_ohlc> AddOhlc(FuturesOhlcModel data)
-        {
-            return await _futuresQueries.AddOhlc(data);
-        }
+        //public async Task<futures_ohlc> AddOhlc(FuturesOhlcModel data)
+        //{
+        //    return await _futuresQueries.AddOhlc(data);
+        //}
 
-        public async Task<futures_ohlc> UpdateOhlc(FuturesOhlcModel data)
-        {
-            return await _futuresQueries.UpdateOhlc(data);
-        }
+        //public async Task<futures_ohlc> UpdateOhlc(FuturesOhlcModel data)
+        //{
+        //    return await _futuresQueries.UpdateOhlc(data);
+        //}
 
 
-        public async Task DeleteOhlc(int id)
-        {
-            await _futuresQueries.DeleteOhlc(id);
-        }
+        //public async Task DeleteOhlc(int id)
+        //{
+        //    await _futuresQueries.DeleteOhlc(id);
+        //}
 
-        public async Task<FuturesOhlcModel?> GetDayOhlc(DateTime statisticDate)
-        {
-            return await _futuresQueries.GetDayOhlc(statisticDate);
-        }
+        //public async Task<FuturesOhlcModel?> GetDayOhlc(DateTime statisticDate)
+        //{
+        //    return await _futuresQueries.GetDayOhlc(statisticDate);
+        //}
     }
 
 }

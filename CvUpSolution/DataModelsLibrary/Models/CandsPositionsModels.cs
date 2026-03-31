@@ -39,7 +39,6 @@ namespace DataModelsLibrary.Models
         public int? positionTypeId { get; set; }
         public string? body { get; set; }
         public string? exceptionRow { get; set; }
-
     }
 
     [Keyless]
@@ -111,6 +110,7 @@ namespace DataModelsLibrary.Models
         public bool isSeen { get; set; }
         public int? score { get; set; }
         public CandPosHistoryModel? candPosHistory { get; set; }
+        public bool isBlackList { get; set; } = false;
     }
 
     public class CandPosHistoryModel

@@ -116,4 +116,13 @@ namespace DataModelsLibrary.Models
     {
         public string path { get; set; } = string.Empty;
     }
+
+    public partial class blackCandModel
+    {
+        public int id { get; set; }
+        public int candidate_id { get; set; }
+        public string? email { get; set; }
+        public string? phone { get; set; }
+        public int? cvs_count { get; set; }
+    }
 }

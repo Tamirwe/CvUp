@@ -133,7 +133,8 @@ namespace DataModelsLibrary.Queries
                                  candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
                                  candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                                  posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 isSeen = Convert.ToBoolean(cvs.is_seen)
+                                 isSeen = Convert.ToBoolean(cvs.is_seen),
+                                 isBlackList = Convert.ToBoolean(cand.is_black_list)
                              }).Take(300);
 
                 var result = await query.ToListAsync();
@@ -540,7 +541,7 @@ namespace DataModelsLibrary.Queries
                 var query = (from cvs in dbContext.cvs
                              where cvs.company_id == companyId
                              && cvs.candidate_id == candidateId
-                             && cvs.date_created >= DateTime.Now.AddDays(-30)
+                             //&& cvs.date_created >= DateTime.Now.AddDays(-30)
                              orderby cvs.date_created descending
                              select new CandCvModel
                              {
@@ -712,7 +713,8 @@ namespace DataModelsLibrary.Queries
                                 created = p.date_created,
                                 customerName = c.name,
                                 customerId = p.customer_id,
-                                candsCount = p.cands_count
+                                candsCount = p.cands_count,
+                                emailsubjectAddon = p.customer_pos_num,
                             };
 
                 return await query.ToListAsync();
@@ -1576,5 +1578,45 @@ namespace DataModelsLibrary.Queries
                 return ptList;
             }
         }
+
+        public async Task<List<blackCandModel>> GetBlackCandidatesList()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+
+                var query = (from b in dbContext.black_cands
+                             select new blackCandModel
+                             {
+                                 id = b.id,
+                                 candidate_id = b.candidate_id,
+                                 email = b.email,
+                                 phone = b.phone,
+                                 cvs_count = b.cvs_count
+                             });
+
+                var bList = await query.ToListAsync();
+
+                return bList;
+            }
+        }
+
+        public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                black_cand? bCand = dbContext.black_cands.Where(x => x.candidate_id == blackCand.candidate_id).FirstOrDefault();
+
+                if (bCand != null)
+                {
+                    bCand.cvs_count = blackCand.cvs_count;
+                    bCand.updated = DateTime.Now;
+                    var result = dbContext.black_cands.Update(bCand);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }
+
+

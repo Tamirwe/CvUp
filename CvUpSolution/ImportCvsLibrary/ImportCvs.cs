@@ -315,9 +315,7 @@ namespace ImportCvsLibrary
 
             if (!string.IsNullOrEmpty(_importCv.emailAddress))
             {
-                blackCand = _blackCandidatesList.FirstOrDefault(x => x.email == _importCv.emailAddress);
-
-             
+                blackCand = _blackCandidatesList.FirstOrDefault(x => (x.email ?? "").ToLower() == _importCv.emailAddress.ToLower());
             }
             else if (!string.IsNullOrEmpty(_importCv.phone))
             {

@@ -19,11 +19,12 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../Hooks/useStore";
 import { CandsSourceEnum } from "../../models/GeneralEnums";
-import { ICand } from "../../models/GeneralModels";
+import { ICand, ICandPosStage } from "../../models/GeneralModels";
 import { isMobile } from "react-device-detect";
 import styles from "./CandsList.module.scss";
 import classNames from "classnames";
 import { CandsPosStagesList } from "./CandsPosStagesList";
+import { strict } from "assert";
 
 interface IProps {
   candsListData: ICand[];
@@ -79,7 +80,7 @@ export const CandsList = observer(
           const numRecords = listCands.length;
 
           const newPosList = listCands.concat(
-            candsListData?.slice(numRecords, numRecords + 50)
+            candsListData?.slice(numRecords, numRecords + 50),
           );
 
           setListCands(newPosList);
@@ -99,6 +100,20 @@ export const CandsList = observer(
       };
     }, [onScroll]);
 
+    const candColor = (cand: ICand, posStage: ICandPosStage | undefined) => {
+      let color = "";
+
+      if (cand.isBlackList) {
+        color = "#ff229b";
+      } else if (posStage) {
+        color = candsStore.findStageColor(posStage._tp);
+      } else if (!cand.isSeen) {
+        color = "green";
+      }
+
+      return color;
+    };
+
     return (
       <>
         <List
@@ -110,8 +125,8 @@ export const CandsList = observer(
                 ? "64vh"
                 : "70vh"
               : advancedOpen
-              ? "calc(100vh - 173px)"
-              : "calc(100vh - 125px)",
+                ? "calc(100vh - 173px)"
+                : "calc(100vh - 125px)",
           }}
           className={classNames({
             [styles.candList]: true,
@@ -120,7 +135,7 @@ export const CandsList = observer(
         >
           {listCands.map((cand, i) => {
             const posStage = cand.posStages?.find(
-              (x) => x._pid === positionsStore.selectedPosition?.id
+              (x) => x._pid === positionsStore.selectedPosition?.id,
             );
             return (
               <ListItem
@@ -139,11 +154,7 @@ export const CandsList = observer(
                   sx={{
                     pl: 0,
                     fontWeight: "bold",
-                    color: posStage
-                      ? candsStore.findStageColor(posStage._tp)
-                      : cand.isSeen
-                      ? "unset"
-                      : "green",
+                    color: candColor(cand, posStage),
                   }}
                   selected={
                     cand.candidateId === candsStore.candDisplay?.candidateId
@@ -210,7 +221,7 @@ export const CandsList = observer(
                             <div style={{ width: "100%", textAlign: "right" }}>
                               {` ${format(
                                 new Date(posStage._dt),
-                                "MMM d, yyyy"
+                                "MMM d, yyyy",
                               )} - ${candsStore.findStageName(posStage._tp)} `}
                             </div>
                           ) : (
@@ -377,5 +388,5 @@ export const CandsList = observer(
         </Slide>
       </>
     );
-  }
+  },
 );

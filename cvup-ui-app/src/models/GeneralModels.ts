@@ -55,6 +55,7 @@ export interface ICand {
   score: number;
   allCustomersReviews?: ICustomersReviews[];
   candPosHistory?: ICandPosHistory;
+  isBlackList: boolean;
 }
 
 export interface ICandPosHistory {

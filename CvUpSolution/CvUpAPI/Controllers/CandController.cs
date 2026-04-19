@@ -1,18 +1,9 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
 using CvFilesLibrary;
-using Database.models;
 using DataModelsLibrary.Models;
-using EmailsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.StaticFiles;
-using Org.BouncyCastle.Asn1.Cmp;
-using System.ComponentModel.Design;
-using System.IO;
-
 
 namespace CvUpAPI.Controllers
 {

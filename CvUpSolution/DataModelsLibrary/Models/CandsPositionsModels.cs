@@ -58,6 +58,14 @@ namespace DataModelsLibrary.Models
         public DateTime? lastCvSent { get; set; }
     }
 
+    public class AiCvModel
+    {
+        public int id { get; set; }
+        public string? phone { get; set; } = "";
+        public string? email { get; set; } = "";
+        public string? fullName { get; set; } = "";
+        public string? cvsTxt { get; set; } = "";
+    }
     public class CvPropsToIndexModel
     {
         public int id { get; set; }
@@ -73,6 +81,13 @@ namespace DataModelsLibrary.Models
         public int? candidateId { get; set; }
         public string? cvTxt { get; set; } = "";
         public int? asciiSum { get; set; }
+    }
+
+    public class CandCvTxtModel
+    {
+        public int id { get; set; }
+        public int? candidateId { get; set; }
+        public string? cvTxt { get; set; } = "";
     }
 
     public class CandCvModel

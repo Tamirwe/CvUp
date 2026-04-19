@@ -39,6 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleGeneratorLibrary", "ModuleGeneratorLibrary\ModuleGeneratorLibrary.csproj", "{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiLibrary", "OpenAiLibrary\OpenAiLibrary.csproj", "{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiConsoleApp", "OpenAiConsoleApp\OpenAiConsoleApp.csproj", "{1F11377F-480E-4554-B31E-707FB2EBD673}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,14 @@ Global
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B6B5A5F-DBC0-4F41-A65B-8E2BE5A2C6AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F11377F-480E-4554-B31E-707FB2EBD673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F11377F-480E-4554-B31E-707FB2EBD673}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F11377F-480E-4554-B31E-707FB2EBD673}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F11377F-480E-4554-B31E-707FB2EBD673}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

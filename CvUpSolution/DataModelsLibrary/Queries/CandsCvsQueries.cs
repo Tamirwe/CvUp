@@ -1,0 +1,136 @@
+﻿using Database.models;
+using DataModelsLibrary.Enums;
+using DataModelsLibrary.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataModelsLibrary.Queries
+{
+    public class CandsCvsQueries:ICandsCvsQueries
+    {
+
+        public async Task<List<AiCvModel>> GetDistinctCandsCvs(int companyId = 154, int candidateId = 0)
+        {
+            List<CvTxtModel> candsCvsTxts = await GetCvsText(companyId, candidateId);
+            List<CvTxtModel> ConcatCandsCvsTxt = ConcatCandsCvsTxtAndRemoveDuplicates(candsCvsTxts);
+
+            List<AiCvModel> candsParams = await GetCandidatesParams(companyId, candidateId);
+
+            foreach (var item in candsParams)
+            {
+                var candCvsTxt = ConcatCandsCvsTxt.Find(x => x.candidateId == item.id);
+
+                if (candCvsTxt != null)
+                {
+                    item.cvsTxt = candCvsTxt.cvTxt;
+                }
+            }
+
+            return candsParams;
+        }
+
+        public async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+                string sql = @"SELECT cands.id candidateId, cvs.cv_txt cvTxt,cvs.cv_id id
+                                FROM candidates cands 
+                                INNER JOIN cvs_txt cvs ON  cands.id = cvs.candidate_id AND  cands.last_cv_id = cvs.cv_id
+                                WHERE cands.company_id=" + companyId + @" ORDER BY cvs.cv_id DESC LIMIT 0, 3";
+
+                var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
+                return candCvTxtModelList;
+            }
+        }
+
+
+        private async Task<List<CvTxtModel>> GetCvsText(int companyId = 154, int candidateId = 0)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var cvsTxtQuery = from cv in dbContext.cvs_txts
+                                  where cv.company_id == companyId && candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
+                                  orderby cv.candidate_id ascending, cv.ascii_sum
+                                  select new CvTxtModel
+                                  {
+                                      id = cv.id,
+                                      candidateId = cv.candidate_id ?? 0,
+                                      cvTxt = cv.cv_txt,
+                                      asciiSum = cv.ascii_sum,
+                                  };
+
+                List<CvTxtModel> cvsTxts = await cvsTxtQuery.ToListAsync();
+                return cvsTxts;
+            }
+        }
+
+        private List<CvTxtModel> ConcatCandsCvsTxtAndRemoveDuplicates(List<CvTxtModel> candCvsTxts)
+        {
+
+            int asciiSumCurrent = -1;
+            int candIdCurrent = 0;
+            StringBuilder? sb = null;
+
+            List<CvTxtModel> candsGroupCvsTxt = new List<CvTxtModel>();
+
+            foreach (var item in candCvsTxts)
+            {
+                if (candIdCurrent != item.candidateId)
+                {
+                    if (sb != null)
+                    {
+                        candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
+                    }
+
+                    candIdCurrent = item.candidateId ?? 0;
+                    asciiSumCurrent = item.asciiSum ?? -1;
+                    sb = new StringBuilder(item.cvTxt);
+                }
+                else
+                {
+                    if (asciiSumCurrent != item.asciiSum && sb != null)
+                    {
+                        sb.Append(" " + item.cvTxt);
+                    }
+
+                    candIdCurrent = item.candidateId ?? 0;
+                    asciiSumCurrent = item.asciiSum ?? -1;
+                }
+            }
+
+            if (sb != null)
+            {
+                candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
+            }
+
+            return candsGroupCvsTxt;
+        }
+
+        private async Task<List<AiCvModel>> GetCandidatesParams(int companyId = 154, int candidateId = 0)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from cand in dbContext.candidates
+                            where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            && cand.email != null && cand.name != null && cand.phone != null
+                            select new AiCvModel
+                            {
+                                id = cand.id,
+                                fullName = cand.name,
+                                email = cand.email,
+                                phone = cand.phone,
+                            };
+
+                List<AiCvModel> candsParams = await query.ToListAsync();
+                return candsParams;
+            }
+        }
+
+    }
+}

@@ -9,6 +9,6 @@ namespace OpenAiLibrary
 {
     public interface IAnalyzeCvsService
     {
-        Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0);
+        Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154);
     }
 }

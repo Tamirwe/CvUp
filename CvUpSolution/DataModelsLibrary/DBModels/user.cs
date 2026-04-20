@@ -8,6 +8,7 @@ namespace Database.models
         public user()
         {
             auth_out_emails = new HashSet<auth_out_email>();
+            emails_sents = new HashSet<emails_sent>();
             position_interviewers = new HashSet<position_interviewer>();
             users_refresh_tokens = new HashSet<users_refresh_token>();
         }
@@ -32,6 +33,7 @@ namespace Database.models
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<auth_out_email> auth_out_emails { get; set; }
+        public virtual ICollection<emails_sent> emails_sents { get; set; }
         public virtual ICollection<position_interviewer> position_interviewers { get; set; }
         public virtual ICollection<users_refresh_token> users_refresh_tokens { get; set; }
     }

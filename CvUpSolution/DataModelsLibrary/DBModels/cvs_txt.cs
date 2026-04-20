@@ -13,6 +13,7 @@ namespace Database.models
         public int? ascii_sum { get; set; }
         public string? email_subject { get; set; }
 
+        public virtual candidate? candidate { get; set; }
         public virtual cv cv { get; set; } = null!;
     }
 }

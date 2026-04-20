@@ -1,12 +1,7 @@
 ﻿using Database.models;
-using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Queries
 {
@@ -51,25 +46,40 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task AddCandidateAnalyzeAI(ai_analyze_cv analyzeCv)
+        public async Task AddCandidateAnalyzeCv(ai_analyze_cv analyzeCv)
         {
             using (var dbContext = new cvup00001Context())
             {
-
+                await DeleteCandidateAnalyzeCv(analyzeCv.candidate_id);
                 dbContext.ai_analyze_cvs.Add(analyzeCv);
                 await dbContext.SaveChangesAsync();
+                await UpdateCandIsAnalyzed(analyzeCv.candidate_id, true);
             }
         }
 
-        public async Task UpdateCandIsAnalyzed(int candId)
+        public async Task DeleteCandidateAnalyzeCv( int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                candidate? cand = dbContext.candidates.Where(x => x.id == candId).FirstOrDefault();
+                ai_analyze_cv? analyzeTodelete = dbContext.ai_analyze_cvs.FirstOrDefault(x =>  x.candidate_id == candidateId);
+
+                if (analyzeTodelete != null)
+                {
+                    var result = dbContext.ai_analyze_cvs.Remove(analyzeTodelete);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task UpdateCandIsAnalyzed(int candidateId, bool isAnalyzed)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.FirstOrDefault(x => x.id == candidateId);
 
                 if (cand != null)
                 {
-                    //cand.is = 1;
+                    cand.is_cv_analyzed = isAnalyzed;
 
                     var result = dbContext.candidates.Update(cand);
                     await dbContext.SaveChangesAsync();

@@ -18,6 +18,7 @@ namespace OpenAiLibrary
         private List<IsraeliCities> citiesRegion;
 
 
+
         public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries)
         {
             _candsCvsQueries = candsCvsQueries;
@@ -42,7 +43,6 @@ namespace OpenAiLibrary
             }
             catch (Exception ex)
             {
-                throw ex;
             }
         }
 
@@ -55,6 +55,7 @@ namespace OpenAiLibrary
             analyzeCv.phone = analyzedCvResult.Phone;
             analyzeCv.city = analyzedCvResult.Location;
             analyzeCv.region = analyzedCvResult.Region;
+            analyzeCv.area = analyzedCvResult.Area;
             analyzeCv.summary = analyzedCvResult.Summary;
             analyzeCv.current_title = analyzedCvResult.CurrentTitle;
             analyzeCv.languages = string.Join(", ", analyzedCvResult.Languages);
@@ -62,7 +63,7 @@ namespace OpenAiLibrary
             analyzeCv.skills = string.Join(", ", analyzedCvResult.Skills);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
 
-            _candsCvsQueries.AddCandidateAnalyzeAI(analyzeCv);
+            _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
 
         private async Task LoadJsonRegionCitiesAsync()
@@ -118,7 +119,11 @@ CV:
             if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
             {
                 var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
-                if (locationRecord != null) AnalyzedCv.Region = locationRecord.region;
+                if (locationRecord != null)
+                {
+                    AnalyzedCv.Region = locationRecord.region;
+                    AnalyzedCv.Area = locationRecord.area;
+                }
             }
 
             return AnalyzedCv;
@@ -152,4 +157,5 @@ public class AnalyzedCvModel
 
     [Newtonsoft.Json.JsonIgnore] public CvLanguage CvLanguage { get; set; }
     [Newtonsoft.Json.JsonIgnore] public string? Region { get; set; }
+    [Newtonsoft.Json.JsonIgnore] public string? Area { get; set; }
 }

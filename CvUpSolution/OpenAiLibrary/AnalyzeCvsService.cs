@@ -34,13 +34,11 @@ namespace OpenAiLibrary
                 await LoadJsonRegionCitiesAsync();
                 List<CandCvTxtModel> allCandidatesLastCvList = await GetCandsLastCvText(companyId);
 
-
                 foreach (var candCv in allCandidatesLastCvList)
                 {
                     var analyzedCvResult = await AnalyzeCv(candCv);
-                    SaveAnalyzedCv(analyzedCvResult, candCv.candidateId);
+                    SaveAnalyzedCv(analyzedCvResult, (int)candCv.candidateId!);
                 }
-
             }
             catch (Exception ex)
             {

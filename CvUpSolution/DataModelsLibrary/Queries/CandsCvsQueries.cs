@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Queries
 {
-    public class CandsCvsQueries:ICandsCvsQueries
+    public class CandsCvsQueries : ICandsCvsQueries
     {
 
         public async Task<List<AiCvModel>> GetDistinctCandsCvs(int companyId = 154, int candidateId = 0)
@@ -42,10 +42,38 @@ namespace DataModelsLibrary.Queries
                 string sql = @"SELECT cands.id candidateId, cvs.cv_txt cvTxt,cvs.cv_id id
                                 FROM candidates cands 
                                 INNER JOIN cvs_txt cvs ON  cands.id = cvs.candidate_id AND  cands.last_cv_id = cvs.cv_id
-                                WHERE cands.company_id=" + companyId + @" ORDER BY cvs.cv_id DESC LIMIT 0, 3";
+                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
+                                ORDER BY cvs.cv_id DESC 
+                                LIMIT 0, 3";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
+            }
+        }
+
+        public async Task AddCandidateAnalyzeAI(ai_analyze_cv analyzeCv)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+
+                dbContext.ai_analyze_cvs.Add(analyzeCv);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateCandIsAnalyzed(int candId)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.id == candId).FirstOrDefault();
+
+                if (cand != null)
+                {
+                    //cand.is = 1;
+
+                    var result = dbContext.candidates.Update(cand);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
 
@@ -96,7 +124,7 @@ namespace DataModelsLibrary.Queries
                 {
                     if (asciiSumCurrent != item.asciiSum && sb != null)
                     {
-                        sb.Append(" " + item.cvTxt);
+                        sb.Append("" + item.cvTxt);
                     }
 
                     candIdCurrent = item.candidateId ?? 0;

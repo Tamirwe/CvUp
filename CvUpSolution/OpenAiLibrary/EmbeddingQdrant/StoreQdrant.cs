@@ -11,15 +11,12 @@ using System.Threading.Tasks;
 namespace OpenAiLibrary.EmbeddingQdrant
 {
 
-
     public class StoreQdrant
     {
         private readonly QdrantClient _qdrant;
         private readonly Embedder _embedder;
 
-        public StoreQdrant(Embedder embedder,
-                              string host = "localhost",
-                              int port = 6334)
+        public StoreQdrant(Embedder embedder, string host = "localhost", int port = 6334)
         {
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
@@ -133,18 +130,20 @@ namespace OpenAiLibrary.EmbeddingQdrant
 
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
-                ["full_name"] = new() { StringValue = cv.Name },
+                ["name"] = new() { StringValue = cv.Name },
                 ["email"] = new() { StringValue = cv.Email },
                 ["phone"] = new() { StringValue = cv.Phone },
                 ["location"] = new() { StringValue = cv.Location },
-                ["current_title"] = new() { StringValue = cv.CurrentTitle },
+                ["Region"] = new() { StringValue = cv.Region },
+                ["Area"] = new() { StringValue = cv.Area },
+                ["skills"] = new() { ListValue = skillsList },
                 ["seniority"] = new() { StringValue = cv.Seniority.ToString() },
-                ["years_experience"] = new() { IntegerValue = cv.YearsExperience },
-                ["summary_hebrew"] = new() { StringValue = cv.Summary },
+                ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
+                ["current_title"] = new() { StringValue = cv.CurrentTitle },
+                ["languages"] = new() { ListValue = languagesList },
+                ["summary"] = new() { StringValue = cv.Summary },
                 ["cv_language"] = new() { StringValue = cv.CvLanguage.ToString() },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },
-                ["skills"] = new() { ListValue = skillsList },
-                ["languages"] = new() { ListValue = languagesList },
             };
         }
     }

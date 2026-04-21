@@ -1,15 +1,8 @@
 ﻿using OpenAI.Embeddings;
 using OpenAiLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenAiLibrary.EmbeddingQdrant
 {
-
-
 
     public class Embedder
     {
@@ -33,9 +26,12 @@ namespace OpenAiLibrary.EmbeddingQdrant
                 cv.Seniority.ToString(),
                 string.Join(" ", cv.Skills),
                 cv.Location,
+                $"Region {cv.Region}",
+                 $"Area {cv.Area}",
                 cv.Summary,
                 cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
             ).Trim();
     }
 
 }
+.

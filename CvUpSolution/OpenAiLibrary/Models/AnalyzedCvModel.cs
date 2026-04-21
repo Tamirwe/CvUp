@@ -16,7 +16,7 @@ namespace OpenAiLibrary.Models
         [JsonProperty("location")] public string? Location { get; set; }
         [JsonProperty("skills")] public List<string> Skills { get; set; } = [];
         [JsonProperty("seniority")] public string Seniority { get; set; } = "Unknown";
-        [JsonProperty("years_experience")] public string? YearsExperience { get; set; }
+        [JsonProperty("years_experience")] public int? YearsExperience { get; set; }
         [JsonProperty("current_title")] public string? CurrentTitle { get; set; }
         [JsonProperty("languages")] public List<string> Languages { get; set; } = [];
         [JsonProperty("summary")] public string Summary { get; set; } = "";

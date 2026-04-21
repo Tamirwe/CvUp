@@ -52,12 +52,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         {
             int yearsExperience = 0;
 
-
-            if (int.TryParse(analyzedCvResult.YearsExperience, out int result))
-            {
-                yearsExperience = result;
-            }
-
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
             analyzeCv.candidate_id = candidateId;
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
@@ -71,7 +65,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.languages = limitLen(string.Join(", ", analyzedCvResult.Languages), 150);
             analyzeCv.seniority = analyzedCvResult.Seniority;
             analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
-            analyzeCv.years_experience = yearsExperience;
+            analyzeCv.years_experience = analyzedCvResult.YearsExperience;
 
             _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }

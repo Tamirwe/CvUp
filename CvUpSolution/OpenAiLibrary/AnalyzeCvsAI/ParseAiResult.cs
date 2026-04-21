@@ -42,15 +42,12 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     Phone = obj.Value<string>("phone"),
                     Location = obj.Value<string>("location"),
                     CurrentTitle = obj.Value<string>("current_title"),
-                    YearsExperience = obj.Value<string>("years_experience"),
+                    YearsExperience = myParseInt(obj.Value<string>("years_experience")),
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
                     Languages = obj["languages"]?.ToObject<List<string>>() ?? [],
                     Seniority = obj.Value<string>("seniority") ?? "Unknown",
                     Summary = obj.Value<string>("summary")??"",
-
                 };
-
-
             }
             catch (Exception ex)
             {
@@ -60,5 +57,15 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
             }
         }
-    }
+
+        private static int? myParseInt(string? val)
+        {
+            if (int.TryParse(val, out int result))
+            {
+                return result;
+            }
+            return null;
+        }
+       
+}
 }

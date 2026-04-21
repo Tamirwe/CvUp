@@ -1,12 +1,13 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAiLibrary;
+using OpenAiLibrary.Models;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzeCvsAI
 {
 
     public class AnalyzeCvsService : IAnalyzeCvsService
@@ -15,7 +16,7 @@ namespace OpenAiLibrary
         private ChatClient chatClient;
 
         private ICandsCvsQueries _candsCvsQueries;
-        private List<IsraeliCities> citiesRegion;
+        private List<IsraeliCitiesModel> citiesRegion;
 
 
 
@@ -30,38 +31,47 @@ namespace OpenAiLibrary
         {
             var AnalyzedCvsList = new List<AnalyzedCvModel>();
 
-            try
-            {
-                await LoadJsonRegionCitiesAsync();
-                List<CandCvTxtModel> allCandidatesLastCvList = await GetCandsLastCvText(companyId);
 
-                foreach (var candCv in allCandidatesLastCvList)
+            await LoadJsonRegionCitiesAsync();
+            List<CandCvTxtModel> allCandidatesLastCvList = await GetCandsLastCvText(companyId);
+
+            foreach (var candCv in allCandidatesLastCvList)
+            {
+                try
                 {
                     var analyzedCvResult = await AnalyzeCv(candCv);
                     SaveAnalyzedCv(analyzedCvResult, (int)candCv.candidateId!);
                 }
-            }
-            catch (Exception ex)
-            {
+                catch (Exception ex)
+                {
+                }
             }
         }
 
         private void SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult, int candidateId)
         {
+            int yearsExperience = 0;
+
+
+            if (int.TryParse(analyzedCvResult.YearsExperience, out int result))
+            {
+                yearsExperience = result;
+            }
+
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
             analyzeCv.candidate_id = candidateId;
-            analyzeCv.name = analyzedCvResult.Name;
-            analyzeCv.email = analyzedCvResult.Email;
-            analyzeCv.phone = analyzedCvResult.Phone;
-            analyzeCv.city = analyzedCvResult.Location;
-            analyzeCv.region = analyzedCvResult.Region;
-            analyzeCv.area = analyzedCvResult.Area;
-            analyzeCv.summary = analyzedCvResult.Summary;
-            analyzeCv.current_title = analyzedCvResult.CurrentTitle;
-            analyzeCv.languages = string.Join(", ", analyzedCvResult.Languages);
+            analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
+            analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
+            analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
+            analyzeCv.city = limitLen(analyzedCvResult.Location, 50);
+            analyzeCv.region = limitLen(analyzedCvResult.Region, 20);
+            analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
+            analyzeCv.summary = limitLen(analyzedCvResult.Summary, 1000);
+            analyzeCv.current_title = limitLen(analyzedCvResult.CurrentTitle, 101);
+            analyzeCv.languages = limitLen(string.Join(", ", analyzedCvResult.Languages), 150);
             analyzeCv.seniority = analyzedCvResult.Seniority;
-            analyzeCv.skills = string.Join(", ", analyzedCvResult.Skills);
-            analyzeCv.years_experience = analyzedCvResult.YearsExperience;
+            analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
+            analyzeCv.years_experience = yearsExperience;
 
             _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
@@ -69,7 +79,7 @@ namespace OpenAiLibrary
         private async Task LoadJsonRegionCitiesAsync()
         {
             string jsonString = await File.ReadAllTextAsync("israeliCities.json");
-            citiesRegion = JsonConvert.DeserializeObject<List<IsraeliCities>>(jsonString)!;
+            citiesRegion = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(jsonString)!;
         }
 
         private async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId)
@@ -129,33 +139,18 @@ CV:
             return AnalyzedCv;
         }
 
+        private static string? limitLen(string? original, int maxLength)
+        {
+            if (original != null)
+            {
+                return original.Substring(0, Math.Min(original.Length, maxLength));
+            }
+            return null;
+        }
 
 
 
     }
 }
 
-public class IsraeliCities
-{
-    [JsonProperty("city")] public required string city { get; set; }
-    [JsonProperty("region")] public required string region { get; set; }
-    [JsonProperty("area")] public required string area { get; set; }
-}
 
-public class AnalyzedCvModel
-{
-    [JsonProperty("name")] public string? Name { get; set; }
-    [JsonProperty("email")] public string? Email { get; set; }
-    [JsonProperty("phone")] public string? Phone { get; set; }
-    [JsonProperty("location")] public string? Location { get; set; }
-    [JsonProperty("skills")] public List<string> Skills { get; set; } = [];
-    [JsonProperty("seniority")] public string Seniority { get; set; } = "Unknown";
-    [JsonProperty("years_experience")] public int YearsExperience { get; set; }
-    [JsonProperty("current_title")] public string? CurrentTitle { get; set; }
-    [JsonProperty("languages")] public List<string> Languages { get; set; } = [];
-    [JsonProperty("summary")] public string Summary { get; set; } = "";
-
-    [Newtonsoft.Json.JsonIgnore] public CvLanguage CvLanguage { get; set; }
-    [Newtonsoft.Json.JsonIgnore] public string? Region { get; set; }
-    [Newtonsoft.Json.JsonIgnore] public string? Area { get; set; }
-}

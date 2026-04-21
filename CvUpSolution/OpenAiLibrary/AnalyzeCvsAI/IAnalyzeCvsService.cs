@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzeCvsAI
 {
     public interface IAnalyzeCvsService
     {

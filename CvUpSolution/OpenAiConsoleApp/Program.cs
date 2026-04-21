@@ -2,7 +2,7 @@
 using DataModelsLibrary.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenAiLibrary;
+using OpenAiLibrary.AnalyzeCvsAI;
 using System.Threading.Tasks;
 
 internal class Program

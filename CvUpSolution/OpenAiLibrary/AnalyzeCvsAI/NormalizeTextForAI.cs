@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzeCvsAI
 {
     internal static class NormalizeTextForAI
     {
@@ -16,7 +16,7 @@ namespace OpenAiLibrary
 
             foreach (var c in normalized)
             {
-                var uc = Char.GetUnicodeCategory(c);
+                var uc = char.GetUnicodeCategory(c);
                 if (uc != UnicodeCategory.NonSpacingMark)
                 {
                     sb.Append(c);

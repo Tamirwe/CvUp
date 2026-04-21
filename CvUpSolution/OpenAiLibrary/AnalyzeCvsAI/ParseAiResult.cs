@@ -1,0 +1,64 @@
+﻿using MySqlX.XDevAPI.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OpenAiLibrary.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace OpenAiLibrary.AnalyzeCvsAI
+{
+    public enum Seniority { Junior, Mid, Senior, Lead, Unknown }
+
+    internal static class ParseAiResult
+    {     
+        public static AnalyzedCvModel ParseResult(string json)
+        {
+            // Strip markdown fences if the model returns them anyway
+            json = json
+                .Replace("```json", "")
+                .Replace("```", "")
+                .Trim();
+
+            // Extract the first { ... } block in case of extra text
+            int start = json.IndexOf('{');
+            int end = json.LastIndexOf('}');
+
+            if (start >= 0 && end > start)
+                json = json[start..(end + 1)];
+
+            try
+            {
+
+                var obj = JObject.Parse(json);
+
+                return new AnalyzedCvModel
+                {
+                    Name = obj.Value<string>("name"),
+                    Email = obj.Value<string>("email"),
+                    Phone = obj.Value<string>("phone"),
+                    Location = obj.Value<string>("location"),
+                    CurrentTitle = obj.Value<string>("current_title"),
+                    YearsExperience = obj.Value<string>("years_experience"),
+                    Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
+                    Languages = obj["languages"]?.ToObject<List<string>>() ?? [],
+                    Seniority = obj.Value<string>("seniority") ?? "Unknown",
+                    Summary = obj.Value<string>("summary")??"",
+
+                };
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"  [warn] JSON parse failed: {ex.Message}");
+                Console.WriteLine($"  [raw]  {json[..Math.Min(200, json.Length)]}");
+                throw ex;
+
+            }
+        }
+    }
+}

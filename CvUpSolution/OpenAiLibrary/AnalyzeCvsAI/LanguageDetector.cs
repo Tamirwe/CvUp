@@ -1,4 +1,4 @@
-﻿namespace OpenAiLibrary
+﻿namespace OpenAiLibrary.AnalyzeCvsAI
 {
     public enum CvLanguage { Hebrew, English, Mixed }
 
@@ -16,7 +16,7 @@
                 {
                     total++;
                     if (c >= '\u05D0' && c <= '\u05EA') hebrew++;
-                    else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) english++;
+                    else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') english++;
                 }
             }
 

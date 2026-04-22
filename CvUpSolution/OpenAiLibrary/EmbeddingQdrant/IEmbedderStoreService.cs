@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace OpenAiLibrary.EmbeddingQdrant
 {
-    internal interface IEmbedderStoreService
+    public interface IEmbedderStoreService
     {
+        Task EmbedAnalyzedCvs(string apiKey, int companyId = 154);
     }
 }

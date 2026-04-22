@@ -1,4 +1,5 @@
-﻿using OpenAI.Embeddings;
+﻿using DataModelsLibrary.Models;
+using OpenAI.Embeddings;
 using OpenAiLibrary.Models;
 
 namespace OpenAiLibrary.EmbeddingQdrant
@@ -20,11 +21,11 @@ namespace OpenAiLibrary.EmbeddingQdrant
         }
 
         // Build a clean searchable string from the analyzed CV
-        public static string BuildEmbedText(AnalyzedCvModel cv) =>
+        public static string BuildEmbedText(EmbedCvDataModel cv) =>
             string.Join(" ",
                 cv.CurrentTitle,
-                cv.Seniority.ToString(),
-                string.Join(" ", cv.Skills),
+                cv.Seniority,
+                cv.Skills != null? string.Join(" ", cv.Skills ):"",
                 cv.Location,
                 $"Region {cv.Region}",
                  $"Area {cv.Area}",

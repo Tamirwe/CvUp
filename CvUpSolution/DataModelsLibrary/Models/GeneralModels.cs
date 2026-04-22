@@ -117,12 +117,29 @@ namespace DataModelsLibrary.Models
         public string path { get; set; } = string.Empty;
     }
 
-    public partial class blackCandModel
+    public class blackCandModel
     {
         public int id { get; set; }
         public int candidate_id { get; set; }
         public string? email { get; set; }
         public string? phone { get; set; }
         public int? cvs_count { get; set; }
+    }
+
+    public class EmbedCvDataModel
+    {
+        public int CandidateId { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string? Location { get; set; }
+        public string? Region { get; set; }
+        public string? Area { get; set; }
+        public List<string>? Skills { get; set; } 
+        public string? Seniority { get; set; }
+        public int? YearsExperience { get; set; }
+        public string? CurrentTitle { get; set; }
+        public string? Languages { get; set; }
+        public string Summary { get; set; } = "";
     }
 }

@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using DataModelsLibrary.Models;
+using Google.Protobuf.WellKnownTypes;
 using OpenAiLibrary.Models;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
@@ -67,7 +68,7 @@ namespace OpenAiLibrary.EmbeddingQdrant
 
         // ── Upsert single CV ──────────────────────────────────────────────────────
 
-        public async Task UpsertAsync(Guid id, AnalyzedCvModel cv)
+        public async Task UpsertAsync(Guid id, EmbedCvDataModel cv)
         {
             var embedText = Embedder.BuildEmbedText(cv);
             var vector = await _embedder.EmbedAsync(embedText);
@@ -87,36 +88,38 @@ namespace OpenAiLibrary.EmbeddingQdrant
 
         // ── Batch upsert ──────────────────────────────────────────────────────────
 
-        public async Task UpsertBatchAsync(List<AnalyzedCvModel> cvs)
+        public async Task UpsertBatchAsync(List<EmbedCvDataModel> cvs)
         {
             var points = new List<PointStruct>();
 
-            foreach (var cv in cvs)
+            if (cvs.Count > 0)
             {
-                var embedText = Embedder.BuildEmbedText(cv);
-                var vector = await _embedder.EmbedAsync(embedText);
-
-                points.Add(new PointStruct
+                foreach (var cv in cvs)
                 {
-                    Id = new PointId { Uuid = Guid.NewGuid().ToString() },
-                    Vectors = vector,
-                    Payload = { BuildPayload(cv) }
-                });
+                    var embedText = Embedder.BuildEmbedText(cv);
+                    var vector = await _embedder.EmbedAsync(embedText);
 
-                Console.WriteLine($"  [embed] {cv.Name}");
+                    points.Add(new PointStruct
+                    {
+                        Id = new PointId { Num = (ulong)cv.CandidateId },
+                        Vectors = vector,
+                        Payload = { BuildPayload(cv) }
+                    });
+
+                    Console.WriteLine($"  [embed] {cv.Name}");
+                }
+
+                await _qdrant.UpsertAsync(QdrantConfig.CollectionName, points);
             }
-
-            await _qdrant.UpsertAsync(QdrantConfig.CollectionName, points);
-            Console.WriteLine($"[✓] Batch upserted {points.Count} candidates.");
         }
 
         // ── Build Qdrant payload from CvAnalysisResult ────────────────────────────
 
-        private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(AnalyzedCvModel cv)
+        private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(EmbedCvDataModel cv)
         {
-            var skillValues = cv.Skills
+            var skillValues = cv.Skills != null? cv.Skills
                 .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
-                .ToList();
+                .ToList() : [];
 
             var skillsList = new Qdrant.Client.Grpc.ListValue();
 
@@ -124,19 +127,19 @@ namespace OpenAiLibrary.EmbeddingQdrant
 
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
-                ["name"] = new() { StringValue = cv.Name },
-                ["email"] = new() { StringValue = cv.Email },
-                ["phone"] = new() { StringValue = cv.Phone },
-                ["location"] = new() { StringValue = cv.Location },
-                ["Region"] = new() { StringValue = cv.Region },
-                ["Area"] = new() { StringValue = cv.Area },
+                ["candidate_id"] = new() { StringValue = cv.CandidateId.ToString() },
+                ["name"] = new() { StringValue = cv.Name ?? "" },
+                ["email"] = new() { StringValue = cv.Email ?? "" },
+                ["phone"] = new() { StringValue = cv.Phone ?? "" },
+                ["location"] = new() { StringValue = cv.Location ?? "" },
+                ["Region"] = new() { StringValue = cv.Region ?? "" },
+                ["Area"] = new() { StringValue = cv.Area ?? "" },
                 ["skills"] = new() { ListValue = skillsList },
-                ["seniority"] = new() { StringValue = cv.Seniority.ToString() },
+                ["seniority"] = new() { StringValue = cv.Seniority ?? "" },
                 ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
-                ["current_title"] = new() { StringValue = cv.CurrentTitle },
-                ["languages"] = new() { StringValue = cv.Languages },
-                ["summary"] = new() { StringValue = cv.Summary },
-                ["cv_language"] = new() { StringValue = cv.CvLanguage.ToString() },
+                ["current_title"] = new() { StringValue = cv.CurrentTitle ?? "" },
+                ["languages"] = new() { StringValue = cv.Languages ?? "" },
+                ["summary"] = new() { StringValue = cv.Summary ?? "" },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },
             };
         }

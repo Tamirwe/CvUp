@@ -6,6 +6,7 @@ using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
+using OpenAiLibrary.EmbeddingQdrant;
 using OpenAiLibrary.Models;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
@@ -39,8 +40,8 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             {
                 try
                 {
-                    var analyzedCvResult = await AnalyzeCv(candCv);
-                    SaveAnalyzedCv(analyzedCvResult, (int)candCv.candidateId!);
+                    var analyzedCvResult = await AnalyzeCv(candCv, (int)candCv.candidateId!);
+                    SaveAnalyzedCv(analyzedCvResult);
                 }
                 catch (Exception ex)
                 {
@@ -50,12 +51,10 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             }
         }
 
-        private void SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult, int candidateId)
+        private void SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult)
         {
-            int yearsExperience = 0;
-
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
-            analyzeCv.candidate_id = candidateId;
+            analyzeCv.candidate_id = analyzedCvResult.CandidateId;
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
             analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
             analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
@@ -84,7 +83,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return allCandidatesLastCvList;
         }
 
-        private async Task<AnalyzedCvModel> AnalyzeCv(CandCvTxtModel candCv)
+        private async Task<AnalyzedCvModel> AnalyzeCv(CandCvTxtModel candCv, int candidateId)
         {
             string cv = NormalizeTextForAI.NormalizeCvText(candCv.cvTxt ?? "");
             var cvLanguage = LanguageDetector.Detect(cv);
@@ -121,6 +120,7 @@ CV:
 
             var AnalyzedCv = ParseAiResult.ParseResult(json);
             AnalyzedCv.CvLanguage = cvLanguage;
+            AnalyzedCv.CandidateId = candidateId;
 
             if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
             {

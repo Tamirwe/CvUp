@@ -1,5 +1,5 @@
-﻿using OpenAI.Embeddings;
-using dotenv.net;
+﻿using DataModelsLibrary.Models;
+using DataModelsLibrary.Queries;
 
 namespace OpenAiLibrary.EmbeddingQdrant
 {
@@ -12,28 +12,28 @@ namespace OpenAiLibrary.EmbeddingQdrant
         public const string EmbeddingModel = "text-embedding-3-small";
     }
 
-    public class EmbedderStoreService
+    public class EmbedderStoreService : IEmbedderStoreService
     {
+        private ICandsCvsQueries _candsCvsQueries;
 
-        public async Task EmbedAnalyzedCvs()
+
+        public EmbedderStoreService(ICandsCvsQueries candsCvsQueries)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            _candsCvsQueries = candsCvsQueries;
+        }
 
-            var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")
-                            ?? throw new Exception("OPENAI_API_KEY not set.");
+        public async Task EmbedAnalyzedCvs(string apiKey, int companyId = 154)
+        {
+            List<EmbedCvDataModel> allCandidatesLastCvList = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
 
-
-
-         
-
-
-
-            var embedder = new Embedder(openAiKey);
+            var embedder = new Embedder(apiKey);
             var store = new StoreQdrant(embedder);
 
             await store.EnsureCollectionAsync();
-            //await store.UpsertBatchAsync(results);
+            await store.UpsertBatchAsync(allCandidatesLastCvList);
+            await _candsCvsQueries.UpdateIsEmbeddedBatch(allCandidatesLastCvList);
 
+            Console.WriteLine($"[✓] Batch upserted candidates.");
         }
 
     }

@@ -10,5 +10,7 @@ namespace DataModelsLibrary.Queries
         Task AddCandidateAnalyzeCv(ai_analyze_cv analyzeCv);
         Task DeleteCandidateAnalyzeCv(int candidateId);
         Task UpdateCandIsAnalyzed(int candidateId, bool isAnalyzed);
+        Task<List<EmbedCvDataModel>> GetAnalyzedCvsForEmbeeding();
+        Task UpdateIsEmbeddedBatch(List<EmbedCvDataModel> cvs);
     }
 }

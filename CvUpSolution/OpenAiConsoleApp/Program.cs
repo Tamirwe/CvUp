@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenAiLibrary.AnalyzeCvsAI;
+using OpenAiLibrary.EmbeddingQdrant;
 using System.Threading.Tasks;
 
 internal class Program
@@ -21,6 +22,7 @@ internal class Program
 
     services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
     services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
+    services.AddTransient<IEmbedderStoreService, EmbedderStoreService>();
 
 })
 .Build();
@@ -30,7 +32,10 @@ internal class Program
         var apiKey = envVars["API_KEY"];
 
         var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
-        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv(apiKey);
+        var embedderStoreService = host.Services.GetRequiredService<IEmbedderStoreService>();
+
+        //await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv(apiKey);
+        await embedderStoreService.EmbedAnalyzedCvs(apiKey);
 
         Console.WriteLine();
     }

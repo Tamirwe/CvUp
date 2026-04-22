@@ -87,6 +87,60 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task UpdateIsEmbeddedBatch(List<EmbedCvDataModel> cvs)
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                foreach (var cv in cvs)
+                {
+                    ai_analyze_cv? cand = dbContext.ai_analyze_cvs.FirstOrDefault(x => x.candidate_id == cv.CandidateId);
+
+                    if (cand != null)
+                    {
+                        cand.is_embedded = true;
+
+                        var result = dbContext.ai_analyze_cvs.Update(cand);
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<EmbedCvDataModel>> GetAnalyzedCvsForEmbeeding()
+        {
+            using (var dbContext = new cvup00001Context())
+            {
+                var query = from ai in dbContext.ai_analyze_cvs
+                                  where ai.is_embedded == false 
+                                  select new EmbedCvDataModel
+                                  {
+                                      CandidateId = ai.candidate_id,
+                                      Name = ai.name,
+                                      Email = ai.email,
+                                      Phone = ai.phone,
+                                      Location = ai.city,
+                                      Region = ai.region,
+                                      Area = ai.area,
+                                      Skills = StringToList(ai.skills),
+                                      Seniority = ai.seniority,
+                                      YearsExperience = ai.years_experience,
+                                      CurrentTitle = ai.current_title,
+                                      Languages = ai.languages,
+                                      Summary = ai.summary ?? "",
+                                  };
+
+                List<EmbedCvDataModel> dataForEmbeeding = await query.ToListAsync();
+                return dataForEmbeeding.Take(30).ToList();
+            }
+        }
+
+        private static List<string>? StringToList(string? str)
+        {
+            if (str == null) return null;
+
+            return str.Split(',').ToList();
+        }
 
         private async Task<List<CvTxtModel>> GetCvsText(int companyId = 154, int candidateId = 0)
         {

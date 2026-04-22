@@ -87,6 +87,8 @@ namespace Database.models
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
+                entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.languages).HasMaxLength(150);
 
                 entity.Property(e => e.name).HasMaxLength(101);

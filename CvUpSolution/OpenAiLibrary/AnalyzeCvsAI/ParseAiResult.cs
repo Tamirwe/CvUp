@@ -14,7 +14,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
     public enum Seniority { Junior, Mid, Senior, Lead, Unknown }
 
     internal static class ParseAiResult
-    {     
+    {
         public static AnalyzedCvModel ParseResult(string json)
         {
             // Strip markdown fences if the model returns them anyway
@@ -30,6 +30,8 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             if (start >= 0 && end > start)
                 json = json[start..(end + 1)];
 
+            json = EscapeUnbalancedQuotes(json);
+
             try
             {
 
@@ -44,9 +46,9 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     CurrentTitle = obj.Value<string>("current_title"),
                     YearsExperience = myParseInt(obj.Value<string>("years_experience")),
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
-                    Languages = obj["languages"]?.ToObject<List<string>>() ?? [],
+                    Languages = obj.Value<string>("languages"),
                     Seniority = obj.Value<string>("seniority") ?? "Unknown",
-                    Summary = obj.Value<string>("summary")??"",
+                    Summary = obj.Value<string>("summary") ?? "",
                 };
             }
             catch (Exception ex)
@@ -66,6 +68,74 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             }
             return null;
         }
-       
-}
+
+        public static string EscapeUnbalancedQuotes(string input)
+        {
+            var result = new System.Text.StringBuilder();
+            bool insideString = false;
+            int i = 0;
+
+            while (i < input.Length)
+            {
+                char c = input[i];
+
+                // Handle escape sequences inside a string — skip them as-is
+                if (insideString && c == '\\' && i + 1 < input.Length)
+                {
+                    result.Append(c);
+                    result.Append(input[i + 1]);
+                    i += 2;
+                    continue;
+                }
+
+                if (c == '"')
+                {
+                    if (!insideString)
+                    {
+                        // Opening quote — enter string mode
+                        insideString = true;
+                        result.Append(c);
+                    }
+                    else
+                    {
+                        // Could be closing quote — peek ahead to decide
+                        // A real closing quote is followed by: } ] , \n whitespace
+                        int next = i + 1;
+                        while (next < input.Length && input[next] == ' ') next++;
+
+                        bool isClosing = next >= input.Length
+                            || input[next] == '}'
+                            || input[next] == ']'
+                            || input[next] == ','
+                            || input[next] == '\n'
+                            || input[next] == '\r'
+                            || input[next] == ':';  // e.g. "key": ...
+
+                        if (isClosing)
+                        {
+                            insideString = false;
+                            result.Append(c);
+                        }
+                        else
+                        {
+                            // Unbalanced quote inside a string value — escape it
+                            result.Append("\\\"");
+                        }
+                    }
+                }
+                else
+                {
+                    result.Append(c);
+                }
+
+                i++;
+            }
+
+            // If still inside a string at end of input — close it
+            if (insideString)
+                result.Append('"');
+
+            return result.ToString();
+        }
+    }
 }

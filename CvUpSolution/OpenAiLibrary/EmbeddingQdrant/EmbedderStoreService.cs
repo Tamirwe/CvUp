@@ -32,7 +32,7 @@ namespace OpenAiLibrary.EmbeddingQdrant
             var store = new StoreQdrant(embedder);
 
             await store.EnsureCollectionAsync();
-            await store.UpsertBatchAsync(results);
+            //await store.UpsertBatchAsync(results);
 
         }
 

@@ -118,15 +118,9 @@ namespace OpenAiLibrary.EmbeddingQdrant
                 .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
                 .ToList();
 
-            var languageValues = cv.Languages
-                .Select(l => new Qdrant.Client.Grpc.Value { StringValue = l })
-                .ToList();
-
             var skillsList = new Qdrant.Client.Grpc.ListValue();
-            var languagesList = new Qdrant.Client.Grpc.ListValue();
 
             skillsList.Values.AddRange(skillValues);
-            languagesList.Values.AddRange(languageValues);
 
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
@@ -140,7 +134,7 @@ namespace OpenAiLibrary.EmbeddingQdrant
                 ["seniority"] = new() { StringValue = cv.Seniority.ToString() },
                 ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
                 ["current_title"] = new() { StringValue = cv.CurrentTitle },
-                ["languages"] = new() { ListValue = languagesList },
+                ["languages"] = new() { StringValue = cv.Languages },
                 ["summary"] = new() { StringValue = cv.Summary },
                 ["cv_language"] = new() { StringValue = cv.CvLanguage.ToString() },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },

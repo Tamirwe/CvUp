@@ -1,6 +1,7 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using Microsoft.EntityFrameworkCore.Metadata;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OpenAI;
@@ -18,17 +19,16 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         private ICandsCvsQueries _candsCvsQueries;
         private List<IsraeliCitiesModel> citiesRegion;
 
-
-
         public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries)
         {
             _candsCvsQueries = candsCvsQueries;
-            client = new OpenAIClient(apiKey);
-            chatClient = client.GetChatClient("gpt-4o-mini");
         }
 
-        public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
+        public async Task AiAnalyzeAndStoreAllCandidatesLastCv(string apiKey, int companyId = 154)
         {
+            client = new OpenAIClient(apiKey);
+            chatClient = client.GetChatClient("gpt-4o-mini");
+
             var AnalyzedCvsList = new List<AnalyzedCvModel>();
 
 
@@ -44,6 +44,8 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 }
                 catch (Exception ex)
                 {
+                    throw ex;
+
                 }
             }
         }
@@ -62,7 +64,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
             analyzeCv.summary = limitLen(analyzedCvResult.Summary, 1000);
             analyzeCv.current_title = limitLen(analyzedCvResult.CurrentTitle, 101);
-            analyzeCv.languages = limitLen(string.Join(", ", analyzedCvResult.Languages), 150);
+            analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
             analyzeCv.seniority = analyzedCvResult.Seniority;
             analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
@@ -72,7 +74,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
         private async Task LoadJsonRegionCitiesAsync()
         {
-            string jsonString = await File.ReadAllTextAsync("israeliCities.json");
+            string jsonString = await File.ReadAllTextAsync("AnalyzeCvsAI\\israeliCities.json");
             citiesRegion = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(jsonString)!;
         }
 
@@ -104,7 +106,7 @@ JSON schema (all fields required, use empty string or empty array if unknown):
 - seniority // one of: Junior | Mid | Senior | Lead | Unknown
 - years_experience
 - current_title
-- languages
+- languages // text description
 - summary // 1 to 5 sentences candidate summary
 
 If the CV is in English – translate everything to Hebrew.

@@ -18,7 +18,7 @@ namespace OpenAiLibrary.Models
         [JsonProperty("seniority")] public string Seniority { get; set; } = "Unknown";
         [JsonProperty("years_experience")] public int? YearsExperience { get; set; }
         [JsonProperty("current_title")] public string? CurrentTitle { get; set; }
-        [JsonProperty("languages")] public List<string> Languages { get; set; } = [];
+        [JsonProperty("languages")] public string? Languages { get; set; } 
         [JsonProperty("summary")] public string Summary { get; set; } = "";
 
         [Newtonsoft.Json.JsonIgnore] public CvLanguage CvLanguage { get; set; }

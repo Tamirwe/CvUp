@@ -34,4 +34,3 @@ namespace OpenAiLibrary.EmbeddingQdrant
     }
 
 }
-.

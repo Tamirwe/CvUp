@@ -1,5 +1,7 @@
 ﻿using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using dotenv.net;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenAiLibrary.AnalyzeCvsAI;
@@ -23,8 +25,12 @@ internal class Program
 })
 .Build();
 
+        DotEnv.Load();
+        var envVars = DotEnv.Read();
+        var apiKey = envVars["API_KEY"];
+
         var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
-        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv();
+        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv(apiKey);
 
         Console.WriteLine();
     }

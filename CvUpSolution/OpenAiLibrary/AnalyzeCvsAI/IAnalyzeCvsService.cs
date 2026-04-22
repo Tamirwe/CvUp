@@ -9,6 +9,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 {
     public interface IAnalyzeCvsService
     {
-        Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154);
+        Task AiAnalyzeAndStoreAllCandidatesLastCv(string apiKey, int companyId = 154);
     }
 }

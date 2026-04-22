@@ -39,3 +39,5 @@ bld/
 
 cvup-ui-app/.favorites.json
 cvup-ui-app/src/forceUpdateCache.js
+/CvUpSolution/.env
+/CvUpSolution/OpenAiConsoleApp/.env

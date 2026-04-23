@@ -9,15 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenAiLibrary.EmbeddingQdrant
+namespace OpenAiLibrary.EmbeddingAndStore
 {
 
-    public class StoreQdrant
+    public class StoreService : IStoreService
     {
         private readonly QdrantClient _qdrant;
-        private readonly Embedder _embedder;
+        private readonly IOpenAiEmbedderService _embedder;
 
-        public StoreQdrant(Embedder embedder, string host = "localhost", int port = 6334)
+        public StoreService(IOpenAiEmbedderService embedder, string host = "localhost", int port = 6334)
         {
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
@@ -70,7 +70,7 @@ namespace OpenAiLibrary.EmbeddingQdrant
 
         public async Task UpsertAsync(Guid id, EmbedCvDataModel cv)
         {
-            var embedText = Embedder.BuildEmbedText(cv);
+            var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
             var vector = await _embedder.EmbedAsync(embedText);
             var payload = BuildPayload(cv);
 
@@ -96,7 +96,7 @@ namespace OpenAiLibrary.EmbeddingQdrant
             {
                 foreach (var cv in cvs)
                 {
-                    var embedText = Embedder.BuildEmbedText(cv);
+                    var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
                     var vector = await _embedder.EmbedAsync(embedText);
 
                     points.Add(new PointStruct

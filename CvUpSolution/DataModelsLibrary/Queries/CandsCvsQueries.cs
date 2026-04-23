@@ -48,13 +48,16 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddCandidateAnalyzeCv(ai_analyze_cv analyzeCv)
         {
+            await DeleteCandidateAnalyzeCv(analyzeCv.candidate_id);
+
             using (var dbContext = new cvup00001Context())
             {
-                await DeleteCandidateAnalyzeCv(analyzeCv.candidate_id);
                 dbContext.ai_analyze_cvs.Add(analyzeCv);
                 await dbContext.SaveChangesAsync();
-                await UpdateCandIsAnalyzed(analyzeCv.candidate_id, true);
             }
+
+            await UpdateCandIsAnalyzed(analyzeCv.candidate_id, true);
+
         }
 
         public async Task DeleteCandidateAnalyzeCv( int candidateId)

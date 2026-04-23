@@ -1,7 +1,7 @@
 ﻿using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 
-namespace OpenAiLibrary.EmbeddingQdrant
+namespace OpenAiLibrary.EmbeddingAndStore
 {
     // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -15,19 +15,21 @@ namespace OpenAiLibrary.EmbeddingQdrant
     public class EmbedderStoreService : IEmbedderStoreService
     {
         private ICandsCvsQueries _candsCvsQueries;
+        private IOpenAiEmbedderService _openAiEmbedderService;
 
 
-        public EmbedderStoreService(ICandsCvsQueries candsCvsQueries)
+        public EmbedderStoreService(ICandsCvsQueries candsCvsQueries, IOpenAiEmbedderService openAiEmbedderService)
         {
             _candsCvsQueries = candsCvsQueries;
+            _openAiEmbedderService = openAiEmbedderService;
         }
 
-        public async Task EmbedAnalyzedCvs(string apiKey, int companyId = 154)
+        public async Task EmbedAnalyzedCvs()
         {
             List<EmbedCvDataModel> allCandidatesLastCvList = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
 
-            var embedder = new Embedder(apiKey);
-            var store = new StoreQdrant(embedder);
+
+            var store = new StoreService(_openAiEmbedderService);
 
             await store.EnsureCollectionAsync();
             await store.UpsertBatchAsync(allCandidatesLastCvList);

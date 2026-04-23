@@ -1,12 +1,9 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using Microsoft.EntityFrameworkCore.Metadata;
-using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAiLibrary.EmbeddingQdrant;
 using OpenAiLibrary.Models;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
@@ -20,19 +17,16 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         private ICandsCvsQueries _candsCvsQueries;
         private List<IsraeliCitiesModel> citiesRegion;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries)
+        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey)
         {
             _candsCvsQueries = candsCvsQueries;
-        }
-
-        public async Task AiAnalyzeAndStoreAllCandidatesLastCv(string apiKey, int companyId = 154)
-        {
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");
 
-            var AnalyzedCvsList = new List<AnalyzedCvModel>();
+        }
 
-
+        public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
+        {
             await LoadJsonRegionCitiesAsync();
             List<CandCvTxtModel> allCandidatesLastCvList = await GetCandsLastCvText(companyId);
 
@@ -102,11 +96,10 @@ JSON schema (all fields required, use empty string or empty array if unknown):
 - phone
 - location
 - skills
-- seniority // one of: Junior | Mid | Senior | Lead | Unknown
 - years_experience
 - current_title
 - languages // text description
-- summary // 1 to 5 sentences candidate summary
+- summary // // naturally mention experience level (e.g. בכיר, זוטר, מנוסה) if it can be inferred from the CV
 
 If the CV is in English – translate everything to Hebrew.
 

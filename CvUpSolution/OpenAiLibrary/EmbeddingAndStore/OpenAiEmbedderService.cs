@@ -2,14 +2,14 @@
 using OpenAI.Embeddings;
 using OpenAiLibrary.Models;
 
-namespace OpenAiLibrary.EmbeddingQdrant
+namespace OpenAiLibrary.EmbeddingAndStore
 {
 
-    public class Embedder
+    public class OpenAiEmbedderService: IOpenAiEmbedderService
     {
         private readonly EmbeddingClient _client;
 
-        public Embedder(string apiKey)
+        public OpenAiEmbedderService(string apiKey)
         {
             _client = new EmbeddingClient(QdrantConfig.EmbeddingModel, apiKey);
         }

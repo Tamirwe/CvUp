@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenAiLibrary.AnalyzeCvsAI
+namespace OpenAiLibrary.EmbeddingAndStore
 {
-    public interface IAnalyzeCvsService
+    public interface IOpenAiEmbedderService
     {
-        Task AiAnalyzeAndStoreAllCandidatesLastCv( int companyId = 154);
+        Task<float[]> EmbedAsync(string text);
     }
 }

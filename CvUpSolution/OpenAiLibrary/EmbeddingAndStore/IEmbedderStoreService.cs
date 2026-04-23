@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenAiLibrary.EmbeddingQdrant
+namespace OpenAiLibrary.EmbeddingAndStore
 {
     public interface IEmbedderStoreService
     {
-        Task EmbedAnalyzedCvs(string apiKey, int companyId = 154);
+        Task EmbedAnalyzedCvs();
     }
 }

@@ -1,27 +1,81 @@
-﻿using OpenAiLibrary.EmbeddingQdrant;
-using OpenAiLibrary.Models;
+﻿using DataModelsLibrary.Models;
+using OpenAiLibrary.EmbeddingAndStore;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenAiLibrary.Searcher
 {
-    internal class SearcherService
+    public class SearcherService : ISearcherService
     {
         private readonly QdrantClient _qdrant;
-        private readonly Embedder _embedder;
+        private readonly IOpenAiEmbedderService _embedder;
 
-        public SearcherService(Embedder embedder,
-                                 string host = "localhost",
-                                 int port = 6334)
+        public SearcherService(IOpenAiEmbedderService embedder,string host = "localhost",int port = 6334)
         {
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
         }
+
+
+        public async Task DemoSearch()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+
+            // ── Example 1: semantic only — no filters ─────────────────────────────
+            var results11 = await SearchAsync(
+             query: "מנתחת מערכות בכירה",
+             limit: 5
+         );
+            ResultPrinter.Print(results11);
+
+            var results1 = await SearchAsync(
+                query: "מפתח בכיר עם ניסיון ב-javascript ו-TypeScript",
+                limit: 5
+            );
+            ResultPrinter.Print(results1);
+
+            // ── Example 2: semantic + seniority + location filter ─────────────────
+            var results2 = await SearchAsync(
+                query: "מפתח Full Stack עם ניסיון ב-AWS",
+                filter: new SearchFilterModel
+                {
+                    Seniority = "Senior",
+                    Location = "תל אביב"
+                },
+                limit: 5
+            );
+            ResultPrinter.Print(results2);
+
+            // ── Example 3: must have specific skills + min experience ─────────────
+            var results3 = await SearchAsync(
+                query: "מפתח backend עם ניסיון ב-microservices",
+                filter: new SearchFilterModel
+                {
+                    RequiredSkills = ["Docker", "Kubernetes"],
+                    MinYearsExperience = 5
+                },
+                limit: 10
+            );
+            ResultPrinter.Print(results3);
+
+            // ── Example 4: all filters combined ───────────────────────────────────
+            var results4 = await SearchAsync(
+                query: "מפתח C# עם ניסיון ב-Azure",
+                filter: new SearchFilterModel
+                {
+                    Seniority = "Senior",
+                    Location = "תל אביב",
+                    RequiredSkills = ["C#", "Docker"],
+                    MinYearsExperience = 5,
+                    MaxYearsExperience = 15
+                },
+                limit: 5
+            );
+            ResultPrinter.Print(results4);
+        }
+
 
         public async Task<List<SearchResultModel>> SearchAsync(
             string query,
@@ -41,7 +95,8 @@ namespace OpenAiLibrary.Searcher
      collectionName: QdrantConfig.CollectionName,
      vector: queryVector,
      filter: qdrantFilter,
-     limit: (ulong)limit
+     limit: (ulong)limit,
+     scoreThreshold: 0.65f    // drop candidates below this similarity score
  );
 
             var results = hits.Select(MapToResult).ToList();
@@ -149,13 +204,13 @@ namespace OpenAiLibrary.Searcher
             {
                 Id = hit.Id.Num,
                 Score = hit.Score,
-                FullName = GetString(p, "full_name"),
+                Name = GetString(p, "name"),
+                CandidateId = GetString(p, "candidate_id"),
                 CurrentTitle = GetString(p, "current_title"),
-                Seniority = GetString(p, "seniority"),
                 Location = GetString(p, "location"),
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
-                SummaryHebrew = GetString(p, "summary_hebrew"),
+                Summary = GetString(p, "summary"),
                 YearsExperience = (int)GetLong(p, "years_experience"),
                 Skills = GetList(p, "skills"),
             };
@@ -176,5 +231,32 @@ namespace OpenAiLibrary.Searcher
             => payload.TryGetValue(key, out var v) && v.ListValue is not null
                    ? v.ListValue.Values.Select(x => x.StringValue ?? "").ToList()
                    : [];
+    }
+
+    public static class ResultPrinter
+    {
+        public static void Print(List<SearchResultModel> results)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            if (results.Count == 0)
+            {
+                Console.WriteLine("לא נמצאו מועמדים מתאימים.");
+                return;
+            }
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                var r = results[i];
+                Console.WriteLine($"\n── {i + 1}. {r.Name} (score: {r.Score:F2}) ──────────────");
+                Console.WriteLine($"   תפקיד    : {r.CurrentTitle}");
+                Console.WriteLine($"   ניסיון   : {r.YearsExperience} שנים");
+                Console.WriteLine($"   מיקום    : {r.Location}");
+                Console.WriteLine($"   כישורים  : {string.Join(", ", r.Skills)}");
+                Console.WriteLine($"   סיכום    : {r.Summary}");
+                Console.WriteLine($"   אימייל   : {r.Email}");
+                Console.WriteLine($"   טלפון    : {r.Phone}");
+            }
+        }
     }
 }

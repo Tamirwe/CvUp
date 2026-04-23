@@ -58,7 +58,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.summary = limitLen(analyzedCvResult.Summary, 1000);
             analyzeCv.current_title = limitLen(analyzedCvResult.CurrentTitle, 101);
             analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
-            analyzeCv.seniority = analyzedCvResult.Seniority;
             analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
 

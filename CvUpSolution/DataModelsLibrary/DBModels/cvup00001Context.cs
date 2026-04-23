@@ -97,8 +97,6 @@ namespace Database.models
 
                 entity.Property(e => e.region).HasMaxLength(20);
 
-                entity.Property(e => e.seniority).HasMaxLength(10);
-
                 entity.Property(e => e.skills).HasMaxLength(1000);
 
                 entity.Property(e => e.summary).HasMaxLength(1000);

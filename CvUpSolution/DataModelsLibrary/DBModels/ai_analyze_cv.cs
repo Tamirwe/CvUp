@@ -14,7 +14,6 @@ namespace Database.models
         public string? region { get; set; }
         public string? area { get; set; }
         public string? summary { get; set; }
-        public string? seniority { get; set; }
         public string? current_title { get; set; }
         public string? skills { get; set; }
         public int? years_experience { get; set; }

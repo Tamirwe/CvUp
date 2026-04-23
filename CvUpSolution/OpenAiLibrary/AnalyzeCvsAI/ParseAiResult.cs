@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {
-    public enum Seniority { Junior, Mid, Senior, Lead, Unknown }
 
     internal static class ParseAiResult
     {
@@ -47,7 +46,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     YearsExperience = myParseInt(obj.Value<string>("years_experience")),
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
                     Languages = obj.Value<string>("languages"),
-                    Seniority = obj.Value<string>("seniority") ?? "Unknown",
                     Summary = obj.Value<string>("summary") ?? "",
                 };
             }

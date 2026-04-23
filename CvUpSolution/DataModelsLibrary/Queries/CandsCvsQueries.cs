@@ -39,7 +39,7 @@ namespace DataModelsLibrary.Queries
                                 INNER JOIN cvs_txt cvs ON  cands.id = cvs.candidate_id AND  cands.last_cv_id = cvs.cv_id
                                 WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
                                 ORDER BY cvs.cv_id DESC 
-                                LIMIT 0, 3";
+                                LIMIT 0, 30";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
@@ -126,7 +126,6 @@ namespace DataModelsLibrary.Queries
                                       Region = ai.region,
                                       Area = ai.area,
                                       Skills = StringToList(ai.skills),
-                                      Seniority = ai.seniority,
                                       YearsExperience = ai.years_experience,
                                       CurrentTitle = ai.current_title,
                                       Languages = ai.languages,

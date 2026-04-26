@@ -136,7 +136,6 @@ namespace DataModelsLibrary.Models
         public string? Region { get; set; }
         public string? Area { get; set; }
         public List<string>? Skills { get; set; } 
-        public string? Seniority { get; set; }
         public int? YearsExperience { get; set; }
         public string? CurrentTitle { get; set; }
         public string? Languages { get; set; }

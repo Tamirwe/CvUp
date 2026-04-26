@@ -13,8 +13,11 @@ namespace Database.models
         public string? city { get; set; }
         public string? region { get; set; }
         public string? area { get; set; }
-        public string? summary { get; set; }
-        public string? current_title { get; set; }
+        public string? current_title_en { get; set; }
+        public string? current_title_he { get; set; }
+        public string? companies { get; set; }
+        public string? summary_en { get; set; }
+        public string? summary_he { get; set; }
         public string? skills { get; set; }
         public int? years_experience { get; set; }
         public string? languages { get; set; }

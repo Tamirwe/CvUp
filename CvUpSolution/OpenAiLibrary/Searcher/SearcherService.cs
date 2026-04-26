@@ -21,59 +21,72 @@ namespace OpenAiLibrary.Searcher
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+            //var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 
-            // ── Example 1: semantic only — no filters ─────────────────────────────
-            var results11 = await SearchAsync(
-             query: "מנתחת מערכות בכירה",
-             limit: 5
-         );
-            ResultPrinter.Print(results11);
+         //   // ── Example 1: semantic only — no filters ─────────────────────────────
+         //   var results11 = await SearchAsync(
+         //    query: "מנתח מערכות בכיר",
+         //    limit: 5
+         //);
+         //   ResultPrinter.Print(results11);
 
-            var results1 = await SearchAsync(
-                query: "מפתח בכיר עם ניסיון ב-javascript ו-TypeScript",
-                limit: 5
-            );
-            ResultPrinter.Print(results1);
+            var results12 = await SearchAsync(
+          //query: "אבטחת מידע התמחות ב checkpoint or fortinet FW",
+          //query: "אנשי רשת ואבטחת מידע סייבר",
+          //query: "אנשי אבטחת מידע סייבר",
+          query: "חקלאות הידרופוניה",
 
-            // ── Example 2: semantic + seniority + location filter ─────────────────
-            var results2 = await SearchAsync(
-                query: "מפתח Full Stack עם ניסיון ב-AWS",
-                filter: new SearchFilterModel
-                {
-                    Seniority = "Senior",
-                    Location = "תל אביב"
-                },
-                limit: 5
-            );
-            ResultPrinter.Print(results2);
+          //query: "רואה חשבון רוא\"ח",
+          //query: "מנהל כספים מנוסה בחברות טכנולוגיות ציבוריות",
 
-            // ── Example 3: must have specific skills + min experience ─────────────
-            var results3 = await SearchAsync(
-                query: "מפתח backend עם ניסיון ב-microservices",
-                filter: new SearchFilterModel
-                {
-                    RequiredSkills = ["Docker", "Kubernetes"],
-                    MinYearsExperience = 5
-                },
-                limit: 10
-            );
-            ResultPrinter.Print(results3);
+          limit: 5
+      );
+            ResultPrinter.Print(results12);
 
-            // ── Example 4: all filters combined ───────────────────────────────────
-            var results4 = await SearchAsync(
-                query: "מפתח C# עם ניסיון ב-Azure",
-                filter: new SearchFilterModel
-                {
-                    Seniority = "Senior",
-                    Location = "תל אביב",
-                    RequiredSkills = ["C#", "Docker"],
-                    MinYearsExperience = 5,
-                    MaxYearsExperience = 15
-                },
-                limit: 5
-            );
-            ResultPrinter.Print(results4);
+            //var results1 = await SearchAsync(
+            //    query: "מפתח בכיר עם ניסיון ב-javascript ו-TypeScript",
+            //    limit: 5
+            //);
+            //ResultPrinter.Print(results1);
+
+            //// ── Example 2: semantic + seniority + location filter ─────────────────
+            //var results2 = await SearchAsync(
+            //    query: "מפתח Full Stack עם ניסיון ב-AWS",
+            //    filter: new SearchFilterModel
+            //    {
+            //        Seniority = "Senior",
+            //        Location = "תל אביב"
+            //    },
+            //    limit: 5
+            //);
+            //ResultPrinter.Print(results2);
+
+            //// ── Example 3: must have specific skills + min experience ─────────────
+            //var results3 = await SearchAsync(
+            //    query: "מפתח backend עם ניסיון ב-microservices",
+            //    filter: new SearchFilterModel
+            //    {
+            //        RequiredSkills = ["Docker", "Kubernetes"],
+            //        MinYearsExperience = 5
+            //    },
+            //    limit: 10
+            //);
+            //ResultPrinter.Print(results3);
+
+            //// ── Example 4: all filters combined ───────────────────────────────────
+            //var results4 = await SearchAsync(
+            //    query: "מפתח C# עם ניסיון ב-Azure",
+            //    filter: new SearchFilterModel
+            //    {
+            //        Seniority = "Senior",
+            //        Location = "תל אביב",
+            //        RequiredSkills = ["C#", "Docker"],
+            //        MinYearsExperience = 5,
+            //        MaxYearsExperience = 15
+            //    },
+            //    limit: 5
+            //);
+            //ResultPrinter.Print(results4);
         }
 
 
@@ -82,7 +95,7 @@ namespace OpenAiLibrary.Searcher
             SearchFilterModel? filter = null,
             int limit = 10)
         {
-            Console.WriteLine($"[→] Query: \"{query}\"");
+            Console.WriteLine(ResultPrinter.reverseStr($"\n\n חיפוש:\"{query}\" \n\n"));
 
             // Embed the Hebrew query using the same model as ingestion
             var queryVector = await _embedder.EmbedAsync(query);
@@ -95,8 +108,8 @@ namespace OpenAiLibrary.Searcher
      collectionName: QdrantConfig.CollectionName,
      vector: queryVector,
      filter: qdrantFilter,
-     limit: (ulong)limit,
-     scoreThreshold: 0.65f    // drop candidates below this similarity score
+     limit: (ulong)limit
+     //scoreThreshold: 0.55f    // drop candidates below this similarity score
  );
 
             var results = hits.Select(MapToResult).ToList();
@@ -241,22 +254,30 @@ namespace OpenAiLibrary.Searcher
 
             if (results.Count == 0)
             {
-                Console.WriteLine("לא נמצאו מועמדים מתאימים.");
+                Console.WriteLine(reverseStr("לא נמצאו מועמדים מתאימים."));
                 return;
             }
 
             for (int i = 0; i < results.Count; i++)
             {
                 var r = results[i];
-                Console.WriteLine($"\n── {i + 1}. {r.Name} (score: {r.Score:F2}) ──────────────");
-                Console.WriteLine($"   תפקיד    : {r.CurrentTitle}");
-                Console.WriteLine($"   ניסיון   : {r.YearsExperience} שנים");
-                Console.WriteLine($"   מיקום    : {r.Location}");
-                Console.WriteLine($"   כישורים  : {string.Join(", ", r.Skills)}");
-                Console.WriteLine($"   סיכום    : {r.Summary}");
-                Console.WriteLine($"   אימייל   : {r.Email}");
-                Console.WriteLine($"   טלפון    : {r.Phone}");
+                Console.WriteLine(reverseStr($"── {i + 1}. {r.Name}  ניקוד: {r.Score:F2} \n\n"));
+                Console.WriteLine(reverseStr($"   תפקיד    : {r.CurrentTitle}"));
+                Console.WriteLine(reverseStr($"   ניסיון   : {r.YearsExperience} שנים"));
+                Console.WriteLine(reverseStr($"   מיקום    : {r.Location}"));
+                Console.WriteLine(reverseStr($"   כישורים  : {string.Join(", ", r.Skills)}"));
+                Console.WriteLine(reverseStr($"   סיכום    : {r.Summary}"));
+                Console.WriteLine(reverseStr($"   אימייל   : {r.Email}"));
+                Console.WriteLine(reverseStr($"   טלפון    : {r.Phone}"));
+                Console.WriteLine($"   טלפון    : {r.CandidateId}");
             }
+        }
+
+        public static string reverseStr(string str = "")
+        {
+            char[] charArray = str.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
     }
 }

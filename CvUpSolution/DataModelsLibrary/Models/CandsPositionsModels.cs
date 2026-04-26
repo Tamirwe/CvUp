@@ -86,7 +86,7 @@ namespace DataModelsLibrary.Models
     public class CandCvTxtModel
     {
         public int id { get; set; }
-        public int? candidateId { get; set; }
+        public int candidateId { get; set; }
         public string? cvTxt { get; set; } = "";
     }
 

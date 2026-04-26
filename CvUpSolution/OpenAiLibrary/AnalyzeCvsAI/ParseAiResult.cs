@@ -42,11 +42,14 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     Email = obj.Value<string>("email"),
                     Phone = obj.Value<string>("phone"),
                     Location = obj.Value<string>("location"),
-                    CurrentTitle = obj.Value<string>("current_title"),
-                    YearsExperience = myParseInt(obj.Value<string>("years_experience")),
+                    CurrentTitleEn = obj.Value<string>("current_title_en"),
+                    CurrentTitleHe = obj.Value<string>("current_title_he"),
+                    Companies = obj["companies"]?.ToObject<List<string>>() ?? [],
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
+                    SummaryEn = obj.Value<string>("summary_en") ?? "",
+                    SummaryHe = obj.Value<string>("summary_he") ?? "",
+                    YearsExperience = myParseInt(obj.Value<string>("years_experience")),
                     Languages = obj.Value<string>("languages"),
-                    Summary = obj.Value<string>("summary") ?? "",
                 };
             }
             catch (Exception ex)

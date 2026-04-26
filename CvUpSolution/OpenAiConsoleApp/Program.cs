@@ -40,7 +40,8 @@ internal class Program
         //var embedderStoreService = host.Services.GetRequiredService<IEmbedderStoreService>();
         //var searcherService = host.Services.GetRequiredService<ISearcherService>();
 
-        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv();
+        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCvVer2();
+        //await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv();
         //await embedderStoreService.EmbedAnalyzedCvs();
         //await searcherService.DemoSearch();
 

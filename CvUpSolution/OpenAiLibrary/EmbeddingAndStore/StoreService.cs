@@ -83,7 +83,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
             await _qdrant.UpsertAsync(QdrantConfig.CollectionName, [point]);
 
-            Console.WriteLine($"  [✓] Upserted: {cv.Name} ({cv.Seniority}, {cv.Location})");
+            Console.WriteLine($"  [✓] Upserted: {cv.Name} ({cv.Location})");
         }
 
         // ── Batch upsert ──────────────────────────────────────────────────────────
@@ -96,6 +96,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
             {
                 foreach (var cv in cvs)
                 {
+                    if (string.IsNullOrEmpty(cv.CurrentTitle) && string.IsNullOrEmpty(cv.Summary))
+                    {
+                        continue;
+                    }
                     var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
                     var vector = await _embedder.EmbedAsync(embedText);
 
@@ -135,7 +139,6 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["Region"] = new() { StringValue = cv.Region ?? "" },
                 ["Area"] = new() { StringValue = cv.Area ?? "" },
                 ["skills"] = new() { ListValue = skillsList },
-                ["seniority"] = new() { StringValue = cv.Seniority ?? "" },
                 ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
                 ["current_title"] = new() { StringValue = cv.CurrentTitle ?? "" },
                 ["languages"] = new() { StringValue = cv.Languages ?? "" },

@@ -24,11 +24,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
         public static string BuildEmbedText(EmbedCvDataModel cv) =>
             string.Join(" ",
                 cv.CurrentTitle,
-                cv.Seniority,
                 cv.Skills != null? string.Join(" ", cv.Skills ):"",
                 cv.Location,
-                $"Region {cv.Region}",
-                 $"Area {cv.Area}",
+                //$"Region {cv.Region}",
+                // $"Area {cv.Area}",
                 cv.Summary,
                 cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
             ).Trim();

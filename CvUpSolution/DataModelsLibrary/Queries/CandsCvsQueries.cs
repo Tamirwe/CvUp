@@ -39,7 +39,7 @@ namespace DataModelsLibrary.Queries
                                 INNER JOIN cvs_txt cvs ON  cands.id = cvs.candidate_id AND  cands.last_cv_id = cvs.cv_id
                                 WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
                                 ORDER BY cvs.cv_id DESC 
-                                LIMIT 0, 30";
+                                LIMIT 0, 13";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
@@ -127,13 +127,13 @@ namespace DataModelsLibrary.Queries
                                       Area = ai.area,
                                       Skills = StringToList(ai.skills),
                                       YearsExperience = ai.years_experience,
-                                      CurrentTitle = ai.current_title,
+                                      //CurrentTitle = ai.current_title,
                                       Languages = ai.languages,
-                                      Summary = ai.summary ?? "",
+                                      //Summary = ai.summary ?? "",
                                   };
 
                 List<EmbedCvDataModel> dataForEmbeeding = await query.ToListAsync();
-                return dataForEmbeeding.Take(30).ToList();
+                return dataForEmbeeding;
             }
         }
 

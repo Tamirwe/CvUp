@@ -1,10 +1,13 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using Google.Protobuf;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
+using OpenAiLibrary.EmbeddingAndStore;
 using OpenAiLibrary.Models;
+using Ubiety.Dns.Core;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {
@@ -16,13 +19,79 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
         private ICandsCvsQueries _candsCvsQueries;
         private List<IsraeliCitiesModel> citiesRegion;
+        private string promptForCvAnalyze = "";
 
         public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey)
         {
             _candsCvsQueries = candsCvsQueries;
+
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");
+            promptForCvAnalyze = File.ReadAllText("AnalyzeCvsAI\\cv_prompt.txt");
 
+
+        }
+
+        public async Task AiAnalyzeAndStoreAllCandidatesLastCvVer2(int companyId = 154)
+        {
+            await LoadJsonRegionCitiesAsync();
+
+            List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+
+
+            foreach (var candCv in allCandidatesLastCvList)
+            {
+                try
+                {
+                    var cvLanguage = LanguageDetector.Detect(candCv.cvTxt ?? "");
+
+                    var messages = new List<ChatMessage>
+                    {
+                        new SystemChatMessage(promptForCvAnalyze),
+                        new UserChatMessage(candCv.cvTxt)
+                    };
+
+                    var chatOptions = new ChatCompletionOptions
+                    {
+                        Temperature = 0.2f,
+                        ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
+                    };
+
+                    var completion = await chatClient.CompleteChatAsync(messages, chatOptions );
+
+                    var json = completion.Value.Content[0].Text;
+
+                    AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
+                    AnalyzedCv.CvLanguage = cvLanguage;
+                    AnalyzedCv.CandidateId = candCv.candidateId;
+
+                    if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
+                    {
+                        var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
+                        if (locationRecord != null)
+                        {
+                            AnalyzedCv.Region = locationRecord.region;
+                            AnalyzedCv.Area = locationRecord.area;
+                        }
+                    }
+
+                    SaveAnalyzedCv(AnalyzedCv);
+
+
+                    //var normalizer = new HebrewTextNormalizer();
+
+                    //// Before storing in Qdrant
+                    //string normalized = normalizer.Normalize(AnalyzedCv.Summary);
+
+                    // Before searching in Qdrant (keeps stopwords for query context)
+                    //string normalizedQuery = normalizer.NormalizeQuery(queryText);
+                }
+                catch (Exception ex)
+                {
+                    //throw ex;
+
+                }
+            }
         }
 
         public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
@@ -39,7 +108,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    //throw ex;
 
                 }
             }
@@ -55,10 +124,13 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.city = limitLen(analyzedCvResult.Location, 50);
             analyzeCv.region = limitLen(analyzedCvResult.Region, 20);
             analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
-            analyzeCv.summary = limitLen(analyzedCvResult.Summary, 1000);
-            analyzeCv.current_title = limitLen(analyzedCvResult.CurrentTitle, 101);
-            analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
+            analyzeCv.current_title_en = limitLen(analyzedCvResult.CurrentTitleEn, 100);
+            analyzeCv.current_title_he = limitLen(analyzedCvResult.CurrentTitleHe, 100);
+            analyzeCv.companies = limitLen(string.Join(", ", analyzedCvResult.Companies), 1000);
             analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
+            analyzeCv.summary_en = limitLen(analyzedCvResult.SummaryEn, 1000);
+            analyzeCv.summary_he = limitLen(analyzedCvResult.SummaryHe, 1000);
+            analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
 
             _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
@@ -98,7 +170,7 @@ JSON schema (all fields required, use empty string or empty array if unknown):
 - years_experience
 - current_title
 - languages // text description
-- summary // // naturally mention experience level (e.g. בכיר, זוטר, מנוסה) if it can be inferred from the CV
+- summary // naturally mention experience level (e.g. בכיר, זוטר, מנוסה) if it can be inferred from the CV
 
 If the CV is in English – translate everything to Hebrew.
 

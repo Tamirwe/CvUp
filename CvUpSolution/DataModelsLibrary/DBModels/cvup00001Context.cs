@@ -75,7 +75,11 @@ namespace Database.models
 
                 entity.Property(e => e.city).HasMaxLength(50);
 
-                entity.Property(e => e.current_title).HasMaxLength(50);
+                entity.Property(e => e.companies).HasMaxLength(1000);
+
+                entity.Property(e => e.current_title_en).HasMaxLength(100);
+
+                entity.Property(e => e.current_title_he).HasMaxLength(100);
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
@@ -99,7 +103,9 @@ namespace Database.models
 
                 entity.Property(e => e.skills).HasMaxLength(1000);
 
-                entity.Property(e => e.summary).HasMaxLength(1000);
+                entity.Property(e => e.summary_en).HasMaxLength(1000);
+
+                entity.Property(e => e.summary_he).HasMaxLength(1000);
 
                 entity.HasOne(d => d.candidate)
                     .WithOne(p => p.ai_analyze_cv)

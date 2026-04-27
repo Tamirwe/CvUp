@@ -23,12 +23,16 @@ namespace OpenAiLibrary.EmbeddingAndStore
         // Build a clean searchable string from the analyzed CV
         public static string BuildEmbedText(EmbedCvDataModel cv) =>
             string.Join(" ",
-                cv.CurrentTitle,
-                cv.Skills != null? string.Join(" ", cv.Skills ):"",
                 cv.Location,
                 //$"Region {cv.Region}",
                 // $"Area {cv.Area}",
-                cv.Summary,
+                cv.CurrentTitleEn,
+                cv.CurrentTitleHe,
+                cv.Skills != null? string.Join(" ", cv.Skills ):"",
+                cv.Companies,
+                cv.SummaryEn,
+                cv.SummaryHe,
+                cv.NormelizedHe,
                 cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
             ).Trim();
     }

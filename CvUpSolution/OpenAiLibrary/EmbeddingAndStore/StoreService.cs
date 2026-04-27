@@ -92,14 +92,28 @@ namespace OpenAiLibrary.EmbeddingAndStore
         {
             var points = new List<PointStruct>();
 
+            var normalizer = new HebrewTextNormalizer();
+
+            //// Before storing in Qdrant
+            //string normalized = normalizer.Normalize(AnalyzedCv.Summary);
+
+            // Before searching in Qdrant (keeps stopwords for query context)
+            //string normalizedQuery = normalizer.NormalizeQuery(queryText);
+
             if (cvs.Count > 0)
             {
                 foreach (var cv in cvs)
                 {
-                    if (string.IsNullOrEmpty(cv.CurrentTitle) && string.IsNullOrEmpty(cv.Summary))
+                    if (string.IsNullOrEmpty(cv.CurrentTitleHe) && string.IsNullOrEmpty(cv.SummaryHe))
                     {
                         continue;
                     }
+
+                    var textToNormalize = string.Join(" ", cv.CurrentTitleHe, cv.SummaryHe);
+
+                   string normalized = normalizer.Normalize(textToNormalize);
+                    cv.NormelizedHe = normalized;
+
                     var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
                     var vector = await _embedder.EmbedAsync(embedText);
 
@@ -140,9 +154,13 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["Area"] = new() { StringValue = cv.Area ?? "" },
                 ["skills"] = new() { ListValue = skillsList },
                 ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
-                ["current_title"] = new() { StringValue = cv.CurrentTitle ?? "" },
+                ["current_title_en"] = new() { StringValue = cv.CurrentTitleEn ?? "" },
+                ["current_title_he"] = new() { StringValue = cv.CurrentTitleHe ?? "" },
                 ["languages"] = new() { StringValue = cv.Languages ?? "" },
-                ["summary"] = new() { StringValue = cv.Summary ?? "" },
+                ["companies"] = new() { StringValue = cv.Companies ?? "" },
+                ["summary_en"] = new() { StringValue = cv.SummaryEn ?? "" },
+                ["summary_he"] = new() { StringValue = cv.SummaryHe ?? "" },
+                ["normelized_he"] = new() { StringValue = cv.NormelizedHe ?? "" },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },
             };
         }

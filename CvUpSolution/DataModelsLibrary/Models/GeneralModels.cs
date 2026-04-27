@@ -135,11 +135,16 @@ namespace DataModelsLibrary.Models
         public string? Location { get; set; }
         public string? Region { get; set; }
         public string? Area { get; set; }
-        public List<string>? Skills { get; set; } 
-        public int? YearsExperience { get; set; }
-        public string? CurrentTitle { get; set; }
         public string? Languages { get; set; }
-        public string Summary { get; set; } = "";
+        public string? CurrentTitleEn { get; set; }
+        public string? CurrentTitleHe { get; set; }
+        public string? Companies { get; set; }
+        public List<string>? Skills { get; set; }
+        public string SummaryEn { get; set; } = "";
+        public string SummaryHe { get; set; } = "";
+        public int? YearsExperience { get; set; }
+        public string NormelizedHe { get; set; } = "";
+
     }
 
     public class SearchResultModel

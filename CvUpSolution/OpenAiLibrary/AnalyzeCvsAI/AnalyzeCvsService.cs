@@ -77,14 +77,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                     SaveAnalyzedCv(AnalyzedCv);
 
-
-                    //var normalizer = new HebrewTextNormalizer();
-
-                    //// Before storing in Qdrant
-                    //string normalized = normalizer.Normalize(AnalyzedCv.Summary);
-
-                    // Before searching in Qdrant (keeps stopwords for query context)
-                    //string normalizedQuery = normalizer.NormalizeQuery(queryText);
                 }
                 catch (Exception ex)
                 {

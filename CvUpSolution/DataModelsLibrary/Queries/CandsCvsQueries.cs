@@ -125,14 +125,17 @@ namespace DataModelsLibrary.Queries
                                       Location = ai.city,
                                       Region = ai.region,
                                       Area = ai.area,
-                                      Skills = StringToList(ai.skills),
-                                      YearsExperience = ai.years_experience,
-                                      //CurrentTitle = ai.current_title,
                                       Languages = ai.languages,
-                                      //Summary = ai.summary ?? "",
+                                      CurrentTitleEn = ai.current_title_en ?? "",
+                                      CurrentTitleHe = ai.current_title_he ?? "",
+                                      Companies = ai.companies,
+                                      Skills = StringToList(ai.skills),
+                                      SummaryEn = ai.summary_en ?? "",
+                                      SummaryHe = ai.summary_he ?? "",
+                                      YearsExperience = ai.years_experience,
                                   };
 
-                List<EmbedCvDataModel> dataForEmbeeding = await query.ToListAsync();
+                List<EmbedCvDataModel> dataForEmbeeding = await query.Take(300).ToListAsync();
                 return dataForEmbeeding;
             }
         }

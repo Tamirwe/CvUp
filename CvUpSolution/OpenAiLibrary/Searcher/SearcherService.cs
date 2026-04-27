@@ -21,26 +21,29 @@ namespace OpenAiLibrary.Searcher
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            //var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+            var normalizer = new HebrewTextNormalizer();
+          
+            
+            string queryText = "";
+            //queryText = "אבטחת מידע התמחות ב checkpoint or fortinet FW";
+            //queryText = "אנשי רשת ואבטחת מידע סייבר";
+            //queryText = "אנשי אבטחת מידע סייבר";
+            //queryText = "חקלאות הידרופוניה";
+            //queryText = "רוא\"ח";
+            //queryText = "רואה חשבון";
+            queryText = "מנהל כספים מנוסה בחברות טכנולוגיות ציבוריות";
 
-         //   // ── Example 1: semantic only — no filters ─────────────────────────────
-         //   var results11 = await SearchAsync(
-         //    query: "מנתח מערכות בכיר",
-         //    limit: 5
-         //);
-         //   ResultPrinter.Print(results11);
+            //string normalizedQuery = normalizer.NormalizeQuery(queryText);
+            string normalizedQuery = queryText;
 
-            var results12 = await SearchAsync(
-          //query: "אבטחת מידע התמחות ב checkpoint or fortinet FW",
-          //query: "אנשי רשת ואבטחת מידע סייבר",
-          //query: "אנשי אבטחת מידע סייבר",
-          query: "חקלאות הידרופוניה",
+            //   // ── Example 1: semantic only — no filters ─────────────────────────────
+            //   var results11 = await SearchAsync(
+            //    query: "מנתח מערכות בכיר",
+            //    limit: 5
+            //);
+            //   ResultPrinter.Print(results11);
 
-          //query: "רואה חשבון רוא\"ח",
-          //query: "מנהל כספים מנוסה בחברות טכנולוגיות ציבוריות",
-
-          limit: 5
-      );
+            var results12 = await SearchAsync(query: normalizedQuery,limit: 5);
             ResultPrinter.Print(results12);
 
             //var results1 = await SearchAsync(
@@ -219,11 +222,11 @@ namespace OpenAiLibrary.Searcher
                 Score = hit.Score,
                 Name = GetString(p, "name"),
                 CandidateId = GetString(p, "candidate_id"),
-                CurrentTitle = GetString(p, "current_title"),
+                CurrentTitle = GetString(p, "current_title_he"),
                 Location = GetString(p, "location"),
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
-                Summary = GetString(p, "summary"),
+                Summary = GetString(p, "summary_he"),
                 YearsExperience = (int)GetLong(p, "years_experience"),
                 Skills = GetList(p, "skills"),
             };

@@ -34,11 +34,12 @@ namespace DataModelsLibrary.Queries
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-                string sql = @"SELECT cands.id candidateId, cvs.cv_txt cvTxt,cvs.cv_id id
+                string sql = @"SELECT cands.id candidateId,cvs.id ,cvs.key_id keyId, ctx.cv_txt cvTxt
                                 FROM candidates cands 
-                                INNER JOIN cvs_txt cvs ON  cands.id = cvs.candidate_id AND  cands.last_cv_id = cvs.cv_id
+                                INNER JOIN cvs ON cands.last_cv_id = cvs.id
+                                INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
                                 WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
-                                ORDER BY cvs.cv_id DESC 
+                                ORDER BY cvs.id DESC 
                                 LIMIT 0, 13";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();

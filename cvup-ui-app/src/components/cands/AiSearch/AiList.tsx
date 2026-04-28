@@ -39,9 +39,9 @@ export const AiList = observer(() => {
           >
             <ListItemButton
               sx={{ pl: 0 }}
-              // selected={
-              //   cand.candidateId === candsStore.candDisplay?.candidateId
-              // }
+              selected={
+                cand.candidateId === candsStore.candDisplay?.candidateId
+              }
               onClick={async (event) => {
                 event.stopPropagation();
                 event.preventDefault();
@@ -63,11 +63,24 @@ export const AiList = observer(() => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {cand.name} - {cand.currentTitle}
+                  {cand.name} - {cand.currentTitle} -{" "}
+                  <span style={{ color: "#a38c14", fontWeight: "bold" }}>
+                    {cand.location}
+                  </span>
                   <div
                     style={{
                       whiteSpace: "normal",
                       fontSize: "0.875rem",
+                      color: "#03458d",
+                      paddingTop: "4px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {cand.companies}
+                  </div>
+                  <div
+                    style={{
+                      whiteSpace: "normal",
                       color: "gray",
                       paddingTop: "4px",
                     }}

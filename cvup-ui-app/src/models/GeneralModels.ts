@@ -63,6 +63,7 @@ export interface IAiSearchResult {
   score: number;
   name: string;
   currentTitle: string;
+  companies: string;
   location: string;
   summary: string;
   skills: string[];

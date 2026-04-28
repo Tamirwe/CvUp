@@ -87,6 +87,7 @@ namespace DataModelsLibrary.Models
     {
         public int id { get; set; }
         public int candidateId { get; set; }
+        public string keyId { get; set; } = "";
         public string? cvTxt { get; set; } = "";
     }
 

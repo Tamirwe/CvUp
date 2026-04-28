@@ -64,6 +64,8 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
                     AnalyzedCv.CvLanguage = cvLanguage;
                     AnalyzedCv.CandidateId = candCv.candidateId;
+                    AnalyzedCv.CvId = candCv.id;
+                    AnalyzedCv.KeyId = candCv.keyId;
 
                     if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
                     {

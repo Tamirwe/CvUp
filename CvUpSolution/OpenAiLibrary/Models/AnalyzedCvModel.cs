@@ -29,5 +29,7 @@ namespace OpenAiLibrary.Models
         [Newtonsoft.Json.JsonIgnore] public string? Region { get; set; }
         [Newtonsoft.Json.JsonIgnore] public string? Area { get; set; }
         [Newtonsoft.Json.JsonIgnore] public int CandidateId { get; set; }
+        [Newtonsoft.Json.JsonIgnore] public int CvId { get; set; }
+        [Newtonsoft.Json.JsonIgnore] public string KeyId { get; set; }
     }
 }

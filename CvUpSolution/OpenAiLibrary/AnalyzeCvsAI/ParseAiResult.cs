@@ -41,7 +41,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     Name = obj.Value<string>("name"),
                     Email = obj.Value<string>("email"),
                     Phone = obj.Value<string>("phone"),
-                    Location = obj.Value<string>("location"),
+                    Location = obj.Value<string>("city_he"),
                     CurrentTitleEn = obj.Value<string>("current_title_en"),
                     CurrentTitleHe = obj.Value<string>("current_title_he"),
                     Companies = obj["companies"]?.ToObject<List<string>>() ?? [],

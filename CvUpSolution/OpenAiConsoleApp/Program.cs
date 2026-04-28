@@ -36,16 +36,15 @@ internal class Program
 
        
 
-        //var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
+        var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
         //var embedderStoreService = host.Services.GetRequiredService<IEmbedderStoreService>();
-        var searcherService = host.Services.GetRequiredService<ISearcherService>();
+        //var searcherService = host.Services.GetRequiredService<ISearcherService>();
 
-        //await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCvVer2();
-        //await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCv();
+        await analyzeCvsService.AiAnalyzeAndStoreAllCandidatesLastCvVer2();
 
         //await embedderStoreService.EmbedAnalyzedCvs();
 
-        await searcherService.DemoSearch();
+        //await searcherService.DemoSearch();
 
         Console.WriteLine();
     }

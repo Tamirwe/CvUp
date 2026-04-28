@@ -113,15 +113,15 @@ export const SearchControl = ({
   const [refreshList, setRefreshList] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
+  // const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
-  useEffect(() => {
-    if (isLoaded) {
-      onSearch(searchVals);
-    } else {
-      setIsLoaded(true);
-    }
-  }, [debouncedValue]);
+  // useEffect(() => {
+  //   if (isLoaded) {
+  //     onSearch(searchVals);
+  //   } else {
+  //     setIsLoaded(true);
+  //   }
+  // }, [debouncedValue]);
 
   useEffect(() => {
     if (extSearch) {
@@ -138,7 +138,7 @@ export const SearchControl = ({
   };
 
   const handleAdvancedValueChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSearchVals((currentProps) => ({
       ...currentProps,

@@ -45,6 +45,7 @@ export enum TabsGeneralEnum {
 export enum TabsCandsEnum {
   None,
   AllCands,
+  AI,
   PositionCands,
   FolderCands,
   PositionTypeCands,

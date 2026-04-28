@@ -11,6 +11,7 @@ import {
 import { SearchControl } from "../header/SearchControl";
 import { ICand, ISearchModel } from "../../models/GeneralModels";
 import { isMobile } from "react-device-detect";
+import { AiList } from "../cands/AiSearch/AiList";
 
 export const CandsListsContainer = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
@@ -30,12 +31,12 @@ export const CandsListsContainer = observer(() => {
 
     if (isDesc) {
       return sorted.sort((a, b) =>
-        a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0
+        a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0,
       );
     }
 
     return sorted.sort((a, b) =>
-      a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0
+      a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0,
     );
   };
 
@@ -67,7 +68,7 @@ export const CandsListsContainer = observer(() => {
 
   const handleTabChange = (
     event: React.SyntheticEvent,
-    newValue: TabsCandsEnum
+    newValue: TabsCandsEnum,
   ) => {
     event.stopPropagation();
     event.preventDefault();
@@ -75,6 +76,14 @@ export const CandsListsContainer = observer(() => {
   };
 
   const handleAllCandsSearch = (searchVals: ISearchModel) => {
+    if (searchVals.value) {
+      candsStore.searchAllCands(searchVals);
+    } else {
+      candsStore.getCandsList();
+    }
+  };
+
+  const handleAiSearch = (searchVals: ISearchModel) => {
     if (searchVals.value) {
       candsStore.searchAllCands(searchVals);
     } else {
@@ -102,7 +111,7 @@ export const CandsListsContainer = observer(() => {
       } else {
         if (positionsStore.selectedPositionType?.id) {
           candsStore.getPositionTypeCandsList(
-            positionsStore.selectedPositionType?.id
+            positionsStore.selectedPositionType?.id,
           );
         }
       }
@@ -123,6 +132,9 @@ export const CandsListsContainer = observer(() => {
     switch (ListSource) {
       case TabsCandsEnum.AllCands:
         setAllCandsList(sortCandList(isDesc, candsStore.allCandsList));
+        break;
+      case TabsCandsEnum.AI:
+        //setAllCandsList(sortCandList(isDesc, candsStore.allCandsList));
         break;
       case TabsCandsEnum.PositionTypeCands:
         setAllCandsList(sortCandList(isDesc, candsStore.posTypeCandsList));
@@ -178,7 +190,7 @@ export const CandsListsContainer = observer(() => {
                     <div>
                       {positionsStore.selectedPositionType?.typeName.substring(
                         0,
-                        20
+                        20,
                       )}
                     </div>
                     <div>Group</div>
@@ -215,6 +227,13 @@ export const CandsListsContainer = observer(() => {
                 alignSelf: "flex-start",
               }}
             />
+            <Tab
+              label="AI"
+              value={TabsCandsEnum.AI}
+              sx={{
+                alignSelf: "flex-start",
+              }}
+            />
           </Tabs>
         )}
       </Box>
@@ -238,6 +257,20 @@ export const CandsListsContainer = observer(() => {
           candsListData={allCandsList}
           candsSource={CandsSourceEnum.AllCands}
           advancedOpen={candsAdvancedOpen}
+        />
+      </div>
+
+      <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AI}>
+        <Box mt={1} mr={1} ml={1}>
+          <SearchControl
+            onSearch={handleAiSearch}
+            // records={candsStore.allCandsList && candsStore.allCandsList.length}
+          />
+        </Box>
+        <AiList
+        // candsListData={allCandsList}
+        // candsSource={CandsSourceEnum.AllCands}
+        // advancedOpen={candsAdvancedOpen}
         />
       </div>
       <div

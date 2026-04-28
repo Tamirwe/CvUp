@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="FreeSpire.Doc" Version="10.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
@@ -36,9 +36,13 @@
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
     <ProjectReference Include="..\ModuleGeneratorLibrary\ModuleGeneratorLibrary.csproj" />
+    <ProjectReference Include="..\OpenAiLibrary\OpenAiLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update=".env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="EmailTemplates\RegistrationCompleteTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

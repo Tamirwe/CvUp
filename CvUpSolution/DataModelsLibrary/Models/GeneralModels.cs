@@ -147,12 +147,13 @@ namespace DataModelsLibrary.Models
 
     }
 
-    public class SearchResultModel
+    public class AiSearchResultModel
     {
         public ulong Id { get; set; }
         public float Score { get; set; }
         public string Name { get; set; } = "";
         public string CandidateId { get; set; } = "";
+        public string? Companies { get; set; }
         public string CurrentTitle { get; set; } = "";
         public string Location { get; set; } = "";
         public int YearsExperience { get; set; }

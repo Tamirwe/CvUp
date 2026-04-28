@@ -58,6 +58,16 @@ export interface ICand {
   isBlackList: boolean;
 }
 
+export interface IAiSearchResult {
+  candidateId: number;
+  score: number;
+  name: string;
+  currentTitle: string;
+  location: string;
+  summary: string;
+  skills: string[];
+}
+
 export interface ICandPosHistory {
   callEmailToCandidate?: Date;
   emailToContact?: Date;

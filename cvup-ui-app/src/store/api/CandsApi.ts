@@ -6,6 +6,7 @@ import {
   ISearchModel,
   ICandsReport,
   ICandPosStageTypeUpdate,
+  IAiSearchResult,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -20,7 +21,7 @@ export default class CandsApi extends BaseApi {
     searchVals: ISearchModel,
     posId?: number,
     posTypeId?: number,
-    folderId?: number
+    folderId?: number,
   ) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.post(`Cand/SearchCands?searchKeyWords`, {
@@ -29,6 +30,14 @@ export default class CandsApi extends BaseApi {
         positionTypeId: posTypeId,
         folderId: folderId,
       });
+    });
+  }
+
+  async AiSearchCands(searchQuery: string) {
+    return await this.apiWrapper2<IAiSearchResult[]>(async () => {
+      return await this.http.get(
+        `Cand/AiSearchCands?searchQuery=${searchQuery}`,
+      );
     });
   }
 
@@ -41,7 +50,7 @@ export default class CandsApi extends BaseApi {
   async getDuplicatesCvsList(candidateId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
-        `Cand/GetCandCvsList?candidateId=${candidateId}`
+        `Cand/GetCandCvsList?candidateId=${candidateId}`,
       );
     });
   }
@@ -49,7 +58,7 @@ export default class CandsApi extends BaseApi {
   async getPosCandsList(positionId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
-        `Cand/GetPosCandsList?positionId=${positionId}`
+        `Cand/GetPosCandsList?positionId=${positionId}`,
       );
     });
   }
@@ -57,7 +66,7 @@ export default class CandsApi extends BaseApi {
   async getPosTypeCandsList(posTypeId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
-        `Cand/GetPosTypeCandsList?positionTypeId=${posTypeId}`
+        `Cand/GetPosTypeCandsList?positionTypeId=${posTypeId}`,
       );
     });
   }
@@ -65,7 +74,7 @@ export default class CandsApi extends BaseApi {
   async getFolderCandsList(folderId: number) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
-        `Cand/GetFolderCandsList?folderId=${folderId}`
+        `Cand/GetFolderCandsList?folderId=${folderId}`,
       );
     });
   }
@@ -74,7 +83,7 @@ export default class CandsApi extends BaseApi {
     candidateId: number,
     cvId: number,
     positionId: number,
-    keyId: string
+    keyId: string,
   ) {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post(`Cand/AttachPosCandCv`, {
@@ -114,7 +123,7 @@ export default class CandsApi extends BaseApi {
   async saveCustomerCandReview(
     review: string,
     candidateId: number,
-    positionId?: number
+    positionId?: number,
   ) {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.put("Cand/SaveCustomerCandReview", {
@@ -130,7 +139,7 @@ export default class CandsApi extends BaseApi {
     firstName: string,
     lastName: string,
     email: string,
-    phone: string
+    phone: string,
   ) {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.put("Cand/UpdateCandDetails", {
@@ -177,7 +186,7 @@ export default class CandsApi extends BaseApi {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.post(
         `Cand/UpdateCandPositionStatus`,
-        stageToUpdate
+        stageToUpdate,
       );
     });
   }
@@ -209,7 +218,7 @@ export default class CandsApi extends BaseApi {
   async deleteCv(candidateId?: number, cvId?: number) {
     return await this.apiWrapper2<ICand>(async () => {
       return await this.http.delete(
-        `Cand/DeleteCv?cnid=${candidateId}&cvId=${cvId}`
+        `Cand/DeleteCv?cnid=${candidateId}&cvId=${cvId}`,
       );
     });
   }

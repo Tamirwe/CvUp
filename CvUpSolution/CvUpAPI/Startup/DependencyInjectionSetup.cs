@@ -8,13 +8,14 @@ using FoldersLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.Hosting;
 using ModuleGeneratorLibrary;
-//using OpenAiLibrary.Searcher;
+using OpenAiLibrary.EmbeddingAndStore;
+using OpenAiLibrary.Searcher;
 
 namespace CvUpAPI.Startup
 {
     public static class DependencyInjectionSetup
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services, WebApplicationBuilder builder)
+        public static IServiceCollection RegisterServices(this IServiceCollection services, WebApplicationBuilder builder,string apiKey, string host, int port)
         {
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ILuceneService, LuceneService>();
@@ -30,7 +31,9 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();
             services.AddTransient<IModuleGeneratorService, ModuleGeneratorService>();
-            //services.AddTransient<ISearcherService, SearcherService>(sp => new SearcherService(sp.GetRequiredService<IOpenAiEmbedderService>(), host, port));
+            services.AddTransient<IOpenAiEmbedderService, OpenAiEmbedderService>(sp => new OpenAiEmbedderService(apiKey));
+            services.AddTransient<IStoreService, StoreService>(sp => new StoreService(sp.GetRequiredService<IOpenAiEmbedderService>(), host, port));
+            services.AddTransient<ISearcherService, SearcherService>(sp => new SearcherService(sp.GetRequiredService<IOpenAiEmbedderService>(), host, port));
 
             return services;
         }

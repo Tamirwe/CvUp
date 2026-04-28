@@ -85,9 +85,8 @@ export const CandsListsContainer = observer(() => {
 
   const handleAiSearch = (searchVals: ISearchModel) => {
     if (searchVals.value) {
-      candsStore.searchAllCands(searchVals);
+      candsStore.AiSearchCands(searchVals.value);
     } else {
-      candsStore.getCandsList();
     }
   };
 

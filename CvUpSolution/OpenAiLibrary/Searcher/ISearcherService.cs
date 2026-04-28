@@ -10,7 +10,7 @@ namespace OpenAiLibrary.Searcher
 {
     public interface ISearcherService
     {
-        Task<List<SearchResultModel>> SearchAsync(string query, SearchFilterModel filter , int limit = 10);
+        Task<List<AiSearchResultModel>> SearchAsync(string query, SearchFilterModel? filter = null , int limit = 10);
         Task DemoSearch();
     }
 }

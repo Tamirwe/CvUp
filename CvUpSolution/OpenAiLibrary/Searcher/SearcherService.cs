@@ -93,7 +93,7 @@ namespace OpenAiLibrary.Searcher
         }
 
 
-        public async Task<List<SearchResultModel>> SearchAsync(
+        public async Task<List<AiSearchResultModel>> SearchAsync(
             string query,
             SearchFilterModel? filter = null,
             int limit = 10)
@@ -212,11 +212,11 @@ namespace OpenAiLibrary.Searcher
 
         // ── Map Qdrant hit → CandidateSearchResult ────────────────────────────────
 
-        private static SearchResultModel MapToResult(ScoredPoint hit)
+        private static AiSearchResultModel MapToResult(ScoredPoint hit)
         {
             var p = hit.Payload;
 
-            return new SearchResultModel
+            return new AiSearchResultModel
             {
                 Id = hit.Id.Num,
                 Score = hit.Score,
@@ -227,6 +227,7 @@ namespace OpenAiLibrary.Searcher
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
                 Summary = GetString(p, "summary_he"),
+                Companies = GetString(p, "companies"),
                 YearsExperience = (int)GetLong(p, "years_experience"),
                 Skills = GetList(p, "skills"),
             };
@@ -251,7 +252,7 @@ namespace OpenAiLibrary.Searcher
 
     public static class ResultPrinter
     {
-        public static void Print(List<SearchResultModel> results)
+        public static void Print(List<AiSearchResultModel> results)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 

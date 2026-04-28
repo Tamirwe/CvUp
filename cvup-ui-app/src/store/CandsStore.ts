@@ -10,6 +10,7 @@ import {
   ISendEmail,
   ISearchModel,
   ICandsReport,
+  IAiSearchResult,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -26,6 +27,7 @@ export class CandsStore {
   // private isPdfLoaded: boolean = false;
 
   allCandsList: ICand[] = [];
+  aiSearchResults: IAiSearchResult[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
   posTypeCandsList: ICand[] = [];
@@ -64,6 +66,7 @@ export class CandsStore {
 
   reset() {
     this.allCandsList = [];
+    this.aiSearchResults = [];
     // this.candAllSelected = undefined;
   }
 
@@ -343,6 +346,18 @@ export class CandsStore {
     }
 
     this.lastSearchVals = searchKeywords;
+  }
+
+  async AiSearchCands(searchQuery: string) {
+    if (searchQuery) {
+      this.rootStore.generalStore.backdrop = true;
+
+      const res = await this.cvsApi.AiSearchCands(searchQuery);
+      runInAction(() => {
+        this.aiSearchResults = res.data;
+      });
+      this.rootStore.generalStore.backdrop = false;
+    }
   }
 
   async searchPositionCands(searchVals: ISearchModel) {

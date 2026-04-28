@@ -1,0 +1,76 @@
+.candList {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  direction: ltr;
+
+  &.isMobile {
+    padding-bottom: 3rem;
+  }
+}
+
+.listItem {
+  display: flex;
+  width: 95%;
+  flex-direction: row-reverse;
+  gap: 5;
+}
+
+.listItemText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
+  direction: rtl;
+  align-items: center;
+  margin-left: 0.5rem;
+  color: #454343;
+  text-decoration: bold;
+
+  // &.isMobile{
+  //   padding-right: 3rem;
+  // }
+}
+
+.listItemCity {
+  text-align: right;
+  font-weight: 100;
+  color: #9b9b9b;
+}
+
+.listItemDate {
+  white-space: nowrap;
+  font-size: 0.7rem;
+  // text-align: right;
+  min-width: 5.2rem;
+  &.isMobile {
+    font-size: 0.6rem;
+  }
+}
+
+.listItemSelected {
+  text-decoration: underline;
+}
+
+.listItemSelected:hover {
+  color: rgb(35, 112, 226) !important;
+}
+
+.listItemPosStages {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  cursor: pointer;
+  padding-top: 0.6rem;
+  font-weight: 600;
+}
+
+.listItemPosStagesCurrent {
+  // font-weight: 700;
+  // text-decoration: underline;
+  // font-size: 0.9rem;
+  border: 1px #bfbfbf dashed;
+}
+
+.poslistItemCurrent {
+  border: 1px #28674b dashed;
+}

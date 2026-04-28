@@ -4,6 +4,7 @@ using CvFilesLibrary;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenAiLibrary.Searcher;
 
 namespace CvUpAPI.Controllers
 {
@@ -15,12 +16,14 @@ namespace CvUpAPI.Controllers
         private ICandsPositionsServise _candPosService;
         private IAuthServise _authServise;
         private ICvsFilesService _cvsFilesService;
+        private ISearcherService  _searcherService;
 
-        public CandController(ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService)
+        public CandController(ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService, ISearcherService searcherService)
         {
             _candPosService = candPosService;
             _authServise = authServise;
             _cvsFilesService = cvsFilesService;
+            _searcherService = searcherService;
         }
 
         [HttpGet]
@@ -93,6 +96,14 @@ namespace CvUpAPI.Controllers
 
             var sortedCands = candsList.OrderByDescending(x => x.score).ToList();
             return sortedCands;
+        }
+
+        [HttpGet]
+        [Route("AiSearchCands")]
+        public async Task<List<AiSearchResultModel>> AiSearchCands(string searchQuery)
+        {
+            var results = await _searcherService.SearchAsync(query: searchQuery,  limit: 50);
+            return results;
         }
 
         [HttpGet]

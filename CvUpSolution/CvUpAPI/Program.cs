@@ -1,5 +1,6 @@
 using CvUpAPI;
 using CvUpAPI.Startup;
+using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,7 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+DotEnv.Load();
+var envVars = DotEnv.Read();
+var apiKey = envVars["API_KEY"].Trim();
+var host = envVars["QDRANT_HOST"].Trim();
+var port = int.Parse(envVars["QDRANT_PORT"]);
+
 string CorsPolicy = "_corsPolicy";
+
+
 
 builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                       builder =>  builder.WithOrigins("http://localhost:3030",
@@ -91,8 +100,9 @@ builder.Services.AddSwaggerGen(option =>
                 });
 });
 
+
 // Add services to the container.
-builder.Services.RegisterServices(builder);
+builder.Services.RegisterServices(builder, apiKey, host, port);
 
 //builder.Services.AddControllers();
 //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

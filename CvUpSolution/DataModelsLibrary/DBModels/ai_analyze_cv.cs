@@ -7,6 +7,8 @@ namespace Database.models
     {
         public int id { get; set; }
         public int candidate_id { get; set; }
+        public int cv_id { get; set; }
+        public string key_id { get; set; } = null!;
         public string? name { get; set; }
         public string? email { get; set; }
         public string? phone { get; set; }
@@ -16,9 +18,9 @@ namespace Database.models
         public string? current_title_en { get; set; }
         public string? current_title_he { get; set; }
         public string? companies { get; set; }
+        public string? skills { get; set; }
         public string? summary_en { get; set; }
         public string? summary_he { get; set; }
-        public string? skills { get; set; }
         public int? years_experience { get; set; }
         public string? languages { get; set; }
         public DateTime? date_updated { get; set; }

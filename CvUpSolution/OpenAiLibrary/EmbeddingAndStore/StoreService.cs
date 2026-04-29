@@ -146,6 +146,8 @@ namespace OpenAiLibrary.EmbeddingAndStore
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
                 ["candidate_id"] = new() { StringValue = cv.CandidateId.ToString() },
+                ["cv_id"] = new() { StringValue = cv.CvId.ToString() },
+                ["key_id"] = new() { StringValue = cv.KeyId.ToString() },
                 ["name"] = new() { StringValue = cv.Name ?? "" },
                 ["email"] = new() { StringValue = cv.Email ?? "" },
                 ["phone"] = new() { StringValue = cv.Phone ?? "" },

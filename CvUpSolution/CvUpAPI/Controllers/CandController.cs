@@ -100,9 +100,13 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("AiSearchCands")]
-        public async Task<List<AiSearchResultModel>> AiSearchCands(string searchQuery)
+        public async Task<List<CandModel>> AiSearchCands(string searchQuery)
         {
-            var results = await _searcherService.SearchAsync(query: searchQuery,  limit: 50);
+            var aiResults = await _searcherService.SearchAsync(query: searchQuery, limit: 50);
+            var candsIds = aiResults.Select(e => e.CandidateId).ToList();
+            var candsList = await _candPosService.GetCandsList(Globals.CompanyId, candsIds);
+            List<CandModel> results = _candPosService.MergeAiResultsWithCandsList(candsList, aiResults);
+
             return results;
         }
 

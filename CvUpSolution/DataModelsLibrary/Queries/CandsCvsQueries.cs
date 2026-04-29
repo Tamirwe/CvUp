@@ -120,6 +120,8 @@ namespace DataModelsLibrary.Queries
                                   select new EmbedCvDataModel
                                   {
                                       CandidateId = ai.candidate_id,
+                                      CvId = ai.cv_id,
+                                      KeyId = ai.key_id,
                                       Name = ai.name,
                                       Email = ai.email,
                                       Phone = ai.phone,

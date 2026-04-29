@@ -481,5 +481,28 @@ namespace CandsPositionsLibrary
         {
              await _cvsPositionsQueries.UpdateBlackCandidateEmailCount( blackCand);
         }
+
+        public List<CandModel> MergeAiResultsWithCandsList( List<CandModel>  candsList, List<AiSearchResultModel> aiResults)
+        {
+            foreach (var cand in candsList)
+            {
+                if (cand != null)
+                {
+                    var aiItem = aiResults.FirstOrDefault(x => x.CandidateId == cand.candidateId);
+
+                    if (aiItem != null)
+                    {
+                        cand.NameAI = aiItem.Name;
+                        cand.CompaniesAI = aiItem.Companies;
+                        cand.CurrentTitleAI = aiItem.CurrentTitle;
+                        cand.LocationAI = aiItem.Location;
+                        cand.SummaryAI = aiItem.Summary;
+                        cand.SkillsAI = aiItem.Skills;
+                    }
+                }
+            }
+
+            return candsList;
+        }
     }
 }

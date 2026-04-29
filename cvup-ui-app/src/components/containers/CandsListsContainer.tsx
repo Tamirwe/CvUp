@@ -133,7 +133,7 @@ export const CandsListsContainer = observer(() => {
         setAllCandsList(sortCandList(isDesc, candsStore.allCandsList));
         break;
       case TabsCandsEnum.AI:
-        //setAllCandsList(sortCandList(isDesc, candsStore.allCandsList));
+        setAllCandsList(sortCandList(isDesc, candsStore.aiCandsResults));
         break;
       case TabsCandsEnum.PositionTypeCands:
         setAllCandsList(sortCandList(isDesc, candsStore.posTypeCandsList));
@@ -267,9 +267,9 @@ export const CandsListsContainer = observer(() => {
           />
         </Box>
         <AiList
-        // candsListData={allCandsList}
-        // candsSource={CandsSourceEnum.AllCands}
-        // advancedOpen={candsAdvancedOpen}
+          candsListData={candsStore.aiCandsResults}
+          candsSource={CandsSourceEnum.AI}
+          // advancedOpen={candsAdvancedOpen}
         />
       </div>
       <div

@@ -78,6 +78,7 @@ export enum AppModeEnum {
 
 export enum CandsSourceEnum {
   AllCands,
+  AI,
   Position,
   PositionType,
   Folder,

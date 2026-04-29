@@ -6,7 +6,6 @@ import {
   ISearchModel,
   ICandsReport,
   ICandPosStageTypeUpdate,
-  IAiSearchResult,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -34,7 +33,7 @@ export default class CandsApi extends BaseApi {
   }
 
   async AiSearchCands(searchQuery: string) {
-    return await this.apiWrapper2<IAiSearchResult[]>(async () => {
+    return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.get(
         `Cand/AiSearchCands?searchQuery=${searchQuery}`,
       );

@@ -6,8 +6,15 @@ import { Box, List, ListItem, ListItemButton } from "@mui/material";
 import { useRef } from "react";
 import styles from "./AiList.module.scss";
 import { useLocation, useNavigate } from "react-router";
+import { ICand } from "../../../models/GeneralModels";
+import { CandsSourceEnum } from "../../../models/GeneralEnums";
 
-export const AiList = observer(() => {
+interface IProps {
+  candsListData: ICand[];
+  candsSource: CandsSourceEnum;
+}
+
+export const AiList = observer(({ candsListData, candsSource }: IProps) => {
   const { candsStore, generalStore } = useStore();
   const listRef = useRef<any>(null);
   const navigate = useNavigate();
@@ -23,7 +30,7 @@ export const AiList = observer(() => {
         [styles.isMobile]: isMobile,
       })}
     >
-      {candsStore.aiSearchResults.map((cand, i) => {
+      {candsStore.aiCandsResults.map((cand, i) => {
         return (
           <ListItem
             key={`${cand.candidateId}${i}`}
@@ -49,7 +56,7 @@ export const AiList = observer(() => {
                 if (location.pathname !== "/cv") {
                   navigate(`/cv`);
                 }
-                // await candsStore.displayCv(cand, candsSource);
+                await candsStore.displayCv(cand, candsSource);
 
                 if (isMobile) {
                   generalStore.rightDrawerOpen = false;
@@ -63,9 +70,9 @@ export const AiList = observer(() => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {cand.name} - {cand.currentTitle} -{" "}
+                  {cand.nameAI} - {cand.currentTitleAI} -{" "}
                   <span style={{ color: "#a38c14", fontWeight: "bold" }}>
-                    {cand.location}
+                    {cand.locationAI}
                   </span>
                   <div
                     style={{
@@ -76,7 +83,7 @@ export const AiList = observer(() => {
                       fontWeight: 600,
                     }}
                   >
-                    {cand.companies}
+                    {cand.companiesAI}
                   </div>
                   <div
                     style={{
@@ -85,7 +92,7 @@ export const AiList = observer(() => {
                       paddingTop: "4px",
                     }}
                   >
-                    {cand.summary}
+                    {cand.summaryAI}
                   </div>
                 </div>
               </Box>

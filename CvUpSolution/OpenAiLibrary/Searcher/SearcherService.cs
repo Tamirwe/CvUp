@@ -221,7 +221,9 @@ namespace OpenAiLibrary.Searcher
                 Id = hit.Id.Num,
                 Score = hit.Score,
                 Name = GetString(p, "name"),
-                CandidateId = GetString(p, "candidate_id"),
+                CandidateId = int.Parse(GetString(p, "candidate_id")),
+                CvId = GetString(p, "cv_id"),
+                KeyId = GetString(p, "key_id"),
                 CurrentTitle = GetString(p, "current_title_he"),
                 Location = GetString(p, "location"),
                 Email = GetString(p, "email"),
@@ -230,6 +232,7 @@ namespace OpenAiLibrary.Searcher
                 Companies = GetString(p, "companies"),
                 YearsExperience = (int)GetLong(p, "years_experience"),
                 Skills = GetList(p, "skills"),
+
             };
         }
 

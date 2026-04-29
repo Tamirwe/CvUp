@@ -56,18 +56,26 @@ export interface ICand {
   allCustomersReviews?: ICustomersReviews[];
   candPosHistory?: ICandPosHistory;
   isBlackList: boolean;
+  nameAI?: string;
+  companiesAI?: string;
+  currentTitleAI?: string;
+  locationAI?: string;
+  summaryAI?: string;
+  skillsAI?: string[];
 }
 
-export interface IAiSearchResult {
-  candidateId: number;
-  score: number;
-  name: string;
-  currentTitle: string;
-  companies: string;
-  location: string;
-  summary: string;
-  skills: string[];
-}
+// export interface IAiSearchResult {
+//   candidateId: number;
+//   score: number;
+//   name: string;
+//   currentTitle: string;
+//   companies: string;
+//   cvId: string;
+//   keyId: string;
+//   location: string;
+//   summary: string;
+//   skills: string[];
+// }
 
 export interface ICandPosHistory {
   callEmailToCandidate?: Date;

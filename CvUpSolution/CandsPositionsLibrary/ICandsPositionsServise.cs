@@ -75,5 +75,6 @@ namespace CandsPositionsLibrary
         Task DeleteKeyword(int companyId, int id);
         Task<List<blackCandModel>> GetBlackCandidatesList();
         Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
+        List<CandModel> MergeAiResultsWithCandsList(List<CandModel?> candsList, List<AiSearchResultModel> aiResults);
     }
 }

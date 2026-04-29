@@ -129,6 +129,8 @@ namespace DataModelsLibrary.Models
     public class EmbedCvDataModel
     {
         public int CandidateId { get; set; }
+        public int CvId { get; set; }
+        public required string KeyId { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
@@ -152,7 +154,9 @@ namespace DataModelsLibrary.Models
         public ulong Id { get; set; }
         public float Score { get; set; }
         public string Name { get; set; } = "";
-        public string CandidateId { get; set; } = "";
+        public int CandidateId { get; set; }
+        public required string CvId { get; set; }
+        public required string KeyId { get; set; }
         public string? Companies { get; set; }
         public string CurrentTitle { get; set; } = "";
         public string Location { get; set; } = "";

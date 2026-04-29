@@ -127,7 +127,14 @@ namespace DataModelsLibrary.Models
         public int? score { get; set; }
         public CandPosHistoryModel? candPosHistory { get; set; }
         public bool isBlackList { get; set; } = false;
+        public string? NameAI { get; set; } = "";
+        public string? CompaniesAI { get; set; }
+        public string? CurrentTitleAI { get; set; } = "";
+        public string? LocationAI { get; set; } = "";
+        public string? SummaryAI { get; set; } = "";
+        public List<string>? SkillsAI { get; set; }
     }
+
 
     public class CandPosHistoryModel
     {

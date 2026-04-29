@@ -93,8 +93,6 @@ namespace Database.models
 
                 entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.key_id).HasMaxLength(30);
-
                 entity.Property(e => e.languages).HasMaxLength(150);
 
                 entity.Property(e => e.name).HasMaxLength(101);

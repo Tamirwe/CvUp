@@ -8,7 +8,6 @@ namespace Database.models
         public int id { get; set; }
         public int candidate_id { get; set; }
         public int cv_id { get; set; }
-        public string key_id { get; set; } = null!;
         public string? name { get; set; }
         public string? email { get; set; }
         public string? phone { get; set; }

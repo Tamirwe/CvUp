@@ -34,13 +34,13 @@ namespace DataModelsLibrary.Queries
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-                string sql = @"SELECT cands.id candidateId,cvs.id ,cvs.key_id keyId, ctx.cv_txt cvTxt
-                                FROM candidates cands 
-                                INNER JOIN cvs ON cands.last_cv_id = cvs.id
-                                INNER JOIN cvs_txt ctx ON cvs.id = ctx.cv_id
-                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
-                                ORDER BY cvs.id DESC 
-                                LIMIT 0, 13";
+                string sql = @"SELECT  ctx.candidate_id, ctx.cv_id, ctx.cv_txt cvTxt
+                                FROM cvs_txt ctx
+                                WHERE ctx.cv_id IN ( SELECT cv_id FROM (SELECT cands.last_cv_id cv_id
+		                                FROM candidates cands 
+		                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
+		                                ORDER BY cands.id DESC 
+		                                LIMIT  13) AS tbl)";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;

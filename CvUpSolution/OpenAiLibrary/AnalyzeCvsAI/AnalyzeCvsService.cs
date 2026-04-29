@@ -65,7 +65,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     AnalyzedCv.CvLanguage = cvLanguage;
                     AnalyzedCv.CandidateId = candCv.candidateId;
                     AnalyzedCv.CvId = candCv.id;
-                    AnalyzedCv.KeyId = candCv.keyId;
 
                     if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
                     {
@@ -113,7 +112,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
             analyzeCv.candidate_id = analyzedCvResult.CandidateId;
             analyzeCv.cv_id = analyzedCvResult.CvId;
-            analyzeCv.key_id = analyzedCvResult.KeyId;
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
             analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
             analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);

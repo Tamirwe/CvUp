@@ -64,19 +64,6 @@ export interface ICand {
   skillsAI?: string[];
 }
 
-// export interface IAiSearchResult {
-//   candidateId: number;
-//   score: number;
-//   name: string;
-//   currentTitle: string;
-//   companies: string;
-//   cvId: string;
-//   keyId: string;
-//   location: string;
-//   summary: string;
-//   skills: string[];
-// }
-
 export interface ICandPosHistory {
   callEmailToCandidate?: Date;
   emailToContact?: Date;

@@ -156,7 +156,6 @@ namespace DataModelsLibrary.Models
         public string Name { get; set; } = "";
         public int CandidateId { get; set; }
         public required string CvId { get; set; }
-        public required string KeyId { get; set; }
         public string? Companies { get; set; }
         public string CurrentTitle { get; set; } = "";
         public string Location { get; set; } = "";

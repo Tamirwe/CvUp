@@ -34,7 +34,7 @@ namespace DataModelsLibrary.Queries
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-                string sql = @"SELECT  ctx.candidate_id, ctx.cv_id, ctx.cv_txt cvTxt
+                string sql = @"SELECT  ctx.cv_id id, ctx.candidate_id, ctx.cv_txt cvTxt
                                 FROM cvs_txt ctx
                                 WHERE ctx.cv_id IN ( SELECT cv_id FROM (SELECT cands.last_cv_id cv_id
 		                                FROM candidates cands 

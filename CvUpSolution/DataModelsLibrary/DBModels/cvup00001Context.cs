@@ -89,17 +89,25 @@ namespace Database.models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.education).HasMaxLength(500);
+
                 entity.Property(e => e.email).HasMaxLength(150);
 
                 entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.languages).HasMaxLength(150);
 
+                entity.Property(e => e.military_service).HasMaxLength(500);
+
                 entity.Property(e => e.name).HasMaxLength(101);
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
+                entity.Property(e => e.profession).HasMaxLength(200);
+
                 entity.Property(e => e.region).HasMaxLength(20);
+
+                entity.Property(e => e.seniority).HasMaxLength(50);
 
                 entity.Property(e => e.skills).HasMaxLength(1000);
 

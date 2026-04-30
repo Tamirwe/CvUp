@@ -25,6 +25,10 @@ namespace Database.models
         public DateTime? date_updated { get; set; }
         public DateTime? date_created { get; set; }
         public bool? is_embedded { get; set; }
+        public string? profession { get; set; }
+        public string? education { get; set; }
+        public string? military_service { get; set; }
+        public string? seniority { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
     }

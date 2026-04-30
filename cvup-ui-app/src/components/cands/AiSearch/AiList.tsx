@@ -70,10 +70,25 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                     [styles.isMobile]: isMobile,
                   })}
                 >
-                  {cand.nameAI} - {cand.currentTitleAI} -{" "}
-                  <span style={{ color: "#a38c14", fontWeight: "bold" }}>
-                    {cand.locationAI}
-                  </span>
+                  <div
+                    style={{
+                      whiteSpace: "normal",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {cand.score} - {cand.nameAI} - {cand.currentTitleAI} -{" "}
+                    <span
+                      style={{
+                        color: "#68a6e9",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {cand.professionAI} -{" "}
+                    </span>
+                    <span style={{ color: "#a38c14", fontWeight: "bold" }}>
+                      {cand.locationAI}
+                    </span>
+                  </div>
                   <div
                     style={{
                       whiteSpace: "normal",
@@ -85,6 +100,17 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                   >
                     {cand.companiesAI}
                   </div>
+                  {/* <div
+                    style={{
+                      whiteSpace: "normal",
+                      fontSize: "0.875rem",
+                      color: "#68a6e9",
+                      paddingTop: "4px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {cand.professionAI}
+                  </div> */}
                   <div
                     style={{
                       whiteSpace: "normal",
@@ -93,6 +119,17 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                     }}
                   >
                     {cand.summaryAI}
+                  </div>
+                  <div
+                    style={{
+                      whiteSpace: "normal",
+                      fontSize: "0.875rem",
+                      color: "#51a798",
+                      paddingTop: "4px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {cand.educationAI}
                   </div>
                 </div>
               </Box>

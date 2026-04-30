@@ -126,6 +126,10 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.summary_he = limitLen(analyzedCvResult.SummaryHe, 1000);
             analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
+            analyzeCv.profession = limitLen(analyzedCvResult.Profession, 200);
+            analyzeCv.education = limitLen(analyzedCvResult.Education, 500);
+            analyzeCv.military_service = limitLen(analyzedCvResult.MilitaryService, 250);
+            analyzeCv.seniority = limitLen(analyzedCvResult.Seniority, 50);
 
             _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }

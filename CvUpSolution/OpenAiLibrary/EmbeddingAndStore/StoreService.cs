@@ -109,10 +109,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
                         continue;
                     }
 
-                    var textToNormalize = string.Join(" ", cv.CurrentTitleHe, cv.SummaryHe);
+                   // var textToNormalize = string.Join(" ", cv.CurrentTitleHe, cv.SummaryHe);
 
-                   string normalized = normalizer.Normalize(textToNormalize);
-                    cv.NormelizedHe = normalized;
+                   //string normalized = normalizer.Normalize(textToNormalize);
+                   // cv.NormelizedHe = normalized;
 
                     var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
                     var vector = await _embedder.EmbedAsync(embedText);
@@ -162,6 +162,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["summary_en"] = new() { StringValue = cv.SummaryEn ?? "" },
                 ["summary_he"] = new() { StringValue = cv.SummaryHe ?? "" },
                 ["normelized_he"] = new() { StringValue = cv.NormelizedHe ?? "" },
+                ["profession"] = new() { StringValue = cv.Profession ?? "" },
+                ["education"] = new() { StringValue = cv.Education ?? "" },
+                ["militaryService"] = new() { StringValue = cv.MilitaryService ?? "" },
+                ["seniority"] = new() { StringValue = cv.Seniority ?? "" },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },
             };
         }

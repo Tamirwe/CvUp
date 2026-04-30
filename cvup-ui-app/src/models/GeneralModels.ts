@@ -62,6 +62,10 @@ export interface ICand {
   locationAI?: string;
   summaryAI?: string;
   skillsAI?: string[];
+  professionAI: string;
+  educationAI: string;
+  militaryServiceAI: string;
+  seniorityAI: string;
 }
 
 export interface ICandPosHistory {

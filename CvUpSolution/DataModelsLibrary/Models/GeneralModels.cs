@@ -145,7 +145,10 @@ namespace DataModelsLibrary.Models
         public string SummaryHe { get; set; } = "";
         public int? YearsExperience { get; set; }
         public string NormelizedHe { get; set; } = "";
-
+        public string? Profession { get; set; }
+        public string? Education { get; set; }
+        public string? MilitaryService { get; set; }
+        public string? Seniority { get; set; }
     }
 
     public class AiSearchResultModel
@@ -163,6 +166,10 @@ namespace DataModelsLibrary.Models
         public string Email { get; set; } = "";
         public string Phone { get; set; } = "";
         public List<string>? Skills { get; set; }
+        public string? Profession { get; set; }
+        public string? Education { get; set; }
+        public string? MilitaryService { get; set; }
+        public string? Seniority { get; set; }
     }
 
     public class SearchFilterModel

@@ -40,7 +40,7 @@ namespace DataModelsLibrary.Queries
 		                                FROM candidates cands 
 		                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
 		                                ORDER BY cands.id DESC 
-		                                LIMIT  13) AS tbl)";
+		                                LIMIT  33) AS tbl)";
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
@@ -116,26 +116,30 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = from ai in dbContext.ai_analyze_cvs
-                                  where ai.is_embedded == false 
-                                  select new EmbedCvDataModel
-                                  {
-                                      CandidateId = ai.candidate_id,
-                                      CvId = ai.cv_id,
-                                      Name = ai.name,
-                                      Email = ai.email,
-                                      Phone = ai.phone,
-                                      Location = ai.city,
-                                      Region = ai.region,
-                                      Area = ai.area,
-                                      Languages = ai.languages,
-                                      CurrentTitleEn = ai.current_title_en ?? "",
-                                      CurrentTitleHe = ai.current_title_he ?? "",
-                                      Companies = ai.companies,
-                                      Skills = StringToList(ai.skills),
-                                      SummaryEn = ai.summary_en ?? "",
-                                      SummaryHe = ai.summary_he ?? "",
-                                      YearsExperience = ai.years_experience,
-                                  };
+                            where ai.is_embedded == false
+                            select new EmbedCvDataModel
+                            {
+                                CandidateId = ai.candidate_id,
+                                CvId = ai.cv_id,
+                                Name = ai.name,
+                                Email = ai.email,
+                                Phone = ai.phone,
+                                Location = ai.city,
+                                Region = ai.region,
+                                Area = ai.area,
+                                Languages = ai.languages,
+                                CurrentTitleEn = ai.current_title_en ?? "",
+                                CurrentTitleHe = ai.current_title_he ?? "",
+                                Companies = ai.companies,
+                                Skills = StringToList(ai.skills),
+                                SummaryEn = ai.summary_en ?? "",
+                                SummaryHe = ai.summary_he ?? "",
+                                YearsExperience = ai.years_experience,
+                                Profession = ai.profession,
+                                Education = ai.education,
+                                MilitaryService = ai.military_service,
+                                Seniority = ai.seniority,
+                            };
 
                 List<EmbedCvDataModel> dataForEmbeeding = await query.Take(300).ToListAsync();
                 return dataForEmbeeding;

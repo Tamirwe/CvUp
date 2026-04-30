@@ -111,8 +111,8 @@ namespace OpenAiLibrary.Searcher
      collectionName: QdrantConfig.CollectionName,
      vector: queryVector,
      filter: qdrantFilter,
-     limit: (ulong)limit
-     //scoreThreshold: 0.55f    // drop candidates below this similarity score
+     limit: (ulong)limit,
+     scoreThreshold: 0.35f    // drop candidates below this similarity score
  );
 
             var results = hits.Select(MapToResult).ToList();
@@ -231,7 +231,10 @@ namespace OpenAiLibrary.Searcher
                 Companies = GetString(p, "companies"),
                 YearsExperience = (int)GetLong(p, "years_experience"),
                 Skills = GetList(p, "skills"),
-
+                Profession = GetString(p, "profession"),
+                Education = GetString(p, "education"),
+                MilitaryService = GetString(p, "militaryService"),
+                Seniority = GetString(p, "seniority"),
             };
         }
 

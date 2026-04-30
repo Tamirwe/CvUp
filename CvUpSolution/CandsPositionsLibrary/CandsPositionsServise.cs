@@ -147,13 +147,13 @@ namespace CandsPositionsLibrary
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
         {
-            var result = await _cvsPositionsQueries.GetPositionCandidate(companyId, candId,  positionId);
+            var result = await _cvsPositionsQueries.GetPositionCandidate(companyId, candId, positionId);
             return result;
         }
 
-        public async Task<List<CandModel?>> GetCandsList(int companyId,  List<int>? candsIds)
+        public async Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds)
         {
-            var result = await _cvsPositionsQueries.GetCandsList(companyId,  candsIds);
+            var result = await _cvsPositionsQueries.GetCandsList(companyId, candsIds);
             return result;
         }
 
@@ -332,7 +332,7 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
             //await SaveCandidateToIndex(companyId, candReview.candidateId);
 
-            Task backgroundTask =   Task.Run(() => SaveCandidateToIndex(companyId, candReview.candidateId));
+            Task backgroundTask = Task.Run(() => SaveCandidateToIndex(companyId, candReview.candidateId));
 
         }
 
@@ -479,10 +479,10 @@ namespace CandsPositionsLibrary
 
         public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
         {
-             await _cvsPositionsQueries.UpdateBlackCandidateEmailCount( blackCand);
+            await _cvsPositionsQueries.UpdateBlackCandidateEmailCount(blackCand);
         }
 
-        public List<CandModel> MergeAiResultsWithCandsList( List<CandModel>  candsList, List<AiSearchResultModel> aiResults)
+        public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<AiSearchResultModel> aiResults)
         {
             foreach (var cand in candsList)
             {
@@ -498,11 +498,16 @@ namespace CandsPositionsLibrary
                         cand.LocationAI = aiItem.Location;
                         cand.SummaryAI = aiItem.Summary;
                         cand.SkillsAI = aiItem.Skills;
+                        cand.ProfessionAI = aiItem.Profession;
+                        cand.EducationAI = aiItem.Education;
+                        cand.MilitaryServiceAI = aiItem.MilitaryService;
+                        cand.SeniorityAI = aiItem.Seniority;
+                        cand.score = (int)(aiItem.Score * 1000);
                     }
                 }
             }
 
-            return candsList;
+            return candsList.OrderByDescending(x => x.score).ToList();
         }
     }
 }

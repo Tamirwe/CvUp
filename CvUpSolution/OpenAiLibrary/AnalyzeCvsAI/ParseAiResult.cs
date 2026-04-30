@@ -50,6 +50,10 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     SummaryHe = obj.Value<string>("summary_he") ?? "",
                     YearsExperience = myParseInt(obj.Value<string>("years_experience")),
                     Languages = obj.Value<string>("languages"),
+                    Profession = obj.Value<string>("profession_he"),
+                    Education = obj.Value<string>("education_he"),
+                    MilitaryService = obj.Value<string>("military_service_he"),
+                    Seniority = obj.Value<string>("seniority_he"),
                 };
             }
             catch (Exception ex)

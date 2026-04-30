@@ -20,6 +20,10 @@ Return JSON בלבד בפורמט הבא:
   "languages":"",
   "current_title_en":"",
   "current_title_he":"",
+  "profession_he",
+  "education_he",
+  "military_service_he",
+  "seniority_he",
   "companies": [], // name only
   "skills": [],
   "summary_en": "",

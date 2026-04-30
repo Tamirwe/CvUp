@@ -32,7 +32,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 cv.Companies,
                 cv.SummaryEn,
                 cv.SummaryHe,
-                cv.NormelizedHe,
+                cv.Profession,
+                cv.Education,
+                cv.MilitaryService,
+                cv.Seniority,
                 cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
             ).Trim();
     }

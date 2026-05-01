@@ -29,7 +29,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             if (start >= 0 && end > start)
                 json = json[start..(end + 1)];
 
-            json = EscapeUnbalancedQuotes(json);
+            json = FixUnbalancedQuotes(json);
 
             try
             {
@@ -72,6 +72,32 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 return result;
             }
             return null;
+        }
+
+        public static string FixUnbalancedQuotes(string json)
+        {
+            bool inString = false;
+            var result = new System.Text.StringBuilder();
+
+            for (int i = 0; i < json.Length; i++)
+            {
+                char c = json[i];
+
+                if (c == '"' && (i == 0 || json[i - 1] != '\\'))
+                {
+                    inString = !inString;
+                }
+
+                result.Append(c);
+            }
+
+            // If still inside string → close it
+            if (inString)
+            {
+                result.Append('"');
+            }
+
+            return result.ToString();
         }
 
         public static string EscapeUnbalancedQuotes(string input)

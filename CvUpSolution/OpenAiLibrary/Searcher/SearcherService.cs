@@ -2,6 +2,7 @@
 using OpenAiLibrary.EmbeddingAndStore;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
+using System.Collections.Generic;
 
 namespace OpenAiLibrary.Searcher
 {
@@ -101,25 +102,36 @@ namespace OpenAiLibrary.Searcher
             Console.WriteLine(ResultPrinter.reverseStr($"\n\n חיפוש:\"{query}\" \n\n"));
 
             // Embed the Hebrew query using the same model as ingestion
-            var queryVector = await _embedder.EmbedAsync(query);
+            var embedding = await _embedder.EmbedAsync(query);
 
             // Build Qdrant filter from structured filter object
             var qdrantFilter = BuildFilter(filter);
 
             // Search
             var hits = await _qdrant.SearchAsync(
-     collectionName: QdrantConfig.CollectionName,
-     vector: queryVector,
-     filter: qdrantFilter,
-     limit: (ulong)limit,
-     scoreThreshold: 0.35f    // drop candidates below this similarity score
- );
+                     collectionName: QdrantConfig.CollectionName,
+                     vector: embedding,
+                     filter: qdrantFilter,
+                     limit: (ulong)limit,
+                     scoreThreshold: 0.35f    // drop candidates below this similarity score
+                 );
 
             var results = hits.Select(MapToResult).ToList();
 
             Console.WriteLine($"[✓] Found {results.Count} candidates.");
             return results;
         }
+
+
+        //var ghghg = (await _qdrant.QueryAsync(
+        //     collectionName: QdrantConfig.CollectionName,
+        //     query: new Query { Nearest = new VectorInput(embedding) },
+        //     limit: (ulong)limit
+        // //withPayload: true
+        // )).ToList();
+
+        //// Build Qdrant filter from structured filter object
+        //var results2 = ghghg.Select(MapToResult).ToList();
 
         // ── Filter builder ────────────────────────────────────────────────────────
 

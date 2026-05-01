@@ -10,6 +10,8 @@ Requirements:
 4. Do NOT invent information
 5. If missing → return empty value
 
+
+
 Return JSON בלבד בפורמט הבא:
 
 {
@@ -28,6 +30,9 @@ Return JSON בלבד בפורמט הבא:
   "skills": [],
   "summary_en": "",
   "summary_he": "",
-  "years_experience": null
+  "years_experience": null,
+  "search_text":""
 }
 
+For search_text:  combining all possible synonyms key words for profession, skills, and titles — include Hebrew and English
+This will be used for semantic search.

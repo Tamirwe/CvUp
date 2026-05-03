@@ -137,18 +137,23 @@ namespace DataModelsLibrary.Models
         public string? Region { get; set; }
         public string? Area { get; set; }
         public string? Languages { get; set; }
-        public string? CurrentTitleEn { get; set; }
-        public string? CurrentTitleHe { get; set; }
+        public string? CurrentJobTitleEn { get; set; }
+        public string? CurrentJobTitleHe { get; set; }
+
+        public List<string>? professionWordsEn { get; set; }
+        public List<string>? professionWordsHe { get; set; }
+        public List<string>? professionSkillsEn { get; set; }
+        public List<string>? professionSkillsHe { get; set; }
+        public string? Seniority { get; set; }
+        public string? Education { get; set; }
+
+
         public string? Companies { get; set; }
         public List<string>? Skills { get; set; }
+        public string? MilitaryService { get; set; }
         public string SummaryEn { get; set; } = "";
         public string SummaryHe { get; set; } = "";
         public int? YearsExperience { get; set; }
-        public string NormelizedHe { get; set; } = "";
-        public string? Profession { get; set; }
-        public string? Education { get; set; }
-        public string? MilitaryService { get; set; }
-        public string? Seniority { get; set; }
     }
 
     public class AiSearchResultModel

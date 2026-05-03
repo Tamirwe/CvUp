@@ -1,12 +1,16 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using FuzzySharp;
 using Google.Protobuf;
+using MailKit.Search;
+using MySqlX.XDevAPI.CRUD;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
 using OpenAiLibrary.EmbeddingAndStore;
 using OpenAiLibrary.Models;
+using Org.BouncyCastle.Utilities;
 using Ubiety.Dns.Core;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
@@ -43,6 +47,11 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             {
                 try
                 {
+                    if (string.IsNullOrWhiteSpace(candCv.cvTxt) )
+                    {
+                        continue;
+                    }            
+
                     var cvLanguage = LanguageDetector.Detect(candCv.cvTxt ?? "");
 
                     var messages = new List<ChatMessage>
@@ -66,14 +75,12 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     AnalyzedCv.CandidateId = candCv.candidateId;
                     AnalyzedCv.CvId = candCv.id;
 
-                    if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
+                    (string?, string?) areaRegion = FindAreaRegion(AnalyzedCv.cityHe);
+
+                    if (areaRegion.Item1 != null)
                     {
-                        var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
-                        if (locationRecord != null)
-                        {
-                            AnalyzedCv.Region = locationRecord.region;
-                            AnalyzedCv.Area = locationRecord.area;
-                        }
+                        AnalyzedCv.Region = areaRegion.Item1;
+                        AnalyzedCv.Area = areaRegion.Item2;
                     }
 
                     SaveAnalyzedCv(AnalyzedCv);
@@ -81,10 +88,37 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 }
                 catch (Exception ex)
                 {
-                    //throw ex;
+                    throw ex;
 
                 }
             }
+        }
+
+        private (string?,string?) FindAreaRegion(string? location)
+        {
+            string? area = null, region=null;
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                location = location.Replace("קיבוץ", "").Replace("קריית","קרית").Trim();
+                location = location.Contains("תל אביב") ? "תל אביב - יפו" : location;
+
+
+                IsraeliCitiesModel? locationRecord = citiesRegion.FirstOrDefault(x => x.city == location);
+
+                if (locationRecord == null)
+                {
+                    locationRecord = citiesRegion.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
+                }
+
+                if (locationRecord != null)
+                {
+                    area = locationRecord.region;
+                    region = locationRecord.area;
+                }
+            }
+
+            return (area, region);
         }
 
         public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
@@ -115,21 +149,24 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
             analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
             analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
-            analyzeCv.city = limitLen(analyzedCvResult.Location, 50);
+            analyzeCv.city = limitLen(analyzedCvResult.cityHe, 50);
             analyzeCv.region = limitLen(analyzedCvResult.Region, 20);
             analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
-            analyzeCv.current_title_en = limitLen(analyzedCvResult.CurrentTitleEn, 100);
-            analyzeCv.current_title_he = limitLen(analyzedCvResult.CurrentTitleHe, 100);
-            analyzeCv.companies = limitLen(string.Join(", ", analyzedCvResult.Companies), 1000);
-            analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 1000);
+            analyzeCv.languages = limitLen(analyzedCvResult.Languages, 150);
+            analyzeCv.current_job_title_en = limitLen(analyzedCvResult.currentJobTitleEn, 100);
+            analyzeCv.current_job_title_he = limitLen(analyzedCvResult.currentJobTitleHe, 100);
+            analyzeCv.profession_words_en = limitLen(string.Join(", ", analyzedCvResult.professionWordsEn), 500);
+            analyzeCv.profession_words_he = limitLen(string.Join(", ", analyzedCvResult.professionWordsHe), 500);
+            analyzeCv.profession_skills_en = limitLen(string.Join(", ", analyzedCvResult.professionSkillsEn), 500);
+            analyzeCv.profession_skills_he = limitLen(string.Join(", ", analyzedCvResult.professionSkillsHe), 500);
+            analyzeCv.seniority = limitLen(analyzedCvResult.Seniority, 50);
+            analyzeCv.education = limitLen(string.Join(", ", analyzedCvResult.Education), 500);
+            analyzeCv.companies = limitLen(string.Join(", ", analyzedCvResult.Companies), 500);
+            analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 600);
+            analyzeCv.military_service = limitLen(analyzedCvResult.MilitaryService, 250);
             analyzeCv.summary_en = limitLen(analyzedCvResult.SummaryEn, 1000);
             analyzeCv.summary_he = limitLen(analyzedCvResult.SummaryHe, 1000);
-            analyzeCv.languages = limitLen( analyzedCvResult.Languages, 150);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
-            analyzeCv.profession = limitLen(analyzedCvResult.Profession, 200);
-            analyzeCv.education = limitLen(analyzedCvResult.Education, 500);
-            analyzeCv.military_service = limitLen(analyzedCvResult.MilitaryService, 250);
-            analyzeCv.seniority = limitLen(analyzedCvResult.Seniority, 50);
 
             _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
@@ -181,18 +218,18 @@ CV:
             var json = response.Value.Content[0].Text;
 
             var AnalyzedCv = ParseAiResult.ParseResult(json);
-            AnalyzedCv.CvLanguage = cvLanguage;
+            //AnalyzedCv.CvLanguage = cvLanguage;
             AnalyzedCv.CandidateId = candidateId;
 
-            if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
-            {
-                var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
-                if (locationRecord != null)
-                {
-                    AnalyzedCv.Region = locationRecord.region;
-                    AnalyzedCv.Area = locationRecord.area;
-                }
-            }
+            //if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
+            //{
+            //    var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
+            //    if (locationRecord != null)
+            //    {
+            //        AnalyzedCv.Region = locationRecord.region;
+            //        AnalyzedCv.Area = locationRecord.area;
+            //    }
+            //}
 
             return AnalyzedCv;
         }

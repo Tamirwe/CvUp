@@ -5,7 +5,7 @@ using OpenAiLibrary.Models;
 namespace OpenAiLibrary.EmbeddingAndStore
 {
 
-    public class OpenAiEmbedderService: IOpenAiEmbedderService
+    public class OpenAiEmbedderService : IOpenAiEmbedderService
     {
         private readonly EmbeddingClient _client;
 
@@ -23,19 +23,22 @@ namespace OpenAiLibrary.EmbeddingAndStore
         // Build a clean searchable string from the analyzed CV
         public static string BuildEmbedText(EmbedCvDataModel cv) =>
             string.Join(" ",
-                cv.Location,
-                //$"Region {cv.Region}",
-                // $"Area {cv.Area}",
-                cv.CurrentTitleEn,
-                cv.CurrentTitleHe,
-                cv.Skills != null? string.Join(" ", cv.Skills ):"",
-                cv.Companies,
-                cv.SummaryEn,
-                cv.SummaryHe,
-                cv.Profession,
-                cv.Education,
-                cv.MilitaryService,
-                cv.Seniority,
+                cv.Location ?? "",
+                cv.Region ?? "",
+                cv.Area ?? "",
+                cv.CurrentJobTitleEn,
+                cv.CurrentJobTitleHe,
+                cv.professionWordsEn != null ? string.Join(" ", cv.professionWordsEn) : "",
+                cv.professionWordsHe != null ? string.Join(" ", cv.professionWordsHe) : "",
+                cv.professionSkillsEn != null ? string.Join(" ", cv.professionSkillsEn) : "",
+                cv.professionSkillsHe != null ? string.Join(" ", cv.professionSkillsHe) : "",
+                cv.Seniority ?? "",
+                cv.Education ?? "",
+                cv.Companies ?? "",
+                cv.Skills != null ? string.Join(" ", cv.Skills) : "",
+                cv.MilitaryService ?? "",
+                cv.SummaryEn ?? "",
+                cv.SummaryHe ?? "",
                 cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
             ).Trim();
     }

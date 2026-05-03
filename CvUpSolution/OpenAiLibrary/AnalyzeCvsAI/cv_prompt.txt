@@ -2,37 +2,73 @@
 
 Your task:
 Analyze a CV and extract structured data for search and matching.
+the search could be in BOTH Hebrew and English.
 
 Requirements:
 1. Return BOTH Hebrew and English versions of the data
-2. Hebrew should be natural and readable
+2. Hebrew should be natural and readable, No ניקוד
 3. English should preserve original technical terms (do not translate technologies like Python, SQL)
 4. Do NOT invent information
 5. If missing → return empty value
 
+IMPORTANT RULES:
+- Apply MALE FORM (לשון זכר) ONLY to:
+  1. current_job_title
+  2. profession_words
+  3. profession_skills
+- Do NOT change grammatical form for any other fields.
+
+- If the CV is written in female form:
+  - Convert ONLY the current_job_title, profession_words and profession_skills to male form.
+  - Leave summary_he, military_service_he, education_he, and other fields unchanged.
+
+- In current_job_title, profession_words and profession_skills:
+  - Rewrite all verbs, adjectives, and roles in male form 
+    (e.g. "מפתחת" → "מפתח", "ניהלה צוות" → "ניהל צוות").
 
 
-Return JSON בלבד בפורמט הבא:
+Seniority rules:
+- Extract and normalize seniority into ONE of the following values בלבד:
+  ["ג'וניור", "מיד", "סניור", "ליד", "מנהל"]
+
+- Map variations to these values, for example:
+  - "junior", "entry level", "graduate" → "ג'וניור"
+  - "mid", "mid-level", no seniority mentioned but 2–4 years experience → "מיד"
+  - "senior", "Sr.", 5+ years experience → "סניור"
+  - "team lead", "tech lead", "lead developer" → "ליד"
+  - "manager", "head of", "director", "VP" → "מנהל"
+
+- If seniority is not explicitly written:
+- Infer it based on years of experience and roles.
+
+- Always return the value in Hebrew only.
+
+Additional instructions:
+- Normalize Hebrew and English terms (e.g. "מפתח" → "developer").
+- Infer missing data when reasonable (e.g. seniority from experience).
+
+
+
+
+Return the result in JSON format only.
 
 {
   "name": "",
-   "email": "",
+  "email": "",
   "phone": "",
   "city_he": "",
   "languages":"",
-  "current_title_en":"",
-  "current_title_he":"",
-  "profession_he",
-  "education_he",
-  "military_service_he",
-  "seniority_he",
+  "current_job_title":"", hebrew and english like this "רואה חשבון :: CFO"
+  "profession_words":[], // words that describe profession in hebrew and english like this "יוצר תוכן :: Content Creator"
+  "profession_skills":[] // words that describe the profession skils in hebrew and english like this "תמיכה טכנית :: Technical Support"
+  "seniority":"",
+  "education_he":[],
   "companies": [], // name only
   "skills": [],
+  "military_service_he":"",
   "summary_en": "",
   "summary_he": "",
   "years_experience": null,
-  "search_text":""
+ 
 }
 
-For search_text:  combining all possible synonyms key words for profession, skills, and titles — include Hebrew and English
-This will be used for semantic search.

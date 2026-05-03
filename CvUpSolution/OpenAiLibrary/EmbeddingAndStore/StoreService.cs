@@ -104,15 +104,15 @@ namespace OpenAiLibrary.EmbeddingAndStore
             {
                 foreach (var cv in cvs)
                 {
-                    if (string.IsNullOrEmpty(cv.CurrentTitleHe) && string.IsNullOrEmpty(cv.SummaryHe))
+                    if (string.IsNullOrEmpty(cv.CurrentJobTitleHe) && string.IsNullOrEmpty(cv.SummaryHe))
                     {
                         continue;
                     }
 
-                   // var textToNormalize = string.Join(" ", cv.CurrentTitleHe, cv.SummaryHe);
+                    // var textToNormalize = string.Join(" ", cv.CurrentTitleHe, cv.SummaryHe);
 
-                   //string normalized = normalizer.Normalize(textToNormalize);
-                   // cv.NormelizedHe = normalized;
+                    //string normalized = normalizer.Normalize(textToNormalize);
+                    // cv.NormelizedHe = normalized;
 
                     var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
                     var vector = await _embedder.EmbedAsync(embedText);
@@ -135,13 +135,38 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
         private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(EmbedCvDataModel cv)
         {
-            var skillValues = cv.Skills != null? cv.Skills
-                .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
-                .ToList() : [];
 
             var skillsList = new Qdrant.Client.Grpc.ListValue();
+            var professionWordsEnList = new Qdrant.Client.Grpc.ListValue();
+            var professionWordsHeList = new Qdrant.Client.Grpc.ListValue();
+            var professionSkillsEnList = new Qdrant.Client.Grpc.ListValue();
+            var professionSkillsHeList = new Qdrant.Client.Grpc.ListValue();
 
+            var skillValues = cv.Skills != null ? cv.Skills
+               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
+               .ToList() : [];
             skillsList.Values.AddRange(skillValues);
+
+            var professionWordsEnValues = cv.professionWordsEn != null ? cv.professionWordsEn
+               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
+               .ToList() : [];
+            professionWordsEnList.Values.AddRange(skillValues);
+
+            var professionWordsHeValues = cv.professionWordsHe != null ? cv.professionWordsHe
+               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
+               .ToList() : [];
+            professionWordsHeList.Values.AddRange(professionWordsHeValues);
+
+            var professionSkillsEnValues = cv.professionSkillsEn != null ? cv.professionSkillsEn
+               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
+               .ToList() : [];
+            professionSkillsEnList.Values.AddRange(professionSkillsEnValues);
+
+            var professionSkillsHeValues = cv.professionSkillsHe != null ? cv.professionSkillsHe
+               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s })
+               .ToList() : [];
+            professionSkillsHeList.Values.AddRange(professionSkillsHeValues);
+
 
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
@@ -153,19 +178,21 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["location"] = new() { StringValue = cv.Location ?? "" },
                 ["Region"] = new() { StringValue = cv.Region ?? "" },
                 ["Area"] = new() { StringValue = cv.Area ?? "" },
-                ["skills"] = new() { ListValue = skillsList },
-                ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
-                ["current_title_en"] = new() { StringValue = cv.CurrentTitleEn ?? "" },
-                ["current_title_he"] = new() { StringValue = cv.CurrentTitleHe ?? "" },
                 ["languages"] = new() { StringValue = cv.Languages ?? "" },
+                ["current_job_title_en"] = new() { StringValue = cv.CurrentJobTitleEn ?? "" },
+                ["current_job_title_he"] = new() { StringValue = cv.CurrentJobTitleHe ?? "" },
+                ["profession_words_en"] = new() { ListValue = professionWordsEnList },
+                ["profession_words_he"] = new() { ListValue = professionWordsHeList },
+                ["profession_skills_en"] = new() { ListValue = professionSkillsEnList },
+                ["profession_skills_he"] = new() { ListValue = professionSkillsHeList },
+                ["seniority"] = new() { StringValue = cv.Seniority ?? "" },
+                ["education"] = new() { StringValue = cv.Education ?? "" },
                 ["companies"] = new() { StringValue = cv.Companies ?? "" },
+                ["skills"] = new() { ListValue = skillsList },
+                ["militaryService"] = new() { StringValue = cv.MilitaryService ?? "" },
                 ["summary_en"] = new() { StringValue = cv.SummaryEn ?? "" },
                 ["summary_he"] = new() { StringValue = cv.SummaryHe ?? "" },
-                ["normelized_he"] = new() { StringValue = cv.NormelizedHe ?? "" },
-                ["profession"] = new() { StringValue = cv.Profession ?? "" },
-                ["education"] = new() { StringValue = cv.Education ?? "" },
-                ["militaryService"] = new() { StringValue = cv.MilitaryService ?? "" },
-                ["seniority"] = new() { StringValue = cv.Seniority ?? "" },
+                ["years_experience"] = new() { IntegerValue = cv.YearsExperience ?? 0 },
                 ["indexed_at"] = new() { StringValue = DateTime.UtcNow.ToString("o") },
             };
         }

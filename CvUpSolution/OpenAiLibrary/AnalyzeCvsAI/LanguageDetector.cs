@@ -1,10 +1,9 @@
 ﻿namespace OpenAiLibrary.AnalyzeCvsAI
 {
-    public enum CvLanguage { Hebrew, English, Mixed }
 
     internal static class LanguageDetector
     {
-        public static CvLanguage Detect(string text)
+        public static string Detect(string text)
         {
             int total = 0;
             int hebrew = 0;
@@ -20,14 +19,14 @@
                 }
             }
 
-            if (total == 0) return CvLanguage.English;
+            if (total == 0) return "English";
 
             double hebrewRatio = (double)hebrew / total;
             double englishRatio = (double)english / total;
 
-            if (hebrewRatio > 0.6) return CvLanguage.Hebrew;
-            if (englishRatio > 0.6) return CvLanguage.English;
-            return CvLanguage.Mixed;
+            if (hebrewRatio > 0.6) return "Hebrew";
+            if (englishRatio > 0.6) return "English";
+            return "Mixed";
         }
     }
 }

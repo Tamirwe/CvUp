@@ -75,11 +75,11 @@ namespace Database.models
 
                 entity.Property(e => e.city).HasMaxLength(50);
 
-                entity.Property(e => e.companies).HasMaxLength(1000);
+                entity.Property(e => e.companies).HasMaxLength(500);
 
-                entity.Property(e => e.current_title_en).HasMaxLength(100);
+                entity.Property(e => e.current_job_title_en).HasMaxLength(100);
 
-                entity.Property(e => e.current_title_he).HasMaxLength(100);
+                entity.Property(e => e.current_job_title_he).HasMaxLength(100);
 
                 entity.Property(e => e.date_created)
                     .HasColumnType("datetime")
@@ -97,19 +97,25 @@ namespace Database.models
 
                 entity.Property(e => e.languages).HasMaxLength(150);
 
-                entity.Property(e => e.military_service).HasMaxLength(500);
+                entity.Property(e => e.military_service).HasMaxLength(250);
 
                 entity.Property(e => e.name).HasMaxLength(101);
 
                 entity.Property(e => e.phone).HasMaxLength(20);
 
-                entity.Property(e => e.profession).HasMaxLength(200);
+                entity.Property(e => e.profession_skills_en).HasMaxLength(500);
+
+                entity.Property(e => e.profession_skills_he).HasMaxLength(500);
+
+                entity.Property(e => e.profession_words_en).HasMaxLength(500);
+
+                entity.Property(e => e.profession_words_he).HasMaxLength(500);
 
                 entity.Property(e => e.region).HasMaxLength(20);
 
                 entity.Property(e => e.seniority).HasMaxLength(50);
 
-                entity.Property(e => e.skills).HasMaxLength(1000);
+                entity.Property(e => e.skills).HasMaxLength(600);
 
                 entity.Property(e => e.summary_en).HasMaxLength(1000);
 

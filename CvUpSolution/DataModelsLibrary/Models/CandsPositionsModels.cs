@@ -128,15 +128,16 @@ namespace DataModelsLibrary.Models
         public CandPosHistoryModel? candPosHistory { get; set; }
         public bool isBlackList { get; set; } = false;
         public string? NameAI { get; set; }
-        public string? CompaniesAI { get; set; }
-        public string? CurrentTitleAI { get; set; }
         public string? LocationAI { get; set; }
-        public string? SummaryAI { get; set; }
-        public List<string>? SkillsAI { get; set; }
-        public string? ProfessionAI { get; set; }
-        public string? EducationAI { get; set; }
-        public string? MilitaryServiceAI { get; set; }
+        public string? CurrentTitleAI { get; set; }
+        public List<string> ProfessionWordsAI { get; set; } = [];
+        public List<string> ProfessionSkillsAI { get; set; } = [];
         public string? SeniorityAI { get; set; }
+        public string? EducationAI { get; set; }
+        public string? CompaniesAI { get; set; }
+        public string? MilitaryServiceAI { get; set; }
+        public List<string> SkillsAI { get; set; } = [];
+        public string? SummaryAI { get; set; }
     }
 
 

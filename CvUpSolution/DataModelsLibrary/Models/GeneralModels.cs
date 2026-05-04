@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Models
 {
-   public class IdNameModel
+    public class IdNameModel
     {
-        public int id { get; set; }= 0;
+        public int id { get; set; } = 0;
         public string name { get; set; } = string.Empty;
     }
 
@@ -90,9 +90,9 @@ namespace DataModelsLibrary.Models
     {
         public int id { get; set; } = 0;
         public DateTime statisticDate { get; set; }
-        public int open { get; set; } 
-        public int high { get; set; } 
-        public int low { get; set; } 
+        public int open { get; set; }
+        public int high { get; set; }
+        public int low { get; set; }
         public int close { get; set; }
         public int dayPoints { get; set; }
 
@@ -137,45 +137,50 @@ namespace DataModelsLibrary.Models
         public string? Region { get; set; }
         public string? Area { get; set; }
         public string? Languages { get; set; }
-        public string? CurrentTitleEn { get; set; }
-        public string? CurrentTitleHe { get; set; }
+        public string? CurrentJobTitleEn { get; set; }
+        public string? CurrentJobTitleHe { get; set; }
+
+        public List<string>? ProfessionWordsEn { get; set; } = [];
+        public List<string>? ProfessionWordsHe { get; set; } = [];
+        public List<string>? ProfessionSkillsEn { get; set; } = [];
+        public List<string>? ProfessionSkillsHe { get; set; } = [];
+        public string? Seniority { get; set; }
+        public string? Education { get; set; }
         public string? Companies { get; set; }
-        public List<string>? Skills { get; set; }
+        public List<string>? Skills { get; set; } = [];
+        public string? MilitaryService { get; set; }
         public string SummaryEn { get; set; } = "";
         public string SummaryHe { get; set; } = "";
         public int? YearsExperience { get; set; }
-        public string NormelizedHe { get; set; } = "";
-        public string? Profession { get; set; }
-        public string? Education { get; set; }
-        public string? MilitaryService { get; set; }
-        public string? Seniority { get; set; }
     }
 
     public class AiSearchResultModel
     {
         public ulong Id { get; set; }
+        public int CandidateId { get; set; }
         public float Score { get; set; }
         public string Name { get; set; } = "";
-        public int CandidateId { get; set; }
-        public required string CvId { get; set; }
-        public string? Companies { get; set; }
-        public string CurrentTitle { get; set; } = "";
-        public string Location { get; set; } = "";
-        public int YearsExperience { get; set; }
-        public string Summary { get; set; } = "";
         public string Email { get; set; } = "";
         public string Phone { get; set; } = "";
-        public List<string>? Skills { get; set; }
-        public string? Profession { get; set; }
-        public string? Education { get; set; }
-        public string? MilitaryService { get; set; }
+        public required string CvId { get; set; }
+        public string Location { get; set; } = "";
+        public string CurrentTitle { get; set; } = "";
+        public List<string>? ProfessionWords { get; set; } = [];
+        public List<string> ProfessionSkills { get; set; } = [];
         public string? Seniority { get; set; }
+        public string? Education { get; set; }
+        public string? Companies { get; set; }
+        public List<string> Skills { get; set; } = [];
+        public string? MilitaryService { get; set; }
+        public string Summary { get; set; } = "";
+        public int YearsExperience { get; set; }
     }
 
     public class SearchFilterModel
     {
         public string? Seniority { get; set; }  // "Senior", "Mid", "Junior", "Lead"
         public string? Location { get; set; }  // "תל אביב"
+        public string? Area { get; set; }  // "צפון, מרכז, דרום"
         public List<string>? RequiredSkills { get; set; }  // ["React", "C#"]
         public int? MinYearsExperience { get; set; }
         public int? MaxYearsExperience { get; set; }

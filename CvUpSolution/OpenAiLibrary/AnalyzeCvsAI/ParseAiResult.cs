@@ -29,7 +29,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             if (start >= 0 && end > start)
                 json = json[start..(end + 1)];
 
-            json = EscapeUnbalancedQuotes(json);
+            json = FixUnbalancedQuotes(json);
 
             try
             {
@@ -41,19 +41,19 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     Name = obj.Value<string>("name"),
                     Email = obj.Value<string>("email"),
                     Phone = obj.Value<string>("phone"),
-                    Location = obj.Value<string>("city_he"),
-                    CurrentTitleEn = obj.Value<string>("current_title_en"),
-                    CurrentTitleHe = obj.Value<string>("current_title_he"),
+                    cityHe = obj.Value<string>("city_he"),
+                    Languages = obj.Value<string>("languages"),
+                    currentJobTitle = obj.Value<string>("current_job_title"),
+                    professionWords = obj["profession_words"]?.ToObject<List<string>>() ?? [],
+                    professionSkills = obj["profession_skills"]?.ToObject<List<string>>() ?? [],
+                    Seniority = obj.Value<string>("seniority"),
+                    Education = obj["education_he"]?.ToObject<List<string>>() ?? [],
                     Companies = obj["companies"]?.ToObject<List<string>>() ?? [],
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
+                    MilitaryService = obj.Value<string>("military_service_he"),
                     SummaryEn = obj.Value<string>("summary_en") ?? "",
                     SummaryHe = obj.Value<string>("summary_he") ?? "",
                     YearsExperience = myParseInt(obj.Value<string>("years_experience")),
-                    Languages = obj.Value<string>("languages"),
-                    Profession = obj.Value<string>("profession_he"),
-                    Education = obj.Value<string>("education_he"),
-                    MilitaryService = obj.Value<string>("military_service_he"),
-                    Seniority = obj.Value<string>("seniority_he"),
                 };
             }
             catch (Exception ex)
@@ -72,6 +72,32 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 return result;
             }
             return null;
+        }
+
+        public static string FixUnbalancedQuotes(string json)
+        {
+            bool inString = false;
+            var result = new System.Text.StringBuilder();
+
+            for (int i = 0; i < json.Length; i++)
+            {
+                char c = json[i];
+
+                if (c == '"' && (i == 0 || json[i - 1] != '\\'))
+                {
+                    inString = !inString;
+                }
+
+                result.Append(c);
+            }
+
+            // If still inside string → close it
+            if (inString)
+            {
+                result.Append('"');
+            }
+
+            return result.ToString();
         }
 
         public static string EscapeUnbalancedQuotes(string input)

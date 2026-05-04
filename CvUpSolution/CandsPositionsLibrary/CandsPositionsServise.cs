@@ -493,15 +493,16 @@ namespace CandsPositionsLibrary
                     if (aiItem != null)
                     {
                         cand.NameAI = aiItem.Name;
-                        cand.CompaniesAI = aiItem.Companies;
-                        cand.CurrentTitleAI = aiItem.CurrentTitle;
                         cand.LocationAI = aiItem.Location;
-                        cand.SummaryAI = aiItem.Summary;
-                        cand.SkillsAI = aiItem.Skills;
-                        cand.ProfessionAI = aiItem.Profession;
-                        cand.EducationAI = aiItem.Education;
-                        cand.MilitaryServiceAI = aiItem.MilitaryService;
+                        cand.CurrentTitleAI = aiItem.CurrentTitle;
+                        cand.ProfessionWordsAI = aiItem.ProfessionWords;
+                        cand.ProfessionSkillsAI = aiItem.ProfessionSkills;
                         cand.SeniorityAI = aiItem.Seniority;
+                        cand.EducationAI = aiItem.Education;
+                        cand.CompaniesAI = aiItem.Companies;
+                        cand.MilitaryServiceAI = aiItem.MilitaryService;
+                        cand.SkillsAI = aiItem.Skills;
+                        cand.SummaryAI = aiItem.Summary;
                         cand.score = (int)(aiItem.Score * 1000);
                     }
                 }

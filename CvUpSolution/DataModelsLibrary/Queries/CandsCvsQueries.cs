@@ -61,11 +61,11 @@ namespace DataModelsLibrary.Queries
 
         }
 
-        public async Task DeleteCandidateAnalyzeCv( int candidateId)
+        public async Task DeleteCandidateAnalyzeCv(int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                ai_analyze_cv? analyzeTodelete = await dbContext.ai_analyze_cvs.FirstOrDefaultAsync(x =>  x.candidate_id == candidateId);
+                ai_analyze_cv? analyzeTodelete = dbContext.ai_analyze_cvs.FirstOrDefault(x => x.candidate_id == candidateId);
 
                 if (analyzeTodelete != null)
                 {
@@ -128,17 +128,20 @@ namespace DataModelsLibrary.Queries
                                 Region = ai.region,
                                 Area = ai.area,
                                 Languages = ai.languages,
-                                CurrentTitleEn = ai.current_title_en ?? "",
-                                CurrentTitleHe = ai.current_title_he ?? "",
+                                CurrentJobTitleEn = ai.current_job_title_en ?? "",
+                                CurrentJobTitleHe = ai.current_job_title_he ?? "",
+                                ProfessionWordsEn = StringToList(ai.profession_words_en),
+                                ProfessionWordsHe = StringToList(ai.profession_words_he),
+                                ProfessionSkillsEn = StringToList(ai.profession_skills_en),
+                                ProfessionSkillsHe = StringToList(ai.profession_skills_he),
+                                Seniority = ai.seniority,
+                                Education = ai.education,
                                 Companies = ai.companies,
                                 Skills = StringToList(ai.skills),
+                                MilitaryService = ai.military_service,
                                 SummaryEn = ai.summary_en ?? "",
                                 SummaryHe = ai.summary_he ?? "",
                                 YearsExperience = ai.years_experience,
-                                Profession = ai.profession,
-                                Education = ai.education,
-                                MilitaryService = ai.military_service,
-                                Seniority = ai.seniority,
                             };
 
                 List<EmbedCvDataModel> dataForEmbeeding = await query.Take(300).ToListAsync();

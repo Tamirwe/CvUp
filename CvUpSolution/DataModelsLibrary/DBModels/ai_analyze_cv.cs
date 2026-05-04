@@ -14,21 +14,24 @@ namespace Database.models
         public string? city { get; set; }
         public string? region { get; set; }
         public string? area { get; set; }
-        public string? current_title_en { get; set; }
-        public string? current_title_he { get; set; }
+        public string? languages { get; set; }
+        public string? current_job_title_en { get; set; }
+        public string? current_job_title_he { get; set; }
+        public string? profession_words_en { get; set; }
+        public string? profession_words_he { get; set; }
+        public string? profession_skills_en { get; set; }
+        public string? profession_skills_he { get; set; }
+        public string? seniority { get; set; }
+        public string? education { get; set; }
         public string? companies { get; set; }
         public string? skills { get; set; }
+        public string? military_service { get; set; }
         public string? summary_en { get; set; }
         public string? summary_he { get; set; }
         public int? years_experience { get; set; }
-        public string? languages { get; set; }
         public DateTime? date_updated { get; set; }
         public DateTime? date_created { get; set; }
         public bool? is_embedded { get; set; }
-        public string? profession { get; set; }
-        public string? education { get; set; }
-        public string? military_service { get; set; }
-        public string? seniority { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
     }

@@ -42,9 +42,12 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
             List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
 
+            string? json;
 
             foreach (var candCv in allCandidatesLastCvList)
             {
+                json = null;
+
                 try
                 {
                     if (string.IsNullOrWhiteSpace(candCv.cvTxt) )
@@ -68,9 +71,21 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                     var completion = await chatClient.CompleteChatAsync(messages, chatOptions );
 
-                    var json = completion.Value.Content[0].Text;
+                    json = completion.Value.Content[0].Text;
 
                     AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
+
+                    (string?, string?) currentJobTitleHeEn = splitHeEnString(AnalyzedCv.currentJobTitle);
+                    (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.professionWords);
+                    (List<string>, List<string>) professionSkillsHeEn = splitHeEnList(AnalyzedCv.professionSkills);
+
+                    AnalyzedCv.currentJobTitleHe = currentJobTitleHeEn.Item1;
+                    AnalyzedCv.currentJobTitleEn = currentJobTitleHeEn.Item2;
+                    AnalyzedCv.professionWordsHe = professionWordsHeEn.Item1;
+                    AnalyzedCv.professionWordsEn = professionWordsHeEn.Item2;
+                    AnalyzedCv.professionSkillsHe = professionSkillsHeEn.Item1;
+                    AnalyzedCv.professionSkillsEn = professionSkillsHeEn.Item2;
+
                     AnalyzedCv.CvLanguage = cvLanguage;
                     AnalyzedCv.CandidateId = candCv.candidateId;
                     AnalyzedCv.CvId = candCv.id;
@@ -88,10 +103,44 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"  problem: {ex.Message}");
+                    Console.WriteLine($" json {json[..Math.Min(200, json.Length)]}");
                     throw ex;
+
 
                 }
             }
+        }
+
+        private (List<string>, List<string>) splitHeEnList(List<string> professionWordsEn)
+        {
+            if (professionWordsEn.Count == 0)
+            {
+                return ([], []);
+            }
+
+            List<string> heList = [];
+            List<string> enList = [];
+
+            foreach (var item in professionWordsEn)
+            {
+                var heEnSplit = splitHeEnString(item);
+                heList.Add(heEnSplit.Item1);
+                enList.Add(heEnSplit.Item2);
+            }
+
+            return (heList, enList);
+        }
+
+        private (string, string) splitHeEnString(string? strEnHe)
+        {
+            if (string.IsNullOrWhiteSpace(strEnHe))
+            {
+                return ("", "");
+            }
+
+            var splitArr = strEnHe.Split("::");
+            return (splitArr[0].Trim(), splitArr[1].Trim());
         }
 
         private (string?,string?) FindAreaRegion(string? location)
@@ -113,8 +162,8 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                 if (locationRecord != null)
                 {
-                    area = locationRecord.region;
-                    region = locationRecord.area;
+                    area = locationRecord.region.Trim();
+                    region = locationRecord.area.Trim();
                 }
             }
 

@@ -140,16 +140,14 @@ namespace DataModelsLibrary.Models
         public string? CurrentJobTitleEn { get; set; }
         public string? CurrentJobTitleHe { get; set; }
 
-        public List<string>? professionWordsEn { get; set; }
-        public List<string>? professionWordsHe { get; set; }
-        public List<string>? professionSkillsEn { get; set; }
-        public List<string>? professionSkillsHe { get; set; }
+        public List<string>? ProfessionWordsEn { get; set; } = [];
+        public List<string>? ProfessionWordsHe { get; set; } = [];
+        public List<string>? ProfessionSkillsEn { get; set; } = [];
+        public List<string>? ProfessionSkillsHe { get; set; } = [];
         public string? Seniority { get; set; }
         public string? Education { get; set; }
-
-
         public string? Companies { get; set; }
-        public List<string>? Skills { get; set; }
+        public List<string>? Skills { get; set; } = [];
         public string? MilitaryService { get; set; }
         public string SummaryEn { get; set; } = "";
         public string SummaryHe { get; set; } = "";
@@ -159,28 +157,30 @@ namespace DataModelsLibrary.Models
     public class AiSearchResultModel
     {
         public ulong Id { get; set; }
+        public int CandidateId { get; set; }
         public float Score { get; set; }
         public string Name { get; set; } = "";
-        public int CandidateId { get; set; }
-        public required string CvId { get; set; }
-        public string? Companies { get; set; }
-        public string CurrentTitle { get; set; } = "";
-        public string Location { get; set; } = "";
-        public int YearsExperience { get; set; }
-        public string Summary { get; set; } = "";
         public string Email { get; set; } = "";
         public string Phone { get; set; } = "";
-        public List<string>? Skills { get; set; }
-        public string? Profession { get; set; }
-        public string? Education { get; set; }
-        public string? MilitaryService { get; set; }
+        public required string CvId { get; set; }
+        public string Location { get; set; } = "";
+        public string CurrentTitle { get; set; } = "";
+        public List<string>? ProfessionWords { get; set; } = [];
+        public List<string> ProfessionSkills { get; set; } = [];
         public string? Seniority { get; set; }
+        public string? Education { get; set; }
+        public string? Companies { get; set; }
+        public List<string> Skills { get; set; } = [];
+        public string? MilitaryService { get; set; }
+        public string Summary { get; set; } = "";
+        public int YearsExperience { get; set; }
     }
 
     public class SearchFilterModel
     {
         public string? Seniority { get; set; }  // "Senior", "Mid", "Junior", "Lead"
         public string? Location { get; set; }  // "תל אביב"
+        public string? Area { get; set; }  // "צפון, מרכז, דרום"
         public List<string>? RequiredSkills { get; set; }  // ["React", "C#"]
         public int? MinYearsExperience { get; set; }
         public int? MaxYearsExperience { get; set; }

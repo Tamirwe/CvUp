@@ -57,15 +57,16 @@ export interface ICand {
   candPosHistory?: ICandPosHistory;
   isBlackList: boolean;
   nameAI?: string;
-  companiesAI?: string;
-  currentTitleAI?: string;
   locationAI?: string;
-  summaryAI?: string;
-  skillsAI?: string[];
-  professionAI: string;
-  educationAI: string;
-  militaryServiceAI: string;
+  currentTitleAI?: string;
+  professionWordsAI: string[];
+  professionSkillsAI: string[];
   seniorityAI: string;
+  educationAI: string;
+  companiesAI?: string;
+  militaryServiceAI: string;
+  skillsAI?: string[];
+  summaryAI?: string;
 }
 
 export interface ICandPosHistory {

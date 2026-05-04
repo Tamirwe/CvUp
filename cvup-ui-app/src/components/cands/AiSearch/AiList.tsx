@@ -77,17 +77,29 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                     }}
                   >
                     {cand.score} - {cand.nameAI} - {cand.currentTitleAI} -{" "}
-                    <span
+                    <span style={{ color: "#a38c14", fontWeight: "bold" }}>
+                      {cand.locationAI}
+                    </span>
+                    <div
                       style={{
                         color: "#68a6e9",
                         fontWeight: 600,
                       }}
                     >
-                      {cand.professionAI} -{" "}
-                    </span>
-                    <span style={{ color: "#a38c14", fontWeight: "bold" }}>
-                      {cand.locationAI}
-                    </span>
+                      {cand.professionWordsAI &&
+                        cand.professionWordsAI.join(", ")}
+                      {"."}
+                    </div>
+                    <div
+                      style={{
+                        color: "#68a6e9",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {cand.professionSkillsAI &&
+                        cand.professionSkillsAI.join(", ")}
+                      {"."}
+                    </div>
                   </div>
                   <div
                     style={{

@@ -105,15 +105,61 @@ namespace OpenAiLibrary.Searcher
             var embedding = await _embedder.EmbedAsync(query);
 
             // Build Qdrant filter from structured filter object
-            var qdrantFilter = BuildFilter(filter);
+            //filter= new SearchFilterModel { Area= "מרכז", Seniority= "מנהל", RequiredSkills=new List<string>() { "ביולוגיה מולקולרית" } };
+            //filter= new SearchFilterModel { Area= "צפון"};
+            //filter = new SearchFilterModel { RequiredSkills = ["לוגיסטיקה"]  };
 
+            var filter1 = BuildFilter(filter);
+
+            var filter2 = new Filter
+            {
+                Must =
+                {
+                    new Condition
+                    {
+                        Field = new FieldCondition
+                        {
+                            Key = "area",
+                            Match = new Match { Keyword = "צפון" }
+                        }
+                    }
+                }
+            };
+
+            var filter3 = new Filter();
+
+            filter3.Must.Add(new Condition
+            {
+                Field = new FieldCondition
+                {
+                    Key = "area",
+                    Match = new Match { Keyword = "צפון" }
+                }
+
+            });
+
+            filter3.Should.Add(new Condition
+            {
+                Field = new FieldCondition
+                {
+                    Key = "profession_skills_he",
+                    Match = new Match
+                    {
+                        Keywords = new RepeatedStrings { Strings = { "לוגיסטיקה" } }
+                    }
+                }
+
+            });
+         
             // Search
             var hits = await _qdrant.SearchAsync(
                      collectionName: QdrantConfig.CollectionName,
                      vector: embedding,
-                     filter: qdrantFilter,
+                     filter: filter1,
                      limit: (ulong)limit,
                      scoreThreshold: 0.35f    // drop candidates below this similarity score
+                     //payloadSelector: new WithPayloadSelector { Enable = true },
+                     //vectorsSelector: new WithVectorsSelector { Enable = true }
                  );
 
             var results = hits.Select(MapToResult).ToList();
@@ -167,6 +213,18 @@ namespace OpenAiLibrary.Searcher
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(f.Area))
+            {
+                conditions.Add(new Condition
+                {
+                    Field = new FieldCondition
+                    {
+                        Key = "area",
+                        Match = new Match { Keyword = f.Area }
+                    }
+                });
+            }
+
             // Required skills — all must match (AND)
             if (f.RequiredSkills?.Count > 0)
             {
@@ -176,7 +234,7 @@ namespace OpenAiLibrary.Searcher
                     {
                         Field = new FieldCondition
                         {
-                            Key = "skills",
+                            Key = "profession_skills_he",
                             Match = new Match { Keyword = skill }
                         }
                     });
@@ -232,21 +290,22 @@ namespace OpenAiLibrary.Searcher
             {
                 Id = hit.Id.Num,
                 Score = hit.Score,
-                Name = GetString(p, "name"),
                 CandidateId = int.Parse(GetString(p, "candidate_id")),
                 CvId = GetString(p, "cv_id"),
-                CurrentTitle = GetString(p, "current_title_he"),
-                Location = GetString(p, "location"),
+                Name = GetString(p, "name"),
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
-                Summary = GetString(p, "summary_he"),
-                Companies = GetString(p, "companies"),
-                YearsExperience = (int)GetLong(p, "years_experience"),
-                Skills = GetList(p, "skills"),
-                Profession = GetString(p, "profession"),
-                Education = GetString(p, "education"),
-                MilitaryService = GetString(p, "militaryService"),
+                Location = GetString(p, "location"),
+                CurrentTitle = GetString(p, "current_job_title_he"),
+                ProfessionWords = GetList(p, "profession_words_he"),
+                ProfessionSkills = GetList(p, "profession_skills_he"),
                 Seniority = GetString(p, "seniority"),
+                Education = GetString(p, "education"),
+                Companies = GetString(p, "companies"),
+                Skills = GetList(p, "skills"),
+                Summary = GetString(p, "summary_he"),
+                MilitaryService = GetString(p, "militaryService"),
+                YearsExperience = (int)GetLong(p, "years_experience"),
             };
         }
 

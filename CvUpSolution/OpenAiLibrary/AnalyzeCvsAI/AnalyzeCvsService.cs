@@ -93,7 +93,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         AnalyzedCv.Area = areaRegion.Item2;
                     }
 
-                    SaveAnalyzedCv(AnalyzedCv);
+                    await SaveAnalyzedCv(AnalyzedCv);
 
                 }
                 catch (Exception ex)

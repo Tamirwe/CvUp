@@ -50,11 +50,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                 try
                 {
-                    if (string.IsNullOrWhiteSpace(candCv.cvTxt) )
-                    {
-                        continue;
-                    }            
-
                     var cvLanguage = LanguageDetector.Detect(candCv.cvTxt ?? "");
 
                     var messages = new List<ChatMessage>
@@ -69,7 +64,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
                     };
 
-                    var completion = await chatClient.CompleteChatAsync(messages, chatOptions );
+                    var completion = await chatClient.CompleteChatAsync(messages, chatOptions);
 
                     json = completion.Value.Content[0].Text;
 
@@ -143,13 +138,13 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return (splitArr[0].Trim(), splitArr[1].Trim());
         }
 
-        private (string?,string?) FindAreaRegion(string? location)
+        private (string?, string?) FindAreaRegion(string? location)
         {
-            string? area = null, region=null;
+            string? area = null, region = null;
 
             if (!string.IsNullOrWhiteSpace(location))
             {
-                location = location.Replace("קיבוץ", "").Replace("קריית","קרית").Trim();
+                location = location.Replace("קיבוץ", "").Replace("קריית", "קרית").Trim();
                 location = location.Contains("תל אביב") ? "תל אביב - יפו" : location;
 
 
@@ -160,10 +155,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     locationRecord = citiesRegion.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
                 }
 
-                if (locationRecord != null)
-                {
-                    area = locationRecord.region.Trim();
-                    region = locationRecord.area.Trim();
                 }
             }
 

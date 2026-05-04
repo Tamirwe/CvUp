@@ -61,11 +61,11 @@ namespace DataModelsLibrary.Queries
 
         }
 
-        public async Task DeleteCandidateAnalyzeCv( int candidateId)
+        public async Task DeleteCandidateAnalyzeCv(int candidateId)
         {
             using (var dbContext = new cvup00001Context())
             {
-                ai_analyze_cv? analyzeTodelete = dbContext.ai_analyze_cvs.FirstOrDefault(x =>  x.candidate_id == candidateId);
+                ai_analyze_cv? analyzeTodelete = dbContext.ai_analyze_cvs.FirstOrDefault(x => x.candidate_id == candidateId);
 
                 if (analyzeTodelete != null)
                 {

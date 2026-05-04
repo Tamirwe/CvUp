@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Models
 {
-   public class IdNameModel
+    public class IdNameModel
     {
-        public int id { get; set; }= 0;
+        public int id { get; set; } = 0;
         public string name { get; set; } = string.Empty;
     }
 
@@ -90,9 +90,9 @@ namespace DataModelsLibrary.Models
     {
         public int id { get; set; } = 0;
         public DateTime statisticDate { get; set; }
-        public int open { get; set; } 
-        public int high { get; set; } 
-        public int low { get; set; } 
+        public int open { get; set; }
+        public int high { get; set; }
+        public int low { get; set; }
         public int close { get; set; }
         public int dayPoints { get; set; }
 

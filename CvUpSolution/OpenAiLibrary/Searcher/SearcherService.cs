@@ -11,7 +11,7 @@ namespace OpenAiLibrary.Searcher
         private readonly QdrantClient _qdrant;
         private readonly IOpenAiEmbedderService _embedder;
 
-        public SearcherService(IOpenAiEmbedderService embedder,string host = "localhost",int port = 6334)
+        public SearcherService(IOpenAiEmbedderService embedder, string host = "localhost", int port = 6334)
         {
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
@@ -23,8 +23,8 @@ namespace OpenAiLibrary.Searcher
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var normalizer = new HebrewTextNormalizer();
-          
-            
+
+
             string queryText = "";
             //queryText = "אבטחת מידע התמחות ב checkpoint or fortinet FW";
             //queryText = "אנשי רשת ואבטחת מידע סייבר";
@@ -44,7 +44,7 @@ namespace OpenAiLibrary.Searcher
             //);
             //   ResultPrinter.Print(results11);
 
-            var results12 = await SearchAsync(query: normalizedQuery,limit: 5);
+            var results12 = await SearchAsync(query: normalizedQuery, limit: 5);
             ResultPrinter.Print(results12);
 
             //var results1 = await SearchAsync(

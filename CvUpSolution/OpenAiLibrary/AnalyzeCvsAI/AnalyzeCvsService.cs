@@ -154,8 +154,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 {
                     locationRecord = citiesRegion.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
                 }
-
-                }
             }
 
             return (area, region);

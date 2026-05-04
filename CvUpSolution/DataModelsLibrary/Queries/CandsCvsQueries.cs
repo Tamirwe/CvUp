@@ -65,7 +65,7 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                ai_analyze_cv? analyzeTodelete = dbContext.ai_analyze_cvs.FirstOrDefault(x => x.candidate_id == candidateId);
+                ai_analyze_cv? analyzeTodelete = await dbContext.ai_analyze_cvs.FirstOrDefaultAsync(x => x.candidate_id == candidateId);
 
                 if (analyzeTodelete != null)
                 {

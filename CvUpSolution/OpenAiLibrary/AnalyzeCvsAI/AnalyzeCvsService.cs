@@ -185,7 +185,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             }
         }
 
-        private void SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult)
+        private async Task SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult)
         {
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
             analyzeCv.candidate_id = analyzedCvResult.CandidateId;
@@ -212,7 +212,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.summary_he = limitLen(analyzedCvResult.SummaryHe, 1000);
             analyzeCv.years_experience = analyzedCvResult.YearsExperience;
 
-            _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
+            await _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
 
         private async Task LoadJsonRegionCitiesAsync()

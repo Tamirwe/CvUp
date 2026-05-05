@@ -100,7 +100,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 {
                     Console.WriteLine($"  problem: {ex.Message}");
                     Console.WriteLine($" json {json[..Math.Min(200, json.Length)]}");
-                    throw ex;
+                    //throw ex;
 
 
                 }

@@ -66,8 +66,8 @@ Return the result in JSON format only.
   "companies": [], // name only
   "skills": [],
   "military_service_he":"",
-  "summary_en": "",
-  "summary_he": "",
+  "summary_en": "", // base on professional experience in hebrew
+  "summary_he": "", // base on professional experience in english
   "years_experience": null,
  
 }

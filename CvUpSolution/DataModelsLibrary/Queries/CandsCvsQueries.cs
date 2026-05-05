@@ -38,9 +38,12 @@ namespace DataModelsLibrary.Queries
                                 FROM cvs_txt ctx
                                 WHERE ctx.cv_id IN ( SELECT cv_id FROM (SELECT cands.last_cv_id cv_id
 		                                FROM candidates cands 
-		                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
+		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
 		                                ORDER BY cands.id DESC 
 		                                LIMIT  33) AS tbl)";
+
+                //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
+                //WHERE cands.id = 392747
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;

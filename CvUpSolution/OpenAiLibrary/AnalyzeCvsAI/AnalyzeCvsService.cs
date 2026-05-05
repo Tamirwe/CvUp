@@ -11,7 +11,9 @@ using OpenAI.Chat;
 using OpenAiLibrary.EmbeddingAndStore;
 using OpenAiLibrary.Models;
 using Org.BouncyCastle.Utilities;
+using System.Text.RegularExpressions;
 using Ubiety.Dns.Core;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {
@@ -50,12 +52,32 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                 try
                 {
-                    var cvLanguage = LanguageDetector.Detect(candCv.cvTxt ?? "");
+                    if (string.IsNullOrEmpty(candCv.cvTxt))
+                    {
+                        continue;
+                    }
+
+                    string textCv = candCv.cvTxt;
+                    var cvTxtOnlyLetters = Regex.Replace(textCv, @"\p{C}+", string.Empty);
+                    textCv = cvTxtOnlyLetters ?? "";
+
+
+
+                    var cvLanguage = LanguageDetector.Detect(textCv);
+
+
+                    if (cvLanguage == "Hebrew")
+                    {
+                        if (IsLikelyReversedHebrew(textCv))
+                        {
+                            textCv = Reverse(textCv);
+                        }
+                    }
 
                     var messages = new List<ChatMessage>
                     {
                         new SystemChatMessage(promptForCvAnalyze),
-                        new UserChatMessage(candCv.cvTxt)
+                        new UserChatMessage(textCv)
                     };
 
                     var chatOptions = new ChatCompletionOptions
@@ -100,12 +122,49 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 {
                     Console.WriteLine($"  problem: {ex.Message}");
                     Console.WriteLine($" json {json[..Math.Min(200, json.Length)]}");
-                    throw ex;
-
-
+                    //throw ex;
                 }
             }
         }
+
+        public static bool IsLikelyReversedHebrew(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return false;
+
+            // Split into individual words
+            string[] words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Final forms that should ONLY be at the end of a word
+            char[] sofitLetters = { 'ך', 'ם', 'ן', 'ף', 'ץ' };
+            // Non-final forms that should NOT be at the end of a word
+            char[] nonSofitEndings = { 'כ', 'מ', 'נ', 'פ', 'צ' };
+
+            int count = 0;
+
+            foreach (var word in words)
+            {
+                // 1. Check if word starts with a "Final" letter
+                if (sofitLetters.Contains(word[0])) count++;
+
+                if (count > 2) return true;
+
+
+            }
+
+            return false;
+        }
+
+        public static string Reverse(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+
+            return string.Create(input.Length, input, (chars, state) =>
+            {
+                state.AsSpan().CopyTo(chars);
+                chars.Reverse();
+            });
+        }
+
 
         private (List<string>, List<string>) splitHeEnList(List<string> professionWordsEn)
         {

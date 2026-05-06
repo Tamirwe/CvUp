@@ -43,7 +43,7 @@ namespace DataModelsLibrary.Queries
 		                                LIMIT  100) AS tbl)";
 
                 //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
-                //WHERE cands.id = 392747
+                //WHERE cands.id = 394873
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;

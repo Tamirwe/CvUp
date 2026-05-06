@@ -52,19 +52,16 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                 try
                 {
-                    if (string.IsNullOrEmpty(candCv.cvTxt))
+                    if (string.IsNullOrWhiteSpace(candCv.cvTxt))
                     {
                         continue;
                     }
 
                     string textCv = candCv.cvTxt;
-                    var cvTxtOnlyLetters = Regex.Replace(textCv, @"\p{C}+", string.Empty);
+                    var cvTxtOnlyLetters = Regex.Replace(textCv, @"\p{C}+", " ");
                     textCv = cvTxtOnlyLetters ?? "";
 
-
-
                     var cvLanguage = LanguageDetector.Detect(textCv);
-
 
                     if (cvLanguage == "Hebrew")
                     {
@@ -144,11 +141,12 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             foreach (var word in words)
             {
                 // 1. Check if word starts with a "Final" letter
-                if (sofitLetters.Contains(word[0])) count++;
+                if (sofitLetters.Contains(word[0]) && word.Length > 1) count++;
 
-                if (count > 2) return true;
-
-
+                if (count > 3)
+                {
+                    return true;
+                }
             }
 
             return false;

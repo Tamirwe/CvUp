@@ -104,7 +104,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
             {
                 foreach (var cv in cvs)
                 {
-                    if (string.IsNullOrEmpty(cv.CurrentJobTitleHe) && string.IsNullOrEmpty(cv.SummaryHe))
+                    if (string.IsNullOrEmpty(cv.SummaryHe) && string.IsNullOrEmpty(cv.SummaryEn))
                     {
                         continue;
                     }
@@ -136,21 +136,29 @@ namespace OpenAiLibrary.EmbeddingAndStore
         private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(EmbedCvDataModel cv)
         {
 
-            var skillsList = new Qdrant.Client.Grpc.ListValue();
+            var jobsTitlesEnList = new Qdrant.Client.Grpc.ListValue();
+            var jobsTitlesHeList = new Qdrant.Client.Grpc.ListValue();
             var professionWordsEnList = new Qdrant.Client.Grpc.ListValue();
             var professionWordsHeList = new Qdrant.Client.Grpc.ListValue();
             var professionSkillsEnList = new Qdrant.Client.Grpc.ListValue();
             var professionSkillsHeList = new Qdrant.Client.Grpc.ListValue();
+            var companiesList = new Qdrant.Client.Grpc.ListValue();
+            var skillsList = new Qdrant.Client.Grpc.ListValue();
 
-            var skillValues = cv.Skills != null ? cv.Skills
-               .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
-               .ToList() : [];
-            skillsList.Values.AddRange(skillValues);
+            var jobsTitlesEnValues = cv.JobsTitlesEn != null ? cv.JobsTitlesEn
+             .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
+             .ToList() : [];
+            jobsTitlesEnList.Values.AddRange(jobsTitlesEnValues);
+
+            var jobsTitlesHeValues = cv.JobsTitlesHe != null ? cv.JobsTitlesHe
+             .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
+             .ToList() : [];
+            jobsTitlesHeList.Values.AddRange(jobsTitlesHeValues);
 
             var professionWordsEnValues = cv.ProfessionWordsEn != null ? cv.ProfessionWordsEn
                .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
                .ToList() : [];
-            professionWordsEnList.Values.AddRange(skillValues);
+            professionWordsEnList.Values.AddRange(professionWordsEnValues);
 
             var professionWordsHeValues = cv.ProfessionWordsHe != null ? cv.ProfessionWordsHe
                .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
@@ -167,6 +175,15 @@ namespace OpenAiLibrary.EmbeddingAndStore
                .ToList() : [];
             professionSkillsHeList.Values.AddRange(professionSkillsHeValues);
 
+            var companiesValues = cv.Companies != null ? cv.Companies
+            .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
+            .ToList() : [];
+            companiesList.Values.AddRange(companiesValues);
+
+            var skillValues = cv.Skills != null ? cv.Skills
+              .Select(s => new Qdrant.Client.Grpc.Value { StringValue = s.Trim() })
+              .ToList() : [];
+            skillsList.Values.AddRange(skillValues);
 
             return new Dictionary<string, Qdrant.Client.Grpc.Value>
             {
@@ -179,15 +196,15 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["region"] = new() { StringValue = (cv.Region ?? "").Trim() },
                 ["area"] = new() { StringValue = (cv.Area ?? "").Trim() },
                 ["languages"] = new() { StringValue = (cv.Languages ?? "").Trim() },
-                ["current_job_title_en"] = new() { StringValue = (cv.CurrentJobTitleEn ?? "").Trim() },
-                ["current_job_title_he"] = new() { StringValue = (cv.CurrentJobTitleHe ?? "").Trim() },
+                ["jobs_titles_en"] = new() { ListValue = jobsTitlesEnList },
+                ["jobs_titles_he"] = new() { ListValue = jobsTitlesHeList },
                 ["profession_words_en"] = new() { ListValue = professionWordsEnList },
                 ["profession_words_he"] = new() { ListValue = professionWordsHeList },
                 ["profession_skills_en"] = new() { ListValue = professionSkillsEnList },
                 ["profession_skills_he"] = new() { ListValue = professionSkillsHeList },
                 ["seniority"] = new() { StringValue = (cv.Seniority ?? "").Trim() },
                 ["education"] = new() { StringValue = (cv.Education ?? "").Trim() },
-                ["companies"] = new() { StringValue = (cv.Companies ?? "").Trim() },
+                ["companies"] = new() { ListValue = companiesList },
                 ["skills"] = new() { ListValue = skillsList },
                 ["military_service"] = new() { StringValue = (cv.MilitaryService ?? "").Trim() },
                 ["summary_en"] = new() { StringValue = (cv.SummaryEn ?? "").Trim() },

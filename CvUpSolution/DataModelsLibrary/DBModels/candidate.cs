@@ -10,6 +10,7 @@ namespace Database.models
             cvs = new HashSet<cv>();
             cvs_txts = new HashSet<cvs_txt>();
             folders_cands = new HashSet<folders_cand>();
+            position_candidate_stages = new HashSet<position_candidate_stage>();
             position_candidates = new HashSet<position_candidate>();
         }
 
@@ -42,6 +43,7 @@ namespace Database.models
         public virtual ICollection<cv> cvs { get; set; }
         public virtual ICollection<cvs_txt> cvs_txts { get; set; }
         public virtual ICollection<folders_cand> folders_cands { get; set; }
+        public virtual ICollection<position_candidate_stage> position_candidate_stages { get; set; }
         public virtual ICollection<position_candidate> position_candidates { get; set; }
     }
 }

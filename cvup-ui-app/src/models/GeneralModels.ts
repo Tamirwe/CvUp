@@ -59,11 +59,12 @@ export interface ICand {
   nameAI?: string;
   locationAI?: string;
   currentTitleAI?: string;
+  jobsTitleAI: string[];
   professionWordsAI: string[];
   professionSkillsAI: string[];
   seniorityAI: string;
   educationAI: string;
-  companiesAI?: string;
+  companiesAI?: string[];
   militaryServiceAI: string;
   skillsAI?: string[];
   summaryAI?: string;

@@ -89,12 +89,13 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                     AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
 
-                    (string?, string?) currentJobTitleHeEn = splitHeEnString(AnalyzedCv.currentJobTitle);
-                    (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.professionWords);
-                    (List<string>, List<string>) professionSkillsHeEn = splitHeEnList(AnalyzedCv.professionSkills);
+                    (List<string>, List<string>, List<string>) JobsTitles = splitWorkExperience(AnalyzedCv.WorkExperience);
+                    (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.ProfessionWords);
+                    (List<string>, List<string>) professionSkillsHeEn = splitHeEnList(AnalyzedCv.ProfessionSkills);
 
-                    AnalyzedCv.currentJobTitleHe = currentJobTitleHeEn.Item1;
-                    AnalyzedCv.currentJobTitleEn = currentJobTitleHeEn.Item2;
+                    AnalyzedCv.Companies = JobsTitles.Item1;
+                    AnalyzedCv.JobsTitlesHe = JobsTitles.Item2;
+                    AnalyzedCv.JobsTitlesEn = JobsTitles.Item3;
                     AnalyzedCv.professionWordsHe = professionWordsHeEn.Item1;
                     AnalyzedCv.professionWordsEn = professionWordsHeEn.Item2;
                     AnalyzedCv.professionSkillsHe = professionSkillsHeEn.Item1;
@@ -104,7 +105,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     AnalyzedCv.CandidateId = candCv.candidateId;
                     AnalyzedCv.CvId = candCv.id;
 
-                    (string?, string?) areaRegion = FindAreaRegion(AnalyzedCv.cityHe);
+                    (string?, string?) areaRegion = FindAreaRegion(AnalyzedCv.CityHe);
 
                     if (areaRegion.Item1 != null)
                     {
@@ -163,6 +164,29 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             });
         }
 
+        private (List<string>, List<string>, List<string>) splitWorkExperience(List<string>? workExperience)
+        {
+            if (workExperience == null || workExperience.Count == 0)
+            {
+                return ([], [], []);
+            }
+
+            List<string> companies = [];
+            List<string> jobsTitlesEn = [];
+            List<string> jobsTitlesHe = [];
+
+            foreach (var item in workExperience)
+            {
+                var splitArr = item.Split("::");
+
+                companies.Add(splitArr[0].Trim());
+                jobsTitlesEn.Add(splitArr[1].Trim());
+                jobsTitlesHe.Add(splitArr[2].Trim());
+
+            }
+
+            return (companies, jobsTitlesEn, jobsTitlesHe);
+        }
 
         private (List<string>, List<string>) splitHeEnList(List<string> professionWordsEn)
         {
@@ -250,12 +274,12 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
             analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
             analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
-            analyzeCv.city = limitLen(analyzedCvResult.cityHe, 50);
+            analyzeCv.city = limitLen(analyzedCvResult.CityHe, 50);
             analyzeCv.region = limitLen(analyzedCvResult.Region, 20);
             analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
             analyzeCv.languages = limitLen(analyzedCvResult.Languages, 150);
-            analyzeCv.current_job_title_en = limitLen(analyzedCvResult.currentJobTitleEn, 100);
-            analyzeCv.current_job_title_he = limitLen(analyzedCvResult.currentJobTitleHe, 100);
+            analyzeCv.jobs_titles_en = limitLen(string.Join(", ", analyzedCvResult.JobsTitlesEn), 500);
+            analyzeCv.jobs_titles_he = limitLen(string.Join(", ", analyzedCvResult.JobsTitlesHe), 500);
             analyzeCv.profession_words_en = limitLen(string.Join(", ", analyzedCvResult.professionWordsEn), 500);
             analyzeCv.profession_words_he = limitLen(string.Join(", ", analyzedCvResult.professionWordsHe), 500);
             analyzeCv.profession_skills_en = limitLen(string.Join(", ", analyzedCvResult.professionSkillsEn), 500);

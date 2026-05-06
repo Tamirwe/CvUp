@@ -296,12 +296,12 @@ namespace OpenAiLibrary.Searcher
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
                 Location = GetString(p, "location"),
-                CurrentTitle = GetString(p, "current_job_title_he"),
+                JobsTitlesHe = GetList(p, "jobs_titles_he"),
                 ProfessionWords = GetList(p, "profession_words_he"),
                 ProfessionSkills = GetList(p, "profession_skills_he"),
                 Seniority = GetString(p, "seniority"),
                 Education = GetString(p, "education"),
-                Companies = GetString(p, "companies"),
+                Companies = GetList(p, "companies"),
                 Skills = GetList(p, "skills"),
                 Summary = GetString(p, "summary_he"),
                 MilitaryService = GetString(p, "militaryService"),
@@ -342,7 +342,7 @@ namespace OpenAiLibrary.Searcher
             {
                 var r = results[i];
                 Console.WriteLine(reverseStr($"── {i + 1}. {r.Name}  ניקוד: {r.Score:F2} \n\n"));
-                Console.WriteLine(reverseStr($"   תפקיד    : {r.CurrentTitle}"));
+                Console.WriteLine(reverseStr($"   תפקיד    : {r.JobsTitlesHe}"));
                 Console.WriteLine(reverseStr($"   ניסיון   : {r.YearsExperience} שנים"));
                 Console.WriteLine(reverseStr($"   מיקום    : {r.Location}"));
                 Console.WriteLine(reverseStr($"   כישורים  : {string.Join(", ", r.Skills)}"));

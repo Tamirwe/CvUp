@@ -40,7 +40,7 @@ namespace DataModelsLibrary.Queries
 		                                FROM candidates cands 
 		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
 		                                ORDER BY cands.id DESC 
-		                                LIMIT  100) AS tbl)";
+		                                LIMIT  20) AS tbl)";
 
                 //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
                 //WHERE cands.id = 394873
@@ -131,15 +131,15 @@ namespace DataModelsLibrary.Queries
                                 Region = ai.region,
                                 Area = ai.area,
                                 Languages = ai.languages,
-                                CurrentJobTitleEn = ai.current_job_title_en ?? "",
-                                CurrentJobTitleHe = ai.current_job_title_he ?? "",
+                                JobsTitlesEn = StringToList(ai.jobs_titles_en),
+                                JobsTitlesHe = StringToList(ai.jobs_titles_en),
                                 ProfessionWordsEn = StringToList(ai.profession_words_en),
                                 ProfessionWordsHe = StringToList(ai.profession_words_he),
                                 ProfessionSkillsEn = StringToList(ai.profession_skills_en),
                                 ProfessionSkillsHe = StringToList(ai.profession_skills_he),
                                 Seniority = ai.seniority,
                                 Education = ai.education,
-                                Companies = ai.companies,
+                                Companies = StringToList(ai.companies),
                                 Skills = StringToList(ai.skills),
                                 MilitaryService = ai.military_service,
                                 SummaryEn = ai.summary_en ?? "",

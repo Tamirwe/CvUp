@@ -4,30 +4,15 @@ Your task:
 Analyze a CV and extract structured data for search and matching.
 the search could be in BOTH Hebrew and English.
 
-Requirements:
+General Requirements:
 1. Return BOTH Hebrew and English versions of the data
 2. Hebrew should be natural and readable, No ניקוד
 3. English should preserve original technical terms (do not translate technologies like Python, SQL)
 4. Do NOT invent information
 5. If missing → return empty value
 
-IMPORTANT RULES:
-- Apply MALE FORM (לשון זכר) ONLY to:
-  1. current_job_title
-  2. profession_words
-  3. profession_skills
-- Do NOT change grammatical form for any other fields.
 
-- If the CV is written in female form:
-  - Convert ONLY the current_job_title, profession_words and profession_skills to male form.
-  - Leave summary_he, military_service_he, education_he, and other fields unchanged.
-
-- In current_job_title, profession_words and profession_skills:
-  - Rewrite all verbs, adjectives, and roles in male form 
-    (e.g. "מפתחת" → "מפתח", "ניהלה צוות" → "ניהל צוות").
-
-
-Seniority rules:
+seniority rules:
 - Extract and normalize seniority into ONE of the following values בלבד:
   ["ג'וניור", "מיד", "סניור", "ליד", "מנהל"]
 
@@ -43,12 +28,20 @@ Seniority rules:
 
 - Always return the value in Hebrew only.
 
+
+estimate_age Rules:
+    1. If a date of birth is explicitly mentioned, calculate the exact age.
+    2. If no date of birth is available, infer age using:
+       - Year of starting higher education (typically age 22–30)
+       - Year of first full-time job
+       - Military service (if mentioned, typically age 18–21)
+
+
 Additional instructions:
 - Normalize Hebrew and English terms (e.g. "מפתח" → "developer").
 - Infer missing data when reasonable (e.g. seniority from experience).
-
-
-
+- male_form rules:  Rewrite all verbs, adjectives, and roles in male form 
+                    (e.g. "מפתחת" → "מפתח", "ניהלה צוות" → "ניהל צוות").
 
 Return the result in JSON format only.
 
@@ -57,18 +50,18 @@ Return the result in JSON format only.
   "email": "",
   "phone": "",
   "city_he": "",
+  "estimate_age: number | null,
   "languages":"",
-  "current_job_title":"", hebrew and english like this "רואה חשבון :: CFO"
-  "profession_words":[], // words that describe profession in hebrew and english like this "יוצר תוכן :: Content Creator"
-  "profession_skills":[] // words that describe the profession skils in hebrew and english like this "תמיכה טכנית :: Technical Support"
+  "work_experience:[]",  // return string like this - "company :: job_title_en :: job_title_he".
+  "profession_words":[], // male form words that describe profession in hebrew and english like this - "יוצר תוכן :: Content Creator".
+  "profession_skills":[] // male form words that describe the profession skils in hebrew and english like this - "תמיכה טכנית :: Technical Support".
   "seniority":"",
   "education_he":[],
-  "companies": [], // name only
   "skills": [],
   "military_service_he":"",
-  "summary_en": "", // base on professional experience in hebrew
-  "summary_he": "", // base on professional experience in english
-  "years_experience": null,
+  "summary_en": "", // summary of professional experience in hebrew.
+  "summary_he": "", // summary of professional experience in english.
+  "years_experience": number | null,
  
 }
 

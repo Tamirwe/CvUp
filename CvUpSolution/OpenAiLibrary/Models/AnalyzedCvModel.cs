@@ -13,11 +13,11 @@ namespace OpenAiLibrary.Models
         [JsonProperty("name")] public string? Name { get; set; }
         [JsonProperty("email")] public string? Email { get; set; }
         [JsonProperty("phone")] public string? Phone { get; set; }
-        [JsonProperty("city_he")] public string? cityHe { get; set; }
+        [JsonProperty("city_he")] public string? CityHe { get; set; }
         [JsonProperty("languages")] public string? Languages { get; set; }
-        [JsonProperty("current_job_title")] public string? currentJobTitle { get; set; }
-        [JsonProperty("profession_words")] public List<string> professionWords { get; set; } = [];
-        [JsonProperty("profession_skills")] public List<string> professionSkills { get; set; } = [];
+        [JsonProperty("work_experience")] public List<string> WorkExperience { get; set; } = [];
+        [JsonProperty("profession_words")] public List<string> ProfessionWords { get; set; } = [];
+        [JsonProperty("profession_skills")] public List<string> ProfessionSkills { get; set; } = [];
         [JsonProperty("seniority")] public string? Seniority { get; set; }
         [JsonProperty("education_he")] public List<string> Education { get; set; } = [];
         [JsonProperty("companies")] public List<string> Companies { get; set; } = [];
@@ -28,8 +28,8 @@ namespace OpenAiLibrary.Models
         [JsonProperty("years_experience")] public int? YearsExperience { get; set; }
 
 
-        [Newtonsoft.Json.JsonIgnore] public string? currentJobTitleEn { get; set; }
-        [Newtonsoft.Json.JsonIgnore] public string? currentJobTitleHe { get; set; }
+        [Newtonsoft.Json.JsonIgnore] public List<string> JobsTitlesEn { get; set; } = [];
+        [Newtonsoft.Json.JsonIgnore] public List<string> JobsTitlesHe { get; set; } = [];
         [Newtonsoft.Json.JsonIgnore] public List<string> professionWordsEn { get; set; } = [];
         [Newtonsoft.Json.JsonIgnore] public List<string> professionWordsHe { get; set; } = [];
         [Newtonsoft.Json.JsonIgnore] public List<string> professionSkillsEn { get; set; } = [];

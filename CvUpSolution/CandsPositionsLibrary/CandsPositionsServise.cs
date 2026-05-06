@@ -494,7 +494,7 @@ namespace CandsPositionsLibrary
                     {
                         cand.NameAI = aiItem.Name;
                         cand.LocationAI = aiItem.Location;
-                        cand.CurrentTitleAI = aiItem.CurrentTitle;
+                        cand.JobsTitleAI = aiItem.JobsTitlesHe;
                         cand.ProfessionWordsAI = aiItem.ProfessionWords;
                         cand.ProfessionSkillsAI = aiItem.ProfessionSkills;
                         cand.SeniorityAI = aiItem.Seniority;

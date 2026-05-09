@@ -190,6 +190,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
                 ["candidate_id"] = new() { StringValue = cv.CandidateId.ToString() },
                 ["cv_id"] = new() { StringValue = cv.CvId.ToString() },
                 ["name"] = new() { StringValue = (cv.Name ?? "").Trim() },
+                ["estimate_age"] = new() { IntegerValue = cv.EstimateAge ?? 0 },
                 ["email"] = new() { StringValue = (cv.Email ?? "").Trim() },
                 ["phone"] = new() { StringValue = (cv.Phone ?? "").Trim() },
                 ["location"] = new() { StringValue = (cv.Location ?? "").Trim() },

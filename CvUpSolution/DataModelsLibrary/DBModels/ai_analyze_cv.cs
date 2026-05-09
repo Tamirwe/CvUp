@@ -9,6 +9,7 @@ namespace Database.models
         public int candidate_id { get; set; }
         public int cv_id { get; set; }
         public string? name { get; set; }
+        public int? estimate_age { get; set; }
         public string? email { get; set; }
         public string? phone { get; set; }
         public string? city { get; set; }

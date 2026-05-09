@@ -494,14 +494,15 @@ namespace CandsPositionsLibrary
                     {
                         cand.NameAI = aiItem.Name;
                         cand.LocationAI = aiItem.Location;
-                        cand.JobsTitleAI = aiItem.JobsTitlesHe;
+                        cand.JobsTitlesAI = aiItem.JobsTitlesHe;
                         cand.ProfessionWordsAI = aiItem.ProfessionWords;
-                        cand.ProfessionSkillsAI = aiItem.ProfessionSkills;
-                        cand.SeniorityAI = aiItem.Seniority;
+                        cand.EstimateAgeAI = aiItem.EstimateAge;
+                        //cand.ProfessionSkillsAI = aiItem.ProfessionSkills;
+                        //cand.SeniorityAI = aiItem.Seniority;
                         cand.EducationAI = aiItem.Education;
                         cand.CompaniesAI = aiItem.Companies;
-                        cand.MilitaryServiceAI = aiItem.MilitaryService;
-                        cand.SkillsAI = aiItem.Skills;
+                        //cand.MilitaryServiceAI = aiItem.MilitaryService;
+                        //cand.SkillsAI = aiItem.Skills;
                         cand.SummaryAI = aiItem.Summary;
                         cand.score = (int)(aiItem.Score * 1000);
                     }

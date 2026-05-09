@@ -131,6 +131,7 @@ namespace DataModelsLibrary.Models
         public int CandidateId { get; set; }
         public int CvId { get; set; }
         public string? Name { get; set; }
+        public int? EstimateAge { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Location { get; set; }
@@ -159,6 +160,7 @@ namespace DataModelsLibrary.Models
         public int CandidateId { get; set; }
         public float Score { get; set; }
         public string Name { get; set; } = "";
+        public int? EstimateAge { get; set; }
         public string Email { get; set; } = "";
         public string Phone { get; set; } = "";
         public required string CvId { get; set; }
@@ -172,7 +174,7 @@ namespace DataModelsLibrary.Models
         public List<string> Skills { get; set; } = [];
         public string? MilitaryService { get; set; }
         public string Summary { get; set; } = "";
-        public int YearsExperience { get; set; }
+        public int? YearsExperience { get; set; }
     }
 
     public class SearchFilterModel

@@ -57,19 +57,9 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         continue;
                     }
 
-                    string textCv = candCv.cvTxt;
-                    var cvTxtOnlyLetters = Regex.Replace(textCv, @"\p{C}+", " ");
-                    textCv = cvTxtOnlyLetters ?? "";
+                    var cvLanguage = LanguageDetector.Detect(candCv.cvTxt);
 
-                    var cvLanguage = LanguageDetector.Detect(textCv);
-
-                    if (cvLanguage == "Hebrew")
-                    {
-                        if (IsLikelyReversedHebrew(textCv))
-                        {
-                            textCv = Reverse(textCv);
-                        }
-                    }
+                    string textCv = RemovePunctuationAndNormelizeHebrew(candCv.cvTxt , cvLanguage);
 
                     var messages = new List<ChatMessage>
                     {
@@ -125,6 +115,28 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             }
         }
 
+        private string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
+        {
+            // Matches invisible" bidirectional marks U+200E (LRM), U+200F (RLM), and other BiDi control chars
+            string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
+
+            // Remove special characters, without C#,.NET,C++.
+            var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+]", " ");
+
+            // Collapse spaces
+            var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
+
+            if (cvLanguage == "Hebrew")
+            {
+                if (IsLikelyReversedHebrew(cleanText))
+                {
+                    cleanText = Reverse(cleanText);
+                }
+            }
+
+            return cleanText;
+        }
+
         public static bool IsLikelyReversedHebrew(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return false;
@@ -156,6 +168,9 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         public static string Reverse(string input)
         {
             if (string.IsNullOrEmpty(input)) return input;
+
+            //return Regex.Replace(input, @"\S+", m =>
+            //    new string(m.Value.Reverse().ToArray()));
 
             return string.Create(input.Length, input, (chars, state) =>
             {
@@ -272,6 +287,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             analyzeCv.candidate_id = analyzedCvResult.CandidateId;
             analyzeCv.cv_id = analyzedCvResult.CvId;
             analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
+            analyzeCv.estimate_age = analyzedCvResult.EstimateAge;
             analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
             analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
             analyzeCv.city = limitLen(analyzedCvResult.CityHe, 50);

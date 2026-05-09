@@ -293,6 +293,7 @@ namespace OpenAiLibrary.Searcher
                 CandidateId = int.Parse(GetString(p, "candidate_id")),
                 CvId = GetString(p, "cv_id"),
                 Name = GetString(p, "name"),
+                EstimateAge = (int)GetLong(p, "estimate_age"),
                 Email = GetString(p, "email"),
                 Phone = GetString(p, "phone"),
                 Location = GetString(p, "location"),

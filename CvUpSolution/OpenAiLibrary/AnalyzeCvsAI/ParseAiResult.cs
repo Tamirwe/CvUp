@@ -39,6 +39,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 return new AnalyzedCvModel
                 {
                     Name = obj.Value<string>("name"),
+                    EstimateAge = myParseInt(obj.Value<string>("estimate_age")),
                     Email = obj.Value<string>("email"),
                     Phone = obj.Value<string>("phone"),
                     CityHe = obj.Value<string>("city_he"),

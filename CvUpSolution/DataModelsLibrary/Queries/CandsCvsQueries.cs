@@ -40,10 +40,10 @@ namespace DataModelsLibrary.Queries
 		                                FROM candidates cands 
 		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
 		                                ORDER BY cands.id DESC 
-		                                LIMIT  20) AS tbl)";
+		                                LIMIT  40) AS tbl)";
 
                 //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
-                //WHERE cands.id = 394873
+                //WHERE cands.id = 392780
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
@@ -126,6 +126,7 @@ namespace DataModelsLibrary.Queries
                                 CvId = ai.cv_id,
                                 Name = ai.name,
                                 Email = ai.email,
+                                EstimateAge = ai.estimate_age,
                                 Phone = ai.phone,
                                 Location = ai.city,
                                 Region = ai.region,

@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloaudeAiLibrary", "Cloaude
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloaudeAiConsoleApp", "CloaudeAiConsoleApp\CloaudeAiConsoleApp.csproj", "{9A4998C2-5CF9-424C-9AAE-74ACC767A742}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerWorkerService", "SchedulerWorkerService\SchedulerWorkerService.csproj", "{339E5425-62D4-42FA-B93D-49356B26B72B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{9A4998C2-5CF9-424C-9AAE-74ACC767A742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A4998C2-5CF9-424C-9AAE-74ACC767A742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A4998C2-5CF9-424C-9AAE-74ACC767A742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{339E5425-62D4-42FA-B93D-49356B26B72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{339E5425-62D4-42FA-B93D-49356B26B72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{339E5425-62D4-42FA-B93D-49356B26B72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{339E5425-62D4-42FA-B93D-49356B26B72B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

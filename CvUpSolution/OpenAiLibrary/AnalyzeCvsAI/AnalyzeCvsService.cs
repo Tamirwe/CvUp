@@ -2,18 +2,11 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using FuzzySharp;
-using Google.Protobuf;
-using MailKit.Search;
-using MySqlX.XDevAPI.CRUD;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAiLibrary.EmbeddingAndStore;
 using OpenAiLibrary.Models;
-using Org.BouncyCastle.Utilities;
 using System.Text.RegularExpressions;
-using Ubiety.Dns.Core;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {

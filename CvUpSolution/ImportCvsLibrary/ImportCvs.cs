@@ -3,6 +3,7 @@ using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
+using dotenv.net;
 using GeneralLibrary;
 using Google.Protobuf;
 using ImportCvsLibrary.RegularExpressions;
@@ -10,6 +11,7 @@ using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
 using MailKit.Security;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using Spire.Doc;
@@ -43,23 +45,41 @@ namespace ImportCvsLibrary
         List<ParserRulesModel> _parsersRulesAllCompanies;
         List<ParserRulesModel> _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
-        private List<blackCandModel> _blackCandidatesList;
+        private List<blackCandModel>? _blackCandidatesList =null;
+        private readonly IMemoryCache _cache;
 
-        public ImportCvs(IConfiguration config, ICandsPositionsServise cvsPositionsServise)
+        public ImportCvs(IMemoryCache cache, IConfiguration config, ICandsPositionsServise cvsPositionsServise)
         {
+            DotEnv.Load();
+            var envVars = DotEnv.Read();
+            _filesRootFolder = envVars["CVS_ROOT_FOLDER"];
+            _cvupNotBackedUpRootFolder = envVars["APP_LOCAL_ROOT_FOLDER"];
+            _gmailUserName = envVars["IMPORT_GMAIL_USER_NAME"];
+            _mailPassword = envVars["IMPORT_GMAIL_PASSWORD"];
+
             _cvsPositionsServise = cvsPositionsServise;
 
-            _filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
-            _cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
+            //_filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
+            //_cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
 
             //Directory.CreateDirectory(_filesRootFolder);
-            _gmailUserName = config["GlobalSettings:ImportGmailUserName"];
-            _mailPassword = config["GlobalSettings:ImportGmailPassword"];
+            //_gmailUserName = config["GlobalSettings:ImportGmailUserName"];
+            //_mailPassword = config["GlobalSettings:ImportGmailPassword"];
+            _cache = cache;
         }
 
-        public async Task ImportFromGmail( List<blackCandModel> blackCandidatesList)
+        public async Task ImportFromGmail( )
         {
-            _blackCandidatesList = blackCandidatesList;
+
+            _blackCandidatesList = _cache.Get<List<blackCandModel>>("blackCandidatesList");
+
+            if (_blackCandidatesList == null)
+            {
+                 _blackCandidatesList = await _cvsPositionsServise.GetBlackCandidatesList();
+                _cache.Set("blackCandidatesList", _blackCandidatesList, TimeSpan.FromHours(1));
+            }
+
+            return;
 
             using (var client = new ImapClient())
             {

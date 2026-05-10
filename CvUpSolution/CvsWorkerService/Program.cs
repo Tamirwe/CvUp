@@ -1,10 +1,11 @@
-using CvsWorkerService;
-using ImportCvsLibrary;
-using DataModelsLibrary.Queries;
-using LuceneLibrary;
 using CandsPositionsLibrary;
 using CvFilesLibrary;
+using CvsWorkerService;
+using DataModelsLibrary.Queries;
 using EmailsLibrary;
+using Google.Api;
+using ImportCvsLibrary;
+using LuceneLibrary;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
@@ -17,6 +18,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
         services.AddTransient<IImportCvs, ImportCvs>();
         services.AddTransient<IDataBaseBackup, DataBaseBackup>();
+        services.AddMemoryCache();
         //services.AddSingleton<IImportCvs, ImportCvs>();
         services.AddHostedService<CvsImportWorker>();
     })

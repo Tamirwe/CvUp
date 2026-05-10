@@ -5,6 +5,7 @@ using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using ImportCvsLibrary;
 using LuceneLibrary;
+using OpenAiLibrary.AnalyzeCvsAI;
 using Quartz;
 using SchedulerWorkerService.Jobs;
 using Serilog;
@@ -31,42 +32,43 @@ builder.Services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
 builder.Services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
 builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
+builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 
 // Add Quartz
 builder.Services.AddQuartz(q =>
 {
 
-    //// --- Job 1: Import Gmail Cvs  ---
-    //var importGmailCvsJobKey = new JobKey("importGmailCvs");
+    // --- Job 1: Import Gmail Cvs  ---
+    var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
-    //q.AddJob<ImportGmailCvsJob>(opts => opts
-    //    .WithIdentity(importGmailCvsJobKey)
-    //    .WithDescription("Import Cvs from Gmail"));
+    q.AddJob<ImportGmailCvsJob>(opts => opts
+        .WithIdentity(importGmailCvsJobKey)
+        .WithDescription("Import Cvs from Gmail"));
 
-    //// Every minute between 7AM-11PM, Sunday to Friday
-    //q.AddTrigger(opts => opts
-    //    .ForJob(importGmailCvsJobKey)
-    //    .WithIdentity("ImportGmailCvs-WeekdayTrigger")
-    //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+    // Every minute between 7AM-11PM, Sunday to Friday
+    q.AddTrigger(opts => opts
+        .ForJob(importGmailCvsJobKey)
+        .WithIdentity("ImportGmailCvs-WeekdayTrigger")
+        .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
 
-    //// Every 2 minutes between 7AM-11PM, Saturday
-    //q.AddTrigger(opts => opts
-    //    .ForJob(importGmailCvsJobKey)
-    //    .WithIdentity("ImportGmailCvs-SaturdayTrigger")
-    //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+    // Every 2 minutes between 7AM-11PM, Saturday
+    q.AddTrigger(opts => opts
+        .ForJob(importGmailCvsJobKey)
+        .WithIdentity("ImportGmailCvs-SaturdayTrigger")
+        .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
-    //// --- Job 2: Count Cvs send to position for report  ---
-    //var countCvsSendToPosition = new JobKey("countCvsSendToPosition");
+    // --- Job 2: Count Cvs send to position for report  ---
+    var countCvsSendToPosition = new JobKey("countCvsSendToPosition");
 
-    //q.AddJob<CountCvsSendToPositionJob>(opts => opts
-    //   .WithIdentity(countCvsSendToPosition)
-    //   .WithDescription("Count Cvs send to position for report"));
+    q.AddJob<CountCvsSendToPositionJob>(opts => opts
+       .WithIdentity(countCvsSendToPosition)
+       .WithDescription("Count Cvs send to position for report"));
 
-    //// Every hour between 9 AM and 5 PM
-    //q.AddTrigger(opts => opts
-    //    .ForJob(countCvsSendToPosition)
-    //    .WithIdentity("count-Cvs-Send-To-Position")
-    //    .WithCronSchedule("0 9-17 * * *"));
+    // Every hour between 9 AM and 5 PM
+    q.AddTrigger(opts => opts
+        .ForJob(countCvsSendToPosition)
+        .WithIdentity("count-Cvs-Send-To-Position")
+        .WithCronSchedule("0 9-17 * * *"));
 
 
     // --- Job 3: Cvs DataBase Backup   ---
@@ -80,8 +82,31 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(dataBaseBackup)
         .WithIdentity("dataBase-backup")
-        .WithCronSchedule("0 * * * * ?")); //every minute
-        //.WithCronSchedule("0 0 1-4 ? * *"));
+        .WithCronSchedule("0 0 1-4 ? * *"));
+
+
+    //// --- Job 4: AI Analyze New Cvs    ---
+    //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+
+    //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+    //   .WithIdentity(aiAnalyzeNewCvs)
+    //   .WithDescription("AI Analyze New Cvs"));
+
+    //// Every minute between 7AM-11PM, Sunday to Friday
+    //q.AddTrigger(opts => opts
+    //    .ForJob(aiAnalyzeNewCvs)
+    //    .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
+    //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+
+    //// Every 2 minutes between 7AM-11PM, Saturday
+    //q.AddTrigger(opts => opts
+    //    .ForJob(aiAnalyzeNewCvs)
+    //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
+    //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+
+   
+
+
 
 });
 

@@ -5,7 +5,9 @@ using FuzzySharp;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
+using OpenAiLibrary.AnalyzeCvsAI;
 using OpenAiLibrary.Models;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
@@ -17,7 +19,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         private ChatClient chatClient;
 
         private ICandsCvsQueries _candsCvsQueries;
-        private List<IsraeliCitiesModel> citiesRegion;
+        private List<IsraeliCitiesModel>? citiesRegion;
         private string promptForCvAnalyze = "";
 
         public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey)
@@ -31,15 +33,27 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
         }
 
-        public async Task AiAnalyzeAndStoreAllCandidatesLastCvVer2(int companyId = 154)
+        public async Task AiAnalyzeNewCvs(int companyId = 154)
         {
             await LoadJsonRegionCitiesAsync();
 
-            List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+            await AiAnalyzeAndStoreAllCandidatesLastCvVer2(candidatesCvToAnalyzeList);
+        }
 
+        public async Task AiAnalyzeOldCvs(int companyId = 154)
+        {
+            await LoadJsonRegionCitiesAsync();
+
+            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+            await AiAnalyzeAndStoreAllCandidatesLastCvVer2(candidatesCvToAnalyzeList);
+        }
+
+        private async Task AiAnalyzeAndStoreAllCandidatesLastCvVer2(List<CandCvTxtModel> candidatesCvToAnalyzeList)
+        {
             string? json;
 
-            foreach (var candCv in allCandidatesLastCvList)
+            foreach (var candCv in candidatesCvToAnalyzeList)
             {
                 json = null;
 
@@ -130,7 +144,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return cleanText;
         }
 
-        public static bool IsLikelyReversedHebrew(string text)
+        private static bool IsLikelyReversedHebrew(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return false;
 
@@ -158,7 +172,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return false;
         }
 
-        public static string Reverse(string input)
+        private static string Reverse(string input)
         {
             if (string.IsNullOrEmpty(input)) return input;
 
@@ -254,24 +268,13 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return (area, region);
         }
 
-        public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
+        private static string? limitLen(string? original, int maxLength)
         {
-            await LoadJsonRegionCitiesAsync();
-            List<CandCvTxtModel> allCandidatesLastCvList = await GetCandsLastCvText(companyId);
-
-            foreach (var candCv in allCandidatesLastCvList)
+            if (original != null)
             {
-                try
-                {
-                    var analyzedCvResult = await AnalyzeCv(candCv, (int)candCv.candidateId!);
-                    SaveAnalyzedCv(analyzedCvResult);
-                }
-                catch (Exception ex)
-                {
-                    //throw ex;
-
-                }
+                return original.Substring(0, Math.Min(original.Length, maxLength));
             }
+            return null;
         }
 
         private async Task SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult)
@@ -310,76 +313,89 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             string jsonString = await File.ReadAllTextAsync("AnalyzeCvsAI\\israeliCities.json");
             citiesRegion = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(jsonString)!;
         }
-
-        private async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId)
-        {
-            List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
-            return allCandidatesLastCvList;
-        }
-
-        private async Task<AnalyzedCvModel> AnalyzeCv(CandCvTxtModel candCv, int candidateId)
-        {
-            string cv = NormalizeTextForAI.NormalizeCvText(candCv.cvTxt ?? "");
-            var cvLanguage = LanguageDetector.Detect(cv);
-
-            var messages = new List<ChatMessage>
-    {
-        new SystemChatMessage(" Extract structured CV data as JSON."),
-        new UserChatMessage($@"
-You are a senior HR analyst and career coach.
-Extract structured data from the CV below and return ONLY a valid JSON in HEBREW.
-No explanation, no markdown, no code fences — raw JSON only.
-JSON schema (all fields required, use empty string or empty array if unknown):
-
-- name
-- email
-- phone
-- location
-- skills
-- years_experience
-- current_title
-- languages // text description
-- summary // naturally mention experience level (e.g. בכיר, זוטר, מנוסה) if it can be inferred from the CV
-
-If the CV is in English – translate everything to Hebrew.
-
-CV:
-{cv}
-")
-    };
-
-            var response = await chatClient.CompleteChatAsync(messages);
-            var json = response.Value.Content[0].Text;
-
-            var AnalyzedCv = ParseAiResult.ParseResult(json);
-            //AnalyzedCv.CvLanguage = cvLanguage;
-            AnalyzedCv.CandidateId = candidateId;
-
-            //if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
-            //{
-            //    var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
-            //    if (locationRecord != null)
-            //    {
-            //        AnalyzedCv.Region = locationRecord.region;
-            //        AnalyzedCv.Area = locationRecord.area;
-            //    }
-            //}
-
-            return AnalyzedCv;
-        }
-
-        private static string? limitLen(string? original, int maxLength)
-        {
-            if (original != null)
-            {
-                return original.Substring(0, Math.Min(original.Length, maxLength));
-            }
-            return null;
-        }
-
-
-
+             
     }
 }
 
 
+
+
+
+
+
+
+
+
+
+//public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
+//{
+//    await LoadJsonRegionCitiesAsync();
+//    List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+
+//    foreach (var candCv in allCandidatesLastCvList)
+//    {
+//        try
+//        {
+//            var analyzedCvResult = await AnalyzeCv(candCv, (int)candCv.candidateId!);
+//            SaveAnalyzedCv(analyzedCvResult);
+//        }
+//        catch (Exception ex)
+//        {
+//            //throw ex;
+
+//        }
+//    }
+//}
+
+
+
+//private async Task<AnalyzedCvModel> AnalyzeCv(CandCvTxtModel candCv, int candidateId)
+//{
+//    string cv = NormalizeTextForAI.NormalizeCvText(candCv.cvTxt ?? "");
+//    var cvLanguage = LanguageDetector.Detect(cv);
+
+//    var messages = new List<ChatMessage>
+//    {
+//        new SystemChatMessage(" Extract structured CV data as JSON."),
+//        new UserChatMessage($@"
+//You are a senior HR analyst and career coach.
+//Extract structured data from the CV below and return ONLY a valid JSON in HEBREW.
+//No explanation, no markdown, no code fences — raw JSON only.
+//JSON schema (all fields required, use empty string or empty array if unknown):
+
+//- name
+//- email
+//- phone
+//- location
+//- skills
+//- years_experience
+//- current_title
+//- languages // text description
+//- summary // naturally mention experience level (e.g. בכיר, זוטר, מנוסה) if it can be inferred from the CV
+
+//If the CV is in English – translate everything to Hebrew.
+
+//CV:
+//{cv}
+//")
+//    };
+
+//    var response = await chatClient.CompleteChatAsync(messages);
+//    var json = response.Value.Content[0].Text;
+
+//    var AnalyzedCv = ParseAiResult.ParseResult(json);
+//    //AnalyzedCv.CvLanguage = cvLanguage;
+//    AnalyzedCv.CandidateId = candidateId;
+
+//    //if (!string.IsNullOrWhiteSpace(AnalyzedCv.Location))
+//    //{
+//    //    var locationRecord = citiesRegion.FirstOrDefault(x => x.city == AnalyzedCv.Location);
+//    //    if (locationRecord != null)
+//    //    {
+//    //        AnalyzedCv.Region = locationRecord.region;
+//    //        AnalyzedCv.Area = locationRecord.area;
+//    //    }
+//    //}
+
+//    return AnalyzedCv;
+//}

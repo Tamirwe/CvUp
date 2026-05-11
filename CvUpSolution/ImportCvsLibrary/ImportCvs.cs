@@ -79,8 +79,6 @@ namespace ImportCvsLibrary
                 _cache.Set("blackCandidatesList", _blackCandidatesList, TimeSpan.FromHours(1));
             }
 
-            return;
-
             using (var client = new ImapClient())
             {
                 try

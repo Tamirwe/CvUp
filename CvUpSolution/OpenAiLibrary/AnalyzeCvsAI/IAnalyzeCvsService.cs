@@ -9,7 +9,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 {
     public interface IAnalyzeCvsService
     {
-        Task AiAnalyzeNewCvs(int companyId = 154);
-        Task AiAnalyzeOldCvs(int companyId = 154);
+        Task AiAnalyzeNewCvs();
+        Task AiAnalyzeOldCvs();
     }
 }

@@ -133,11 +133,17 @@ namespace CandsPositionsLibrary
             }
         }
 
-        public async Task IndexCompanyCvs(int companyId)
+        public async Task IndexAllCandidates(int companyId)
         {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, 0);
-            await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, 0);
+            await _luceneService.IndexAllCandidates(companyId, cvPropsToIndexList);
         }
+
+        //public async Task IndexCompanyCvs(int companyId)
+        //{
+        //    List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, 0);
+        //    await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
+        //}
 
         public async Task<CandModel?> GetCandidate(int companyId, int candId)
         {
@@ -338,8 +344,15 @@ namespace CandsPositionsLibrary
 
         public async Task SaveCandidateToIndex(int companyId, int candidateId)
         {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, candidateId);
-            await _luceneService.DocumentUpdate(companyId, cvPropsToIndexList);
+            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, candidateId);
+
+            //List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, candidateId);
+
+            if (cvPropsToIndexList.Count == 0) return;   
+
+            await _luceneService.AddUpdateCandidateDataToIndex( cvPropsToIndexList.First());
+
+            //await _luceneService.DocumentUpdate(companyId, cvPropsToIndexList);
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)

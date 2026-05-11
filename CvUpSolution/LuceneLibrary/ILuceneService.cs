@@ -6,8 +6,9 @@ namespace LuceneLibrary
 {
     public interface ILuceneService
     {
-        public Task DocumentUpdate(int companyId, List<CvsToIndexModel> cvPropsToIndex);
+        Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex);
         public Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals);
-        public Task CompanyIndexAddDocuments(int companyId, List<CvsToIndexModel> cvPropsToIndexList,bool isDeleteAllDocuments);
+        Task IndexAllCandidates(int companyId, List<CvsToIndexModel> allCandsTextToIndexList);
+        //public Task CompanyIndexAddDocuments(int companyId, List<CvsToIndexModel> cvPropsToIndexList,bool isDeleteAllDocuments);
     }
 }

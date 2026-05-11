@@ -5,9 +5,7 @@ using FuzzySharp;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAiLibrary.AnalyzeCvsAI;
 using OpenAiLibrary.Models;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
@@ -21,35 +19,34 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         private ICandsCvsQueries _candsCvsQueries;
         private List<IsraeliCitiesModel>? citiesRegion;
         private string promptForCvAnalyze = "";
+        private readonly int _companyId;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey)
+        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey, int companyId = 154)
         {
             _candsCvsQueries = candsCvsQueries;
-
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");
             promptForCvAnalyze = File.ReadAllText("AnalyzeCvsAI\\cv_prompt.txt");
-
-
+            _companyId = companyId;
         }
 
-        public async Task AiAnalyzeNewCvs(int companyId = 154)
+        public async Task AiAnalyzeNewCvs()
         {
             await LoadJsonRegionCitiesAsync();
 
-            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(companyId);
-            await AiAnalyzeAndStoreAllCandidatesLastCvVer2(candidatesCvToAnalyzeList);
+            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+            await AiAnalyzeAndStoreCandidatesLastCv(candidatesCvToAnalyzeList);
         }
 
-        public async Task AiAnalyzeOldCvs(int companyId = 154)
+        public async Task AiAnalyzeOldCvs()
         {
             await LoadJsonRegionCitiesAsync();
 
-            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(companyId);
-            await AiAnalyzeAndStoreAllCandidatesLastCvVer2(candidatesCvToAnalyzeList);
+            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+            await AiAnalyzeAndStoreCandidatesLastCv(candidatesCvToAnalyzeList);
         }
 
-        private async Task AiAnalyzeAndStoreAllCandidatesLastCvVer2(List<CandCvTxtModel> candidatesCvToAnalyzeList)
+        private async Task AiAnalyzeAndStoreCandidatesLastCv(List<CandCvTxtModel> candidatesCvToAnalyzeList)
         {
             string? json;
 

@@ -2,11 +2,11 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using FuzzySharp;
+using GeneralLibrary;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
 using OpenAiLibrary.Models;
-using System.Text.RegularExpressions;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {
@@ -61,9 +61,9 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         continue;
                     }
 
-                    var cvLanguage = LanguageDetector.Detect(candCv.cvTxt);
+                    var cvLanguage = CleanString.DetectStringLanguage(candCv.cvTxt);
 
-                    string textCv = RemovePunctuationAndNormelizeHebrew(candCv.cvTxt , cvLanguage);
+                    string textCv = CleanString.RemovePunctuationAndNormelizeHebrew(candCv.cvTxt , cvLanguage);
 
                     var messages = new List<ChatMessage>
                     {
@@ -117,70 +117,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                     //throw ex;
                 }
             }
-        }
-
-        private string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
-        {
-            // Matches invisible" bidirectional marks U+200E (LRM), U+200F (RLM), and other BiDi control chars
-            string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
-
-            // Remove special characters, without C#,.NET,C++.
-            var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+]", " ");
-
-            // Collapse spaces
-            var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
-
-            if (cvLanguage == "Hebrew")
-            {
-                if (IsLikelyReversedHebrew(cleanText))
-                {
-                    cleanText = Reverse(cleanText);
-                }
-            }
-
-            return cleanText;
-        }
-
-        private static bool IsLikelyReversedHebrew(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return false;
-
-            // Split into individual words
-            string[] words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            // Final forms that should ONLY be at the end of a word
-            char[] sofitLetters = { 'ך', 'ם', 'ן', 'ף', 'ץ' };
-            // Non-final forms that should NOT be at the end of a word
-            char[] nonSofitEndings = { 'כ', 'מ', 'נ', 'פ', 'צ' };
-
-            int count = 0;
-
-            foreach (var word in words)
-            {
-                // 1. Check if word starts with a "Final" letter
-                if (sofitLetters.Contains(word[0]) && word.Length > 1) count++;
-
-                if (count > 3)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static string Reverse(string input)
-        {
-            if (string.IsNullOrEmpty(input)) return input;
-
-            //return Regex.Replace(input, @"\S+", m =>
-            //    new string(m.Value.Reverse().ToArray()));
-
-            return string.Create(input.Length, input, (chars, state) =>
-            {
-                state.AsSpan().CopyTo(chars);
-                chars.Reverse();
-            });
         }
 
         private (List<string>, List<string>, List<string>) splitWorkExperience(List<string>? workExperience)

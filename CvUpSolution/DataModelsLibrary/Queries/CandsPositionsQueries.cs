@@ -424,114 +424,148 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId = 0)
+        public async Task<List<CvsToIndexModel>> GetCandidatesLastCvsToIndex(int companyId, int candidateId = 0)
         {
             using (var dbContext = new cvup00001Context())
             {
-
                 var query = from cand in dbContext.candidates
-                            where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            join cvt in dbContext.cvs_txts
+                            on new { ID = cand.id, cvId = (int)cand.last_cv_id! }
+                            equals new { ID = (int)cvt.candidate_id!, cvId = cvt.cv_id }
+                            where cand.company_id == companyId
+                            && cand.is_black_list == false
+                            && cand.last_cv_id != null
+                            && cvt.candidate_id != null
+                            && candidateId > 0 ? cand.id == candidateId : 1 == 1
                             select new CvsToIndexModel
                             {
                                 candidateId = cand.id,
                                 firstName = cand.first_name,
                                 lastName = cand.last_name,
-                                email = cand.email,
-                                phone = cand.phone,
                                 reviewText = cand.review,
-                                lastCvSent = cand.last_cv_sent
+                                cvsTxt = cvt.cv_txt,
                             };
 
                 List<CvsToIndexModel> candsCvs = await query.ToListAsync();
 
-                var cvsTxtQuery = from cv in dbContext.cvs_txts
-                                  where cv.company_id == companyId && candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
-                                  orderby cv.candidate_id ascending, cv.ascii_sum 
-                                  select new CvTxtModel
-                                  {
-                                      id = cv.id,
-                                      candidateId = cv.candidate_id ?? 0,
-                                      cvTxt = cv.cv_txt,
-                                      asciiSum = cv.ascii_sum,
-                                  };
-
-                List<CvTxtModel> cvsTxts = await cvsTxtQuery.ToListAsync();
-
-                //List <cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
-
-                List<CvTxtModel> candsGroupCvsTxt = GroupCandsCvsTxts(cvsTxts);
-
-                foreach (var item in candsCvs)
+                foreach (var cnd in candsCvs)
                 {
-                    var candCvsTxt = candsGroupCvsTxt.Find(x => x.candidateId == item.candidateId);
-
-                    if (candCvsTxt != null)
-                    {
-                        item.cvsTxt = candCvsTxt.cvTxt;
-                    }
+                    var candText = cnd.candidateId.ToString() + " " + cnd.email + " " + cnd.phone + " " + cnd.firstName + " " + cnd.lastName + cnd.reviewText + " " + cnd.cvsTxt;
+                    cnd.cvsTxt = candText;
                 }
-
-
-
-                //foreach (var item in candsCvs)
-                //{
-                //    var asciiGroup = cvsTxts.Where(x => x.candidateId == item.candidateId).GroupBy(x => x.asciiSum).Select(x => x.First()).ToList();
-
-                //    StringBuilder sb = new StringBuilder();
-
-                //    foreach (var group in asciiGroup)
-                //    {
-                //        sb.Append(group.cvTxt + " ");
-                //    }
-
-                //    item.cvsTxt = sb.ToString();
-                //}
 
                 return candsCvs;
             }
         }
 
-        private List<CvTxtModel> GroupCandsCvsTxts(List<CvTxtModel> candCvsTxts)
-        {
+        //public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId = 0)
+        //{
+        //    using (var dbContext = new cvup00001Context())
+        //    {
 
-            int asciiSumCurrent = -1;
-            int candIdCurrent = 0;
-            StringBuilder? sb = null;
+        //        var query = from cand in dbContext.candidates
+        //                    where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+        //                    select new CvsToIndexModel
+        //                    {
+        //                        candidateId = cand.id,
+        //                        firstName = cand.first_name,
+        //                        lastName = cand.last_name,
+        //                        email = cand.email,
+        //                        phone = cand.phone,
+        //                        reviewText = cand.review,
+        //                        lastCvSent = cand.last_cv_sent
+        //                    };
 
-            List<CvTxtModel> candsGroupCvsTxt = new List<CvTxtModel>();
+        //        List<CvsToIndexModel> candsCvs = await query.ToListAsync();
 
-            foreach (var item in candCvsTxts)
-            {
-                if (candIdCurrent != item.candidateId)
-                {
-                    if (sb != null)
-                    {
-                        candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
-                    }
+        //        var cvsTxtQuery = from cv in dbContext.cvs_txts
+        //                          where cv.company_id == companyId && candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
+        //                          orderby cv.candidate_id ascending, cv.ascii_sum 
+        //                          select new CvTxtModel
+        //                          {
+        //                              id = cv.id,
+        //                              candidateId = cv.candidate_id ?? 0,
+        //                              cvTxt = cv.cv_txt,
+        //                              asciiSum = cv.ascii_sum,
+        //                          };
 
-                    candIdCurrent = item.candidateId ?? 0;
-                    asciiSumCurrent = item.asciiSum ?? -1;
-                    sb = new StringBuilder(item.cvTxt);
-                }
-                else
-                {
-                    if (asciiSumCurrent != item.asciiSum && sb != null)
-                    {
-                        sb.Append(" " + item.cvTxt);
-                    }
+        //        List<CvTxtModel> cvsTxts = await cvsTxtQuery.ToListAsync();
 
-                    candIdCurrent = item.candidateId ?? 0;
-                    asciiSumCurrent = item.asciiSum ?? -1;
-                }
-            }
+        //        //List <cvs_txt> cvsTxts = await dbContext.cvs_txts.Where(x => x.company_id == companyId).ToListAsync();
 
-            if (sb != null)
-            {
-                candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
-            }
+        //        List<CvTxtModel> candsGroupCvsTxt = GroupCandsCvsTxts(cvsTxts);
 
-            return candsGroupCvsTxt;
-        }
+        //        foreach (var item in candsCvs)
+        //        {
+        //            var candCvsTxt = candsGroupCvsTxt.Find(x => x.candidateId == item.candidateId);
+
+        //            if (candCvsTxt != null)
+        //            {
+        //                item.cvsTxt = candCvsTxt.cvTxt;
+        //            }
+        //        }
+
+
+
+        //        //foreach (var item in candsCvs)
+        //        //{
+        //        //    var asciiGroup = cvsTxts.Where(x => x.candidateId == item.candidateId).GroupBy(x => x.asciiSum).Select(x => x.First()).ToList();
+
+        //        //    StringBuilder sb = new StringBuilder();
+
+        //        //    foreach (var group in asciiGroup)
+        //        //    {
+        //        //        sb.Append(group.cvTxt + " ");
+        //        //    }
+
+        //        //    item.cvsTxt = sb.ToString();
+        //        //}
+
+        //        return candsCvs;
+        //    }
+        //}
+
+        //private List<CvTxtModel> GroupCandsCvsTxts(List<CvTxtModel> candCvsTxts)
+        //{
+
+        //    int asciiSumCurrent = -1;
+        //    int candIdCurrent = 0;
+        //    StringBuilder? sb = null;
+
+        //    List<CvTxtModel> candsGroupCvsTxt = new List<CvTxtModel>();
+
+        //    foreach (var item in candCvsTxts)
+        //    {
+        //        if (candIdCurrent != item.candidateId)
+        //        {
+        //            if (sb != null)
+        //            {
+        //                candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
+        //            }
+
+        //            candIdCurrent = item.candidateId ?? 0;
+        //            asciiSumCurrent = item.asciiSum ?? -1;
+        //            sb = new StringBuilder(item.cvTxt);
+        //        }
+        //        else
+        //        {
+        //            if (asciiSumCurrent != item.asciiSum && sb != null)
+        //            {
+        //                sb.Append(" " + item.cvTxt);
+        //            }
+
+        //            candIdCurrent = item.candidateId ?? 0;
+        //            asciiSumCurrent = item.asciiSum ?? -1;
+        //        }
+        //    }
+
+        //    if (sb != null)
+        //    {
+        //        candsGroupCvsTxt.Add(new CvTxtModel { candidateId = candIdCurrent, cvTxt = sb.ToString() });
+        //    }
+
+        //    return candsGroupCvsTxt;
+        //}
 
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)

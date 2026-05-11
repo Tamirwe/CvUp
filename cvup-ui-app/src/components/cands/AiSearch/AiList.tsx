@@ -71,16 +71,59 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                   })}
                 >
                   <div
+                    id={`cand-${cand.candidateId}`}
                     style={{
                       whiteSpace: "normal",
-                      fontWeight: 600,
                     }}
                   >
-                    {cand.score} - {cand.nameAI} - {cand.currentTitleAI} -{" "}
+                    <span style={{ color: "#312f2f", fontSize: "0.625rem" }}>
+                      {cand.score}
+                    </span>
                     <span style={{ color: "#a38c14", fontWeight: "bold" }}>
-                      {cand.locationAI}
+                      {`${cand.nameAI && ` - ${cand.nameAI}`}`}
+                    </span>
+                    <span style={{ color: "#9b9b9b" }}>
+                      {cand.estimateAgeAI > 0 && ` - ${cand.estimateAgeAI}`}
+                    </span>
+                    <span style={{ color: "#9b9b9b" }}>
+                      {cand.locationAI && ` - ${cand.locationAI}`}
                     </span>
                     <div
+                      style={{
+                        color: "#68a6e9",
+                      }}
+                    >
+                      {cand.professionWordsAI &&
+                        cand.professionWordsAI.join(", ")}
+                      {"."}
+                    </div>
+                    <div
+                      style={{
+                        color: "#045d93",
+                      }}
+                    >
+                      <table
+                        style={{
+                          width: "fitContent",
+                          borderSpacing: "10px 4px",
+                        }}
+                      >
+                        {cand.jobsTitlesAI.map((jobTitle, i) => {
+                          return (
+                            <tr>
+                              <td>
+                                <span style={{ color: "#007edb" }}>
+                                  {cand.companiesAI && cand.companiesAI[i]}{" "}
+                                </span>
+                              </td>
+                              <td>{jobTitle}</td>
+                            </tr>
+                          );
+                        })}
+                      </table>
+                    </div>
+
+                    {/* <div
                       style={{
                         color: "#68a6e9",
                         fontWeight: 600,
@@ -99,30 +142,8 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                       {cand.professionSkillsAI &&
                         cand.professionSkillsAI.join(", ")}
                       {"."}
-                    </div>
+                    </div> */}
                   </div>
-                  <div
-                    style={{
-                      whiteSpace: "normal",
-                      fontSize: "0.875rem",
-                      color: "#03458d",
-                      paddingTop: "4px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {cand.companiesAI}
-                  </div>
-                  {/* <div
-                    style={{
-                      whiteSpace: "normal",
-                      fontSize: "0.875rem",
-                      color: "#68a6e9",
-                      paddingTop: "4px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {cand.professionAI}
-                  </div> */}
                   <div
                     style={{
                       whiteSpace: "normal",
@@ -138,7 +159,6 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                       fontSize: "0.875rem",
                       color: "#51a798",
                       paddingTop: "4px",
-                      fontWeight: 600,
                     }}
                   >
                     {cand.educationAI}

@@ -30,7 +30,7 @@ namespace CvsWorkerService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _blackCandidatesList = await _candPosService.GetBlackCandidatesList();
+            //_blackCandidatesList = await _candPosService.GetBlackCandidatesList();
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -56,7 +56,7 @@ namespace CvsWorkerService
                         {
                             _isRunning = true;
 
-                            await _importCvs.ImportFromGmail(_blackCandidatesList);
+                            await _importCvs.ImportFromGmail();
 
                             _isRunning = false;
                         }

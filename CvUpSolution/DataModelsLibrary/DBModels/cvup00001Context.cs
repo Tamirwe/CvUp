@@ -17,6 +17,7 @@ namespace Database.models
         }
 
         public virtual DbSet<ai_analyze_cv> ai_analyze_cvs { get; set; } = null!;
+        public virtual DbSet<ai_analyze_cvs_copy> ai_analyze_cvs_copies { get; set; } = null!;
         public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
         public virtual DbSet<black_cand> black_cands { get; set; } = null!;
         public virtual DbSet<cand_pos_stage> cand_pos_stages { get; set; } = null!;
@@ -24,10 +25,13 @@ namespace Database.models
         public virtual DbSet<company> companies { get; set; } = null!;
         public virtual DbSet<company_cvs_email> company_cvs_emails { get; set; } = null!;
         public virtual DbSet<company_parser> company_parsers { get; set; } = null!;
+        public virtual DbSet<company_stages_type> company_stages_types { get; set; } = null!;
         public virtual DbSet<contact> contacts { get; set; } = null!;
         public virtual DbSet<customer> customers { get; set; } = null!;
         public virtual DbSet<cv> cvs { get; set; } = null!;
+        public virtual DbSet<cvs_ascii_sum> cvs_ascii_sums { get; set; } = null!;
         public virtual DbSet<cvs_txt> cvs_txts { get; set; } = null!;
+        public virtual DbSet<emails_sent> emails_sents { get; set; } = null!;
         public virtual DbSet<emails_template> emails_templates { get; set; } = null!;
         public virtual DbSet<folder> folders { get; set; } = null!;
         public virtual DbSet<folders_cand> folders_cands { get; set; } = null!;
@@ -37,12 +41,14 @@ namespace Database.models
         public virtual DbSet<parser_rule> parser_rules { get; set; } = null!;
         public virtual DbSet<position> positions { get; set; } = null!;
         public virtual DbSet<position_candidate> position_candidates { get; set; } = null!;
+        public virtual DbSet<position_candidate_stage> position_candidate_stages { get; set; } = null!;
         public virtual DbSet<position_contact> position_contacts { get; set; } = null!;
         public virtual DbSet<position_interviewer> position_interviewers { get; set; } = null!;
         public virtual DbSet<position_type> position_types { get; set; } = null!;
         public virtual DbSet<registeration_key> registeration_keys { get; set; } = null!;
         public virtual DbSet<search> searches { get; set; } = null!;
         public virtual DbSet<sent_email> sent_emails { get; set; } = null!;
+        public virtual DbSet<stages_type> stages_types { get; set; } = null!;
         public virtual DbSet<temp_cands_review> temp_cands_reviews { get; set; } = null!;
         public virtual DbSet<user> users { get; set; } = null!;
         public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; } = null!;
@@ -52,7 +58,7 @@ namespace Database.models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
+                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.30-mysql"));
             }
         }
 
@@ -63,6 +69,69 @@ namespace Database.models
 
             modelBuilder.Entity<ai_analyze_cv>(entity =>
             {
+                entity.HasIndex(e => e.candidate_id, "uq_ai_analyze_cvs_candidate_id")
+                    .IsUnique();
+
+                entity.Property(e => e.area).HasMaxLength(20);
+
+                entity.Property(e => e.city).HasMaxLength(50);
+
+                entity.Property(e => e.companies).HasMaxLength(500);
+
+                entity.Property(e => e.date_created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.date_updated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.education).HasMaxLength(500);
+
+                entity.Property(e => e.email).HasMaxLength(150);
+
+                entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.jobs_titles_en).HasMaxLength(500);
+
+                entity.Property(e => e.jobs_titles_he).HasMaxLength(500);
+
+                entity.Property(e => e.languages).HasMaxLength(150);
+
+                entity.Property(e => e.military_service).HasMaxLength(250);
+
+                entity.Property(e => e.name).HasMaxLength(101);
+
+                entity.Property(e => e.phone).HasMaxLength(20);
+
+                entity.Property(e => e.profession_skills_en).HasMaxLength(500);
+
+                entity.Property(e => e.profession_skills_he).HasMaxLength(500);
+
+                entity.Property(e => e.profession_words_en).HasMaxLength(500);
+
+                entity.Property(e => e.profession_words_he).HasMaxLength(500);
+
+                entity.Property(e => e.region).HasMaxLength(20);
+
+                entity.Property(e => e.seniority).HasMaxLength(50);
+
+                entity.Property(e => e.skills).HasMaxLength(600);
+
+                entity.Property(e => e.summary_en).HasMaxLength(1000);
+
+                entity.Property(e => e.summary_he).HasMaxLength(1000);
+
+                entity.HasOne(d => d.candidate)
+                    .WithOne(p => p.ai_analyze_cv)
+                    .HasForeignKey<ai_analyze_cv>(d => d.candidate_id)
+                    .HasConstraintName("fk_ai_analyze_cvs_candidate_id_candidates_id");
+            });
+
+            modelBuilder.Entity<ai_analyze_cvs_copy>(entity =>
+            {
+                entity.ToTable("ai_analyze_cvs_copy");
+
                 entity.HasIndex(e => e.candidate_id, "uq_ai_analyze_cvs_candidate_id")
                     .IsUnique();
 
@@ -115,11 +184,6 @@ namespace Database.models
                 entity.Property(e => e.summary_en).HasMaxLength(1000);
 
                 entity.Property(e => e.summary_he).HasMaxLength(1000);
-
-                entity.HasOne(d => d.candidate)
-                    .WithOne(p => p.ai_analyze_cv)
-                    .HasForeignKey<ai_analyze_cv>(d => d.candidate_id)
-                    .HasConstraintName("fk_ai_analyze_cvs_candidate_id_candidates_id");
             });
 
             modelBuilder.Entity<auth_out_email>(entity =>
@@ -290,6 +354,22 @@ namespace Database.models
                     .HasConstraintName("fk_company_parsers_parser_id_parsers_id");
             });
 
+            modelBuilder.Entity<company_stages_type>(entity =>
+            {
+                entity.HasIndex(e => e.company_id, "fk_position_candidate_stages_company_id_companies_id");
+
+                entity.Property(e => e.color).HasMaxLength(20);
+
+                entity.Property(e => e.name).HasMaxLength(50);
+
+                entity.Property(e => e.stage_Type).HasMaxLength(50);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.company_stages_types)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_position_candidate_stages_company_id_companies_id");
+            });
+
             modelBuilder.Entity<contact>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_contacts_company_id_companies_id");
@@ -383,6 +463,19 @@ namespace Database.models
                     .HasConstraintName("fk_cvs_position_type_id_position_types_id");
             });
 
+            modelBuilder.Entity<cvs_ascii_sum>(entity =>
+            {
+                entity.ToTable("cvs_ascii_sum");
+
+                entity.Property(e => e.cv_folder).HasMaxLength(20);
+
+                entity.Property(e => e.cv_key).HasMaxLength(50);
+
+                entity.Property(e => e.file_extension).HasMaxLength(6);
+
+                entity.Property(e => e.mail_date).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<cvs_txt>(entity =>
             {
                 entity.ToTable("cvs_txt");
@@ -407,6 +500,37 @@ namespace Database.models
                     .WithMany(p => p.cvs_txts)
                     .HasForeignKey(d => d.cv_id)
                     .HasConstraintName("fk_cvs_txt_cv_id_cvs_id");
+            });
+
+            modelBuilder.Entity<emails_sent>(entity =>
+            {
+                entity.ToTable("emails_sent");
+
+                entity.HasIndex(e => e.company_id, "fk_emails_sent_company_id_companies_id");
+
+                entity.HasIndex(e => e.user_id, "fk_emails_sent_user_id_users_id");
+
+                entity.Property(e => e.body).HasMaxLength(1500);
+
+                entity.Property(e => e.email_type).HasColumnType("enum('Registration_Approved','Confirm_Registration')");
+
+                entity.Property(e => e.from_address).HasMaxLength(250);
+
+                entity.Property(e => e.sent_date).HasColumnType("datetime");
+
+                entity.Property(e => e.subject).HasMaxLength(500);
+
+                entity.Property(e => e.to_address).HasMaxLength(500);
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.emails_sents)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("fk_emails_sent_company_id_companies_id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.emails_sents)
+                    .HasForeignKey(d => d.user_id)
+                    .HasConstraintName("fk_emails_sent_user_id_users_id");
             });
 
             modelBuilder.Entity<emails_template>(entity =>
@@ -631,6 +755,34 @@ namespace Database.models
                     .HasConstraintName("fk_position_candidates_position_id_positions_id");
             });
 
+            modelBuilder.Entity<position_candidate_stage>(entity =>
+            {
+                entity.HasIndex(e => e.candidate_id, "position_candidate_stages_candidate_id_candidates_id");
+
+                entity.HasIndex(e => e.company_id, "position_candidate_stages_company_id_companies_id");
+
+                entity.HasIndex(e => e.position_candidate_id, "position_candidate_stages_pos_candidate_id_pos_candidates_id");
+
+                entity.Property(e => e.stage_date).HasColumnType("datetime");
+
+                entity.Property(e => e.stage_type).HasMaxLength(50);
+
+                entity.HasOne(d => d.candidate)
+                    .WithMany(p => p.position_candidate_stages)
+                    .HasForeignKey(d => d.candidate_id)
+                    .HasConstraintName("position_candidate_stages_candidate_id_candidates_id");
+
+                entity.HasOne(d => d.company)
+                    .WithMany(p => p.position_candidate_stages)
+                    .HasForeignKey(d => d.company_id)
+                    .HasConstraintName("position_candidate_stages_company_id_companies_id");
+
+                entity.HasOne(d => d.position_candidate)
+                    .WithMany(p => p.position_candidate_stages)
+                    .HasForeignKey(d => d.position_candidate_id)
+                    .HasConstraintName("position_candidate_stages_pos_candidate_id_pos_candidates_id");
+            });
+
             modelBuilder.Entity<position_contact>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_position_contacts_company_id_companies_id");
@@ -754,6 +906,15 @@ namespace Database.models
                     .WithMany(p => p.sent_emails)
                     .HasForeignKey(d => d.company_id)
                     .HasConstraintName("fk_sent_emails_company_id_companies_id");
+            });
+
+            modelBuilder.Entity<stages_type>(entity =>
+            {
+                entity.Property(e => e.color).HasMaxLength(20);
+
+                entity.Property(e => e.name).HasMaxLength(50);
+
+                entity.Property(e => e.stage_type).HasMaxLength(50);
             });
 
             modelBuilder.Entity<temp_cands_review>(entity =>

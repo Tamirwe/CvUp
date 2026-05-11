@@ -38,9 +38,12 @@ namespace DataModelsLibrary.Queries
                                 FROM cvs_txt ctx
                                 WHERE ctx.cv_id IN ( SELECT cv_id FROM (SELECT cands.last_cv_id cv_id
 		                                FROM candidates cands 
-		                                WHERE cands.company_id=" + companyId + @" AND cands.is_cv_analyzed = 0 
+		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
 		                                ORDER BY cands.id DESC 
-		                                LIMIT  100) AS tbl)";
+		                                LIMIT  40) AS tbl)";
+
+                //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
+                //WHERE cands.id = 392780
 
                 var candCvTxtModelList = await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
                 return candCvTxtModelList;
@@ -123,20 +126,21 @@ namespace DataModelsLibrary.Queries
                                 CvId = ai.cv_id,
                                 Name = ai.name,
                                 Email = ai.email,
+                                EstimateAge = ai.estimate_age,
                                 Phone = ai.phone,
                                 Location = ai.city,
                                 Region = ai.region,
                                 Area = ai.area,
                                 Languages = ai.languages,
-                                CurrentJobTitleEn = ai.current_job_title_en ?? "",
-                                CurrentJobTitleHe = ai.current_job_title_he ?? "",
+                                JobsTitlesEn = StringToList(ai.jobs_titles_en),
+                                JobsTitlesHe = StringToList(ai.jobs_titles_en),
                                 ProfessionWordsEn = StringToList(ai.profession_words_en),
                                 ProfessionWordsHe = StringToList(ai.profession_words_he),
                                 ProfessionSkillsEn = StringToList(ai.profession_skills_en),
                                 ProfessionSkillsHe = StringToList(ai.profession_skills_he),
                                 Seniority = ai.seniority,
                                 Education = ai.education,
-                                Companies = ai.companies,
+                                Companies = StringToList(ai.companies),
                                 Skills = StringToList(ai.skills),
                                 MilitaryService = ai.military_service,
                                 SummaryEn = ai.summary_en ?? "",

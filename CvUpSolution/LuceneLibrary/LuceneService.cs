@@ -1,32 +1,23 @@
 ﻿using DataModelsLibrary.Models;
-using Google.Protobuf.WellKnownTypes;
+using GeneralLibrary;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using MailKit.Search;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static Lucene.Net.Util.Packed.PackedInt32s;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LuceneLibrary
 {
     public class LuceneService : ILuceneService, IDisposable
     {
-        //string _luceneIndexesRootFolder;
+        private readonly string _indexFolder;
+        private readonly int _companyId;
+
         string _cvupNotBackedUpRootFolder;
 
         Analyzer? mAnalyzer;
@@ -34,26 +25,30 @@ namespace LuceneLibrary
         FSDirectory? mIndexDirectory;
         IndexReader? mIndexReader;
         QueryParser? mQueryParser;
+        //string _luceneIndexesRootFolder;
 
-        public LuceneService(IConfiguration config)
+        public LuceneService(IConfiguration config, int companyId=154)
         {
             _cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
+            _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
+            _companyId = companyId;
+
             //System.IO.Directory.CreateDirectory($"{_filesRootFolder}\\luceneIndex");
-            mAnalyzer = new WhitespaceAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
+            mAnalyzer = new WhitespaceAnalyzer(LuceneVersion.LUCENE_48);
+
+
+
             //mAnalyzer = new ClassicAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
 
             //_luceneIndexesRootFolder = config["GlobalSettings:LuceneIndexesRootFolder"];
-            //_indexFolder = @"C:\KB\CvUp\CvUpSolution\LuceneLibrary\Index";
         }
 
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
-            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
-            //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            mIndexDirectory = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder));
+            mIndexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
             mIndexSearcher = new IndexSearcher(mIndexReader);
-            mQueryParser = new QueryParser(Lucene.Net.Util.LuceneVersion.LUCENE_48, "CV", mAnalyzer);
+            mQueryParser = new QueryParser(LuceneVersion.LUCENE_48, "CV", mAnalyzer);
 
             var result = new List<SearchEntry>();
 
@@ -184,26 +179,43 @@ namespace LuceneLibrary
             return result;
         }
 
-        public async Task CompanyIndexAddDocuments(int companyId, List<CvsToIndexModel> CompanyTextToIndexList, bool isDeleteAllDocuments)
+        public async Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex)
         {
+            await DocumentDelete(candidateDataToIndex.candidateId);
+
             try
             {
-                string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
-
-                using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
+                using (var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder)))
                 {
-                    var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
+                    var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, mAnalyzer);
 
                     using (var indexWriter = new IndexWriter(indexDir, config))
                     {
-                        if (isDeleteAllDocuments)
-                        {
-                            indexWriter.DeleteAll();
-                        }
+                        await Task.Run(() => indexWriter.AddDocument(CandTextToDocument(candidateDataToIndex)));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ;
+            }
+        }
 
-                        foreach (var item in CompanyTextToIndexList)
+        public async Task IndexAllCandidates(int companyId, List<CvsToIndexModel> allCandsTextToIndexList)
+        {
+            try
+            {
+                using (var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder)))
+                {
+                    var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, mAnalyzer);
+
+                    using (var indexWriter = new IndexWriter(indexDir, config))
+                    {
+                        indexWriter.DeleteAll();
+
+                        foreach (var cnd in allCandsTextToIndexList)
                         {
-                            await Task.Run(() => indexWriter.AddDocument(documentToIndex(item)));
+                            await Task.Run(() => indexWriter.AddDocument(CandTextToDocument(cnd)));
                         }
                     }
                 }
@@ -213,6 +225,47 @@ namespace LuceneLibrary
                 throw;
             }
         }
+
+        //public async Task CompanyIndexAddDocuments(int companyId, List<CvsToIndexModel> CompanyTextToIndexList, bool isDeleteAllDocuments)
+        //{
+        //    try
+        //    {
+        //        using (var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder)))
+        //        {
+        //            var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, mAnalyzer);
+
+        //            using (var indexWriter = new IndexWriter(indexDir, config))
+        //            {
+        //                if (isDeleteAllDocuments)
+        //                {
+        //                    indexWriter.DeleteAll();
+        //                }
+
+        //                foreach (var item in CompanyTextToIndexList)
+        //                {
+        //                    await Task.Run(() => indexWriter.AddDocument(documentToIndex(item)));
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        private Document CandTextToDocument(CvsToIndexModel cvCand)
+        {
+           var plainText =  CleanString.ExtractPlainText(cvCand.cvsTxt ?? "");
+
+
+            var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES) },
+                { new StoredField("Updated",DateTimeOffset.UtcNow.ToUnixTimeSeconds())},
+                {new TextField("CV", plainText, Field.Store.YES) }};
+
+            return doc;
+        }
+
 
         private Document documentToIndex(CvsToIndexModel cvCand)
         {
@@ -265,20 +318,13 @@ namespace LuceneLibrary
             return str == null ? "" : str;
         }
 
-        public async Task DocumentUpdate(int companyId, List<CvsToIndexModel> cvPropsToIndex)
-        {
-            await DocumentDelete(companyId, cvPropsToIndex.First().candidateId);
-            await CompanyIndexAddDocuments(companyId, cvPropsToIndex,false);
-        }
+       
 
-        private async Task DocumentDelete(int companyId, int id)
+        private async Task DocumentDelete( int id)
         {
-            //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
-
-            using (var indexDir = FSDirectory.Open(new System.IO.DirectoryInfo(_indexFolder)))
+            using (var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder)))
             {
-                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, mAnalyzer);
+                var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, mAnalyzer);
 
                 using (var indexWriter = new IndexWriter(indexDir, config))
                 {
@@ -288,10 +334,8 @@ namespace LuceneLibrary
             }
         }
 
-        public void SearchBoolean(int companyId, long collectionId, string text)
+        public void SearchBoolean(long collectionId, string text)
         {
-            //string _indexFolder = $"{_luceneIndexesRootFolder}\\_{companyId}index";
-            string _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
             Console.WriteLine();
             Console.WriteLine("SEARCH EXAMPLE");
             Console.WriteLine("SEARCHING FOR: \"" + text + "\" IN COLLECTION " + collectionId);

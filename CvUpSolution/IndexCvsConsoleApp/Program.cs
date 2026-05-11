@@ -29,6 +29,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
 var cvsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();
 //await cvsPositionsServise.UpdateCvsAsciiSum(154);
 
-await cvsPositionsServise.IndexCompanyCvs(154);
+await cvsPositionsServise.IndexAllCandidates(154);
+
+//await cvsPositionsServise.IndexCompanyCvs(154);
 
 //var candsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();

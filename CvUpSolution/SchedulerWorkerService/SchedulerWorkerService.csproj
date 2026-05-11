@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="4.0.2" />
+    <PackageReference Include="MailKit" Version="4.16.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.15" />
     <PackageReference Include="Quartz" Version="3.18.1" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.18.1" />

@@ -42,9 +42,10 @@ builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                         "http://localhost:8055",
                      
                         "http://82.166.239.93:8075",
-                        "http://192.168.1.11:8075",
                         "http://10.100.102.11:8075",
                         "http://localhost:8075",
+
+                        "http://10.100.102.27:8075",
 
                         "http://82.166.239.93:8011",
                         "http://192.168.1.20:8011",

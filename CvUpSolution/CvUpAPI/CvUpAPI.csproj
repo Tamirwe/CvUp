@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -36,7 +36,6 @@
     <ProjectReference Include="..\FoldersLibrary\FoldersLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
-    <ProjectReference Include="..\ModuleGeneratorLibrary\ModuleGeneratorLibrary.csproj" />
     <ProjectReference Include="..\OpenAiLibrary\OpenAiLibrary.csproj" />
   </ItemGroup>
 

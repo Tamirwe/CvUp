@@ -52,3 +52,4 @@ cvup-ui-app/src/forceUpdateCache.js
 /CvUpSolution/CloaudeAiConsoleApp/.env
 /CvUpSolution/SchedulerWorkerService/.env
 /CvUpSolution/SchedulerWorkerService/.env
+/CvUpSolution/SapoWorkerService/.env

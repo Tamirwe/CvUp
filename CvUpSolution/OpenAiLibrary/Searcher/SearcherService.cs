@@ -22,7 +22,6 @@ namespace OpenAiLibrary.Searcher
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            var normalizer = new HebrewTextNormalizer();
 
 
             string queryText = "";

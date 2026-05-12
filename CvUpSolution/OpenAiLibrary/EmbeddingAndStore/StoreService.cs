@@ -92,7 +92,6 @@ namespace OpenAiLibrary.EmbeddingAndStore
         {
             var points = new List<PointStruct>();
 
-            var normalizer = new HebrewTextNormalizer();
 
             //// Before storing in Qdrant
             //string normalized = normalizer.Normalize(AnalyzedCv.Summary);

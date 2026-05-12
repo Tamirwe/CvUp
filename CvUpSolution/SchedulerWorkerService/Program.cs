@@ -8,19 +8,18 @@ using LuceneLibrary;
 using OpenAiLibrary.AnalyzeCvsAI;
 using Quartz;
 using SchedulerWorkerService.Jobs;
-using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// Configure Serilog from appsettings.json
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
+// This line is the key one for Windows Service support
+builder.Services.AddWindowsService(options =>
+{
+    options.ServiceName = "a Cvs Scheduler Service";
+});
 
-// Replace default logging with Serilog
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog();
+
+
+
 
 builder.Services.AddMemoryCache();
 
@@ -33,6 +32,8 @@ builder.Services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
 builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
+
+
 
 // Add Quartz
 builder.Services.AddQuartz(q =>
@@ -104,7 +105,7 @@ builder.Services.AddQuartz(q =>
     //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
     //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
-   
+
 
 
 

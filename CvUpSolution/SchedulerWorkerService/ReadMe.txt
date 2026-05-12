@@ -19,8 +19,8 @@
 
 
  *** service commands ****
- sc.exe start SchedulerWorkerService
+ sc.exe start "a Cvs Scheduler Service"
 
- sc.exe stop  SchedulerWorkerService
+ sc.exe stop  "a Cvs Scheduler Service"
 
- sc.exe delete  SchedulerWorkerService
+ sc.exe delete  "a Cvs Scheduler Service"

@@ -1,4 +1,5 @@
-﻿using OpenAiLibrary.AnalyzeCvsAI;
+﻿using GeneralLibrary;
+using OpenAiLibrary.AnalyzeCvsAI;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,12 @@ namespace SchedulerWorkerService.Jobs
             }
             catch (OperationCanceledException)
             {
+                EventViewerWriter.ErrorMessage("AiAnalyzeNewCvsJob was cancelled.");
                 logger.LogWarning("AiAnalyzeNewCvsJob was cancelled.");
             }
             catch (Exception ex)
             {
+                EventViewerWriter.ErrorMessage("AiAnalyzeNewCvsJob failed." +  ex.ToString());
                 logger.LogError(ex, "AiAnalyzeNewCvsJob failed.");
                 // Optionally rethrow to let Quartz handle retries
                 throw new JobExecutionException(ex, refireImmediately: false);

@@ -1,4 +1,5 @@
-﻿using ImportCvsLibrary;
+﻿using GeneralLibrary;
+using ImportCvsLibrary;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,13 @@ namespace SchedulerWorkerService.Jobs
             catch (OperationCanceledException)
             {
                 logger.LogWarning("DataBaseBackupJob was cancelled.");
+                EventViewerWriter.ErrorMessage("DataBaseBackupJob was cancelled.");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "DataBaseBackupJob failed.");
+                EventViewerWriter.ErrorMessage("DataBaseBackupJob failed." + ex.ToString());
+
                 // Optionally rethrow to let Quartz handle retries
                 throw new JobExecutionException(ex, refireImmediately: false);
             }

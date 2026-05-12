@@ -608,24 +608,28 @@ namespace ImportCvsLibrary
 
         private void addEventLogEntry(Exception ex, int id)
         {
-            using (EventLog eventLog = new())
+            string cvData = "";
+
+            if (_importCv != null)
             {
-                if (!EventLog.SourceExists("CvUpImport"))
-                {
-                    EventLog.CreateEventSource("CvUpImport", "CvUpImport");
-                }
-
-                string cvData = "";
-
-                if (_importCv != null)
-                {
-                    cvData = @$"Exception Row: {_importCv.exceptionRow}, candidateId: {_importCv.candidateId}, cvId: {_importCv.cvId}, 
+                cvData = @$"Import CVs from Gmail failed,  Exception Row: {_importCv.exceptionRow}, candidateId: {_importCv.candidateId}, cvId: {_importCv.cvId}, 
                                         candName: {_importCv.firstName} {_importCv.lastName}, emailId: {_importCv.emailId}, ";
-                }
-
-                eventLog.Source = "CvUpImport";
-                eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
             }
+
+            EventViewerWriter.ErrorMessage(cvData + ex.ToString());
+
+            //using (EventLog eventLog = new())
+            //{
+            //    if (!EventLog.SourceExists("CvUpImport"))
+            //    {
+            //        EventLog.CreateEventSource("CvUpImport", "CvUpImport");
+            //    }
+
+              
+
+            //    eventLog.Source = "CvUpImport";
+            //    eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
+            //}
         }
 
         #region Candidate Name

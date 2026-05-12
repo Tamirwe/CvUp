@@ -1,4 +1,5 @@
 ﻿using CandsPositionsLibrary;
+using GeneralLibrary;
 using Quartz;
 
 namespace SchedulerWorkerService.Jobs
@@ -17,10 +18,12 @@ namespace SchedulerWorkerService.Jobs
             }
             catch (OperationCanceledException)
             {
+                EventViewerWriter.ErrorMessage("CountCvsSendToPositionJob was cancelled.");
                 logger.LogWarning("CountCvsSendToPositionJob was cancelled.");
             }
             catch (Exception ex)
             {
+                EventViewerWriter.ErrorMessage("CountCvsSendToPositionJob failed." +  ex.ToString());
                 logger.LogError(ex, "CountCvsSendToPositionJob failed.");
                 // Optionally rethrow to let Quartz handle retries
                 throw new JobExecutionException(ex, refireImmediately: false);

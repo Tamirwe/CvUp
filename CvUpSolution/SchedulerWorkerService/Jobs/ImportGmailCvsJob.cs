@@ -1,5 +1,7 @@
-﻿using ImportCvsLibrary;
+﻿using GeneralLibrary;
+using ImportCvsLibrary;
 using Quartz;
+using System.Xml.Linq;
 
 namespace SchedulerWorkerService.Jobs
 {
@@ -17,9 +19,12 @@ namespace SchedulerWorkerService.Jobs
             catch (OperationCanceledException)
             {
                 logger.LogWarning("ImportGmailCvsJob was cancelled.");
+                EventViewerWriter.ErrorMessage("ImportGmailCvsJob was cancelled.");
             }
             catch (Exception ex)
             {
+                EventViewerWriter.ErrorMessage("ImportGmailCvsJob failed." +  ex.ToString());
+
                 logger.LogError(ex, "ImportGmailCvsJob failed.");
                 // Optionally rethrow to let Quartz handle retries
                 throw new JobExecutionException(ex, refireImmediately: false);

@@ -17,10 +17,6 @@ builder.Services.AddWindowsService(options =>
     options.ServiceName = "a Cvs Scheduler Service";
 });
 
-
-
-
-
 builder.Services.AddMemoryCache();
 
 builder.Services.AddTransient<ILuceneService, LuceneService>();
@@ -106,9 +102,6 @@ builder.Services.AddQuartz(q =>
     //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
 
-
-
-
 });
 
 // Host Quartz as a hosted service
@@ -118,13 +111,12 @@ builder.Services.AddQuartzHostedService(q =>
 });
 
 
-//No Worker.cs needed at all. AddQuartzHostedService() registers Quartz itself as an IHostedService, which is enough to keep the process running.
-//The Worker is only useful if you have your own logic that needs to run on a loop 
-//    (like polling something to decide when to trigger a Quartz job). If Quartz owns the scheduling entirely, skip the Worker.
+//*** No Worker.cs needed at all. AddQuartzHostedService() registers Quartz itself as an IHostedService, which is enough to keep the process running.
+//*** The Worker is only useful if you have your own logic that needs to run on a loop 
+//***     (like polling something to decide when to trigger a Quartz job). If Quartz owns the scheduling entirely, skip the Worker.
 
-
-// Register your own background worker (optional alongside Quartz)
-//builder.Services.AddHostedService<Worker>();
+//***  Register your own background worker (optional alongside Quartz)
+//*** builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
 host.Run();

@@ -1,4 +1,5 @@
 ﻿using DataModelsLibrary.Models;
+using dotenv.net;
 using GeneralLibrary;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
@@ -29,7 +30,11 @@ namespace LuceneLibrary
 
         public LuceneService(IConfiguration config, int companyId=154)
         {
-            _cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
+            DotEnv.Load();
+            var envVars = DotEnv.Read();
+            _cvupNotBackedUpRootFolder = envVars["APP_LOCAL_ROOT_FOLDER"];
+
+            //_cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
             _indexFolder = $"{_cvupNotBackedUpRootFolder}\\_{companyId}\\luceneIndex";
             _companyId = companyId;
 

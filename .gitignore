@@ -57,3 +57,6 @@ cvup-ui-app/src/forceUpdateCache.js
 /CvUpSolution/IndexCvsConsoleApp/.env
 /CvUpSolution/IndexCvsConsoleApp/.env
 /CvUpSolution/CvsFilesConsoleApp/.env
+/CvUpSolution/SchedulerWorkerService/.env
+/CvUpSolution/IndexCvsConsoleApp/.env
+/CvUpSolution/CvsFilesConsoleApp/.env

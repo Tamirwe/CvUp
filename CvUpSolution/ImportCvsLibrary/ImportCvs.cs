@@ -1,29 +1,21 @@
-﻿using Amazon.Runtime.Internal.Util;
-using CandsPositionsLibrary;
+﻿using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using dotenv.net;
 using GeneralLibrary;
-using Google.Protobuf;
 using ImportCvsLibrary.RegularExpressions;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
-using MailKit.Security;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using Spire.Doc;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using static DataModelsLibrary.GlobalConstant;
 
 namespace ImportCvsLibrary

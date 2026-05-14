@@ -71,17 +71,17 @@ builder.Services.AddQuartz(q =>
 
 
     //// --- Job 3: Cvs DataBase Backup   ---
-    //var dataBaseBackup = new JobKey("CvsDataBaseBackup");
+    var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 
-    //q.AddJob<DataBaseBackupJob>(opts => opts
-    //   .WithIdentity(dataBaseBackup)
-    //   .WithDescription("Cvs DataBase Backup"));
+    q.AddJob<DataBaseBackupJob>(opts => opts
+       .WithIdentity(dataBaseBackup)
+       .WithDescription("Cvs DataBase Backup"));
 
-    //// every hour between 1:00 AM and 4:00 AM
-    //q.AddTrigger(opts => opts
-    //    .ForJob(dataBaseBackup)
-    //    .WithIdentity("dataBase-backup")
-    //    .WithCronSchedule("0 0 1-4 ? * *"));
+    // every hour between 1:00 AM and 4:00 AM
+    q.AddTrigger(opts => opts
+        .ForJob(dataBaseBackup)
+        .WithIdentity("dataBase-backup")
+        .WithCronSchedule("0 0 1-4 ? * *"));
 
 
     //// --- Job 4: AI Analyze New Cvs    ---

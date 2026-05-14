@@ -53,5 +53,10 @@ namespace GeneralLibrary
             Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Error);
         }
 
+        public static void InfoMessage(string message)
+        {
+            Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Information);
+        }
+
     }
 }

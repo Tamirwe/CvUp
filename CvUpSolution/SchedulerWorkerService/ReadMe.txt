@@ -7,7 +7,7 @@
  --------------------------------------
 	 1. publish this project to folder C:\github\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net9.0\
 	 2. open Command Prompt (in administration mode) and run the following command
-	 3. sc.exe create "a Cvs Scheduler Service" binPath="C:\github\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net9.0\SchedulerWorkerService.exe"
+	 3. sc.exe create "a Cvs Scheduler Service" binPath="C:\gitHub\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net9.0\publish\SchedulerWorkerService.exe"
  
 
  2) *** update service ***

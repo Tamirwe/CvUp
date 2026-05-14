@@ -56,18 +56,18 @@ builder.Services.AddQuartz(q =>
         .StartNow() // Executes immediately
         .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
-    //// --- Job 2: Count Cvs send to position for report  ---
-    //var countCvsSendToPosition = new JobKey("countCvsSendToPosition");
+    // --- Job 2: Count Cvs send to position for report  ---
+    var countCvsSendToPositionJobKey = new JobKey("countCvsSendToPosition");
 
-    //q.AddJob<CountCvsSendToPositionJob>(opts => opts
-    //   .WithIdentity(countCvsSendToPosition)
-    //   .WithDescription("Count Cvs send to position for report"));
+    q.AddJob<CountCvsSendToPositionJob>(opts => opts
+       .WithIdentity(countCvsSendToPositionJobKey)
+       .WithDescription("Count Cvs send to position for report"));
 
-    //// Every hour between 9 AM and 5 PM
-    //q.AddTrigger(opts => opts
-    //    .ForJob(countCvsSendToPosition)
-    //    .WithIdentity("count-Cvs-Send-To-Position")
-    //    .WithCronSchedule("0 9-17 * * *"));
+    // Every hour between 9 AM and 5 PM
+    q.AddTrigger(opts => opts
+        .ForJob(countCvsSendToPositionJobKey)
+        .WithIdentity("count-Cvs-Send-To-Position")
+        .WithCronSchedule("0 0 9-17 * * ?"));
 
 
     //// --- Job 3: Cvs DataBase Backup   ---

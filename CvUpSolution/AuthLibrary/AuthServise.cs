@@ -15,15 +15,32 @@ namespace AuthLibrary
         private IAuthQueries _authQueries;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
-        public IConfiguration _config;
 
-        public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries, IConfiguration config)
+        string _secretKey = "";
+        string _refreshTokenHoursExpiration = "";
+        string _issuer = "";
+        string _audience = "";
+        string _mailFromAddress = "";
+
+
+        public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries)
         {
+            DotEnv.Load();
+            var envVars = DotEnv.Read();
+            _secretKey = envVars["JWT_SECRET_KEY"];
+            _refreshTokenHoursExpiration = envVars["JWT_REFRESH_TOKE_EXPIRATION_HOURS"];
+            _issuer = envVars["JWT_ISSUER"];
+            _audience = envVars["JWT_AUDIENCE"];
+            _mailFromAddress = envVars["IMPORT_GMAIL_ADDRESS"];
+
             _authQueries = authQueries;
             _emailService = emailService;
             _emailQueries = emailQueries;
-            _config = config;
+
+
         }
+
+       
 
         public async Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data)
         {

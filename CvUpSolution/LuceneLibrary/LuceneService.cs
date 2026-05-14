@@ -28,7 +28,7 @@ namespace LuceneLibrary
         QueryParser? mQueryParser;
         //string _luceneIndexesRootFolder;
 
-        public LuceneService(IConfiguration config, int companyId=154)
+        public LuceneService(int companyId=154)
         {
             DotEnv.Load();
             var envVars = DotEnv.Read();

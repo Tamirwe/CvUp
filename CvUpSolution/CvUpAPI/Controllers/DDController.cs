@@ -20,7 +20,7 @@ namespace CvUpAPI.Controllers
     {
         private ICvsFilesService _cvsFilesService;
 
-        public DDController(IConfiguration config,  ICvsFilesService cvsFilesService)
+        public DDController( ICvsFilesService cvsFilesService)
         {
             _cvsFilesService = cvsFilesService;
         }

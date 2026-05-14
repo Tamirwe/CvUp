@@ -42,8 +42,8 @@ namespace ImportCvsLibrary
         string _monthFolder = "";
         string _companyFolder = "";
         //List<company_cvs_email>? _companiesEmail;
-        List<ParserRulesModel> _parsersRulesAllCompanies;
-        List<ParserRulesModel> _parsersRules;
+        List<ParserRulesModel>? _parsersRulesAllCompanies;
+        List<ParserRulesModel>? _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
@@ -105,9 +105,10 @@ namespace ImportCvsLibrary
         private async Task processUnReadEmails(ImapClient client)
         {
             IList<UniqueId>? uids = null;
-            IMailFolder? inbox = null;
+            IMailFolder? inbox = client.Inbox;
 
-            inbox = client.Inbox;
+            if (inbox == null || client.Inbox == null)  return;
+
             inbox.Open(FolderAccess.ReadWrite);
             uids = client.Inbox.Search(SearchQuery.NotSeen);
 
@@ -386,7 +387,7 @@ namespace ImportCvsLibrary
 
         private void ParseEmailSubject()
         {
-            if (_parsersRules.Count > 0)
+            if (_parsersRules != null && _parsersRules.Count > 0)
             {
                 List<int> parsersIds = _parsersRules.DistinctBy(x => x.parser_id).Select(x => x.parser_id).ToList();
                 string seperator = "~~";

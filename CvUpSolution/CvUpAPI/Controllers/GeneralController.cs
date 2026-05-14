@@ -12,13 +12,11 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class GeneralController : ControllerBase
     {
-        private IConfiguration _configuration;
         private ICandsPositionsServise _cvsPosService;
         private ITranslateService _translateService;
 
-        public GeneralController(IConfiguration config, ICandsPositionsServise cvsPosService, ITranslateService translateService)
+        public GeneralController(ICandsPositionsServise cvsPosService, ITranslateService translateService)
         {
-            _configuration = config;
             _cvsPosService = cvsPosService;
             _translateService = translateService;
         }

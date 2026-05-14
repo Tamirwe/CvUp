@@ -12,12 +12,10 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class CustomersContactsController : ControllerBase
     {
-        private IConfiguration _configuration;
         private ICustomersContactsService _customersContactsService;
 
-        public CustomersContactsController(IConfiguration config, ICustomersContactsService customersContactsService)
+        public CustomersContactsController(ICustomersContactsService customersContactsService)
         {
-            _configuration = config;
             _customersContactsService = customersContactsService;
         }
 

@@ -13,9 +13,14 @@ builder.Services.AddControllers();
 
 DotEnv.Load();
 var envVars = DotEnv.Read();
-var apiKey = envVars["API_KEY"].Trim();
-var host = envVars["QDRANT_HOST"].Trim();
+var apiKey = envVars["API_KEY"];
+var host = envVars["QDRANT_HOST"];
 var port = int.Parse(envVars["QDRANT_PORT"]);
+
+var _issuer = envVars["JWT_ISSUER"];
+var _audience = envVars["JWT_AUDIENCE"];
+var _secretKey = envVars["JWT_SECRET_KEY"];
+
 
 string CorsPolicy = "_corsPolicy";
 
@@ -61,9 +66,9 @@ builder.Services.AddAuthentication(options =>
 {
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+        ValidIssuer = _issuer,
+        ValidAudience = _audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,

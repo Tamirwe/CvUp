@@ -1,15 +1,12 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
+using dotenv.net;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AuthLibrary
 {
@@ -32,7 +29,7 @@ namespace AuthLibrary
                     var newToken = GenerateUserToken(principal.Claims);
                     var newRefreshToken = GenerateRefreshToken();
                     userRefreshToken.token = newRefreshToken;
-                    int RefreshTokenHoursExpiration = Convert.ToInt32(_config["Jwt:RefreshTokenHoursExpiration"]);
+                    int RefreshTokenHoursExpiration = Convert.ToInt32(_refreshTokenHoursExpiration);
                     userRefreshToken.token_expire = DateTime.Now.AddHours(RefreshTokenHoursExpiration);
                     await _authQueries.UPdateRefreshToken(userRefreshToken);
                     return new TokenModel { token = newToken, refreshToken = newRefreshToken };
@@ -44,13 +41,13 @@ namespace AuthLibrary
 
         private string GenerateUserToken(IEnumerable<Claim> claims)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
 
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: _issuer,
+                audience: _audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signinCredentials
@@ -80,7 +77,7 @@ namespace AuthLibrary
             {
                 newRefreshToken = GenerateRefreshToken();
                 await _authQueries.DeleteExpiredTokens();
-                int RefreshTokenHoursExpiration= Convert.ToInt32(_config["Jwt:RefreshTokenHoursExpiration"]);
+                int RefreshTokenHoursExpiration= Convert.ToInt32(_refreshTokenHoursExpiration);
                 await _authQueries.AddUserRefreshToken(authenticateUser.company_id, authenticateUser.id, newRefreshToken, RefreshTokenHoursExpiration);
             }
 
@@ -104,7 +101,7 @@ namespace AuthLibrary
                 ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
                 ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
             };
             var tokenHandler = new JwtSecurityTokenHandler();

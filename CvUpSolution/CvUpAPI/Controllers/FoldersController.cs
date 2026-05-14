@@ -13,13 +13,11 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class FoldersController : ControllerBase
     {
-        private IConfiguration _configuration;
         private ICandsPositionsServise _candPosService;
         private IFoldersService _foldersService;
 
-        public FoldersController(IConfiguration config, ICandsPositionsServise candPosService, IFoldersService foldersService)
+        public FoldersController(ICandsPositionsServise candPosService, IFoldersService foldersService)
         {
-            _configuration = config;
             _candPosService = candPosService;
             _foldersService = foldersService;
         }

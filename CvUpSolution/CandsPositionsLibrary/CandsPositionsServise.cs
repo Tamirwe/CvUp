@@ -13,17 +13,15 @@ namespace CandsPositionsLibrary
 {
     public partial class CandsPositionsServise : ICandsPositionsServise
     {
-        private IConfiguration _configuration;
         private ICandsPositionsQueries _cvsPositionsQueries;
         private ILuceneService _luceneService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
 
-        public CandsPositionsServise(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService,
+        public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService,
             IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService)
         {
-            _configuration = config;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneService = luceneService;
             _emailService = emailService;

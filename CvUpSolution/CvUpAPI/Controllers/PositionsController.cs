@@ -12,12 +12,10 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class PositionsController : ControllerBase
     {
-        private IConfiguration _configuration;
         private ICandsPositionsServise _cvsPosService;
 
-        public PositionsController(IConfiguration config, ICandsPositionsServise cvsPosService)
+        public PositionsController( ICandsPositionsServise cvsPosService)
         {
-            _configuration = config;
             _cvsPosService = cvsPosService;
         }
 

@@ -2,19 +2,20 @@
 using CandsPositionsLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
+using DotNetEnv.Configuration;
 using EmailsLibrary;
 using LuceneLibrary;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 Console.WriteLine("Hello, World!");
 
 using IHost host = Host.CreateDefaultBuilder(args)
-     .ConfigureAppConfiguration(app =>
-     {
-         app.AddJsonFile($"appsettings.json");
-     })
+    .ConfigureAppConfiguration((context, config) =>
+    {
+        // Appends the .env file keys to the IConfiguration pipeline
+        config.AddDotNetEnv(".env");
+    })
     .ConfigureServices((_, services) =>
     {
         services.AddTransient<ILuceneService, LuceneService>();

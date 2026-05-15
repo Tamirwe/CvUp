@@ -1,7 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using dotenv.net;
 using EmailsLibrary.Models;
 using System.ComponentModel.Design;
 using System.Transactions;
@@ -83,19 +82,12 @@ namespace AuthLibrary
 
         private EmailModel SendRegistrationConfitmationEmail(string? origin, string key, user user)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            var _systemGmailUserName = envVars["SYSTEM_GMAIL_USER_NAME"];
-            var _systemGmailAddress = envVars["SYSTEM_GMAIL_ADDRESS"];
-            var _systemGmailPassword = envVars["SYSTEM_GMAIL_PASSWORD"];
-            var _sSystemMailFromName = envVars["SYSTEM_GMAIL_FROM_NAME"];
-
             var email = new EmailModel
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = string.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Complete Registration",
                 Body = _emailService.RegistrationEmailBody(origin, key),
-                From = new EmailAddress { Address = _systemGmailAddress, Name = _sSystemMailFromName },
+                From = new EmailAddress { Address = _systemGmailAddress, Name = _systemMailFromName },
                 MailSenderUserName = _systemGmailUserName,
                 MailSenderPassword = _systemGmailPassword,
             };

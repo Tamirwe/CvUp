@@ -1,4 +1,5 @@
 ﻿using DataModelsLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using OpenAiLibrary.EmbeddingAndStore;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
@@ -11,8 +12,11 @@ namespace OpenAiLibrary.Searcher
         private readonly QdrantClient _qdrant;
         private readonly IOpenAiEmbedderService _embedder;
 
-        public SearcherService(IOpenAiEmbedderService embedder, string host = "localhost", int port = 6334)
+        public SearcherService(IOpenAiEmbedderService embedder, IConfiguration configuration)
         {
+            var host = configuration["QDRANT_HOST"] ?? "";
+            var port = int.Parse(configuration["QDRANT_PORT"] ?? "");
+
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
         }

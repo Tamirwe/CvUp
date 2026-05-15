@@ -3,6 +3,7 @@ using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using FuzzySharp;
 using GeneralLibrary;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
@@ -21,8 +22,10 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         private string promptForCvAnalyze = "";
         private readonly int _companyId;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, string apiKey, int companyId = 154)
+        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, IConfiguration configuration,  int companyId = 154)
         {
+            var apiKey =  configuration["API_KEY"];
+
             _candsCvsQueries = candsCvsQueries;
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");

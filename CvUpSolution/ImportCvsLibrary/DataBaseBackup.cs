@@ -1,5 +1,4 @@
-﻿using dotenv.net;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace ImportCvsLibrary
 {
@@ -7,13 +6,9 @@ namespace ImportCvsLibrary
     {
         string _filesRootFolder;
 
-        public DataBaseBackup()
+        public DataBaseBackup(IConfiguration configuration)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            _filesRootFolder = envVars["CVS_ROOT_FOLDER"];
-
-            //_filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
+            _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
         }
 
         public void BackupDataBase()

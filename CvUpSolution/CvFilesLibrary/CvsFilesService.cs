@@ -1,7 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using dotenv.net;
 using GeneralLibrary;
 using Microsoft.Extensions.Configuration;
 using Spire.Pdf;
@@ -14,14 +13,10 @@ namespace CvFilesLibrary
         private ICandsPositionsQueries _cvsPositionsQueries;
         string _filesRootFolder;
 
-        public CvsFilesService(IConfiguration config, ICandsPositionsQueries cvsPositionsQueries)
+        public CvsFilesService(IConfiguration configuration, ICandsPositionsQueries cvsPositionsQueries)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            _filesRootFolder = envVars["CVS_ROOT_FOLDER"];
-
+            _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
             _cvsPositionsQueries = cvsPositionsQueries;
-            //_filesRootFolder = $"{config["GlobalSettings:CvUpFilesRootFolder"]}";
         }
 
         public CvFileDetailsModel GetCvFileDetails(string cvKey)

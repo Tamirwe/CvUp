@@ -1,5 +1,6 @@
 ﻿using DataModelsLibrary.Models;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.Extensions.Configuration;
 using OpenAiLibrary.Models;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
@@ -17,8 +18,11 @@ namespace OpenAiLibrary.EmbeddingAndStore
         private readonly QdrantClient _qdrant;
         private readonly IOpenAiEmbedderService _embedder;
 
-        public StoreService(IOpenAiEmbedderService embedder, string host = "localhost", int port = 6334)
+        public StoreService(IOpenAiEmbedderService embedder, IConfiguration configuration)
         {
+            var host = configuration["QDRANT_HOST"] ?? "";
+            var port = int.Parse(configuration["QDRANT_PORT"] ?? "");
+
             _qdrant = new QdrantClient(host, port);
             _embedder = embedder;
         }

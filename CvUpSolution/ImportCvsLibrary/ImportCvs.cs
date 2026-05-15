@@ -2,7 +2,6 @@
 using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using dotenv.net;
 using GeneralLibrary;
 using ImportCvsLibrary.RegularExpressions;
 using MailKit;
@@ -33,30 +32,23 @@ namespace ImportCvsLibrary
         string _yearFolder = "";
         string _monthFolder = "";
         string _companyFolder = "";
-        //List<company_cvs_email>? _companiesEmail;
         List<ParserRulesModel>? _parsersRulesAllCompanies;
         List<ParserRulesModel>? _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
 
-        public ImportCvs(IMemoryCache cache, IConfiguration config, ICandsPositionsServise cvsPositionsServise)
+        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            _filesRootFolder = envVars["CVS_ROOT_FOLDER"];
-            _cvupNotBackedUpRootFolder = envVars["APP_LOCAL_ROOT_FOLDER"];
-            _gmailUserName = envVars["IMPORT_GMAIL_USER_NAME"];
-            _mailPassword = envVars["IMPORT_GMAIL_PASSWORD"];
+            _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
+            _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"];
+            _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"];
+            _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"];
+
+            EventViewerWriter.InfoMessage($"_gmailUserName: {_gmailUserName}");
+            EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
 
             _cvsPositionsServise = cvsPositionsServise;
-
-            //_filesRootFolder = config["GlobalSettings:CvUpFilesRootFolder"];
-            //_cvupNotBackedUpRootFolder = $"{config["GlobalSettings:CvUp-not-backed-up-Root-Folder"]}";
-
-            //Directory.CreateDirectory(_filesRootFolder);
-            //_gmailUserName = config["GlobalSettings:ImportGmailUserName"];
-            //_mailPassword = config["GlobalSettings:ImportGmailPassword"];
             _cache = cache;
         }
 

@@ -1,6 +1,6 @@
 using CvUpAPI;
 using CvUpAPI.Startup;
-using dotenv.net;
+using DotNetEnv.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -9,22 +9,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// This cleanly appends the file directly to the builder configuration instance
+builder.Configuration.AddDotNetEnv(".env");
 builder.Services.AddControllers();
 
-DotEnv.Load();
-var envVars = DotEnv.Read();
-var apiKey = envVars["API_KEY"];
-var host = envVars["QDRANT_HOST"];
-var port = int.Parse(envVars["QDRANT_PORT"]);
-
-var _issuer = envVars["JWT_ISSUER"];
-var _audience = envVars["JWT_AUDIENCE"];
-var _secretKey = envVars["JWT_SECRET_KEY"];
-
+var apiKey = builder.Configuration["API_KEY"];
+var host = builder.Configuration["QDRANT_HOST"];
+var port = builder.Configuration["QDRANT_PORT"];
+var _issuer = builder.Configuration["JWT_ISSUER"];
+var _audience = builder.Configuration["JWT_AUDIENCE"];
+var _secretKey = builder.Configuration["JWT_SECRET_KEY"];
 
 string CorsPolicy = "_corsPolicy";
-
-
 
 builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                       builder =>  builder.WithOrigins("http://localhost:3030",
@@ -53,8 +49,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: CorsPolicy,
                         "http://10.100.102.27:8075",
 
                         "http://82.166.239.93:8011",
-                        "http://192.168.1.20:8011",
-                        "http://10.100.102.20:8011",
+                        "http://10.100.102.3:8011",
                         "http://localhost:8011").AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddAuthentication(options =>
@@ -108,7 +103,7 @@ builder.Services.AddSwaggerGen(option =>
 
 
 // Add services to the container.
-builder.Services.RegisterServices(builder, apiKey, host, port);
+builder.Services.RegisterServices(builder);
 
 //builder.Services.AddControllers();
 //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

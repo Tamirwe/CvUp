@@ -17,13 +17,28 @@ namespace GeneralLibrary
 
     public static class EventViewerWriter
     {
-        public static void Message(string source, string message, EventViewerMessageType messageType)
+        public static void ErrorMessage(string message)
         {
+            Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Error);
+        }
+
+        public static void InfoMessage(string message)
+        {
+            Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Information);
+        }
+
+
+        private static void Message(string logName, string message, EventViewerMessageType messageType)
+        {
+            string _source = "CvUp";
+
+            if (!OperatingSystem.IsWindows()) return;
+
             using (EventLog eventLog = new())
             {
-                if (!EventLog.SourceExists(source))
+                if (!EventLog.SourceExists(_source))
                 {
-                    EventLog.CreateEventSource(source, source);
+                    EventLog.CreateEventSource(_source, logName);
                 }
 
                 EventLogEntryType EventViewerMessageType = EventLogEntryType.Error;
@@ -43,20 +58,11 @@ namespace GeneralLibrary
                         break;
                 }
 
-                eventLog.Source = source;
+                eventLog.Source = _source;
                 eventLog.WriteEntry(message, EventViewerMessageType);
             }
         }
 
-        public static void ErrorMessage(string message)
-        {
-            Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Error);
-        }
-
-        public static void InfoMessage(string message)
-        {
-            Message("CvUp-ImportGmailCvs", message, EventViewerMessageType.Information);
-        }
-
+      
     }
 }

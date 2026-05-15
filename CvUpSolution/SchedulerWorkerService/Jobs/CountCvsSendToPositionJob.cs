@@ -10,6 +10,7 @@ namespace SchedulerWorkerService.Jobs
     {
         public async Task Execute(IJobExecutionContext context)
         {
+            EventViewerWriter.ErrorMessage($"CountCvsSendToPositionJob executing at: {DateTimeOffset.Now}");
             logger.LogInformation("CountCvsSendToPositionJob executing at: {time}", DateTimeOffset.Now);
 
             try
@@ -23,7 +24,7 @@ namespace SchedulerWorkerService.Jobs
             }
             catch (Exception ex)
             {
-                EventViewerWriter.ErrorMessage("CountCvsSendToPositionJob failed." +  ex.ToString());
+                EventViewerWriter.ErrorMessage("CountCvsSendToPositionJob failed." + ex.ToString());
                 logger.LogError(ex, "CountCvsSendToPositionJob failed.");
                 // Optionally rethrow to let Quartz handle retries
                 throw new JobExecutionException(ex, refireImmediately: false);

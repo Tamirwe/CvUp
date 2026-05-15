@@ -2,14 +2,25 @@
 using CandsPositionsLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
+//using dotenv.net;
 using EmailsLibrary;
+using GeneralLibrary;
 using ImportCvsLibrary;
 using LuceneLibrary;
-//using OpenAiLibrary.AnalyzeCvsAI;
+using OpenAiLibrary.AnalyzeCvsAI;
 using Quartz;
 using SchedulerWorkerService.Jobs;
+using DotNetEnv.Configuration;
+
+//DotEnv.Load(); // loads .env from current directory
 
 var builder = Host.CreateApplicationBuilder(args);
+
+// 1. Force the file path to be evaluated relative to the application binaries (not C:\Windows\System32\.env)
+string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
+
+// This cleanly appends the file directly to the builder configuration instance
+builder.Configuration.AddDotNetEnv(envPath);
 
 // This line is the key one for Windows Service support
 builder.Services.AddWindowsService(options =>
@@ -18,7 +29,7 @@ builder.Services.AddWindowsService(options =>
 });
 
 builder.Services.AddMemoryCache();
-
+builder.Services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
 builder.Services.AddTransient<ILuceneService, LuceneService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IEmailQueries, EmailQueries>();
@@ -27,8 +38,9 @@ builder.Services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
 builder.Services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
 builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
-//builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
+builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 
+EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 
 
 // Add Quartz
@@ -46,8 +58,9 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(importGmailCvsJobKey)
         .WithIdentity("ImportGmailCvs-WeekdayTrigger")
-        .StartNow() // Executes immediately
-        .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+         .StartNow() // Executes immediately
+         .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+    //.WithSimpleSchedule(x => x.WithIntervalInSeconds(20).RepeatForever()));
 
     // Every 2 minutes between 7AM-11PM, Saturday
     q.AddTrigger(opts => opts
@@ -56,7 +69,7 @@ builder.Services.AddQuartz(q =>
         .StartNow() // Executes immediately
         .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
-    // --- Job 2: Count Cvs send to position for report  ---
+    //// --- Job 2: Count Cvs send to position for report  ---
     var countCvsSendToPositionJobKey = new JobKey("countCvsSendToPosition");
 
     q.AddJob<CountCvsSendToPositionJob>(opts => opts
@@ -106,12 +119,19 @@ builder.Services.AddQuartz(q =>
 
 });
 
+EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");
+
 // Host Quartz as a hosted service
-builder.Services.AddQuartzHostedService(q =>
+builder.Services.AddQuartzHostedService(options =>
 {
-    q.WaitForJobsToComplete = true; // Graceful shutdown
+    // Forces Quartz to wait until IHostApplicationLifetime.ApplicationStarted fires
+    options.AwaitApplicationStarted = true;
+
+    // Optional: Ensures running jobs drain gracefully during app shutdown
+    options.WaitForJobsToComplete = true;
 });
 
+EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");
 
 //*** No Worker.cs needed at all. AddQuartzHostedService() registers Quartz itself as an IHostedService, which is enough to keep the process running.
 //*** The Worker is only useful if you have your own logic that needs to run on a loop 
@@ -122,3 +142,58 @@ builder.Services.AddQuartzHostedService(q =>
 
 var host = builder.Build();
 host.Run();
+
+
+
+
+
+
+
+//IHost host = Host.CreateDefaultBuilder(args)
+//    .ConfigureServices(services =>
+//    {
+//        services.AddTransient<ILuceneService, LuceneService>();
+//        services.AddTransient<IEmailService, EmailService>();
+//        services.AddTransient<IEmailQueries, EmailQueries>();
+//        services.AddTransient<ICvsFilesService, CvsFilesService>();
+//        services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+//        services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+//        services.AddTransient<IImportCvs, ImportCvs>();
+//        services.AddTransient<IDataBaseBackup, DataBaseBackup>();
+//        services.AddMemoryCache();
+//        services.AddQuartz(q =>
+//        {
+
+//            //// --- Job 1: Import Gmail Cvs  ---
+//            var importGmailCvsJobKey = new JobKey("importGmailCvs");
+
+//            q.AddJob<ImportGmailCvsJob>(opts => opts
+//                .WithIdentity(importGmailCvsJobKey)
+//                .WithDescription("Import Cvs from Gmail"));
+
+//            // Every minute between 7AM-11PM, Sunday to Friday
+//            q.AddTrigger(opts => opts
+//                .ForJob(importGmailCvsJobKey)
+//                .WithIdentity("ImportGmailCvs-WeekdayTrigger")
+//                .StartNow() // Executes immediately
+//                .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+
+//            // Every 2 minutes between 7AM-11PM, Saturday
+//            q.AddTrigger(opts => opts
+//                .ForJob(importGmailCvsJobKey)
+//                .WithIdentity("ImportGmailCvs-SaturdayTrigger")
+//                .StartNow() // Executes immediately
+//                .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+
+           
+//        });
+//        services.AddQuartzHostedService(q =>
+//        {
+//            q.WaitForJobsToComplete = true; // Graceful shutdown
+//                                            //q.AwaitApplicationStarted = true; // important for services
+//        });
+//    })
+//    .UseWindowsService()
+//    .Build();
+
+//await host.RunAsync();

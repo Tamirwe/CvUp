@@ -1,4 +1,5 @@
 ﻿using DataModelsLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
 using OpenAiLibrary.Models;
 
@@ -9,8 +10,10 @@ namespace OpenAiLibrary.EmbeddingAndStore
     {
         private readonly EmbeddingClient _client;
 
-        public OpenAiEmbedderService(string apiKey)
+        public OpenAiEmbedderService(IConfiguration configuration)
         {
+            var apiKey = configuration["API_KEY"];
+
             _client = new EmbeddingClient(QdrantConfig.EmbeddingModel, apiKey);
         }
 

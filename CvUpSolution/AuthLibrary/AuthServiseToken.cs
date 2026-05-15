@@ -1,7 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using dotenv.net;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

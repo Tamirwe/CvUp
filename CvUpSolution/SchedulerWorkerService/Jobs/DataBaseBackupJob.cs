@@ -1,22 +1,16 @@
 ﻿using GeneralLibrary;
 using ImportCvsLibrary;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SchedulerWorkerService.Jobs
 {
 
-
-
     [DisallowConcurrentExecution] // Prevents overlapping runs
     public class DataBaseBackupJob(IDataBaseBackup dataBaseBackup, ILogger<DataBaseBackupJob> logger) : IJob
     {
-        public  Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
+            EventViewerWriter.ErrorMessage($"DataBaseBackupJob executing at: {DateTimeOffset.Now}");
             logger.LogInformation("DataBaseBackupJob executing at: {time}", DateTimeOffset.Now);
 
             try

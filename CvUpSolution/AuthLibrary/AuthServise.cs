@@ -2,45 +2,49 @@
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using dotenv.net;
 using EmailsLibrary;
 using EmailsLibrary.Models;
 using Microsoft.Extensions.Configuration;
-using System.Transactions;
 
 namespace AuthLibrary
 {
     public partial class AuthServise : IAuthServise
     {
-        private IAuthQueries _authQueries;
-        private IEmailService _emailService;
-        private IEmailQueries _emailQueries;
+        private readonly IAuthQueries _authQueries;
+        private readonly IEmailService _emailService;
+        private readonly IEmailQueries _emailQueries;
+        private readonly IConfiguration _configuration;
 
         string _secretKey = "";
         string _refreshTokenHoursExpiration = "";
         string _issuer = "";
         string _audience = "";
         string _mailFromAddress = "";
+        string _systemGmailUserName = "";
+        string _systemGmailAddress = "";
+        string _systemGmailPassword = "";
+        string _systemMailFromName = "";
 
 
-        public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries)
+        public AuthServise(IAuthQueries authQueries, IEmailService emailService, IEmailQueries emailQueries, IConfiguration configuration)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            _secretKey = envVars["JWT_SECRET_KEY"];
-            _refreshTokenHoursExpiration = envVars["JWT_REFRESH_TOKE_EXPIRATION_HOURS"];
-            _issuer = envVars["JWT_ISSUER"];
-            _audience = envVars["JWT_AUDIENCE"];
-            _mailFromAddress = envVars["IMPORT_GMAIL_ADDRESS"];
+            _secretKey = configuration["JWT_SECRET_KEY"];
+            _refreshTokenHoursExpiration = configuration["JWT_REFRESH_TOKE_EXPIRATION_HOURS"];
+            _issuer = configuration["JWT_ISSUER"];
+            _audience = configuration["JWT_AUDIENCE"];
+            _mailFromAddress = configuration["IMPORT_GMAIL_ADDRESS"];
+            _systemGmailUserName = configuration["SYSTEM_GMAIL_USER_NAME"];
+            _systemGmailAddress = configuration["SYSTEM_GMAIL_ADDRESS"];
+            _systemGmailPassword = configuration["SYSTEM_GMAIL_PASSWORD"];
+            _systemMailFromName = configuration["SYSTEM_GMAIL_FROM_NAME"];
 
             _authQueries = authQueries;
             _emailService = emailService;
             _emailQueries = emailQueries;
-
-
+            _configuration = configuration;
         }
 
-       
+
 
         public async Task<bool> CheckUserDuplicate(CompanyAndUserRegisetModel data)
         {
@@ -126,20 +130,12 @@ namespace AuthLibrary
 
         private async Task<EmailModel> SendResetPasswordEmail(string origin, string key, user user)
         {
-            DotEnv.Load();
-            var envVars = DotEnv.Read();
-            var _systemGmailUserName = envVars["SYSTEM_GMAIL_USER_NAME"];
-            var _systemGmailAddress = envVars["SYSTEM_GMAIL_ADDRESS"];
-            var _systemGmailPassword = envVars["SYSTEM_GMAIL_PASSWORD"];
-            var _sSystemMailFromName = envVars["SYSTEM_GMAIL_FROM_NAME"];
-
-
             var email = new EmailModel
             {
                 To = new List<EmailAddress> { new EmailAddress { Name = string.Format("{0} {1}", user.first_name, user.last_name), Address = user.email } },
                 Subject = "Reset Password",
                 Body = _emailService.ResetPasswordEmailBody(origin, key),
-                From = new EmailAddress { Address = _systemGmailAddress, Name = _sSystemMailFromName },
+                From = new EmailAddress { Address = _systemGmailAddress, Name = _systemMailFromName },
                 MailSenderUserName = _systemGmailUserName,
                 MailSenderPassword = _systemGmailPassword,
             };

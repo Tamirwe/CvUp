@@ -1,3 +1,5 @@
+using GeneralLibrary;
+
 namespace SchedulerWorkerService
 {
     public class Worker : BackgroundService
@@ -15,9 +17,10 @@ namespace SchedulerWorkerService
             {
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
+                    //EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 }
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(60000, stoppingToken);
             }
         }
     }

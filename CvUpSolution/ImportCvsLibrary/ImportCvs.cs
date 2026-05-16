@@ -45,8 +45,8 @@ namespace ImportCvsLibrary
             _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"];
             _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"];
 
-            EventViewerWriter.InfoMessage($"_gmailUserName: {_gmailUserName}");
-            EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
+            //EventViewerWriter.InfoMessage($"_gmailUserName: {_gmailUserName}");
+            //EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
 
             _cvsPositionsServise = cvsPositionsServise;
             _cache = cache;
@@ -610,7 +610,7 @@ namespace ImportCvsLibrary
             //        EventLog.CreateEventSource("CvUpImport", "CvUpImport");
             //    }
 
-              
+
 
             //    eventLog.Source = "CvUpImport";
             //    eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);

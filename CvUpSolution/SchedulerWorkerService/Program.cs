@@ -91,6 +91,7 @@ builder.Services.AddQuartz(q =>
        .WithDescription("Cvs DataBase Backup"));
 
     // every hour between 1:00 AM and 4:00 AM
+    // if the db backup file exist it not executed again.
     q.AddTrigger(opts => opts
         .ForJob(dataBaseBackup)
         .WithIdentity("dataBase-backup")

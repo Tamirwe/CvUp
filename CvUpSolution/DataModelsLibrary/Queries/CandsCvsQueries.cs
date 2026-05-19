@@ -2,6 +2,7 @@
 using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
 {
@@ -165,7 +166,8 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var cvsTxtQuery = from cv in dbContext.cvs_txts
-                                  where cv.company_id == companyId && candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
+                                  where cv.company_id == companyId 
+                                  //&& candidateId > 0 ? cv.candidate_id == candidateId : 1 == 1
                                   orderby cv.candidate_id ascending, cv.ascii_sum
                                   select new CvTxtModel
                                   {
@@ -174,6 +176,12 @@ namespace DataModelsLibrary.Queries
                                       cvTxt = cv.cv_txt,
                                       asciiSum = cv.ascii_sum,
                                   };
+
+                // Conditionally append the candidateId filter strictly in C#
+                if (candidateId > 0)
+                {
+                    cvsTxtQuery = cvsTxtQuery.Where(cv => cv.candidateId == candidateId);
+                }
 
                 List<CvTxtModel> cvsTxts = await cvsTxtQuery.ToListAsync();
                 return cvsTxts;
@@ -227,7 +235,8 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvup00001Context())
             {
                 var query = from cand in dbContext.candidates
-                            where cand.company_id == companyId && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            where cand.company_id == companyId 
+                            //&& candidateId > 0 ? cand.id == candidateId : 1 == 1
                             && cand.email != null && cand.name != null && cand.phone != null
                             select new AiCvModel
                             {
@@ -236,6 +245,12 @@ namespace DataModelsLibrary.Queries
                                 email = cand.email,
                                 phone = cand.phone,
                             };
+
+                // Conditionally append the candidateId filter strictly in C#
+                if (candidateId > 0)
+                {
+                    query = query.Where(cand => cand.id == candidateId);
+                }
 
                 List<AiCvModel> candsParams = await query.ToListAsync();
                 return candsParams;

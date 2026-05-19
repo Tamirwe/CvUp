@@ -5,6 +5,7 @@ using GeneralLibrary;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
+using MySqlX.XDevAPI.Relational;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -110,35 +111,99 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
-                var query = (from cand in dbContext.candidates
-                             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
-                             where cand.company_id == companyId && candsIds != null ? candsIds.Contains(cand.id) : 1 == 1
-                             orderby cand.last_cv_sent descending
-                             select new CandModel
-                             {
-                                 cvId = cvs.id,
-                                 review = cand.review,
-                                 reviewDate = cand.review_date,
-                                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
-                                 keyId = cvs.key_id,
-                                 candidateId = cand.id,
-                                 email = cand.email,
-                                 emailSubject = cvs.subject,
-                                 firstName = cand.first_name,
-                                 lastName = cand.last_name,
-                                 phone = cand.phone,
-                                 city = cand.city,
-                                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
-                                 cvSent = Convert.ToDateTime(cand.last_cv_sent),
-                                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
-                                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
-                                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
-                                 isSeen = Convert.ToBoolean(cvs.is_seen),
-                                 isBlackList = Convert.ToBoolean(cand.is_black_list)
-                             }).Take(300);
+                // 1. Define the base database query (Strictly translation-safe SQL)
+                var dbQuery = from cand in dbContext.candidates
+                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                              where cand.company_id == companyId
+                              orderby cand.last_cv_sent descending
+                              select new
+                              {
+                                  // Fetch raw fields only to keep translation safe
+                                  CvId = cvs.id,
+                                  cand.review,
+                                  cand.review_date,
+                                  cand.customers_reviews, // Fetch raw JSON string
+                                  cvs.key_id,
+                                  CandidateId = cand.id,
+                                  cand.email,
+                                  EmailSubject = cvs.subject,
+                                  cand.first_name,
+                                  cand.last_name,
+                                  cand.phone,
+                                  cand.city,
+                                  cand.has_duplicates_cvs,
+                                  cand.last_cv_sent,
+                                  cand.folders_ids,       // Fetch raw JSON string
+                                  cand.pos_ids,           // Fetch raw JSON string
+                                  cand.pos_stages,        // Fetch raw JSON string
+                                  cvs.is_seen,
+                                  cand.is_black_list
+                              };
 
-                var result = await query.ToListAsync();
-                return result;
+                // 2. Safely apply the conditional list filter in C#
+                if (candsIds != null)
+                {
+                    dbQuery = dbQuery.Where(cand => candsIds.Contains(cand.CandidateId));
+                }
+
+                // 3. Force execution to pull ONLY 300 records into memory
+                var rawResults = await dbQuery.Take(300).ToListAsync();
+
+                // 4. Map to your final model in-memory (Now JsonConvert works perfectly!)
+                List<CandModel> finalCandidates = rawResults.Select(cand => new CandModel
+                {
+                    cvId = cand.CvId,
+                    review = cand.review,
+                    reviewDate = cand.review_date,
+                    allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                    keyId = cand.key_id,
+                    candidateId = cand.CandidateId,
+                    email = cand.email,
+                    emailSubject = cand.EmailSubject,
+                    firstName = cand.first_name,
+                    lastName = cand.last_name,
+                    phone = cand.phone,
+                    city = cand.city,
+                    hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                    cvSent = Convert.ToDateTime(cand.last_cv_sent),
+                    candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
+                    candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                    posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                    isSeen = Convert.ToBoolean(cand.is_seen),
+                    isBlackList = Convert.ToBoolean(cand.is_black_list)
+                }).ToList();
+
+                return finalCandidates;
+
+                //var query = (from cand in dbContext.candidates
+                //             join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                //             where cand.company_id == companyId && candsIds != null ? candsIds.Contains(cand.id) : 1 == 1
+                //             orderby cand.last_cv_sent descending
+                //             select new CandModel
+                //             {
+                //                 cvId = cvs.id,
+                //                 review = cand.review,
+                //                 reviewDate = cand.review_date,
+                //                 allCustomersReviews = cand.customers_reviews == null ? null : JsonConvert.DeserializeObject<CandCustomersReviewsModel[]>(cand.customers_reviews),
+                //                 keyId = cvs.key_id,
+                //                 candidateId = cand.id,
+                //                 email = cand.email,
+                //                 emailSubject = cvs.subject,
+                //                 firstName = cand.first_name,
+                //                 lastName = cand.last_name,
+                //                 phone = cand.phone,
+                //                 city = cand.city,
+                //                 hasDuplicates = Convert.ToBoolean(cand.has_duplicates_cvs),
+                //                 cvSent = Convert.ToDateTime(cand.last_cv_sent),
+                //                 candFoldersIds = cand.folders_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.folders_ids),
+                //                 candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
+                //                 posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
+                //                 isSeen = Convert.ToBoolean(cvs.is_seen),
+                //                 isBlackList = Convert.ToBoolean(cand.is_black_list)
+                //             }).Take(300);
+
+                //var result = await query.ToListAsync();
+                //return result;
             }
         }
 
@@ -436,7 +501,7 @@ namespace DataModelsLibrary.Queries
                             && cand.is_black_list == false
                             && cand.last_cv_id != null
                             && cvt.candidate_id != null
-                            && candidateId > 0 ? cand.id == candidateId : 1 == 1
+                            //&& candidateId > 0 ? cand.id == candidateId : 1 == 1
                             select new CvsToIndexModel
                             {
                                 candidateId = cand.id,
@@ -446,11 +511,17 @@ namespace DataModelsLibrary.Queries
                                 cvsTxt = cvt.cv_txt,
                             };
 
+                // Conditionally append the candidateId filter strictly in C#
+                if (candidateId > 0)
+                {
+                    query = query.Where(cand => cand.candidateId == candidateId);
+                }
+
                 List<CvsToIndexModel> candsCvs = await query.ToListAsync();
 
                 foreach (var cnd in candsCvs)
                 {
-                    var candText = cnd.candidateId.ToString() + " " + cnd.email + " " + cnd.phone + " " + cnd.firstName + " " + cnd.lastName + cnd.reviewText + " " + cnd.cvsTxt;
+                    var candText = cnd.candidateId.ToString() + " " + cnd.email + " " + cnd.phone + " " + cnd.firstName + " " + cnd.lastName + " " + cnd.reviewText + " " + cnd.cvsTxt;
                     cnd.cvsTxt = candText;
                 }
 

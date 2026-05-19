@@ -6,9 +6,11 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
+using Lucene.Net.Search.Spans;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace LuceneLibrary
@@ -44,6 +46,120 @@ namespace LuceneLibrary
 
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
+          
+
+            mIndexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
+            mIndexReader = DirectoryReader.Open(mIndexDirectory);
+            mIndexSearcher = new IndexSearcher(mIndexReader);
+            mQueryParser = new QueryParser(LuceneVersion.LUCENE_48, "CV", mAnalyzer);
+
+            //var debug = await DebugEmailSearch(mIndexSearcher, "Chen.ambor@gmail.com");
+            //Console.WriteLine(debug); // or log it
+
+            ScoreDoc[] hitIdxs =    await SearchCandidateByName(mIndexSearcher, searchVals.value);
+
+            var result = new List<SearchEntry>();
+
+            for (int i = 0; i < hitIdxs.Length; i++)
+            {
+                var doc = mIndexSearcher.Doc(hitIdxs[i].Doc);
+
+                result.Add(new SearchEntry
+                {
+                    Id = Convert.ToInt32(doc.Get("Id")),
+                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
+                    //Updated = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(doc.Get("Updated"))).UtcDateTime,
+                    CV = doc.Get("CV"),
+                    Score = (int)Math.Round(hitIdxs[i].Score * 100, 0)
+                });
+            }
+
+            result = result.OrderByDescending(x => x.UpdatedTs).ToList();
+            return result;
+        }
+
+        public async Task<ScoreDoc[]> SearchCandidateByName(IndexSearcher mIndexSearcher, string nameQuery)
+        {
+            nameQuery = nameQuery.Trim().ToLowerInvariant();
+
+            // Email → single TermQuery
+            if (nameQuery.Contains('@'))
+            {
+                return await Task.Run(() =>
+                    mIndexSearcher.Search(new TermQuery(new Term("CV", nameQuery)), null, 10000).ScoreDocs);
+            }
+
+            var tokens = nameQuery
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToArray();
+
+            // Single token → TermQuery
+            if (tokens.Length == 1)
+            {
+                return await Task.Run(() =>
+                    mIndexSearcher.Search(new TermQuery(new Term("CV", tokens[0])), null, 10000).ScoreDocs);
+            }
+
+            // Multi-word → SpanNearQuery, any order, adjacent
+            var spanTerms = tokens
+                .Select(t => new SpanTermQuery(new Term("CV", t)))
+                .ToArray<SpanQuery>();
+
+            var query = new SpanNearQuery(spanTerms, slop: 0, inOrder: false);
+
+            return await Task.Run(() =>
+                mIndexSearcher.Search(query, null, 10000).ScoreDocs);
+        }
+
+
+        public async Task<string> DebugEmailSearch(IndexSearcher mIndexSearcher, string email)
+        {
+            var sb = new StringBuilder();
+            email = email.Trim().ToLowerInvariant();
+
+            // Step 1: check what the index actually contains
+            var reader = mIndexSearcher.IndexReader;
+            sb.AppendLine($"Total docs in index: {reader.NumDocs}");
+
+            // Step 2: scan all docs and look for the email manually
+            for (int i = 0; i < reader.MaxDoc; i++)
+            {
+                var doc = reader.Document(i);
+                var cv = doc.Get("CV");
+                if (cv != null && cv.Contains(email))
+                {
+                    sb.AppendLine($"✓ Doc {i} CONTAINS email in stored text");
+                }
+            }
+
+            // Step 3: try TermQuery and report
+            var termQuery = new TermQuery(new Term("CV", email));
+            var hits = mIndexSearcher.Search(termQuery, null, 10).ScoreDocs;
+            sb.AppendLine($"TermQuery hits: {hits.Length}");
+
+            // Step 4: check the actual tokens stored in the index for that field
+            var terms = MultiFields.GetTerms(reader, "CV");
+            if (terms != null)
+            {
+                var termsEnum = terms.GetIterator(null);
+                var emailParts = email.Split('@', '.');
+                BytesRef term;
+                while ((term = termsEnum.Next()) != null)
+                {
+                    var termText = term.Utf8ToString();
+                    // Print any token that looks like part of the email
+                    if (emailParts.Any(p => termText.Contains(p)))
+                        sb.AppendLine($"  Index token: '{termText}'");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
+        public async Task<List<SearchEntry>> Search2(int companyId, searchCandCvModel searchVals)
+        {
             mIndexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
             mIndexSearcher = new IndexSearcher(mIndexReader);
@@ -57,10 +173,10 @@ namespace LuceneLibrary
             //ScoreDoc[] hits = searcher.Search(query, null, 1000).ScoreDocs;
             if (mQueryParser != null)
             {
-                string managedKeyWords = txtIndexMange(searchVals.value);
+                string managedKeyWords = searchVals.value;
+                //string managedKeyWords = txtIndexMange(searchVals.value);
 
                 //var query = mQueryParser.Parse(searchQuery.ToLower());
-
 
                 //string[] words = keyWords.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                 //string wildcardphrase = "";
@@ -137,7 +253,7 @@ namespace LuceneLibrary
                         foreach (Match match in matches)
                         {
                             string phrase = match.Groups[1].Value;
-                            keyWordsToSearch.Add(txtIndexMange(phrase));
+                            keyWordsToSearch.Add(phrase);
                         }
 
                         foreach (var word in keyWordsToSearch)
@@ -255,8 +371,7 @@ namespace LuceneLibrary
 
         private Document CandTextToDocument(CvsToIndexModel cvCand)
         {
-           var plainText =  CleanString.ExtractPlainText(cvCand.cvsTxt ?? "");
-
+           var plainText =  CleanString.ExtractPlainText(cvCand.cvsTxt ?? "").ToLowerInvariant();
 
             var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES) },
                 { new StoredField("Updated",DateTimeOffset.UtcNow.ToUnixTimeSeconds())},

@@ -1,8 +1,6 @@
 ﻿using GeneralLibrary;
 using ImportCvsLibrary;
 using Quartz;
-using System.Diagnostics;
-using System.Xml.Linq;
 
 namespace SchedulerWorkerService.Jobs
 {
@@ -11,12 +9,6 @@ namespace SchedulerWorkerService.Jobs
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            logger.LogInformation("ImportGmailCvsJob executing at: {time}", DateTimeOffset.Now);
-
-
-            EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");
-
-
             try
             {
                 await importCvs.ImportFromGmail();

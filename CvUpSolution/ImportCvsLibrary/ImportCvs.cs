@@ -321,13 +321,9 @@ namespace ImportCvsLibrary
                 _importCv.lastName = lastName;
                 _importCv.candidateName = fullName;
             }
-
-
-
-
+            
             GetCandidatePhone();
             GetCandidateCity();
-
         }
 
         private bool CheckIsBlackCand()

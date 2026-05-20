@@ -47,11 +47,20 @@ namespace GeneralLibrary
             // Remove invisible bidirectional marks
             string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
 
-            // Keep letters, digits, spaces, and characters needed for emails/tech terms
-            var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+@]", " ");
+            // Protect Hebrew abbreviations: replace " between Hebrew letters with a placeholder
+            // e.g. צה"ל → צה§ל
+            var protectedAbbrev = Regex.Replace(visibleText,
+                @"([\u05D0-\u05EA])""([\u05D0-\u05EA])",
+                "$1§$2");
+
+            // Keep letters, digits, spaces, and characters needed for emails/tech terms + hyphen
+            var onlyLettersDigitsSpaces = Regex.Replace(protectedAbbrev, @"[^\p{L}\p{N}\s#\.\+@\-§]", " ");
 
             // Collapse spaces
             var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
+
+            // Restore Hebrew abbreviation quotes
+            cleanText = cleanText.Replace("§", "\"");
 
             if (cvLanguage == "Hebrew")
             {
@@ -63,6 +72,28 @@ namespace GeneralLibrary
 
             return cleanText;
         }
+
+        //public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
+        //{
+        //    // Remove invisible bidirectional marks
+        //    string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
+
+        //    // Keep letters, digits, spaces, and characters needed for emails/tech terms
+        //    var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+@]", " ");
+
+        //    // Collapse spaces
+        //    var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
+
+        //    if (cvLanguage == "Hebrew")
+        //    {
+        //        if (IsLikelyReversedHebrew(cleanText))
+        //        {
+        //            cleanText = Reverse(cleanText);
+        //        }
+        //    }
+
+        //    return cleanText;
+        //}
 
         //public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
         //{

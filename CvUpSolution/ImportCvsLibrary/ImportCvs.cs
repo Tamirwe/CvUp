@@ -10,6 +10,9 @@ using MailKit.Search;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
+using Spire.Doc;
+using Spire.Doc.Documents;
+using Spire.Doc.Fields;
 using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
@@ -307,8 +310,24 @@ namespace ImportCvsLibrary
             }
 
             GetCandidateEmail();
+
+            if (string.IsNullOrWhiteSpace(_importCv.firstName) || string.IsNullOrWhiteSpace(_importCv.lastName))
+            {
+                string fullName = ExtractCandidateName.GetName(_importCv.cvTxt);
+
+                var (firstName, lastName) = ExtractCandidateName.SplitName(fullName);
+
+                _importCv.firstName = firstName;
+                _importCv.lastName = lastName;
+                _importCv.candidateName = fullName;
+            }
+
+
+
+
             GetCandidatePhone();
             GetCandidateCity();
+
         }
 
         private bool CheckIsBlackCand()
@@ -550,12 +569,83 @@ namespace ImportCvsLibrary
             return RemoveCvExtraSpaces(cvTxt);
         }
 
-        private string GetCvTxtWord(string fileNamePath)
+        //private string GetCvTxtWord(string fileNamePath)
+        //{
+        //    Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
+        //    string cvTxt = document.GetText();
+        //    return RemoveCvExtraSpaces(cvTxt);
+        //}
+
+
+        public static string GetCvTxtWord(string fileNamePath)
         {
-            Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
-            string cvTxt = document.GetText();
-            return RemoveCvExtraSpaces(cvTxt);
+            var document = new Spire.Doc.Document();
+            document.LoadFromFile(fileNamePath);
+
+            var sb = new StringBuilder();
+
+            foreach (Section section in document.Sections)
+            {
+                foreach (DocumentObject obj in section.Body.ChildObjects)
+                {
+                    if (obj is Paragraph paragraph)
+                    {
+                        var paraText = ExtractParagraphText(paragraph);
+                        if (!string.IsNullOrWhiteSpace(paraText))
+                            sb.Append(paraText.Trim()).Append(" ");
+                    }
+                    else if (obj is Table table)
+                    {
+                        foreach (TableRow row in table.Rows)
+                        {
+                            foreach (TableCell cell in row.Cells)
+                            {
+                                foreach (Paragraph cellPara in cell.Paragraphs)
+                                {
+                                    var cellText = ExtractParagraphText(cellPara);
+                                    if (!string.IsNullOrWhiteSpace(cellText))
+                                        sb.Append(cellText.Trim()).Append(" ");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
         }
+
+        private static string ExtractParagraphText(Paragraph paragraph)
+        {
+            var sb = new StringBuilder();
+
+            foreach (DocumentObject child in paragraph.ChildObjects)
+            {
+                if (child is TextRange textRange)
+                {
+                    sb.Append(textRange.Text).Append(" ");
+                }
+                else if (child is Break)
+                {
+                    sb.Append(" ");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
+
+        private static bool IsHebrewWord(string word)
+        {
+            // Allow Hebrew letters and hyphen only
+            return Regex.IsMatch(word, @"^[\u05D0-\u05EA\-]+$");
+        }
+
+
+
+
+
 
         private string RemoveCvExtraSpaces(string cvTxt)
         {

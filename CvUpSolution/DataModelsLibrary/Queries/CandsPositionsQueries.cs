@@ -475,6 +475,9 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvup00001Context())
             {
+             //   candidate? cand = await dbContext.candidates
+             //.Where(x => x.email != null && x.email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+
                 candidate? cand = await dbContext.candidates.Where(x => x.email == email).FirstOrDefaultAsync();
                 return cand;
             }
@@ -501,6 +504,7 @@ namespace DataModelsLibrary.Queries
                             && cand.is_black_list == false
                             && cand.last_cv_id != null
                             && cvt.candidate_id != null
+                            //&& cand.email == "leonardopalinsky@gmail.com"
                             //&& candidateId > 0 ? cand.id == candidateId : 1 == 1
                             select new CvsToIndexModel
                             {
@@ -509,6 +513,8 @@ namespace DataModelsLibrary.Queries
                                 lastName = cand.last_name,
                                 reviewText = cand.review,
                                 cvsTxt = cvt.cv_txt,
+                                email = cand.email,
+                                phone = cand.phone,
                             };
 
                 // Conditionally append the candidateId filter strictly in C#

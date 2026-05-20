@@ -53,7 +53,8 @@ namespace LuceneLibrary
             mIndexSearcher = new IndexSearcher(mIndexReader);
             mQueryParser = new QueryParser(LuceneVersion.LUCENE_48, "CV", mAnalyzer);
 
-            //var debug = await DebugEmailSearch(mIndexSearcher, "Chen.ambor@gmail.com");
+            
+            //var debug = await DebugEmailSearch(mIndexSearcher, "Leonardopalinsky@gmail.com");
             //Console.WriteLine(debug); // or log it
 
             ScoreDoc[] hitIdxs =    await SearchCandidateByName(mIndexSearcher, searchVals.value);
@@ -82,12 +83,12 @@ namespace LuceneLibrary
         {
             nameQuery = nameQuery.Trim().ToLowerInvariant();
 
-            // Email → single TermQuery
-            if (nameQuery.Contains('@'))
-            {
-                return await Task.Run(() =>
-                    mIndexSearcher.Search(new TermQuery(new Term("CV", nameQuery)), null, 10000).ScoreDocs);
-            }
+            //// Email → single TermQuery
+            //if (nameQuery.Contains('@'))
+            //{
+            //    return await Task.Run(() =>
+            //        mIndexSearcher.Search(new TermQuery(new Term("CV", nameQuery)), null, 10000).ScoreDocs);
+            //}
 
             var tokens = nameQuery
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)

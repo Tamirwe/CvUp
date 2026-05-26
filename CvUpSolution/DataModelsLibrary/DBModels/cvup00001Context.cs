@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,7 +18,6 @@ namespace Database.models
         }
 
         public virtual DbSet<ai_analyze_cv> ai_analyze_cvs { get; set; } = null!;
-        public virtual DbSet<ai_analyze_cvs_copy> ai_analyze_cvs_copies { get; set; } = null!;
         public virtual DbSet<auth_out_email> auth_out_emails { get; set; } = null!;
         public virtual DbSet<black_cand> black_cands { get; set; } = null!;
         public virtual DbSet<cand_pos_stage> cand_pos_stages { get; set; } = null!;
@@ -59,15 +58,13 @@ namespace Database.models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=!Shalot5;database=cvup00001", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.30-mysql"));
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=cvupdb;Username=postgres;Password=!Shalot5");
                     //.LogTo(Console.WriteLine, LogLevel.Information);
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("utf8mb4_general_ci")
-                .HasCharSet("utf8mb4");
 
             modelBuilder.Entity<ai_analyze_cv>(entity =>
             {
@@ -81,18 +78,18 @@ namespace Database.models
                 entity.Property(e => e.companies).HasMaxLength(500);
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.date_updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.education).HasMaxLength(500);
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
-                entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
+                entity.Property(e => e.is_embedded).HasDefaultValueSql("false");
 
                 entity.Property(e => e.jobs_titles_en).HasMaxLength(500);
 
@@ -130,64 +127,6 @@ namespace Database.models
                     .HasConstraintName("fk_ai_analyze_cvs_candidate_id_candidates_id");
             });
 
-            modelBuilder.Entity<ai_analyze_cvs_copy>(entity =>
-            {
-                entity.ToTable("ai_analyze_cvs_copy");
-
-                entity.HasIndex(e => e.candidate_id, "uq_ai_analyze_cvs_candidate_id")
-                    .IsUnique();
-
-                entity.Property(e => e.area).HasMaxLength(20);
-
-                entity.Property(e => e.city).HasMaxLength(50);
-
-                entity.Property(e => e.companies).HasMaxLength(500);
-
-                entity.Property(e => e.current_job_title_en).HasMaxLength(100);
-
-                entity.Property(e => e.current_job_title_he).HasMaxLength(100);
-
-                entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.date_updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.education).HasMaxLength(500);
-
-                entity.Property(e => e.email).HasMaxLength(150);
-
-                entity.Property(e => e.is_embedded).HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.languages).HasMaxLength(150);
-
-                entity.Property(e => e.military_service).HasMaxLength(250);
-
-                entity.Property(e => e.name).HasMaxLength(101);
-
-                entity.Property(e => e.phone).HasMaxLength(20);
-
-                entity.Property(e => e.profession_skills_en).HasMaxLength(500);
-
-                entity.Property(e => e.profession_skills_he).HasMaxLength(500);
-
-                entity.Property(e => e.profession_words_en).HasMaxLength(500);
-
-                entity.Property(e => e.profession_words_he).HasMaxLength(500);
-
-                entity.Property(e => e.region).HasMaxLength(20);
-
-                entity.Property(e => e.seniority).HasMaxLength(50);
-
-                entity.Property(e => e.skills).HasMaxLength(600);
-
-                entity.Property(e => e.summary_en).HasMaxLength(1000);
-
-                entity.Property(e => e.summary_he).HasMaxLength(1000);
-            });
-
             modelBuilder.Entity<auth_out_email>(entity =>
             {
                 entity.HasIndex(e => e.company_id, "fk_emails_sent_company_id_companies_id");
@@ -200,7 +139,7 @@ namespace Database.models
 
                 entity.Property(e => e.from_address).HasMaxLength(250);
 
-                entity.Property(e => e.sent_date).HasColumnType("datetime");
+                entity.Property(e => e.sent_date).HasColumnType("timestamp");
 
                 entity.Property(e => e.subject).HasMaxLength(500);
 
@@ -228,8 +167,8 @@ namespace Database.models
                 entity.Property(e => e.remarks).HasMaxLength(160);
 
                 entity.Property(e => e.updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<cand_pos_stage>(entity =>
@@ -267,12 +206,12 @@ namespace Database.models
                 entity.Property(e => e.customers_reviews).HasColumnType("json");
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.date_updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
@@ -280,15 +219,15 @@ namespace Database.models
 
                 entity.Property(e => e.folders_ids).HasColumnType("json");
 
-                entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("'0'");
+                entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("false");
 
-                entity.Property(e => e.is_black_list).HasDefaultValueSql("'0'");
+                entity.Property(e => e.is_black_list).HasDefaultValueSql("false");
 
-                entity.Property(e => e.is_cv_analyzed).HasDefaultValueSql("'0'");
+                entity.Property(e => e.is_cv_analyzed).HasDefaultValueSql("false");
 
                 entity.Property(e => e.last_cv_sent)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.last_name).HasMaxLength(50);
 
@@ -302,7 +241,7 @@ namespace Database.models
 
                 entity.Property(e => e.review).HasMaxLength(8000);
 
-                entity.Property(e => e.review_date).HasColumnType("datetime");
+                entity.Property(e => e.review_date).HasColumnType("timestamp");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.candidates)
@@ -315,8 +254,8 @@ namespace Database.models
                 entity.Property(e => e.active_status).HasColumnType("enum('Active','Waite_Complete_Registration','Not_Active')");
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.descr).HasMaxLength(500);
 
@@ -407,8 +346,8 @@ namespace Database.models
                 entity.Property(e => e.address).HasMaxLength(500);
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.descr).HasMaxLength(1000);
 
@@ -434,8 +373,8 @@ namespace Database.models
                     .IsUnique();
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.email_id).HasMaxLength(300);
 
@@ -443,7 +382,7 @@ namespace Database.models
 
                 entity.Property(e => e.from).HasMaxLength(200);
 
-                entity.Property(e => e.is_seen).HasDefaultValueSql("'0'");
+                entity.Property(e => e.is_seen).HasDefaultValueSql("false");
 
                 entity.Property(e => e.key_id).HasMaxLength(30);
 
@@ -475,7 +414,7 @@ namespace Database.models
 
                 entity.Property(e => e.file_extension).HasMaxLength(6);
 
-                entity.Property(e => e.mail_date).HasColumnType("datetime");
+                entity.Property(e => e.mail_date).HasColumnType("timestamp");
             });
 
             modelBuilder.Entity<cvs_txt>(entity =>
@@ -518,7 +457,7 @@ namespace Database.models
 
                 entity.Property(e => e.from_address).HasMaxLength(250);
 
-                entity.Property(e => e.sent_date).HasColumnType("datetime");
+                entity.Property(e => e.sent_date).HasColumnType("timestamp");
 
                 entity.Property(e => e.subject).HasMaxLength(500);
 
@@ -593,8 +532,8 @@ namespace Database.models
                 entity.Property(e => e.name_he).HasMaxLength(150);
 
                 entity.Property(e => e.updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.keywords)
@@ -614,8 +553,8 @@ namespace Database.models
                 entity.Property(e => e.name).HasMaxLength(100);
 
                 entity.Property(e => e.updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.keywords_groups)
@@ -656,9 +595,9 @@ namespace Database.models
 
                 entity.Property(e => e.customer_pos_num).HasMaxLength(50);
 
-                entity.Property(e => e.date_created).HasColumnType("datetime");
+                entity.Property(e => e.date_created).HasColumnType("timestamp");
 
-                entity.Property(e => e.date_updated).HasColumnType("datetime");
+                entity.Property(e => e.date_updated).HasColumnType("timestamp");
 
                 entity.Property(e => e.descr).HasMaxLength(6000);
 
@@ -702,37 +641,37 @@ namespace Database.models
 
                 entity.HasIndex(e => e.stage_id, "fk_position_candidates_stage_id_position_candidate_stages_id");
 
-                entity.Property(e => e.accepted).HasColumnType("datetime");
+                entity.Property(e => e.accepted).HasColumnType("timestamp");
 
-                entity.Property(e => e.call_email_to_candidate).HasColumnType("datetime");
+                entity.Property(e => e.call_email_to_candidate).HasColumnType("timestamp");
 
                 entity.Property(e => e.cand_cvs).HasColumnType("json");
 
-                entity.Property(e => e.customer_interview).HasColumnType("datetime");
+                entity.Property(e => e.customer_interview).HasColumnType("timestamp");
 
                 entity.Property(e => e.customer_review).HasMaxLength(1000);
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
-                entity.Property(e => e.date_cv_sent_to_customer_tmp).HasColumnType("datetime");
+                entity.Property(e => e.date_cv_sent_to_customer_tmp).HasColumnType("timestamp");
 
-                entity.Property(e => e.date_msg_accept_reject_sent_tmp).HasColumnType("datetime");
+                entity.Property(e => e.date_msg_accept_reject_sent_tmp).HasColumnType("timestamp");
 
-                entity.Property(e => e.date_sent_talk_request_tmp).HasColumnType("datetime");
+                entity.Property(e => e.date_sent_talk_request_tmp).HasColumnType("timestamp");
 
-                entity.Property(e => e.date_updated).HasColumnType("datetime");
+                entity.Property(e => e.date_updated).HasColumnType("timestamp");
 
-                entity.Property(e => e.email_to_contact).HasColumnType("datetime");
+                entity.Property(e => e.email_to_contact).HasColumnType("timestamp");
 
-                entity.Property(e => e.reject_email_to_candidate).HasColumnType("datetime");
+                entity.Property(e => e.reject_email_to_candidate).HasColumnType("timestamp");
 
-                entity.Property(e => e.rejected).HasColumnType("datetime");
+                entity.Property(e => e.rejected).HasColumnType("timestamp");
 
-                entity.Property(e => e.remove_candidacy).HasColumnType("datetime");
+                entity.Property(e => e.remove_candidacy).HasColumnType("timestamp");
 
-                entity.Property(e => e.stage_date).HasColumnType("datetime");
+                entity.Property(e => e.stage_date).HasColumnType("timestamp");
 
                 entity.Property(e => e.stage_type).HasMaxLength(50);
 
@@ -765,7 +704,7 @@ namespace Database.models
 
                 entity.HasIndex(e => e.position_candidate_id, "position_candidate_stages_pos_candidate_id_pos_candidates_id");
 
-                entity.Property(e => e.stage_date).HasColumnType("datetime");
+                entity.Property(e => e.stage_date).HasColumnType("timestamp");
 
                 entity.Property(e => e.stage_type).HasMaxLength(50);
 
@@ -819,8 +758,8 @@ namespace Database.models
                     .IsUnique();
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.position_interviewers)
@@ -843,8 +782,8 @@ namespace Database.models
                 entity.HasIndex(e => e.company_id, "fk_position_types_company_id_companies_id");
 
                 entity.Property(e => e.date_updated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.type_name).HasMaxLength(150);
 
@@ -861,8 +800,8 @@ namespace Database.models
                 entity.Property(e => e.id).HasMaxLength(100);
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.email).HasMaxLength(250);
             });
@@ -875,11 +814,11 @@ namespace Database.models
 
                 entity.Property(e => e.advanced_val).HasMaxLength(150);
 
-                entity.Property(e => e.is_starred).HasDefaultValueSql("'0'");
+                entity.Property(e => e.is_starred).HasDefaultValueSql("false");
 
                 entity.Property(e => e.search_date)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.val).HasMaxLength(150);
 
@@ -897,8 +836,8 @@ namespace Database.models
                 entity.Property(e => e.body).HasMaxLength(1000);
 
                 entity.Property(e => e.date_sent)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.subject).HasMaxLength(500);
 
@@ -938,8 +877,8 @@ namespace Database.models
                 entity.Property(e => e.active_status).HasColumnType("enum('Active','Not_Active','Waite_Complete_Registration')");
 
                 entity.Property(e => e.date_created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.email).HasMaxLength(250);
 
@@ -979,7 +918,7 @@ namespace Database.models
 
                 entity.Property(e => e.token).HasMaxLength(200);
 
-                entity.Property(e => e.token_expire).HasColumnType("datetime");
+                entity.Property(e => e.token_expire).HasColumnType("timestamp");
 
                 entity.HasOne(d => d.company)
                     .WithMany(p => p.users_refresh_tokens)
@@ -998,3 +937,5 @@ namespace Database.models
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
+
+

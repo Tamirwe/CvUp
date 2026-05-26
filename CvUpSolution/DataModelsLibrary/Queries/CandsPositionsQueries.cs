@@ -2,10 +2,7 @@
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
-using MySqlX.XDevAPI.Relational;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

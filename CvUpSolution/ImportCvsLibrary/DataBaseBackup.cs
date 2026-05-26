@@ -15,7 +15,7 @@ namespace ImportCvsLibrary
         {
             try
             {
-                string databaseName = "cvup00001";
+                string databaseName = "cvupdb";
                 string backUpDir = $"{_filesRootFolder}\\dataBaseBackupFiles";
 
                 DirectoryInfo backupDirInfo = new DirectoryInfo(backUpDir); 
@@ -44,17 +44,17 @@ namespace ImportCvsLibrary
                     sw.WriteLine(@"SET BackupDir=""" + backUpDirObj.FullName + @"\""");
                     sw.WriteLine(@"SET BackupFile=" + newBackUpFileName);
 
-                    sw.WriteLine(@"SET mysqldir=C:\Program Files\MySQL\MySQL Server 8.0\bin");
+                    sw.WriteLine(@"SET postgresqldir=C:\Program Files\PostgreSQL\18\bin");
 
-                    sw.WriteLine(@"SET mysqlpassword=!Shalot5");
-                    sw.WriteLine(@"SET mysqluser=root");
+                    sw.WriteLine(@"SET pgpassword=!Shalot5");
+                    sw.WriteLine(@"SET pguser=postgres");
                     sw.WriteLine(@"SET databaseName=" + databaseName);
                     sw.WriteLine(@"set zip=""C:\Program Files\7-Zip\7z.exe""");
                     sw.WriteLine(@"@REM *** EXECUTION ***");
-                    sw.WriteLine(@"@REM Change to mysqldir");
-                    sw.WriteLine(@"CD %mysqldir%");
+                    sw.WriteLine(@"@REM Change to postgresqldir");
+                    sw.WriteLine(@"CD %postgresqldir%");
                     sw.WriteLine(@"@REM dump/backup");
-                    sw.WriteLine(@"mysqldump -u %mysqluser% -p%mysqlpassword% --databases %databaseName% >%BackupDir%%BackupFile%");
+                    sw.WriteLine(@"pg_dump -U %pguser% -d %databaseName% >%BackupDir%%BackupFile%");
                     sw.WriteLine(@"@REM zip backup file");
                     sw.WriteLine(@"%zip% a -tgzip %BackupDir%%BackupFile%.gz %BackupDir%%BackupFile%");
                     sw.WriteLine(@"@REM delete backup file");

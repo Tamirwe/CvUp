@@ -1,5 +1,4 @@
-﻿using MySqlX.XDevAPI.Common;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenAiLibrary.Models;
 using System;

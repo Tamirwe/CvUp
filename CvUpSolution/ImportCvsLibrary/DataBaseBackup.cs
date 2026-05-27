@@ -54,7 +54,7 @@ namespace ImportCvsLibrary
                     sw.WriteLine(@"@REM Change to postgresqldir");
                     sw.WriteLine(@"CD %postgresqldir%");
                     sw.WriteLine(@"@REM dump/backup");
-                    sw.WriteLine(@"pg_dump -U %pguser% -d %databaseName% >%BackupDir%%BackupFile%");
+                    sw.WriteLine(@"pg_dump -c -U %pguser% -d %databaseName% >%BackupDir%%BackupFile%");
                     sw.WriteLine(@"@REM zip backup file");
                     sw.WriteLine(@"%zip% a -tgzip %BackupDir%%BackupFile%.gz %BackupDir%%BackupFile%");
                     sw.WriteLine(@"@REM delete backup file");

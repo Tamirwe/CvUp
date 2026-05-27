@@ -32,7 +32,7 @@ namespace Database.models
         public int? years_experience { get; set; }
         public DateTime? date_updated { get; set; }
         public DateTime? date_created { get; set; }
-        public bool? is_embedded { get; set; }
+        public bool is_embedded { get; set; }
 
         public virtual candidate candidate { get; set; } = null!;
     }

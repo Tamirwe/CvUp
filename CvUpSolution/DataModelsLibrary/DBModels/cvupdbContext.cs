@@ -77,8 +77,6 @@ namespace Database.models
 
                 entity.Property(e => e.email).HasMaxLength(150);
 
-                entity.Property(e => e.is_embedded).HasDefaultValueSql("false");
-
                 entity.Property(e => e.jobs_titles_en).HasMaxLength(500);
 
                 entity.Property(e => e.jobs_titles_he).HasMaxLength(500);
@@ -194,12 +192,6 @@ namespace Database.models
                 entity.Property(e => e.first_name).HasMaxLength(50);
 
                 entity.Property(e => e.folders_ids).HasColumnType("jsonb");
-
-                entity.Property(e => e.has_duplicates_cvs).HasDefaultValueSql("0");
-
-                entity.Property(e => e.is_black_list).HasDefaultValueSql("false");
-
-                entity.Property(e => e.is_cv_analyzed).HasDefaultValueSql("false");
 
                 entity.Property(e => e.last_cv_sent)
                     .HasColumnType("timestamp without time zone")
@@ -323,8 +315,6 @@ namespace Database.models
                 entity.Property(e => e.file_extension).HasMaxLength(6);
 
                 entity.Property(e => e.from).HasMaxLength(200);
-
-                entity.Property(e => e.is_seen).HasDefaultValueSql("false");
 
                 entity.Property(e => e.key_id).HasMaxLength(30);
 
@@ -622,8 +612,6 @@ namespace Database.models
                 entity.HasIndex(e => e.search_date, "ix_searches_search_date");
 
                 entity.Property(e => e.advanced_val).HasMaxLength(150);
-
-                entity.Property(e => e.is_starred).HasDefaultValueSql("false");
 
                 entity.Property(e => e.search_date)
                     .HasColumnType("timestamp without time zone")

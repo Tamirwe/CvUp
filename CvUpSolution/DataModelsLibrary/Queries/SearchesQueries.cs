@@ -41,7 +41,7 @@ namespace DataModelsLibrary.Queries
 
                     if (existSearch != null)
                     {
-                        existSearch.is_exact = searchVals.exact;
+                        existSearch.is_exact = searchVals.exact ?? false;
                         existSearch.search_date = DateTime.Now;
                         dbContext.searches.Update(existSearch);
                     }
@@ -52,7 +52,7 @@ namespace DataModelsLibrary.Queries
                             company_id = companyId,
                             val = searchVals.value,
                             advanced_val = searchVals.advancedValue,
-                            is_exact = searchVals.exact,
+                            is_exact = searchVals.exact ?? false,
                             search_date = DateTime.Now
                         });
                     }
@@ -112,7 +112,7 @@ namespace DataModelsLibrary.Queries
 
                 if (existSearch != null)
                 {
-                    existSearch.is_exact = searchVals.exact;
+                    existSearch.is_exact = searchVals.exact ?? false;
                     existSearch.is_starred = !existSearch.is_starred;
                     existSearch.search_date = DateTime.Now;
                     dbContext.searches.Update(existSearch);

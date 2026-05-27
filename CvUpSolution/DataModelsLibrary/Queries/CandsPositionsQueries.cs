@@ -402,7 +402,7 @@ namespace DataModelsLibrary.Queries
             using (var dbContext = new cvupdbContext())
             {
                 candidate cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).First();
-                cand.has_duplicates_cvs = (sbyte?)(isDuplicate ? 1 : 0);
+                cand.has_duplicates_cvs = isDuplicate;
                 cand.last_cv_id = cvId;
                 cand.last_cv_sent = lastCvSent;
                 cand.date_updated = DateTime.Now;

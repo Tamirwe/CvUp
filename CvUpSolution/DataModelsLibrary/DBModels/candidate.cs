@@ -24,7 +24,7 @@ namespace Database.models
         public string? adress { get; set; }
         public DateTime? date_created { get; set; }
         public DateTime? date_updated { get; set; }
-        public short? has_duplicates_cvs { get; set; }
+        public bool has_duplicates_cvs { get; set; }
         public string? review { get; set; }
         public DateTime? review_date { get; set; }
         public DateTime? last_cv_sent { get; set; }
@@ -35,8 +35,8 @@ namespace Database.models
         public string? folders_ids { get; set; }
         public string? customers_reviews { get; set; }
         public string? city { get; set; }
-        public bool? is_black_list { get; set; }
-        public bool? is_cv_analyzed { get; set; }
+        public bool is_black_list { get; set; }
+        public bool is_cv_analyzed { get; set; }
 
         public virtual company company { get; set; } = null!;
         public virtual ICollection<ai_analyze_cv> ai_analyze_cvs { get; set; }

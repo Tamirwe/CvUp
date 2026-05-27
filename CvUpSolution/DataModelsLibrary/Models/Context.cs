@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Database.models
 {
-    public partial class cvupdbContext : DbContext
+    public partial class cvup00001Context : DbContext
     {
 
         public virtual DbSet<IdNameModel> idNameModelDB { get; set; } = null!;

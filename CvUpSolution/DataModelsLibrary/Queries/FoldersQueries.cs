@@ -16,7 +16,7 @@ namespace DataModelsLibrary.Queries
     {
         public async Task<folder> AddFolder(int companyId, FolderModel data)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var fdr = new folder
                 {
@@ -33,7 +33,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<folder> UpdateFolder(int companyId, FolderModel data)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var fdr = new folder
                 {
@@ -53,7 +53,7 @@ namespace DataModelsLibrary.Queries
         public async Task DeleteFolder(int companyId, List<int> ids)
         {
 
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var fdr = await (from f in dbContext.folders
                                  where ids.Contains(f.id) && f.company_id == companyId
@@ -70,7 +70,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<FolderModel>> GetFolders(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from f in dbContext.folders
                             where f.company_id == companyId
@@ -88,7 +88,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AttachCandidate(int companyId, FolderCandidateModel data)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var fdr = new folders_cand
                 {
@@ -104,7 +104,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DetachCandidate(int companyId, FolderCandidateModel data)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 folders_cand? candFolder = await dbContext.folders_cands.Where(x => x.company_id == companyId
                     && x.folder_id == data.folderId && x.candidate_id == data.candidateId).FirstOrDefaultAsync();
@@ -119,7 +119,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandidateFolders(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<folders_cand>? foldersCandList = await dbContext.folders_cands.Where(x => x.company_id == companyId
                    && x.candidate_id == candidateId).ToListAsync();

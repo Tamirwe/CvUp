@@ -27,7 +27,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<CandModel?> GetCandidate(int companyId, int candId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
@@ -61,7 +61,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join pcv in dbContext.position_candidates on cand.id equals pcv.candidate_id
@@ -106,7 +106,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandModel?>> GetCandsList(int companyId,  List<int>? candsIds)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 // 1. Define the base database query (Strictly translation-safe SQL)
                 var dbQuery = from cand in dbContext.candidates
@@ -206,7 +206,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join pcv in dbContext.position_candidates on cand.id equals pcv.candidate_id
@@ -254,7 +254,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
@@ -289,7 +289,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cand in dbContext.candidates
                              join fc in dbContext.folders_cands on cand.id equals fc.candidate_id
@@ -325,7 +325,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<int> AddCv(ImportCvModel importCv)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var newCv = new cv
                 {
@@ -365,7 +365,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteCv(int companyId, int candidateId, int cvId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<cv>? candCvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId).ToListAsync();
 
@@ -388,7 +388,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<cv>? candCvs = await dbContext.cvs.Where(x => x.company_id == companyId && x.candidate_id == candidateId).OrderByDescending(x => x.date_created).ToListAsync();
                 cv? lastCv = candCvs.OrderByDescending(x => x.date_created).FirstOrDefault();
@@ -399,7 +399,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).First();
                 cand.has_duplicates_cvs = (sbyte?)(isDuplicate ? 1 : 0);
@@ -414,7 +414,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteCandidate(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate? candTodelete = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
 
@@ -428,7 +428,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCvDate(int cvId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 cv cv = dbContext.cvs.Where(x => x.id == cvId).First();
                 cv.date_created = DateTime.Now;
@@ -440,7 +440,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCvKeyId(ImportCvModel importCv)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 cv? cv = dbContext.cvs.Where(x => x.id == importCv.cvId).First();
                 cv.key_id = importCv.cvKey;
@@ -451,7 +451,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<int> AddCandidate(candidate newCand)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 dbContext.candidates.Add(newCand);
                 await dbContext.SaveChangesAsync();
@@ -461,7 +461,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandidate(candidate cand)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var result = dbContext.candidates.Update(cand);
                 await dbContext.SaveChangesAsync();
@@ -470,7 +470,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<candidate?> GetCandidateByEmail(string email)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
              //   candidate? cand = await dbContext.candidates
              //.Where(x => x.email != null && x.email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
@@ -482,7 +482,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<candidate?> GetCandidateByPhone(string phone)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = await dbContext.candidates.Where(x => x.phone == phone).FirstOrDefaultAsync();
                 return cand;
@@ -491,7 +491,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CvsToIndexModel>> GetCandidatesLastCvsToIndex(int companyId, int candidateId = 0)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from cand in dbContext.candidates
                             join cvt in dbContext.cvs_txts
@@ -534,7 +534,7 @@ namespace DataModelsLibrary.Queries
 
         //public async Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId = 0)
         //{
-        //    using (var dbContext = new cvupdbContext())
+        //    using (var dbContext = new cvup00001Context())
         //    {
 
         //        var query = from cand in dbContext.candidates
@@ -644,7 +644,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from cvs in dbContext.cvs
                              where cvs.company_id == companyId
@@ -667,7 +667,7 @@ namespace DataModelsLibrary.Queries
         public async Task UpdateCvsAsciiSum(int companyId)
         {
 
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<cvs_txt>? cvsTxtList = await dbContext.cvs_txts.Where(x => x.ascii_sum == null).ToListAsync();
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -699,7 +699,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.position_contacts
                      .Where(p => p.company_id == companyId && p.position_id == positionId)
@@ -710,7 +710,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var inter = await dbContext.position_interviewers
                           .Where(p => p.company_id == companyId && p.position_id == positionId)
@@ -749,7 +749,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<position> AddPosition(PositionModel data, int companyId, int userId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var ent = new position
                 {
@@ -782,7 +782,7 @@ namespace DataModelsLibrary.Queries
         public async Task<position> UpdatePosition(PositionModel data, int companyId, int userId)
         {
 
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position? pos = dbContext.positions.Where(x => x.company_id == companyId && x.id == data.id).First();
 
@@ -806,7 +806,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<PositionModel>> GetPositionsList(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.positions
                             join c in dbContext.customers on p.customer_id equals c.id
@@ -831,7 +831,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeletePosition(int companyId, int id)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var ent = (from p in dbContext.positions
                            where p.id == id && p.company_id == companyId
@@ -847,7 +847,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddUpdateInterviewers(int companyId, int positionId, int[] interviewersIds)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var dbInterviewer = await (from i in dbContext.position_interviewers
                                            where i.company_id == companyId && i.position_id == positionId
@@ -880,7 +880,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddUpdatePositionContacts(int companyId, int positionId, List<int>? contactsIds)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var conts = await (from i in dbContext.position_contacts
                                    where i.company_id == companyId && i.position_id == positionId
@@ -915,7 +915,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<ParserRulesModel>> GetParsersRules()
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.company_parsers
                             join r in dbContext.parser_rules on p.parser_id equals r.parser_id
@@ -935,7 +935,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<int>> GetCompaniesIds()
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.companies.Select(c => c.id).ToListAsync();
             }
@@ -945,7 +945,7 @@ namespace DataModelsLibrary.Queries
         {
             try
             {
-                using (var dbContext = new cvupdbContext())
+                using (var dbContext = new cvup00001Context())
                 {
                     List<cv> cvs = await dbContext.cvs.Where(x => x.company_id == companyId).ToListAsync();
                     return cvs;
@@ -960,7 +960,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<string?>> GetCompanyCvsIds(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.cvs.Where(x => x.company_id == companyId).Select(c => c.key_id).ToListAsync();
             }
@@ -968,7 +968,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<CvModel?> GetCv(int cvId, int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from cand in dbContext.candidates
                             join cvs in dbContext.cvs on cand.id equals cvs.candidate_id
@@ -986,7 +986,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candReview.candidateId).First();
                 cand.review = candReview.review;
@@ -999,7 +999,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 cvs_txt? cvsTxt = await dbContext.cvs_txts.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.ascii_sum == cvAsciiSum).FirstOrDefaultAsync();
                 return cvsTxt;
@@ -1008,7 +1008,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AttachPosCandCv(AttachePosCandCvModel posCandCv)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? posCand = await dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
                   && x.position_id == posCandCv.positionId
@@ -1048,7 +1048,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DetachPosCand(AttachePosCandCvModel posCandCv)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? posCvs = dbContext.position_candidates.Where(x => x.company_id == posCandCv.companyId
                     && x.position_id == posCandCv.positionId
@@ -1065,7 +1065,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandPosArrays(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.company_id == companyId && x.id == candidateId).FirstOrDefault();
 
@@ -1096,7 +1096,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<company_cvs_email>> GetCompaniesEmails()
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.company_cvs_emails.ToListAsync();
             }
@@ -1104,7 +1104,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from st in dbContext.cand_pos_stages
                              where st.company_id == companyId
@@ -1125,7 +1125,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from et in dbContext.emails_templates
                              orderby et.name
@@ -1144,7 +1144,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 if (emailTemplate.id == 0)
                 {
@@ -1173,7 +1173,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteEmailTemplate(int companyId, int id)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 emails_template? etm = dbContext.emails_templates.Where(x => x.id == id).FirstOrDefault();
 
@@ -1187,7 +1187,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandDetails(CandDetailsModel candDetails)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 candidate? cand = dbContext.candidates.Where(x => x.id == candDetails.candidateId).FirstOrDefault();
 
@@ -1205,7 +1205,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateIsSeen(int companyId, int cvId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 cv? candCv = dbContext.cvs.Where(x => x.company_id == companyId && x.id == cvId).FirstOrDefault();
 
@@ -1220,7 +1220,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandReportModel?>> CandsReport(int companyId, string stageType)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from pcs in dbContext.position_candidates
                              join cn in dbContext.candidates on pcs.candidate_id equals cn.id
@@ -1245,7 +1245,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<cand_pos_stage?> getPosStage(int companyId, string stageType)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 return await dbContext.cand_pos_stages.Where(x => x.company_id == companyId && x.stage_Type == stageType).FirstOrDefaultAsync();
             }
@@ -1253,7 +1253,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandPositionStatus(CandPosStageTypeUpdateModel posStatus)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == posStatus.companyId
                   && x.candidate_id == posStatus.candidateId && x.position_id == posStatus.positionId).FirstOrDefaultAsync();
@@ -1301,7 +1301,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdatePosStageDate(CandPosStageTypeUpdateModel posStatus)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == posStatus.companyId
                   && x.candidate_id == posStatus.candidateId && x.position_id == posStatus.positionId).FirstOrDefaultAsync();
@@ -1350,7 +1350,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task RemovePosStage(CandPosStageTypeUpdateModel posStatus)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == posStatus.companyId
                   && x.candidate_id == posStatus.candidateId && x.position_id == posStatus.positionId).FirstOrDefaultAsync();
@@ -1399,7 +1399,7 @@ namespace DataModelsLibrary.Queries
 
         //public async Task updateCandPosCallEmailToCandidate(int companyId, int candidateId, int positionId)
         //{
-        //    using (var dbContext = new cvupdbContext())
+        //    using (var dbContext = new cvup00001Context())
         //    {
         //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
 
@@ -1414,7 +1414,7 @@ namespace DataModelsLibrary.Queries
 
         //public async Task updateCandPosEmailToCustomer(int companyId, int candidateId, int positionId)
         //{
-        //    using (var dbContext = new cvupdbContext())
+        //    using (var dbContext = new cvup00001Context())
         //    {
         //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
 
@@ -1428,7 +1428,7 @@ namespace DataModelsLibrary.Queries
         //}
         //public async Task updateCandPosRejectEmailToCandidate(int companyId, int candidateId, int positionId)
         //{
-        //    using (var dbContext = new cvupdbContext())
+        //    using (var dbContext = new cvup00001Context())
         //    {
         //        position_candidate? candPos = await dbContext.position_candidates.Where(x => x.company_id == companyId && x.candidate_id == candidateId && x.position_id == positionId).FirstOrDefaultAsync();
 
@@ -1443,7 +1443,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                
 
@@ -1461,7 +1461,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<position> posList = await dbContext.positions.Where(x => x.company_id == companyId && !string.IsNullOrWhiteSpace(x.match_email_subject) && x.status == "Active").ToListAsync();
 
@@ -1485,7 +1485,7 @@ namespace DataModelsLibrary.Queries
 
             toAddresses = toAddresses.Substring(0, toAddresses.Length - 2);
 
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 dbContext.sent_emails.Add(new sent_email
                 {
@@ -1506,7 +1506,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<int?> GetPositionTypeId(int companyId, string positionRelated)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var posType = await dbContext.position_types.Where(x => x.company_id == companyId && x.type_name == positionRelated).FirstOrDefaultAsync();
 
@@ -1525,7 +1525,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<int> AddPositionTypeName(int companyId, string positionRelated)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
 
                 var result = dbContext.position_types.Add(new position_type
@@ -1543,7 +1543,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<PositionTypeModel>> GetPositionsTypes(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from et in dbContext.position_types
                              where et.company_id == companyId
@@ -1563,7 +1563,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task SaveCustomerCandReview(int companyId, CandReviewModel customerCandReview)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 position_candidate? posCand = await dbContext.position_candidates.Where(x => x.company_id == companyId
                 && x.candidate_id == customerCandReview.candidateId
@@ -1582,7 +1582,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandCustomersReviews(int companyId, int candidateId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = from p in dbContext.positions
                             join c in dbContext.customers on p.customer_id equals c.id
@@ -1621,7 +1621,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task CalculatePositionTypesCount(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 List<cv> cvsList = await dbContext.cvs.Where(x => x.company_id == companyId && x.date_created >= DateTime.Now.AddDays(-1)).ToListAsync();
 
@@ -1668,7 +1668,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 var query = (from p in dbContext.position_types
                              where p.company_id == companyId && p.date_updated >= DateTime.Now.AddDays(-1)
@@ -1689,7 +1689,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<blackCandModel>> GetBlackCandidatesList()
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
 
                 var query = (from b in dbContext.black_cands
@@ -1710,7 +1710,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
         {
-            using (var dbContext = new cvupdbContext())
+            using (var dbContext = new cvup00001Context())
             {
                 black_cand? bCand = dbContext.black_cands.Where(x => x.candidate_id == blackCand.candidate_id).FirstOrDefault();
 

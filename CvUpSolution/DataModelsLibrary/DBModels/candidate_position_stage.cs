@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.models
 {
-    public partial class cand_pos_stage
+    public partial class candidate_position_stage
     {
         public int id { get; set; }
         public int company_id { get; set; }
@@ -11,8 +11,6 @@ namespace Database.models
         public int? order { get; set; }
         public string stage_Type { get; set; } = null!;
         public sbyte is_custom { get; set; }
-        public string? color { get; set; }
-        public string? stage_event { get; set; }
 
         public virtual company company { get; set; } = null!;
     }

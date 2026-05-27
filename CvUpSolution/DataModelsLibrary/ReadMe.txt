@@ -5,8 +5,7 @@
 3. set ""DataModelsLibrary"" as startup project
 4. open package manager console and select default project "DataModelsLibrary" from the drop down 
 5. run the command
-Scaffold-DbContext "Host=localhost;Database=cvupdb;Username=postgres;Password=!Shalot5" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir DBModels -Namespace Database.models -UseDatabaseNames -Force -Project DataModelsLibrary 
-
+Scaffold-DbContext "Host=localhost;Database=cvupdb;Username=postgres;Password=!Shalot5" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir DBModels -Namespace Database.models -UseDatabaseNames -Force -Project DataModelsLibrary -Tables "ai_analyze_cvs_copy"
 6. set CvUpApi as startup project
 7. build
 

@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<auth_out_email> AddAuthOutEmail(int userId, int companyId, EmailType emailType, string toAddress, string fromAddress, string subject, string body)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var email = new auth_out_email
                 {

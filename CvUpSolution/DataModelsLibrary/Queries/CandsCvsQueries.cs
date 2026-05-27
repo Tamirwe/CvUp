@@ -31,7 +31,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
@@ -55,7 +55,7 @@ namespace DataModelsLibrary.Queries
         {
             await DeleteCandidateAnalyzeCv(analyzeCv.candidate_id);
 
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 dbContext.ai_analyze_cvs.Add(analyzeCv);
                 await dbContext.SaveChangesAsync();
@@ -67,7 +67,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteCandidateAnalyzeCv(int candidateId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 ai_analyze_cv? analyzeTodelete = await dbContext.ai_analyze_cvs.FirstOrDefaultAsync(x => x.candidate_id == candidateId);
 
@@ -81,7 +81,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCandIsAnalyzed(int candidateId, bool isAnalyzed)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 candidate? cand = dbContext.candidates.FirstOrDefault(x => x.id == candidateId);
 
@@ -97,7 +97,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateIsEmbeddedBatch(List<EmbedCvDataModel> cvs)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 foreach (var cv in cvs)
                 {
@@ -117,7 +117,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<EmbedCvDataModel>> GetAnalyzedCvsForEmbeeding()
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from ai in dbContext.ai_analyze_cvs
                             where ai.is_embedded == false
@@ -163,7 +163,7 @@ namespace DataModelsLibrary.Queries
 
         private async Task<List<CvTxtModel>> GetCvsText(int companyId = 154, int candidateId = 0)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var cvsTxtQuery = from cv in dbContext.cvs_txts
                                   where cv.company_id == companyId 
@@ -232,7 +232,7 @@ namespace DataModelsLibrary.Queries
 
         private async Task<List<AiCvModel>> GetCandidatesParams(int companyId = 154, int candidateId = 0)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from cand in dbContext.candidates
                             where cand.company_id == companyId 

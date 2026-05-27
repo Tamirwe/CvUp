@@ -22,7 +22,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<user>> GetUsersByEmail(string email)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var usersList = await dbContext.users.Where(x => x.email == email).ToListAsync();
                 return usersList;
@@ -31,7 +31,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<user>> GetUsersByCompanyEmail(string email, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var usersList = await dbContext.users.Where(x => x.company_id == companyId && x.email == email).ToListAsync();
                 return usersList;
@@ -40,7 +40,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<registeration_key?> GetRegistrationKey(string key)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.registeration_keys.Where(x => x.id == key).FirstOrDefaultAsync();
             }
@@ -48,7 +48,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddRegistrationKey(string key, user user)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var pr = new registeration_key
                 {
@@ -64,7 +64,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteOldRegistrationsKeys()
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 string sql = @"DELETE FROM registeration_key WHERE date_created<=DATE_SUB(NOW(), INTERVAL 1 DAY)";
                 int rowsUpdated = await dbContext.Database.ExecuteSqlRawAsync(sql);
@@ -73,7 +73,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task RemoveRegistrationKey(registeration_key rkey)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var count = dbContext.registeration_keys.Remove(rkey);
                 await dbContext.SaveChangesAsync();
@@ -82,7 +82,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<IdNameModel>> GetUserCompanies(string email)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
@@ -98,7 +98,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<user?> GetUser(int userId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.users.Where(x => x.id == userId).FirstOrDefaultAsync();
             }
@@ -106,7 +106,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<user?> GetUser(int companyId, string email)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.users.Where(x => x.company_id == companyId && x.email == email).FirstOrDefaultAsync();
             }
@@ -114,7 +114,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<company?> GetCompany(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.companies.Where(x => x.id == companyId).FirstOrDefaultAsync();
             }
@@ -122,7 +122,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<user>> GetUsers(string email, int? companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 if (companyId != 0)
                 {
@@ -135,7 +135,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<company> AddCompany(string companyName, string? companyDescr, CompanyActiveStatus status)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var company = new company
                 {
@@ -152,7 +152,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<user> AddUser(int companyId, string email, string? password, string firstName, string lastName, string? firstNameEn, string? lastNameEn, UserActiveStatus status, UserPermission permission, string log)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var user = new user
                 {
@@ -176,7 +176,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<company> UpdateCompany(company _company)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var result = dbContext.companies.Update(_company);
                 await dbContext.SaveChangesAsync();
@@ -186,7 +186,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateUser(user user)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var result = dbContext.users.Update(user);
                 await dbContext.SaveChangesAsync();
@@ -195,7 +195,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<InterviewerModel>> GetInterviewersList(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from u in dbContext.users
                             where u.company_id == companyId
@@ -216,7 +216,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddInterviewer(InterviewerModel data, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var user = new user
                 {
@@ -235,7 +235,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateInterviewer(InterviewerModel data, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 user? user = await dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefaultAsync();
 
@@ -254,7 +254,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<company_cvs_email?> GetCompanyEmail(string newEmail)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.company_cvs_emails.Where(x => x.email == newEmail).FirstOrDefaultAsync();
             }
@@ -262,7 +262,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddCompanySatrterData(int companyId)
         {
-            //using (var dbContext = new cvup00001Context())
+            //using (var dbContext = new cvupdbContext())
             //{
 
             //    var parser = new company_parser
@@ -289,7 +289,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddCompanyCvsEmail(int companyId, string generatedCompanyEmail)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var newRec = new company_cvs_email
                 {
@@ -304,7 +304,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<UserModel>> GetUsers(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from u in dbContext.users
                             where u.company_id == companyId
@@ -329,7 +329,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<UserModel?> GetUser(int companyId, int userId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from u in dbContext.users
                             where u.company_id == companyId && u.id == userId
@@ -354,7 +354,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UpdateCompanyUser(UserModel data, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 user? user = await dbContext.users.Where(x => x.id == data.id && x.company_id == companyId).FirstOrDefaultAsync();
 
@@ -376,7 +376,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteUser(int companyId, int id)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var usr = await (from u in dbContext.users
                                  where u.id == id && u.company_id == companyId
@@ -392,7 +392,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<users_refresh_token?> GetUserRefreshTokens(int companyId, int userId, string refreshToken)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 return await dbContext.users_refresh_tokens.Where(x => x.company_id == companyId && x.user_id == userId && x.token == refreshToken).FirstOrDefaultAsync();
             }
@@ -400,7 +400,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task UPdateRefreshToken(users_refresh_token newRefreshToken)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var result = dbContext.users_refresh_tokens.Update(newRefreshToken);
                 await dbContext.SaveChangesAsync();
@@ -409,7 +409,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteExpiredTokens()
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var expiredTokens = await dbContext.users_refresh_tokens.Where(x => x.token_expire < DateTime.Now).ToListAsync();
 
@@ -424,7 +424,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task AddUserRefreshToken(int companyId, int userId, string newRefreshToken, int refreshTokenHoursExpiration)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var newRec = new users_refresh_token
                 {
@@ -441,7 +441,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task RevokeUser(int companyId, int userId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var usersRefreshTokens = await dbContext.users_refresh_tokens.Where(x => x.company_id == companyId && x.user_id == userId).ToListAsync();
 

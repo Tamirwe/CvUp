@@ -10,7 +10,7 @@ namespace Database.models
         public string name { get; set; } = null!;
         public int? order { get; set; }
         public string stage_Type { get; set; } = null!;
-        public sbyte is_custom { get; set; }
+        public short is_custom { get; set; }
         public string? color { get; set; }
         public string? stage_event { get; set; }
 

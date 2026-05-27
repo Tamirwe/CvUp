@@ -10,7 +10,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<SearchModel>> GetSearches(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = (from s in dbContext.searches
                              where s.company_id == companyId
@@ -33,7 +33,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task SaveSearch(int companyId, SearchModel searchVals)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 if (!string.IsNullOrEmpty(searchVals.value))
                 {
@@ -64,7 +64,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteSearch(int companyId, SearchModel searchVals)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 search? existSearch = null;
 
@@ -87,7 +87,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteAllNotStarSearches(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var searchesToDelete = await dbContext.searches.Where(x => x.company_id == companyId && x.is_starred == false).ToListAsync();
                 dbContext.searches.RemoveRange(searchesToDelete);
@@ -97,7 +97,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task StarSearch(int companyId, SearchModel searchVals)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 search? existSearch = null;
 
@@ -123,7 +123,7 @@ namespace DataModelsLibrary.Queries
 
         private async Task<search?> FindSearchByVals(int companyId, SearchModel searchVals)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var sVal = string.IsNullOrEmpty(searchVals.value) ? "" : searchVals.value.Trim();
 
@@ -139,7 +139,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<keywordsGroupModel>> GetKeywordsGroups(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = (from s in dbContext.keywords_groups
                              where s.company_id == companyId
@@ -158,7 +158,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task SaveKeywordsGroup(int companyId, keywordsGroupModel keywordsGroup)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 if (keywordsGroup.id != null)
                 {
@@ -182,7 +182,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteKeywordsGroup(int companyId, int id)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var rec = await dbContext.keywords_groups.Where(x => x.company_id == companyId && x.id == id).FirstAsync();
                 dbContext.keywords_groups.Remove(rec);
@@ -192,7 +192,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<keywordModel>> GetKeywords(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = (from s in dbContext.keywords
                              where s.company_id == companyId
@@ -214,7 +214,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task SaveKeyword(int companyId, keywordModel keyword)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 if (keyword.id != null)
                 {
@@ -242,7 +242,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteKeyword(int companyId, int id)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var rec = await dbContext.keywords.Where(x => x.company_id == companyId && x.id == id).FirstAsync();
                 dbContext.keywords.Remove(rec);

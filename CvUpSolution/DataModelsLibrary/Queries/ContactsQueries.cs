@@ -14,7 +14,7 @@ namespace DataModelsLibrary.Queries
     {
         public async Task<contact> AddContact(int companyId, ContactModel data)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var cont = new contact
                 {
@@ -35,7 +35,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<contact> UpdateContact(int companyId, ContactModel data)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var fdr = new contact
                 {
@@ -58,7 +58,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task Deletecontact(int companyId, int id)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var cont = await (from c in dbContext.contacts
                                  where c.id == id && c.company_id == companyId
@@ -75,7 +75,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<ContactModel>> GetContacts(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from c in dbContext.contacts
                             join r in dbContext.customers on c.customer_id equals r.id
@@ -99,7 +99,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<customer> AddCustomer(CustomerModel data, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var dep = new customer
                 {
@@ -117,7 +117,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<customer?> UpdateCustomer(CustomerModel data, int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 customer dep = new customer { id = data.id, name = data.name, descr=data.descr,address=data.address, company_id = companyId };
                 var result = dbContext.customers.Update(dep);
@@ -128,7 +128,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task<List<CustomerModel>> GetCustomersList(int companyId)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var query = from dep in dbContext.customers
                             where dep.company_id == companyId
@@ -148,7 +148,7 @@ namespace DataModelsLibrary.Queries
 
         public async Task DeleteCustomer(int companyId, int id)
         {
-            using (var dbContext = new cvup00001Context())
+            using (var dbContext = new cvupdbContext())
             {
                 var dep = await (from d in dbContext.customers
                                  where d.id == id && d.company_id == companyId

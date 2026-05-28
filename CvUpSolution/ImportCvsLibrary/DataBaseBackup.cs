@@ -41,7 +41,7 @@ namespace ImportCvsLibrary
                 using (StreamWriter sw = File.CreateText(batchFileName))
                 {
                     sw.WriteLine(@"@REM *** PARAMETERS/VARIABLES ***");
-                    sw.WriteLine(@"SET BackupDir=""" + backUpDirObj.FullName + @"\""");
+                    sw.WriteLine(@"SET BackupDir=" + backUpDirObj.FullName);
                     sw.WriteLine(@"SET BackupFile=" + newBackUpFileName);
 
                     sw.WriteLine(@"SET postgresqldir=C:\Program Files\PostgreSQL\18\bin");
@@ -54,11 +54,11 @@ namespace ImportCvsLibrary
                     sw.WriteLine(@"@REM Change to postgresqldir");
                     sw.WriteLine(@"CD %postgresqldir%");
                     sw.WriteLine(@"@REM dump/backup");
-                    sw.WriteLine(@"pg_dump -c -U %pguser% -d %databaseName% >%BackupDir%%BackupFile%");
+                    sw.WriteLine(@"pg_dump -c -U %pguser% -d %databaseName% >""%BackupDir%\%BackupFile%""");
                     sw.WriteLine(@"@REM zip backup file");
-                    sw.WriteLine(@"%zip% a -tgzip %BackupDir%%BackupFile%.gz %BackupDir%%BackupFile%");
+                    sw.WriteLine(@"%zip% a -tgzip ""%BackupDir%\%BackupFile%.gz"" ""%BackupDir%\%BackupFile%""");
                     sw.WriteLine(@"@REM delete backup file");
-                    sw.WriteLine(@"del %BackupDir%%BackupFile%");
+                    sw.WriteLine(@"del ""%BackupDir%\%BackupFile%""");
                 }
 
                 //execute the batch file

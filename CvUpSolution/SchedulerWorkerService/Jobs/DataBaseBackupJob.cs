@@ -10,7 +10,7 @@ namespace SchedulerWorkerService.Jobs
     {
         public Task Execute(IJobExecutionContext context)
         {
-            EventViewerWriter.ErrorMessage($"DataBaseBackupJob executing at: {DateTimeOffset.Now}");
+            EventViewerWriter.InfoMessage($"DataBaseBackupJob executing at: {DateTimeOffset.Now}");
             logger.LogInformation("DataBaseBackupJob executing at: {time}", DateTimeOffset.Now);
 
             try

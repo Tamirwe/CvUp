@@ -10,7 +10,7 @@ namespace SchedulerWorkerService.Jobs
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            EventViewerWriter.ErrorMessage($"CountCvsSendToPositionJob executing at: {DateTimeOffset.Now}");
+            EventViewerWriter.InfoMessage($"CountCvsSendToPositionJob executing at: {DateTimeOffset.Now}");
             logger.LogInformation("CountCvsSendToPositionJob executing at: {time}", DateTimeOffset.Now);
 
             try

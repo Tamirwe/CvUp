@@ -24,7 +24,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
         }
 
         // Build a clean searchable string from the analyzed CV
-        public static string BuildEmbedText(EmbedCvDataModel cv) =>
+        public static string BuildEmbedText(AnalyzedCvsForEmbeedingModel cv) =>
             string.Join(" ",
                 cv.Location ?? "",
                 cv.Region ?? "",

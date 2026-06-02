@@ -28,12 +28,12 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
         public async Task EmbedAnalyzedCvs()
         {
-            List<EmbedCvDataModel> allCandidatesLastCvList = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
+            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeeding = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
             //var store = new StoreService(_openAiEmbedderService);
 
             await _storeService.EnsureCollectionAsync();
-            await _storeService.UpsertBatchAsync(allCandidatesLastCvList);
-            await _candsCvsQueries.UpdateIsEmbeddedBatch(allCandidatesLastCvList);
+            await _storeService.UpsertBatchAsync(analyzedCvsForEmbeeding);
+            await _candsCvsQueries.UpdateIsEmbeddedBatch(analyzedCvsForEmbeeding);
 
             Console.WriteLine($"[✓] Batch upserted candidates.");
         }

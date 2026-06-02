@@ -1,95 +1,83 @@
-﻿using DataModelsLibrary.Models;
+﻿using CvAnalyzeEmbedOpenAiLibrary;
+using CvAnalyzeEmbedOpenAiLibrary.Models;
+using Database.models;
+using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using Microsoft.Extensions.Configuration;
+using GL = GeneralLibrary;
 
 namespace PgVectorLibrary
 {
     public class AnalyzeCvsService: IAnalyzeCvsService
     {
 
-        private ICandsCvsQueries _candsCvsQueries;
+        private readonly ICandsCvsQueries _candsCvsQueries;
+        private readonly IAnalyzeCvOpenAi _analyzeCVOpenAi;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries,  int companyId = 154)
+        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, IAnalyzeCvOpenAi analyzeCVOpenAi,  int companyId = 154)
         {
 
             _candsCvsQueries = candsCvsQueries;
+            _analyzeCVOpenAi = analyzeCVOpenAi;
             _companyId = companyId;
         }
 
-        //public async Task AnalyzeCandidatesLastCv()
-        //{
-        //    List<CandCvTxtModel> candsLastCvList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+        public async Task AnalyzeCandidatesLastCv()
+        {
+            List<CandCvTxtModel> candsLastCvList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
 
-        //    string? json;
+            foreach (var candCv in candsLastCvList)
+            {
+                try
+                {
+                    AnalyzedCvModel? analyzedCv = await _analyzeCVOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.id, candCv.cvTxt);
+                    await SaveAnalyzedCv(analyzedCv);
 
-        //    foreach (var candCv in candsLastCvList)
-        //    {
-        //        json = null;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"  problem: {ex.Message}");
+                    //throw ex;
+                }
+            }
+        }
 
-        //        try
-        //        {
-        //            if (string.IsNullOrWhiteSpace(candCv.cvTxt))
-        //            {
-        //                continue;
-        //            }
+        private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
+        {
+            if (analyzedCv == null)
+            {
+                return;
+            }
 
-        //            var cvLanguage = CleanString.DetectStringLanguage(candCv.cvTxt);
+            ai_analyze_cv analyzeCv = new ai_analyze_cv();
+            analyzeCv.candidate_id = analyzedCv.CandidateId;
+            analyzeCv.cv_id = analyzedCv.CvId;
+            analyzeCv.name = GL.UtilsStr.limitLen(analyzedCv.Name, 101);
+            analyzeCv.estimate_age = analyzedCv.EstimateAge;
+            analyzeCv.email = GL.UtilsStr.limitLen(analyzedCv.Email, 150);
+            analyzeCv.phone = GL.UtilsStr.limitLen(analyzedCv.Phone, 20);
+            analyzeCv.city = GL.UtilsStr.limitLen(analyzedCv.CityHe, 50);
+            analyzeCv.region = GL.UtilsStr.limitLen(analyzedCv.Region, 20);
+            analyzeCv.area = GL.UtilsStr.limitLen(analyzedCv.Area, 20);
+            analyzeCv.languages = GL.UtilsStr.limitLen(analyzedCv.Languages, 150);
+            analyzeCv.jobs_titles_en = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.JobsTitlesEn), 500);
+            analyzeCv.jobs_titles_he = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.JobsTitlesHe), 500);
+            analyzeCv.profession_words_en = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionWordsEn), 500);
+            analyzeCv.profession_words_he = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionWordsHe), 500);
+            analyzeCv.profession_skills_en = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionSkillsEn), 500);
+            analyzeCv.profession_skills_he = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionSkillsHe), 500);
+            analyzeCv.seniority = GL.UtilsStr.limitLen(analyzedCv.Seniority, 50);
+            analyzeCv.education = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Education), 500);
+            analyzeCv.companies = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Companies), 500);
+            analyzeCv.skills = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Skills), 600);
+            analyzeCv.military_service = GL.UtilsStr.limitLen(analyzedCv.MilitaryService, 250);
+            analyzeCv.summary_en = GL.UtilsStr.limitLen(analyzedCv.SummaryEn, 1000);
+            analyzeCv.summary_he = GL.UtilsStr.limitLen(analyzedCv.SummaryHe, 1000);
+            analyzeCv.years_experience = analyzedCv.YearsExperience;
 
-        //            string textCv = CleanString.RemovePunctuationAndNormelizeHebrew(candCv.cvTxt, cvLanguage);
+            await _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
+        }
 
-        //            var messages = new List<ChatMessage>
-        //            {
-        //                new SystemChatMessage(promptForCvAnalyze),
-        //                new UserChatMessage(textCv)
-        //            };
-
-        //            var chatOptions = new ChatCompletionOptions
-        //            {
-        //                Temperature = 0.2f,
-        //                ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
-        //            };
-
-        //            var completion = await chatClient.CompleteChatAsync(messages, chatOptions);
-
-        //            json = completion.Value.Content[0].Text;
-
-        //            AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
-
-        //            (List<string>, List<string>, List<string>) JobsTitles = splitWorkExperience(AnalyzedCv.WorkExperience);
-        //            (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.ProfessionWords);
-        //            (List<string>, List<string>) professionSkillsHeEn = splitHeEnList(AnalyzedCv.ProfessionSkills);
-
-        //            AnalyzedCv.Companies = JobsTitles.Item1;
-        //            AnalyzedCv.JobsTitlesHe = JobsTitles.Item2;
-        //            AnalyzedCv.JobsTitlesEn = JobsTitles.Item3;
-        //            AnalyzedCv.professionWordsHe = professionWordsHeEn.Item1;
-        //            AnalyzedCv.professionWordsEn = professionWordsHeEn.Item2;
-        //            AnalyzedCv.professionSkillsHe = professionSkillsHeEn.Item1;
-        //            AnalyzedCv.professionSkillsEn = professionSkillsHeEn.Item2;
-
-        //            AnalyzedCv.CvLanguage = cvLanguage;
-        //            AnalyzedCv.CandidateId = candCv.candidateId;
-        //            AnalyzedCv.CvId = candCv.id;
-
-        //            (string?, string?) areaRegion = FindAreaRegion(AnalyzedCv.CityHe);
-
-        //            if (areaRegion.Item1 != null)
-        //            {
-        //                AnalyzedCv.Region = areaRegion.Item1;
-        //                AnalyzedCv.Area = areaRegion.Item2;
-        //            }
-
-        //            await SaveAnalyzedCv(AnalyzedCv);
-
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine($"  problem: {ex.Message}");
-        //            Console.WriteLine($" json {json[..Math.Min(200, json.Length)]}");
-        //            //throw ex;
-        //        }
-        //    }
-        //}
+      
     }
 }

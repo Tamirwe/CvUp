@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CvAnalyzeEmbedOpenAiLibrary\CvAnalyzeEmbedOpenAiLibrary.csproj" />
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
   </ItemGroup>

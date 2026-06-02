@@ -1,6 +1,7 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
+using System.Numerics;
 
 namespace CvAnalyzeEmbedOpenAiLibrary
 {
@@ -18,7 +19,8 @@ namespace CvAnalyzeEmbedOpenAiLibrary
         public async Task<float[]> EmbedCv(string text)
         {
             var result = await _client.GenerateEmbeddingAsync(text);
-            return result.Value.ToFloats().ToArray();
+            float[] vector =  result.Value.ToFloats().ToArray();
+            return vector;
         }
 
         public static string BuildTextForEmbedding(EmbedCvModel cv) =>

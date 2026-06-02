@@ -126,7 +126,7 @@ namespace DataModelsLibrary.Models
         public int? cvs_count { get; set; }
     }
 
-    public class EmbedCvDataModel
+    public class AnalyzedCvsForEmbeedingModel
     {
         public int CandidateId { get; set; }
         public int CvId { get; set; }
@@ -138,15 +138,15 @@ namespace DataModelsLibrary.Models
         public string? Region { get; set; }
         public string? Area { get; set; }
         public string? Languages { get; set; }
-        public List<string> JobsTitlesEn { get; set; } = [];
-        public List<string> JobsTitlesHe { get; set; } = [];
-        public List<string> ProfessionWordsEn { get; set; } = [];
-        public List<string> ProfessionWordsHe { get; set; } = [];
-        public List<string> ProfessionSkillsEn { get; set; } = [];
-        public List<string> ProfessionSkillsHe { get; set; } = [];
+        public List<string>? JobsTitlesEn { get; set; } = [];
+        public List<string>? JobsTitlesHe { get; set; } = [];
+        public List<string>? ProfessionWordsEn { get; set; } = [];
+        public List<string>? ProfessionWordsHe { get; set; } = [];
+        public List<string>? ProfessionSkillsEn { get; set; } = [];
+        public List<string>? ProfessionSkillsHe { get; set; } = [];
         public string? Seniority { get; set; }
         public string? Education { get; set; }
-        public List<string> Companies { get; set; } = [];
+        public List<string>? Companies { get; set; } = [];
         public List<string>? Skills { get; set; } = [];
         public string? MilitaryService { get; set; }
         public string SummaryEn { get; set; } = "";

@@ -2,28 +2,30 @@
 using FuzzySharp;
 using GeneralLibrary;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using OpenAI;
 using OpenAI.Chat;
 
 namespace CvAnalyzeEmbedOpenAiLibrary
 {
-    public class AnalyzeCVOpenAi : IAnalyzeCVOpenAi
+    public class AnalyzeCvOpenAi : IAnalyzeCvOpenAi
     {
 
         private OpenAIClient client;
         private ChatClient chatClient;
 
-        private List<IsraeliCitiesModel>? citiesRegion;
+        private List<IsraeliCitiesModel>? _citiesRegion;
         private string promptForCvAnalyze = "";
-        private readonly int _companyId;
 
-        public AnalyzeCVOpenAi( IConfiguration configuration)
+        public AnalyzeCvOpenAi( IConfiguration configuration)
         {
             var apiKey = configuration["API_KEY"];
 
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");
-            promptForCvAnalyze = File.ReadAllText("AnalyzeCvsAI\\cv_prompt.txt");
+            promptForCvAnalyze = File.ReadAllText("cv_prompt.txt");
+            string israeliCitiesString =  File.ReadAllText("israeliCities.json");
+            _citiesRegion = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(israeliCitiesString)!;
         }
 
         public async Task<AnalyzedCvModel?> AiAnalyzeCv(int candId, int cvId, string? cvText)
@@ -168,17 +170,17 @@ namespace CvAnalyzeEmbedOpenAiLibrary
         {
             string? area = null, region = null;
 
-            if (!string.IsNullOrWhiteSpace(location))
+            if (!string.IsNullOrWhiteSpace(location) && _citiesRegion != null)
             {
                 location = location.Replace("קיבוץ", "").Replace("קריית", "קרית").Trim();
                 location = location.Contains("תל אביב") ? "תל אביב - יפו" : location;
 
-
-                IsraeliCitiesModel? locationRecord = citiesRegion.FirstOrDefault(x => x.city == location);
+                
+                IsraeliCitiesModel? locationRecord = _citiesRegion.FirstOrDefault(x => x.city == location);
 
                 if (locationRecord == null)
                 {
-                    locationRecord = citiesRegion.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
+                    locationRecord = _citiesRegion.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
                 }
 
                 if (locationRecord != null)

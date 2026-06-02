@@ -10,7 +10,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
     public interface IStoreService
     {
         Task EnsureCollectionAsync();
-        Task UpsertAsync(Guid id, EmbedCvDataModel cv);
-        Task UpsertBatchAsync(List<EmbedCvDataModel> cvs);
+        Task UpsertAsync(Guid id, AnalyzedCvsForEmbeedingModel cv);
+        Task UpsertBatchAsync(List<AnalyzedCvsForEmbeedingModel> cvs);
     }
 }

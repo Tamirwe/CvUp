@@ -39,9 +39,9 @@ namespace DataModelsLibrary.Queries
                                 FROM cvs_txt ctx
                                 WHERE ctx.cv_id IN ( SELECT cv_id FROM (SELECT cands.last_cv_id cv_id
 		                                FROM candidates cands 
-		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
+		                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = false
 		                                ORDER BY cands.id DESC 
-		                                LIMIT  40) AS tbl)";
+		                                LIMIT  3) AS tbl)";
 
                 //WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = 0
                 //WHERE cands.id = 392780
@@ -95,7 +95,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateIsEmbeddedBatch(List<EmbedCvDataModel> cvs)
+        public async Task UpdateIsEmbeddedBatch(List<AnalyzedCvsForEmbeedingModel> cvs)
         {
             using (var dbContext = new cvupdbContext())
             {
@@ -115,13 +115,13 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<EmbedCvDataModel>> GetAnalyzedCvsForEmbeeding()
+        public async Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding()
         {
             using (var dbContext = new cvupdbContext())
             {
                 var query = from ai in dbContext.ai_analyze_cvs
                             where ai.is_embedded == false
-                            select new EmbedCvDataModel
+                            select new AnalyzedCvsForEmbeedingModel
                             {
                                 CandidateId = ai.candidate_id,
                                 CvId = ai.cv_id,
@@ -149,7 +149,7 @@ namespace DataModelsLibrary.Queries
                                 YearsExperience = ai.years_experience,
                             };
 
-                List<EmbedCvDataModel> dataForEmbeeding = await query.Take(300).ToListAsync();
+                List<AnalyzedCvsForEmbeedingModel> dataForEmbeeding = await query.Take(300).ToListAsync();
                 return dataForEmbeeding;
             }
         }

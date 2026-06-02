@@ -4,7 +4,7 @@ using CvAnalyzeEmbedOpenAiLibrary.Models;
 
 namespace CvAnalyzeEmbedOpenAiLibrary
 {
-    internal interface IAnalyzeCVOpenAi
+    public interface IAnalyzeCvOpenAi
     {
         Task<AnalyzedCvModel?> AiAnalyzeCv(int candId, int cvId, string? cvText);
     }

@@ -5,9 +5,9 @@
  
  1) *** create new windows service ****
  --------------------------------------
-	 1. publish this project to folder C:\github\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net9.0\
+	 1. publish this project to folder C:\github\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net10.0\
 	 2. open Command Prompt (in administration mode) and run the following command
-	 3. sc.exe create "a Cvs Scheduler Service" binPath="C:\gitHub\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net9.0\publish\SchedulerWorkerService.exe"
+	 3. sc.exe create "a Cvs Scheduler Service" binPath="C:\gitHub\CvUp\CvUpSolution\SchedulerWorkerService\bin\Release\net10.0\publish\SchedulerWorkerService.exe"
  
 
  2) *** update service ***

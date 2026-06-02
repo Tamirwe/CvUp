@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CvAnalyzeEmbedOpenAiLibrary.Models
 {
-    public class EmbedCvModel
+    public class EmbedCvModel111
     {
         public int CandidateId { get; set; }
         public int CvId { get; set; }
@@ -32,3 +32,5 @@ namespace CvAnalyzeEmbedOpenAiLibrary.Models
         public int? YearsExperience { get; set; }
     }
 }
+
+

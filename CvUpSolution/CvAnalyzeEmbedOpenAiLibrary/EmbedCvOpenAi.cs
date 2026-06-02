@@ -1,4 +1,5 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary.Models;
+using DataModelsLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
 using System.Numerics;
@@ -16,33 +17,36 @@ namespace CvAnalyzeEmbedOpenAiLibrary
             _client = new EmbeddingClient(_embeddingModel, apiKey);
         }
 
-        public async Task<float[]> EmbedCv(string text)
+        public async Task<float[]> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv)
         {
+            var text = BuildTextForEmbedding(analyzeCv);
             var result = await _client.GenerateEmbeddingAsync(text);
             float[] vector =  result.Value.ToFloats().ToArray();
             return vector;
         }
 
-        public static string BuildTextForEmbedding(EmbedCvModel cv) =>
+        private static string BuildTextForEmbedding(AnalyzedCvsForEmbeedingModel analyzeCv) =>
            string.Join(" ",
-               cv.Location ?? "",
-               cv.Region ?? "",
-               cv.Area ?? "",
-               cv.JobsTitlesEn != null ? string.Join(" ", cv.JobsTitlesEn) : "",
-               cv.JobsTitlesHe != null ? string.Join(" ", cv.JobsTitlesHe) : "",
-               cv.ProfessionWordsEn != null ? string.Join(" ", cv.ProfessionWordsEn) : "",
-               cv.ProfessionWordsHe != null ? string.Join(" ", cv.ProfessionWordsHe) : "",
-               cv.ProfessionSkillsEn != null ? string.Join(" ", cv.ProfessionSkillsEn) : "",
-               cv.ProfessionSkillsHe != null ? string.Join(" ", cv.ProfessionSkillsHe) : "",
-               cv.Seniority ?? "",
-               cv.Education ?? "",
-               cv.Companies != null ? string.Join(" ", cv.Companies) : "",
-               cv.Skills != null ? string.Join(" ", cv.Skills) : "",
-               cv.MilitaryService ?? "",
-               cv.SummaryEn ?? "",
-               cv.SummaryHe ?? "",
-               cv.YearsExperience > 0 ? $"{cv.YearsExperience} years" : ""
+               analyzeCv.Location ?? "",
+               analyzeCv.Region ?? "",
+               analyzeCv.Area ?? "",
+               analyzeCv.JobsTitlesEn != null ? string.Join(" ", analyzeCv.JobsTitlesEn) : "",
+               analyzeCv.JobsTitlesHe != null ? string.Join(" ", analyzeCv.JobsTitlesHe) : "",
+               analyzeCv.ProfessionWordsEn != null ? string.Join(" ", analyzeCv.ProfessionWordsEn) : "",
+               analyzeCv.ProfessionWordsHe != null ? string.Join(" ", analyzeCv.ProfessionWordsHe) : "",
+               analyzeCv.ProfessionSkillsEn != null ? string.Join(" ", analyzeCv.ProfessionSkillsEn) : "",
+               analyzeCv.ProfessionSkillsHe != null ? string.Join(" ", analyzeCv.ProfessionSkillsHe) : "",
+               analyzeCv.Seniority ?? "",
+               analyzeCv.Education ?? "",
+               analyzeCv.Companies != null ? string.Join(" ", analyzeCv.Companies) : "",
+               analyzeCv.Skills != null ? string.Join(" ", analyzeCv.Skills) : "",
+               analyzeCv.MilitaryService ?? "",
+               analyzeCv.SummaryEn ?? "",
+               analyzeCv.SummaryHe ?? "",
+               analyzeCv.YearsExperience > 0 ? $"{analyzeCv.YearsExperience} years" : ""
            ).Trim();
-    
+
+       
+
     }
 }

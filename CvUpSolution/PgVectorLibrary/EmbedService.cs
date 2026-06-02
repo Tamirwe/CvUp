@@ -1,4 +1,5 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary;
+using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using System;
@@ -25,6 +26,19 @@ namespace PgVectorLibrary
         {
             List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
 
+            foreach (var analyzeCv in analyzedCvsForEmbeedingList)
+            {
+                if (string.IsNullOrEmpty(analyzeCv.SummaryHe) && string.IsNullOrEmpty(analyzeCv.SummaryEn))
+                {
+                    continue;
+                }
+
+
+                var vector = await _embedCvOpenAi.EmbedCv(analyzeCv);
+
+                
+
+            }
         }
     }
 }

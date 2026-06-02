@@ -115,24 +115,24 @@ builder.Services.AddQuartz(q =>
         .WithCronSchedule("0 0 1-4 ? * *"));
 
 
-    // --- Job 4: AI Analyze New Cvs    ---
-    var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+    //// --- Job 4: AI Analyze New Cvs    ---
+    //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
 
-    q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
-       .WithIdentity(aiAnalyzeNewCvs)
-       .WithDescription("AI Analyze New Cvs"));
+    //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+    //   .WithIdentity(aiAnalyzeNewCvs)
+    //   .WithDescription("AI Analyze New Cvs"));
 
-    // Every minute between 7AM-11PM, Sunday to Friday
-    q.AddTrigger(opts => opts
-        .ForJob(aiAnalyzeNewCvs)
-        .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
-        .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+    //// Every minute between 7AM-11PM, Sunday to Friday
+    //q.AddTrigger(opts => opts
+    //    .ForJob(aiAnalyzeNewCvs)
+    //    .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
+    //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
 
-    // Every 2 minutes between 7AM-11PM, Saturday
-    q.AddTrigger(opts => opts
-        .ForJob(aiAnalyzeNewCvs)
-        .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
-        .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+    //// Every 2 minutes between 7AM-11PM, Saturday
+    //q.AddTrigger(opts => opts
+    //    .ForJob(aiAnalyzeNewCvs)
+    //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
+    //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 });
 
 EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");

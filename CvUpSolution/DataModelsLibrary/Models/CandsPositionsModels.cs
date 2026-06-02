@@ -1,13 +1,4 @@
-﻿using Database.models;
-using EmailsLibrary.Models;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace DataModelsLibrary.Models
 {
@@ -293,27 +284,6 @@ namespace DataModelsLibrary.Models
         public DateTime? newDate { get; set; }
     }
 
-    public class SendEmailModel
-    {
-        public int companyId { get; set; }
-        public int userId { get; set; }
-        public int? candidateId { get; set; }
-        public int cvId { get; set; }
-        public int? positionId { get; set; }
-        public List<EmailAddress>? toAddresses { get; set; }
-        public string? subject { get; set; } = "";
-        public string? body { get; set; } = "";
-        public List<EmailCvAttachmentModel>? attachCvs { get; set; }
-
-        //public int? candId { get; set; }
-        //public int? cvId { get; set; }
-        //public int? positionId { get; set; } = 0;
-        //public string? positionName { get; set; } = string.Empty;
-        //public string? customerName { get; set; } = string.Empty;
-        //public int? customerId { get; set; } = 0;
-
-    }
-
     public class EmailTemplateModel
     {
         public int? companyId { get; set; }
@@ -348,12 +318,6 @@ namespace DataModelsLibrary.Models
         public string value_type { get; set; } = "";
         public int order { get; set; }
         public bool must_metch { get; set; }
-    }
-
-    public class EmailCvAttachmentModel
-    {
-        public string cvKey { get; set; } = string.Empty;
-        public string name { get; set; } = string.Empty;
     }
 
     public class CvFileDetailsModel

@@ -1,11 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace EmailsLibrary.Models
+namespace DataModelsLibrary.Models
 {
+    public class SendEmailModel
+    {
+        public int companyId { get; set; }
+        public int userId { get; set; }
+        public int? candidateId { get; set; }
+        public int cvId { get; set; }
+        public int? positionId { get; set; }
+        public List<EmailAddress>? toAddresses { get; set; }
+        public string? subject { get; set; } = "";
+        public string? body { get; set; } = "";
+        public List<EmailCvAttachmentModel>? attachCvs { get; set; }
+
+        //public int? candId { get; set; }
+        //public int? cvId { get; set; }
+        //public int? positionId { get; set; } = 0;
+        //public string? positionName { get; set; } = string.Empty;
+        //public string? customerName { get; set; } = string.Empty;
+        //public int? customerId { get; set; } = 0;
+
+    }
+
+    public class EmailCvAttachmentModel
+    {
+        public string cvKey { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+    }
+
     public class EmailAddress
     {
         public string Name { get; set; } = string.Empty;
@@ -39,5 +64,5 @@ namespace EmailsLibrary.Models
         public string fromAddress { get; set; } = string.Empty;
     }
 
-   
+
 }

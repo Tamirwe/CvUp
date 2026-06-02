@@ -1,4 +1,5 @@
-﻿using EmailsLibrary.Models;
+﻿
+using DataModelsLibrary.Models;
 
 namespace EmailsLibrary
 {

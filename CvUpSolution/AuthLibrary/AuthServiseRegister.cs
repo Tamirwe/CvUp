@@ -1,9 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
-using EmailsLibrary.Models;
-using System.ComponentModel.Design;
-using System.Transactions;
 
 namespace AuthLibrary
 {

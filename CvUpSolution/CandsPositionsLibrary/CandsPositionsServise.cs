@@ -3,11 +3,7 @@ using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
-using EmailsLibrary.Models;
 using LuceneLibrary;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.ComponentModel.Design;
 
 namespace CandsPositionsLibrary
 {

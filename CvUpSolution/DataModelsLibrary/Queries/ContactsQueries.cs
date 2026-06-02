@@ -1,12 +1,6 @@
 ﻿using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataModelsLibrary.Queries
 {

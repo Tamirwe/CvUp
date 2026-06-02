@@ -1,7 +1,6 @@
 using CandsPositionsLibrary;
 using DataModelsLibrary.Models;
 using ImportCvsLibrary;
-using MailKit;
 using System.Diagnostics;
 
 namespace CvsWorkerService

@@ -33,18 +33,6 @@ namespace DataModelsLibrary.Models
         public int? candsCount { get; set; } = 0;
     }
 
-    //public class PositionClientModel
-    //{
-    //    public int id { get; set; } = 0;
-    //    public int companyId { get; set; } = 0;
-    //    public string name { get; set; } = string.Empty;
-    //    public string descr { get; set; } = string.Empty;
-    //    public string status { get; set; } = string.Empty;
-    //    public int customerId { get; set; } = 0;
-    //    public int[] contactsIds { get; set; } = new int[] { };
-    //    public int[] interviewersIds { get; set; } = new int[] { };
-    //}
-
     public class TranslateModel
     {
         public string? txt { get; set; }
@@ -86,37 +74,6 @@ namespace DataModelsLibrary.Models
         public DateTime? created { get; set; }
     }
 
-    public class FuturesOhlcModel
-    {
-        public int id { get; set; } = 0;
-        public DateTime statisticDate { get; set; }
-        public int open { get; set; }
-        public int high { get; set; }
-        public int low { get; set; }
-        public int close { get; set; }
-        public int dayPoints { get; set; }
-
-    }
-
-    public class FuturesStatisticsModel
-    {
-        public int id { get; set; } = 0;
-        public string name { get; set; } = string.Empty;
-        public float? value { get; set; } = 0;
-        public string descr { get; set; } = string.Empty;
-        public DateTime updateDate { get; set; }
-    }
-
-    public class ModuleGenerateRequestModel
-    {
-        public string name { get; set; } = string.Empty;
-    }
-
-    public class ModuleGenerateResponseModel
-    {
-        public string path { get; set; } = string.Empty;
-    }
-
     public class blackCandModel
     {
         public int id { get; set; }
@@ -126,33 +83,7 @@ namespace DataModelsLibrary.Models
         public int? cvs_count { get; set; }
     }
 
-    public class AnalyzedCvsForEmbeedingModel
-    {
-        public int CandidateId { get; set; }
-        public int CvId { get; set; }
-        public string? Name { get; set; }
-        public int? EstimateAge { get; set; }
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
-        public string? Location { get; set; }
-        public string? Region { get; set; }
-        public string? Area { get; set; }
-        public string? Languages { get; set; }
-        public List<string>? JobsTitlesEn { get; set; } = [];
-        public List<string>? JobsTitlesHe { get; set; } = [];
-        public List<string>? ProfessionWordsEn { get; set; } = [];
-        public List<string>? ProfessionWordsHe { get; set; } = [];
-        public List<string>? ProfessionSkillsEn { get; set; } = [];
-        public List<string>? ProfessionSkillsHe { get; set; } = [];
-        public string? Seniority { get; set; }
-        public string? Education { get; set; }
-        public List<string>? Companies { get; set; } = [];
-        public List<string>? Skills { get; set; } = [];
-        public string? MilitaryService { get; set; }
-        public string SummaryEn { get; set; } = "";
-        public string SummaryHe { get; set; } = "";
-        public int? YearsExperience { get; set; }
-    }
+   
 
     public class AiSearchResultModel
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAiLibrary.Models
 {
-    public class AnalyzedCvModel
+    public class AnalyzedCvModelOLD
     {
         [JsonProperty("name")] public string? Name { get; set; }
         [JsonProperty("estimate_age")] public int? EstimateAge { get; set; }

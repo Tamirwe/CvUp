@@ -1,19 +1,12 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using OpenAiLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace OpenAiLibrary.AnalyzeCvsAI
 {
 
     internal static class ParseAiResult
     {
-        public static AnalyzedCvModel ParseResult(string json)
+        public static AnalyzedCvModelOLD ParseResult(string json)
         {
             // Strip markdown fences if the model returns them anyway
             json = json
@@ -35,7 +28,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                 var obj = JObject.Parse(json);
 
-                return new AnalyzedCvModel
+                return new AnalyzedCvModelOLD
                 {
                     Name = obj.Value<string>("name"),
                     EstimateAge = myParseInt(obj.Value<string>("estimate_age")),

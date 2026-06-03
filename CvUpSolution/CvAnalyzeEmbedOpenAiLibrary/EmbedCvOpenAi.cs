@@ -1,5 +1,4 @@
-﻿using CvAnalyzeEmbedOpenAiLibrary.Models;
-using DataModelsLibrary.Models;
+﻿using DataModelsLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
 using System.Numerics;

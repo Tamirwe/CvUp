@@ -84,7 +84,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                     json = completion.Value.Content[0].Text;
 
-                    AnalyzedCvModel AnalyzedCv = ParseAiResult.ParseResult(json);
+                    AnalyzedCvModelOLD AnalyzedCv = ParseAiResult.ParseResult(json);
 
                     (List<string>, List<string>, List<string>) JobsTitles = splitWorkExperience(AnalyzedCv.WorkExperience);
                     (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.ProfessionWords);
@@ -213,7 +213,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             return null;
         }
 
-        private async Task SaveAnalyzedCv(AnalyzedCvModel analyzedCvResult)
+        private async Task SaveAnalyzedCv(AnalyzedCvModelOLD analyzedCvResult)
         {
             ai_analyze_cv analyzeCv = new ai_analyze_cv();
             analyzeCv.candidate_id = analyzedCvResult.CandidateId;

@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CvAnalyzeEmbedOpenAiLibrary.Models
+namespace GeneralLibrary.IsraelCities
 {
     public class IsraeliCitiesModel
     {
@@ -8,5 +11,4 @@ namespace CvAnalyzeEmbedOpenAiLibrary.Models
         [JsonProperty("region")] public required string region { get; set; }
         [JsonProperty("area")] public required string area { get; set; }
     }
-
 }

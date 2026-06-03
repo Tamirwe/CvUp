@@ -1,6 +1,6 @@
 ﻿
 
-using CvAnalyzeEmbedOpenAiLibrary.Models;
+using DataModelsLibrary.Models;
 
 namespace CvAnalyzeEmbedOpenAiLibrary
 {

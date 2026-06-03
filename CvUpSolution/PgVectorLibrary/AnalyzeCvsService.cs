@@ -1,5 +1,4 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary;
-using CvAnalyzeEmbedOpenAiLibrary.Models;
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
@@ -11,14 +10,14 @@ namespace PgVectorLibrary
     {
 
         private readonly ICandsCvsQueries _candsCvsQueries;
-        private readonly IAnalyzeCvOpenAi _analyzeCVOpenAi;
+        private readonly IAnalyzeCvOpenAi _analyzeCvOpenAi;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, IAnalyzeCvOpenAi analyzeCVOpenAi,  int companyId = 154)
+        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, IAnalyzeCvOpenAi analyzeCvOpenAi,  int companyId = 154)
         {
 
             _candsCvsQueries = candsCvsQueries;
-            _analyzeCVOpenAi = analyzeCVOpenAi;
+            _analyzeCvOpenAi = analyzeCvOpenAi;
             _companyId = companyId;
         }
 
@@ -30,7 +29,7 @@ namespace PgVectorLibrary
             {
                 try
                 {
-                    AnalyzedCvModel? analyzedCv = await _analyzeCVOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.id, candCv.cvTxt);
+                    AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.id, candCv.cvTxt);
                     await SaveAnalyzedCv(analyzedCv);
 
                 }

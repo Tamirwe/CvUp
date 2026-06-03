@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Database.models
+namespace Database.models;
+
+public partial class customer
 {
-    public partial class customer
-    {
-        public customer()
-        {
-            contacts = new HashSet<contact>();
-            positions = new HashSet<position>();
-        }
+    public int id { get; set; }
 
-        public int id { get; set; }
-        public string name { get; set; } = null!;
-        public int company_id { get; set; }
-        public DateTime? date_created { get; set; }
-        public string? address { get; set; }
-        public string? descr { get; set; }
-        public int? cvdbid { get; set; }
+    public string name { get; set; } = null!;
 
-        public virtual company company { get; set; } = null!;
-        public virtual ICollection<contact> contacts { get; set; }
-        public virtual ICollection<position> positions { get; set; }
-    }
+    public int company_id { get; set; }
+
+    public DateTime? date_created { get; set; }
+
+    public string? address { get; set; }
+
+    public string? descr { get; set; }
+
+    public int? cvdbid { get; set; }
+
+    public virtual company company { get; set; } = null!;
+
+    public virtual ICollection<contact> contacts { get; set; } = new List<contact>();
+
+    public virtual ICollection<position> positions { get; set; } = new List<position>();
 }

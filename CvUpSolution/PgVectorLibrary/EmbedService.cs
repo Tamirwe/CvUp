@@ -1,30 +1,25 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary;
-using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PgVectorLibrary
 {
     public class EmbedService : IEmbedService
     {
-        private readonly ICandsCvsQueries _candsCvsQueries;
         private readonly IEmbedCvOpenAi _embedCvOpenAi;
+        private readonly IAiQueries _aiQueries;
         private readonly int _companyId;
 
-        public EmbedService(ICandsCvsQueries candsCvsQueries, IEmbedCvOpenAi embedCvOpenAi, int companyId = 154)
+        public EmbedService(IEmbedCvOpenAi embedCvOpenAi, IAiQueries aiQueries, int companyId = 154)
         {
-
-            _candsCvsQueries = candsCvsQueries;
             _embedCvOpenAi = embedCvOpenAi;
+            _aiQueries = aiQueries;
             _companyId = companyId;
         }
 
         public async Task EmbedAnalyzeCvs()
         {
-            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _candsCvsQueries.GetAnalyzedCvsForEmbeeding();
+            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding();
 
             foreach (var analyzeCv in analyzedCvsForEmbeedingList)
             {
@@ -33,11 +28,8 @@ namespace PgVectorLibrary
                     continue;
                 }
 
-
-                var vector = await _embedCvOpenAi.EmbedCv(analyzeCv);
-
-                
-
+                float[] vector = await _embedCvOpenAi.EmbedCv(analyzeCv);
+                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, vector);
             }
         }
     }

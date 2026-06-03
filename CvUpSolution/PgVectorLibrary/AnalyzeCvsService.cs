@@ -9,21 +9,20 @@ namespace PgVectorLibrary
     public class AnalyzeCvsService: IAnalyzeCvsService
     {
 
-        private readonly ICandsCvsQueries _candsCvsQueries;
+        private readonly IAiQueries _aiQueries;
         private readonly IAnalyzeCvOpenAi _analyzeCvOpenAi;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(ICandsCvsQueries candsCvsQueries, IAnalyzeCvOpenAi analyzeCvOpenAi,  int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, int companyId = 154)
         {
-
-            _candsCvsQueries = candsCvsQueries;
+            _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
             _companyId = companyId;
         }
 
         public async Task AnalyzeCandidatesLastCv()
         {
-            List<CandCvTxtModel> candsLastCvList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+            List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId);
 
             foreach (var candCv in candsLastCvList)
             {
@@ -74,7 +73,7 @@ namespace PgVectorLibrary
             analyzeCv.summary_he = GL.UtilsStr.limitLen(analyzedCv.SummaryHe, 1000);
             analyzeCv.years_experience = analyzedCv.YearsExperience;
 
-            await _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
+            await _aiQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
 
       

@@ -205,10 +205,9 @@ namespace CvAnalyzeEmbedOpenAiLibrary
             {
                 var splitArr = item.Split("::");
 
-                companies.Add(splitArr[0].Trim());
-                jobsTitlesEn.Add(splitArr[1].Trim());
-                jobsTitlesHe.Add(splitArr[2].Trim());
-
+                companies.Add(splitArr.Length > 0 ? splitArr[0].Trim() : "");
+                jobsTitlesEn.Add(splitArr.Length > 1 ? splitArr[1].Trim() : "");
+                jobsTitlesHe.Add(splitArr.Length > 2 ? splitArr[2].Trim() : "");
             }
 
             return (companies, jobsTitlesEn, jobsTitlesHe);

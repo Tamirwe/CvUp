@@ -10,16 +10,9 @@ namespace DataModelsLibrary.Queries
         public async Task UpdateCvEmbedding(int candidateId, float[] embedding)
         {
             using var dbContext = new cvupdbContext();
-
-            ai_analyze_cv? record = await dbContext.ai_analyze_cvs
-                .FirstOrDefaultAsync(x => x.candidate_id == candidateId);
-
-            if (record != null)
-            {
-                record.embedding = new Vector(embedding);
-                record.is_embedded = true;
-                await dbContext.SaveChangesAsync();
-            }
+            var vectorLiteral = new Vector(embedding).ToString();
+            await dbContext.Database.ExecuteSqlRawAsync(
+                $"UPDATE ai_analyze_cvs SET embedding = '{vectorLiteral}', is_embedded = true WHERE candidate_id = {candidateId}");
         }
 
         public async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0)
@@ -33,7 +26,7 @@ namespace DataModelsLibrary.Queries
 	                                FROM candidates cands
 	                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = false
 	                                ORDER BY cands.id DESC
-	                                LIMIT  3) AS tbl)";
+	                                LIMIT  20) AS tbl)";
 
             return await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
         }

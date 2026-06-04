@@ -44,20 +44,89 @@ namespace LuceneLibrary
             //_luceneIndexesRootFolder = config["GlobalSettings:LuceneIndexesRootFolder"];
         }
 
+        public async Task<List<SearchEntry>> FuzzySearch(int companyId, searchCandCvModel searchVals, int maxEdits = 2)
+        {
+            using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
+            using var indexReader = DirectoryReader.Open(indexDirectory);
+            var indexSearcher = new IndexSearcher(indexReader);
+
+            var tokens = searchVals.value.Trim().ToLowerInvariant()
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToArray();
+
+            // Per token: SHOULD between FuzzyQuery (typos) and WildcardQuery (partial/prefix input).
+            // All tokens are MUST in the outer query so every word must match somehow.
+            Query BuildTokenQuery(string token)
+            {
+                var q = new BooleanQuery();
+                q.Add(new FuzzyQuery(new Term("CV", token), maxEdits), Occur.SHOULD);
+                q.Add(new WildcardQuery(new Term("CV", token + "*")), Occur.SHOULD);
+                return q;
+            }
+
+            Query query;
+            if (tokens.Length == 1)
+            {
+                query = BuildTokenQuery(tokens[0]);
+            }
+            else
+            {
+                var boolQuery = new BooleanQuery();
+                foreach (var token in tokens)
+                    boolQuery.Add(BuildTokenQuery(token), Occur.MUST);
+                query = boolQuery;
+            }
+
+            var hitIdxs = await Task.Run(() => indexSearcher.Search(query, null, 10000).ScoreDocs);
+
+            var result = new List<SearchEntry>();
+            foreach (var hit in hitIdxs)
+            {
+                var doc = indexSearcher.Doc(hit.Doc);
+                result.Add(new SearchEntry
+                {
+                    Id = Convert.ToInt32(doc.Get("Id")),
+                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
+                    CV = doc.Get("CV"),
+                    Score = (int)Math.Round(hit.Score * 100, 0)
+                });
+            }
+
+            return result.OrderByDescending(x => x.Score).ThenByDescending(x => x.UpdatedTs).ToList();
+        }
+
+
+
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
-          
-
             mIndexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
             mIndexSearcher = new IndexSearcher(mIndexReader);
-            mQueryParser = new QueryParser(LuceneVersion.LUCENE_48, "CV", mAnalyzer);
 
-            
-            //var debug = await DebugEmailSearch(mIndexSearcher, "Leonardopalinsky@gmail.com");
-            //Console.WriteLine(debug); // or log it
+            var nameQuery = searchVals.value.Trim().ToLowerInvariant();
 
-            ScoreDoc[] hitIdxs =    await SearchCandidateByName(mIndexSearcher, searchVals.value);
+            var tokens = nameQuery
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToArray();
+
+            Query query;
+
+            if (tokens.Length == 1)
+            {
+                query = new TermQuery(new Term("CV", tokens[0]));
+            }
+            else
+            {
+                var spanTerms = tokens
+                    .Select(t => new SpanTermQuery(new Term("CV", t)))
+                    .ToArray<SpanQuery>();
+
+                query = new SpanNearQuery(spanTerms, slop: 0, inOrder: false);
+            }
+
+            ScoreDoc[] hitIdxs = await Task.Run(() => mIndexSearcher.Search(query, null, 10000).ScoreDocs);
 
             var result = new List<SearchEntry>();
 
@@ -69,48 +138,12 @@ namespace LuceneLibrary
                 {
                     Id = Convert.ToInt32(doc.Get("Id")),
                     UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                    //Updated = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(doc.Get("Updated"))).UtcDateTime,
                     CV = doc.Get("CV"),
                     Score = (int)Math.Round(hitIdxs[i].Score * 100, 0)
                 });
             }
 
-            result = result.OrderByDescending(x => x.UpdatedTs).ToList();
-            return result;
-        }
-
-        public async Task<ScoreDoc[]> SearchCandidateByName(IndexSearcher mIndexSearcher, string nameQuery)
-        {
-            nameQuery = nameQuery.Trim().ToLowerInvariant();
-
-            //// Email → single TermQuery
-            //if (nameQuery.Contains('@'))
-            //{
-            //    return await Task.Run(() =>
-            //        mIndexSearcher.Search(new TermQuery(new Term("CV", nameQuery)), null, 10000).ScoreDocs);
-            //}
-
-            var tokens = nameQuery
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                .Distinct()
-                .ToArray();
-
-            // Single token → TermQuery
-            if (tokens.Length == 1)
-            {
-                return await Task.Run(() =>
-                    mIndexSearcher.Search(new TermQuery(new Term("CV", tokens[0])), null, 10000).ScoreDocs);
-            }
-
-            // Multi-word → SpanNearQuery, any order, adjacent
-            var spanTerms = tokens
-                .Select(t => new SpanTermQuery(new Term("CV", t)))
-                .ToArray<SpanQuery>();
-
-            var query = new SpanNearQuery(spanTerms, slop: 0, inOrder: false);
-
-            return await Task.Run(() =>
-                mIndexSearcher.Search(query, null, 10000).ScoreDocs);
+            return result.OrderByDescending(x => x.UpdatedTs).ToList();
         }
 
 
@@ -295,7 +328,7 @@ namespace LuceneLibrary
             return result;
         }
 
-        public async Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex)
+           public async Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex)
         {
             await DocumentDelete(candidateDataToIndex.candidateId);
 

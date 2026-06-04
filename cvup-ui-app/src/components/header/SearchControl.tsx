@@ -103,7 +103,7 @@ export const SearchControl = ({
 }: IProps) => {
   const { generalStore } = useStore();
 
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  // const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [searchVals, setSearchVals] = useState<ISearchModel>({
     value: "",
     exact: true,
@@ -111,7 +111,7 @@ export const SearchControl = ({
   });
   const [sortAsc, setSortAsc] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isExecSearch, setIsExecSearch] = useState<boolean>(false);
 
   // const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
 
@@ -122,6 +122,13 @@ export const SearchControl = ({
   //     setIsLoaded(true);
   //   }
   // }, [debouncedValue]);
+
+  useEffect(() => {
+    if (isExecSearch) {
+      search();
+      setIsExecSearch(false); // <--- Reset the flag immediately to stop the loop
+    }
+  }, [isExecSearch]);
 
   useEffect(() => {
     if (extSearch) {
@@ -190,7 +197,9 @@ export const SearchControl = ({
                 value: "",
                 advancedValue: "",
               }));
-              onRefreshLists && onRefreshLists();
+              setIsExecSearch((current) => !current);
+
+              // onRefreshLists && onRefreshLists();
             }}
           >
             <MdRefresh />
@@ -318,6 +327,7 @@ export const SearchControl = ({
                 ...currentProps,
                 exact: !searchVals.exact,
               }));
+              setIsExecSearch((current) => !current);
             }}
           >
             EX
@@ -363,7 +373,7 @@ export const SearchControl = ({
           </div>
         )}
       </Stack>
-      {showAdvancedSearch && (
+      {/*{showAdvancedSearch && (
         <Stack direction="row" pt={1} alignItems={"center"}>
           <Search sx={{ direction: "rtl" }}>
             <SearchIconWrapper>
@@ -390,7 +400,7 @@ export const SearchControl = ({
             )}
           </Search>
         </Stack>
-      )}
+      )}*/}
     </Stack>
   );
 };

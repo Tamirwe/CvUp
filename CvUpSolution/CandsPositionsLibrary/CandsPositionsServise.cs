@@ -283,7 +283,17 @@ namespace CandsPositionsLibrary
 
         public async Task<List<SearchEntry>> SearchCands(int companyId, searchCandCvModel searchVals)
         {
-            var results = await _luceneService.Search(companyId, searchVals);
+            List<SearchEntry> results = [];
+
+            if (searchVals.exact)
+            {
+                results = await _luceneService.Search(companyId, searchVals);
+            }
+            else
+            {
+                results = await _luceneService.FuzzySearch(companyId, searchVals);
+            }
+
             return results;
         }
 

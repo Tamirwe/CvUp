@@ -72,7 +72,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
         // ── Upsert single CV ──────────────────────────────────────────────────────
 
-        public async Task UpsertAsync(Guid id, EmbedCvDataModel cv)
+        public async Task UpsertAsync(Guid id, AnalyzedCvsForEmbeedingModel cv)
         {
             var embedText = OpenAiEmbedderService.BuildEmbedText(cv);
             var vector = await _embedder.EmbedAsync(embedText);
@@ -92,7 +92,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
         // ── Batch upsert ──────────────────────────────────────────────────────────
 
-        public async Task UpsertBatchAsync(List<EmbedCvDataModel> cvs)
+        public async Task UpsertBatchAsync(List<AnalyzedCvsForEmbeedingModel> cvs)
         {
             var points = new List<PointStruct>();
 
@@ -136,7 +136,7 @@ namespace OpenAiLibrary.EmbeddingAndStore
 
         // ── Build Qdrant payload from CvAnalysisResult ────────────────────────────
 
-        private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(EmbedCvDataModel cv)
+        private static Dictionary<string, Qdrant.Client.Grpc.Value> BuildPayload(AnalyzedCvsForEmbeedingModel cv)
         {
 
             var jobsTitlesEnList = new Qdrant.Client.Grpc.ListValue();

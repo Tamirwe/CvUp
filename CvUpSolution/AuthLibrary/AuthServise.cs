@@ -3,7 +3,6 @@ using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
-using EmailsLibrary.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace AuthLibrary

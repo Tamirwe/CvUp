@@ -3,11 +3,10 @@ using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
-using EmailsLibrary.Models;
+using Google.Protobuf.WellKnownTypes;
 using LuceneLibrary;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.ComponentModel.Design;
+using System.Xml.Linq;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace CandsPositionsLibrary
 {
@@ -493,34 +492,32 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateBlackCandidateEmailCount(blackCand);
         }
 
-        public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<AiSearchResultModel> aiResults)
+        public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<CandidateSearchResultModel> aiResults)
         {
-            foreach (var cand in candsList)
-            {
-                if (cand != null)
-                {
-                    var aiItem = aiResults.FirstOrDefault(x => x.CandidateId == cand.candidateId);
+            var candsDict = candsList
+                .Where(x => x != null)
+                .ToDictionary(x => x.candidateId);
 
-                    if (aiItem != null)
-                    {
-                        cand.NameAI = aiItem.Name;
-                        cand.LocationAI = aiItem.Location;
-                        cand.JobsTitlesAI = aiItem.JobsTitlesHe;
-                        cand.ProfessionWordsAI = aiItem.ProfessionWords;
-                        cand.EstimateAgeAI = aiItem.EstimateAge;
-                        //cand.ProfessionSkillsAI = aiItem.ProfessionSkills;
-                        //cand.SeniorityAI = aiItem.Seniority;
-                        cand.EducationAI = aiItem.Education;
-                        cand.CompaniesAI = aiItem.Companies;
-                        //cand.MilitaryServiceAI = aiItem.MilitaryService;
-                        //cand.SkillsAI = aiItem.Skills;
-                        cand.SummaryAI = aiItem.Summary;
-                        cand.score = (int)(aiItem.Score * 1000);
-                    }
-                }
+            var result = new List<CandModel>();
+
+            foreach (var aiItem in aiResults)
+            {
+                if (!candsDict.TryGetValue(aiItem.candidateId, out var cand))
+                    continue;
+
+                cand.NameAI = aiItem.name;
+                cand.LocationAI = aiItem.city;
+                cand.JobsTitlesAI = aiItem.jobsTitles?.Split(',') ?? [];
+                cand.ProfessionWordsAI = aiItem.professionWords?.Split(',') ?? [];
+                cand.EstimateAgeAI = aiItem.age;
+                cand.EducationAI = aiItem.education;
+                cand.CompaniesAI = aiItem.companies?.Split(',') ?? [];
+                cand.SummaryAI = aiItem.summary;
+                cand.score = (int)((1-aiItem.distance) * 100);
+                result.Add(cand);
             }
 
-            return candsList.OrderByDescending(x => x.score).ToList();
+            return result;
         }
     }
 }

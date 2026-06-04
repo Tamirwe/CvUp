@@ -5,18 +5,22 @@ namespace ImportCvsLibrary
     public  class DataBaseBackup : IDataBaseBackup
     {
         string _filesRootFolder;
+        string _localRootFolder;
 
         public DataBaseBackup(IConfiguration configuration)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
+            _localRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"];
+
         }
 
         public void BackupDataBase()
         {
             try
             {
-                string databaseName = "cvup00001";
+                string databaseName = "cvupdb";
                 string backUpDir = $"{_filesRootFolder}\\dataBaseBackupFiles";
+                string tempBackUpDir = $"{_localRootFolder}\\temp";
 
                 DirectoryInfo backupDirInfo = new DirectoryInfo(backUpDir); 
                 FileInfo[] dirFiles = backupDirInfo.GetFiles("*.gz");
@@ -30,8 +34,9 @@ namespace ImportCvsLibrary
                 }
 
                 var backUpDirObj = Directory.CreateDirectory(backUpDir);
+                var tempBackUpDirObj = Directory.CreateDirectory(tempBackUpDir);
                 string newBackUpFileName = databaseName + "_" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm") + ".sql";
-                string batchFileName = backUpDir + @"\DbBackup.bat";
+                string batchFileName = tempBackUpDirObj.FullName + @"\DbBackup.bat";
 
                 if (File.Exists(batchFileName))
                 {
@@ -41,24 +46,30 @@ namespace ImportCvsLibrary
                 using (StreamWriter sw = File.CreateText(batchFileName))
                 {
                     sw.WriteLine(@"@REM *** PARAMETERS/VARIABLES ***");
-                    sw.WriteLine(@"SET BackupDir=""" + backUpDirObj.FullName + @"\""");
+                    sw.WriteLine(@"SET BackupDir=" + backUpDirObj.FullName);
+                    sw.WriteLine(@"SET TempBackupDir=" + tempBackUpDirObj.FullName);
                     sw.WriteLine(@"SET BackupFile=" + newBackUpFileName);
 
-                    sw.WriteLine(@"SET mysqldir=C:\Program Files\MySQL\MySQL Server 8.0\bin");
+                    sw.WriteLine(@"SET postgresqldir=C:\Program Files\PostgreSQL\18\bin");
 
-                    sw.WriteLine(@"SET mysqlpassword=!Shalot5");
-                    sw.WriteLine(@"SET mysqluser=root");
+                    sw.WriteLine(@"SET pgpassword=!Shalot5");
+                    sw.WriteLine(@"SET pguser=postgres");
                     sw.WriteLine(@"SET databaseName=" + databaseName);
                     sw.WriteLine(@"set zip=""C:\Program Files\7-Zip\7z.exe""");
                     sw.WriteLine(@"@REM *** EXECUTION ***");
-                    sw.WriteLine(@"@REM Change to mysqldir");
-                    sw.WriteLine(@"CD %mysqldir%");
-                    sw.WriteLine(@"@REM dump/backup");
-                    sw.WriteLine(@"mysqldump -u %mysqluser% -p%mysqlpassword% --databases %databaseName% >%BackupDir%%BackupFile%");
-                    sw.WriteLine(@"@REM zip backup file");
-                    sw.WriteLine(@"%zip% a -tgzip %BackupDir%%BackupFile%.gz %BackupDir%%BackupFile%");
-                    sw.WriteLine(@"@REM delete backup file");
-                    sw.WriteLine(@"del %BackupDir%%BackupFile%");
+                    sw.WriteLine(@"@REM Change to postgresqldir");
+                    sw.WriteLine(@"CD %postgresqldir%");
+                    sw.WriteLine(@"@REM dump/backup to temp directory");
+                    sw.WriteLine(@"pg_dump -c -U %pguser% -d %databaseName% >""%TempBackupDir%\%BackupFile%""");
+                    sw.WriteLine(@"@REM wait for file to be fully written");
+                    sw.WriteLine(@"timeout /t 2 /nobreak");
+                    sw.WriteLine(@"@REM zip backup file in temp directory");
+                    sw.WriteLine(@"%zip% a -tgzip ""%TempBackupDir%\%BackupFile%.gz"" ""%TempBackupDir%\%BackupFile%""");
+                    sw.WriteLine(@"@REM copy zipped file to backup directory");
+                    sw.WriteLine(@"copy ""%TempBackupDir%\%BackupFile%.gz"" ""%BackupDir%\%BackupFile%.gz""");
+                    sw.WriteLine(@"@REM delete files in temp directory");
+                    sw.WriteLine(@"del ""%TempBackupDir%\%BackupFile%""");
+                    sw.WriteLine(@"del ""%TempBackupDir%\%BackupFile%.gz""");
                 }
 
                 //execute the batch file
@@ -67,14 +78,21 @@ namespace ImportCvsLibrary
                 proc.StartInfo.WorkingDirectory = System.Environment.CurrentDirectory;
                 proc.Start();
 
-                //delete files older than last 1 month
-                string[] files = Directory.GetFiles(backUpDir);
-
-                foreach (string file in files)
+                // keep only the newest 20 files in the backup directory
+                DirectoryInfo backupDir = new DirectoryInfo(backUpDir);
+                FileInfo[] allFiles = backupDir.GetFiles();
+                // sort by last write time descending (newest first)
+                Array.Sort(allFiles, (a, b) => b.LastWriteTime.CompareTo(a.LastWriteTime));
+                for (int i = 20; i < allFiles.Length; i++)
                 {
-                    FileInfo fi = new FileInfo(file);
-                    if (fi.LastAccessTime < DateTime.Now.AddMonths(-1))
-                        fi.Delete();
+                    try
+                    {
+                        allFiles[i].Delete();
+                    }
+                    catch
+                    {
+                        // ignore individual delete errors
+                    }
                 }
             }
             catch (Exception ex)

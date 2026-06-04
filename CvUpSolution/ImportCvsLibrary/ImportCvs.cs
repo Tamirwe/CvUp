@@ -14,7 +14,6 @@ using Spire.Doc;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 using Spire.Pdf;
-using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.Texts;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -545,7 +544,6 @@ namespace ImportCvsLibrary
         private string GetCvTxtPdf(string fileNamePath)
         {
             StringBuilder cvTxtSB = new StringBuilder();
-            SimpleTextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
 
             Spire.Pdf.PdfDocument doc = new Spire.Pdf.PdfDocument();
             doc.LoadFromFile(fileNamePath);

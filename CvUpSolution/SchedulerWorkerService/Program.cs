@@ -43,7 +43,7 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 
 
-////For Debugging: Execute the jobs immediately on startup,  This way you can verify the jobs work without waiting for the schedule to kick in.
+////// ****** For Debugging: Execute the jobs immediately on startup,  This way you can verify the jobs work without waiting for the schedule to kick in.
 //builder.Services.AddQuartz(q =>
 //{
 //    var dataBaseBackup = new JobKey("CvsDataBaseBackup");
@@ -61,7 +61,7 @@ EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 //});
 
 
-// Add Quartz
+////****** Production Quartz
 builder.Services.AddQuartz(q =>
 {
     //// --- Job 1: Import Gmail Cvs  ---
@@ -133,8 +133,6 @@ builder.Services.AddQuartz(q =>
     //    .ForJob(aiAnalyzeNewCvs)
     //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
     //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
-
-
 });
 
 EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");

@@ -1,5 +1,4 @@
-﻿using EmailsLibrary.Models;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;

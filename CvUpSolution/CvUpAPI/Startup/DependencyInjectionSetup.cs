@@ -1,14 +1,13 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
 using CustomersContactsLibrary;
+using CvAnalyzeEmbedOpenAiLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using FoldersLibrary;
 using LuceneLibrary;
-using Microsoft.Extensions.Hosting;
-using OpenAiLibrary.EmbeddingAndStore;
-using OpenAiLibrary.Searcher;
+using PgVectorLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -29,9 +28,12 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();
-            services.AddTransient<IOpenAiEmbedderService, OpenAiEmbedderService>();
-            services.AddTransient<IStoreService, StoreService>();
-            services.AddTransient<ISearcherService, SearcherService>();
+            services.AddTransient<IAiQueries, AiQueries>();
+            services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
+            services.AddTransient<ISearchCvsService, SearchCvsService>();
+            //services.AddTransient<IOpenAiEmbedderService, OpenAiEmbedderService>();
+            //services.AddTransient<IStoreService, StoreService>();
+            //services.AddTransient<ISearcherService, SearcherService>();
 
             return services;
         }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32630.192
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11822.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvUpAPI", "CvUpAPI\CvUpAPI.csproj", "{F7E96CB0-4321-40E3-920D-32620531BEF4}"
 EndProject
@@ -42,6 +42,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiConsoleApp", "OpenAiConsoleApp\OpenAiConsoleApp.csproj", "{1F11377F-480E-4554-B31E-707FB2EBD673}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerWorkerService", "SchedulerWorkerService\SchedulerWorkerService.csproj", "{339E5425-62D4-42FA-B93D-49356B26B72B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgVectorLibrary", "PgVectorLibrary\PgVectorLibrary.csproj", "{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CvAnalyzeEmbedOpenAiLibrary", "CvAnalyzeEmbedOpenAiLibrary\CvAnalyzeEmbedOpenAiLibrary.csproj", "{9ED758F0-156E-806D-6482-1AECE71773C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgVectorConsoleApp", "PgVectorConsoleApp\PgVectorConsoleApp.csproj", "{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +123,18 @@ Global
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ED758F0-156E-806D-6482-1AECE71773C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ED758F0-156E-806D-6482-1AECE71773C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ED758F0-156E-806D-6482-1AECE71773C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ED758F0-156E-806D-6482-1AECE71773C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

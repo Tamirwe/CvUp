@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneLibrary", "LuceneLibr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthLibrary", "AuthLibrary\AuthLibrary.csproj", "{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsWorkerService", "CvsWorkerService\CvsWorkerService.csproj", "{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImportCvsLibrary", "ImportCvsLibrary\ImportCvsLibrary.csproj", "{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndexCvsConsoleApp", "IndexCvsConsoleApp\IndexCvsConsoleApp.csproj", "{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}"
@@ -36,10 +34,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ReadMe.txt = ReadMe.txt
 		ReadMe2.txt = ReadMe2.txt
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiLibrary", "OpenAiLibrary\OpenAiLibrary.csproj", "{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiConsoleApp", "OpenAiConsoleApp\OpenAiConsoleApp.csproj", "{1F11377F-480E-4554-B31E-707FB2EBD673}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerWorkerService", "SchedulerWorkerService\SchedulerWorkerService.csproj", "{339E5425-62D4-42FA-B93D-49356B26B72B}"
 EndProject
@@ -71,10 +65,6 @@ Global
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59791DB7-B977-4F61-A6CE-8AF9D76C47D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA03DB6-A48F-4089-AA66-7A10FD0F11F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -111,14 +101,6 @@ Global
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE559FB1-F64D-4F64-98D7-16E4681330BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{068CC7E4-F3CA-4219-A91E-D1CEB169FF6A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F11377F-480E-4554-B31E-707FB2EBD673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F11377F-480E-4554-B31E-707FB2EBD673}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F11377F-480E-4554-B31E-707FB2EBD673}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F11377F-480E-4554-B31E-707FB2EBD673}.Release|Any CPU.Build.0 = Release|Any CPU
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339E5425-62D4-42FA-B93D-49356B26B72B}.Release|Any CPU.ActiveCfg = Release|Any CPU

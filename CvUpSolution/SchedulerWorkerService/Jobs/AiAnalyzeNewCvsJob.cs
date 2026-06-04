@@ -1,5 +1,5 @@
 ﻿using GeneralLibrary;
-using OpenAiLibrary.AnalyzeCvsAI;
+using PgVectorLibrary;
 using Quartz;
 
 namespace SchedulerWorkerService.Jobs
@@ -14,7 +14,7 @@ namespace SchedulerWorkerService.Jobs
 
             try
             {
-                await analyzeCvsService.AiAnalyzeNewCvs();
+                await analyzeCvsService.AnalyzeCandidatesLastCv();
             }
             catch (OperationCanceledException)
             {

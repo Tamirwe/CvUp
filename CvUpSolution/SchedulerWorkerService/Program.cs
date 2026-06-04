@@ -2,17 +2,14 @@
 using CandsPositionsLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
-//using dotenv.net;
+using DotNetEnv.Configuration;
 using EmailsLibrary;
 using GeneralLibrary;
 using ImportCvsLibrary;
 using LuceneLibrary;
-using OpenAiLibrary.AnalyzeCvsAI;
+using PgVectorLibrary;
 using Quartz;
 using SchedulerWorkerService.Jobs;
-using DotNetEnv.Configuration;
-
-//DotEnv.Load(); // loads .env from current directory
 
 var builder = Host.CreateApplicationBuilder(args);
 

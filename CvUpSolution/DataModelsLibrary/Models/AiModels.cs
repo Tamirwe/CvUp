@@ -43,6 +43,23 @@ namespace DataModelsLibrary.Models
 
     }
 
+    public class CandidateSearchResultModel
+    {
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public double distance { get; set; }
+        public string? name { get; set; }
+        public string? city { get; set; }
+        public string? jobsTitles { get; set; }
+        public string? professionWords { get; set; }
+        public int? age { get; set; }
+        public string? education { get; set; }
+        public string? companies { get; set; }
+        public string? summary { get; set; }
+
+       
+    }
+
     public class AnalyzedCvsForEmbeedingModel
     {
         public int CandidateId { get; set; }

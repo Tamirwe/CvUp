@@ -107,6 +107,21 @@ namespace DataModelsLibrary.Queries
             return await query.Take(300).ToListAsync();
         }
 
+        public async Task<List<CandidateSearchResultModel>> SearchCvsByEmbedding(float[] queryVector,  int limit = 20)
+        {
+            using var dbContext = new cvupdbContext();
+            var vectorLiteral = new Vector(queryVector).ToString();
+            var sql = $@"SELECT a.candidate_id AS candidateId, a.cv_id AS cvId, a.name, a.city, a.jobs_titles_he AS jobsTitles,
+                         a.profession_words_he AS professionWords, a.estimate_age AS age, a.education, a.companies, a.summary_he AS summary,
+                         a.embedding <=> '{vectorLiteral}' AS distance 
+                         FROM ai_analyze_cvs a
+                         JOIN candidates c ON c.id = a.candidate_id
+                         WHERE a.is_embedded = true
+                         ORDER BY distance
+                         LIMIT {limit}";
+            return await dbContext.candidateSearchResults.FromSqlRaw(sql).ToListAsync();
+        }
+
         private static List<string>? StringToList(string? str)
         {
             if (str == null) return null;

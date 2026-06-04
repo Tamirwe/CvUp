@@ -4,7 +4,7 @@ using CvFilesLibrary;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OpenAiLibrary.Searcher;
+using PgVectorLibrary;
 
 namespace CvUpAPI.Controllers
 {
@@ -16,14 +16,14 @@ namespace CvUpAPI.Controllers
         private ICandsPositionsServise _candPosService;
         private IAuthServise _authServise;
         private ICvsFilesService _cvsFilesService;
-        private ISearcherService  _searcherService;
+        private ISearchCvsService _aiSearchCvsService;
 
-        public CandController(ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService, ISearcherService searcherService)
+        public CandController(ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService, ISearchCvsService aiSearchCvsService)
         {
             _candPosService = candPosService;
             _authServise = authServise;
             _cvsFilesService = cvsFilesService;
-            _searcherService = searcherService;
+            _aiSearchCvsService = aiSearchCvsService;
         }
 
         [HttpGet]
@@ -102,8 +102,8 @@ namespace CvUpAPI.Controllers
         [Route("AiSearchCands")]
         public async Task<List<CandModel>> AiSearchCands(string searchQuery)
         {
-            var aiResults = await _searcherService.SearchAsync(query: searchQuery, limit: 50);
-            var candsIds = aiResults.Select(e => e.CandidateId).ToList();
+            var aiResults = await _aiSearchCvsService.SearchCvs(query: searchQuery, limit: 10);
+            var candsIds = aiResults.Select(e => e.candidateId).ToList();
             var candsList = await _candPosService.GetCandsList(Globals.CompanyId, candsIds);
             List<CandModel> results = _candPosService.MergeAiResultsWithCandsList(candsList, aiResults);
 

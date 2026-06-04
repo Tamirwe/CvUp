@@ -11,5 +11,6 @@ namespace DataModelsLibrary.Queries
         Task DeleteCandidateAnalyzeCv(int candidateId);
         Task UpdateCandIsAnalyzed(int candidateId, bool isAnalyzed);
         Task UpdateCvEmbedding(int candidateId, float[] embedding);
+        Task<List<CandidateSearchResultModel>> SearchCvsByEmbedding(float[] queryVector, int limit = 20);
     }
 }

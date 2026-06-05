@@ -191,6 +191,7 @@ namespace ImportCvsLibrary
 
         private async Task CvExtractDataAndSave()
         {
+            ExtractCvText();
             ExtractCvProps();
 
             bool isBlackCand = CheckIsBlackCand();
@@ -297,17 +298,20 @@ namespace ImportCvsLibrary
             File.Move(_importCv.tempFilePath, fileNamePath);
         }
 
-        private void ExtractCvProps()
+        private void ExtractCvText()
         {
             if (_importCv.fileExtension == PDF_EXTENSION)
             {
-                _importCv.cvTxt = GetCvTxtPdf(_importCv.tempFilePath);
+                _importCv.cvTxt = CvParser.ExtractPdfText(_importCv.tempFilePath);
             }
             else
             {
-                _importCv.cvTxt = GetCvTxtWord(_importCv.tempFilePath);
+                _importCv.cvTxt = CvParser.ExtractWordText(_importCv.tempFilePath);
             }
+        }
 
+        private void ExtractCvProps()
+        {
             GetCandidateEmail();
 
             if (string.IsNullOrWhiteSpace(_importCv.firstName) || string.IsNullOrWhiteSpace(_importCv.lastName))
@@ -571,7 +575,7 @@ namespace ImportCvsLibrary
         //}
 
 
-        public static string GetCvTxtWord(string fileNamePath)
+        private static string GetCvTxtWord(string fileNamePath)
         {
             var document = new Spire.Doc.Document();
             document.LoadFromFile(fileNamePath);

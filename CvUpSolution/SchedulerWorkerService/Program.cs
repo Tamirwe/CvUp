@@ -1,12 +1,16 @@
 
 using CandsPositionsLibrary;
+using CvAnalyzeEmbedOpenAiLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using DotNetEnv.Configuration;
 using EmailsLibrary;
 using GeneralLibrary;
+using GeneralLibrary.IsraelCities;
+using Google.Api;
 using ImportCvsLibrary;
 using LuceneLibrary;
+using Newtonsoft.Json;
 using PgVectorLibrary;
 using Quartz;
 using SchedulerWorkerService.Jobs;
@@ -26,6 +30,16 @@ builder.Services.AddWindowsService(options =>
 });
 
 builder.Services.AddMemoryCache();
+
+// ✅ always resolves relative to the exe location
+var basePath = AppContext.BaseDirectory;
+var israeliCitiesString = File.ReadAllText(Path.Combine(basePath, "IsraelCities", "israeliCities.json"));
+
+List<IsraeliCitiesModel> citiesRegionList = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(israeliCitiesString)!;
+
+builder.Services.AddSingleton(citiesRegionList);
+builder.Services.AddTransient<IAiQueries, AiQueries>();
+builder.Services.AddTransient<IAnalyzeCvOpenAi, AnalyzeCvOpenAi>();
 builder.Services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
 builder.Services.AddTransient<ILuceneService, LuceneService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -39,98 +53,106 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 
+bool isDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
 
-////// ****** For Debugging: Execute the jobs immediately on startup,  This way you can verify the jobs work without waiting for the schedule to kick in.
-//builder.Services.AddQuartz(q =>
-//{
-//    var dataBaseBackup = new JobKey("CvsDataBaseBackup");
-
-//    q.AddJob<DataBaseBackupJob>(opts => opts
-//       .WithIdentity(dataBaseBackup)
-//       .WithDescription("Cvs DataBase Backup"));
-
-//    // every hour between 1:00 AM and 4:00 AM
-//    // if the db backup file exist it not executed again.
-//    q.AddTrigger(opts => opts
-//        .ForJob(dataBaseBackup)
-//        .WithIdentity("dataBase-backup").StartNow()); // Executes immediately
-
-//});
-
-
-////****** Production Quartz
-builder.Services.AddQuartz(q =>
+if (isDebugMode)
 {
-    //// --- Job 1: Import Gmail Cvs  ---
-    var importGmailCvsJobKey = new JobKey("importGmailCvs");
+    // ****** Debug: jobs fire immediately on startup
+    builder.Services.AddQuartz(q =>
+    {
+        var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
-    q.AddJob<ImportGmailCvsJob>(opts => opts
-        .WithIdentity(importGmailCvsJobKey)
-        .WithDescription("Import Cvs from Gmail"));
+        q.AddJob<ImportGmailCvsJob>(opts => opts
+            .WithIdentity(importGmailCvsJobKey)
+            .WithDescription("Import Cvs from Gmail"));
 
-    // Every minute between 7AM-11PM, Sunday to Friday
-    q.AddTrigger(opts => opts
-        .ForJob(importGmailCvsJobKey)
-        .WithIdentity("ImportGmailCvs-WeekdayTrigger")
-         .StartNow() // Executes immediately
-         .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
-    //.WithSimpleSchedule(x => x.WithIntervalInSeconds(20).RepeatForever()));
+        q.AddTrigger(opts => opts
+            .ForJob(importGmailCvsJobKey)
+            .WithIdentity("ImportGmailCvs").StartNow());
 
-    // Every 2 minutes between 7AM-11PM, Saturday
-    q.AddTrigger(opts => opts
-        .ForJob(importGmailCvsJobKey)
-        .WithIdentity("ImportGmailCvs-SaturdayTrigger")
-        .StartNow() // Executes immediately
-        .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+        //var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 
-    //// --- Job 2: Count Cvs send to position for report  ---
-    var countCvsSendToPositionJobKey = new JobKey("countCvsSendToPosition");
+        //q.AddJob<DataBaseBackupJob>(opts => opts
+        //   .WithIdentity(dataBaseBackup)
+        //   .WithDescription("Cvs DataBase Backup"));
 
-    q.AddJob<CountCvsSendToPositionJob>(opts => opts
-       .WithIdentity(countCvsSendToPositionJobKey)
-       .WithDescription("Count Cvs send to position for report"));
+        //q.AddTrigger(opts => opts
+        //    .ForJob(dataBaseBackup)
+        //    .WithIdentity("dataBase-backup").StartNow());
+    });
+}
+else
+{
+    // ****** Production Quartz
+    builder.Services.AddQuartz(q =>
+    {
+        // --- Job 1: Import Gmail Cvs  ---
+        var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
-    // Every hour between 9 AM and 5 PM
-    q.AddTrigger(opts => opts
-        .ForJob(countCvsSendToPositionJobKey)
-        .WithIdentity("count-Cvs-Send-To-Position")
-        .WithCronSchedule("0 0 9-17 * * ?"));
+        q.AddJob<ImportGmailCvsJob>(opts => opts
+            .WithIdentity(importGmailCvsJobKey)
+            .WithDescription("Import Cvs from Gmail"));
 
+        // Every minute between 7AM-11PM, Sunday to Friday
+        q.AddTrigger(opts => opts
+            .ForJob(importGmailCvsJobKey)
+            .WithIdentity("ImportGmailCvs-WeekdayTrigger")
+            .StartNow()
+            .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
 
-    //// --- Job 3: Cvs DataBase Backup   ---
-    var dataBaseBackup = new JobKey("CvsDataBaseBackup");
+        // Every 2 minutes between 7AM-11PM, Saturday
+        q.AddTrigger(opts => opts
+            .ForJob(importGmailCvsJobKey)
+            .WithIdentity("ImportGmailCvs-SaturdayTrigger")
+            .StartNow()
+            .WithCronSchedule("0 0/2 7-22 ? * SAT"));
 
-    q.AddJob<DataBaseBackupJob>(opts => opts
-       .WithIdentity(dataBaseBackup)
-       .WithDescription("Cvs DataBase Backup"));
+        // --- Job 2: Count Cvs send to position for report  ---
+        var countCvsSendToPositionJobKey = new JobKey("countCvsSendToPosition");
 
-    // every hour between 1:00 AM and 4:00 AM
-    // if the db backup file exist it not executed again.
-    q.AddTrigger(opts => opts
-        .ForJob(dataBaseBackup)
-        .WithIdentity("dataBase-backup")
-        .WithCronSchedule("0 0 1-4 ? * *"));
+        q.AddJob<CountCvsSendToPositionJob>(opts => opts
+           .WithIdentity(countCvsSendToPositionJobKey)
+           .WithDescription("Count Cvs send to position for report"));
 
+        // Every hour between 9 AM and 5 PM
+        q.AddTrigger(opts => opts
+            .ForJob(countCvsSendToPositionJobKey)
+            .WithIdentity("count-Cvs-Send-To-Position")
+            .WithCronSchedule("0 0 9-17 * * ?"));
 
-    //// --- Job 4: AI Analyze New Cvs    ---
-    //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+        // --- Job 3: Cvs DataBase Backup   ---
+        var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 
-    //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
-    //   .WithIdentity(aiAnalyzeNewCvs)
-    //   .WithDescription("AI Analyze New Cvs"));
+        q.AddJob<DataBaseBackupJob>(opts => opts
+           .WithIdentity(dataBaseBackup)
+           .WithDescription("Cvs DataBase Backup"));
 
-    //// Every minute between 7AM-11PM, Sunday to Friday
-    //q.AddTrigger(opts => opts
-    //    .ForJob(aiAnalyzeNewCvs)
-    //    .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
-    //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+        // every hour between 1:00 AM and 4:00 AM
+        q.AddTrigger(opts => opts
+            .ForJob(dataBaseBackup)
+            .WithIdentity("dataBase-backup")
+            .WithCronSchedule("0 0 1-4 ? * *"));
 
-    //// Every 2 minutes between 7AM-11PM, Saturday
-    //q.AddTrigger(opts => opts
-    //    .ForJob(aiAnalyzeNewCvs)
-    //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
-    //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
-});
+        //// --- Job 4: AI Analyze New Cvs    ---
+        //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+
+        //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+        //   .WithIdentity(aiAnalyzeNewCvs)
+        //   .WithDescription("AI Analyze New Cvs"));
+
+        //// Every minute between 7AM-11PM, Sunday to Friday
+        //q.AddTrigger(opts => opts
+        //    .ForJob(aiAnalyzeNewCvs)
+        //    .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
+        //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
+
+        //// Every 2 minutes between 7AM-11PM, Saturday
+        //q.AddTrigger(opts => opts
+        //    .ForJob(aiAnalyzeNewCvs)
+        //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
+        //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+    });
+}
 
 EventViewerWriter.InfoMessage($"ImportGmailCvsJob executing at: {DateTimeOffset.Now}");
 

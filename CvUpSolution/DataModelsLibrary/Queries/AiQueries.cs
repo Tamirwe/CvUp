@@ -26,7 +26,7 @@ namespace DataModelsLibrary.Queries
 	                                FROM candidates cands
 	                                WHERE cands.company_id = " + companyId + @" AND cands.is_cv_analyzed = false
 	                                ORDER BY cands.id DESC
-	                                LIMIT  20) AS tbl)";
+	                                LIMIT  2) AS tbl)";
 
             return await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
         }

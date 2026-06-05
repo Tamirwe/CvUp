@@ -231,6 +231,7 @@ export const SearchControl = ({
                     value: "",
                     advancedValue: "",
                   }));
+                  setIsExecSearch((current) => !current);
                 }}
               />
             </IconWrapper>

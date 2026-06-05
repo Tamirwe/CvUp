@@ -24,12 +24,16 @@ namespace PgVectorLibrary
         {
             List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId);
 
+            int counter = 0, total = candsLastCvList.Count;
+
             foreach (var candCv in candsLastCvList)
             {
                 try
                 {
                     AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.id, candCv.cvTxt);
                     await SaveAnalyzedCv(analyzedCv);
+
+                    Console.WriteLine($"Analyzed candidate {candCv.candidateId}  ({++counter}/{total})");
 
                 }
                 catch (Exception ex)

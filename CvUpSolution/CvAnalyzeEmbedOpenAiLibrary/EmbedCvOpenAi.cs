@@ -26,6 +26,9 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 
         private static string BuildTextForEmbedding(AnalyzedCvsForEmbeedingModel analyzeCv) =>
            string.Join(" ",
+               analyzeCv.Name ?? "",
+               analyzeCv.Email ?? "",
+               analyzeCv.Phone ?? "",
                analyzeCv.Location ?? "",
                analyzeCv.Region ?? "",
                analyzeCv.Area ?? "",

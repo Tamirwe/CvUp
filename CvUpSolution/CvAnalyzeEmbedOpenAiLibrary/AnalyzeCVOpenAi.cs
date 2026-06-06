@@ -131,9 +131,9 @@ namespace CvAnalyzeEmbedOpenAiLibrary
                     Phone = obj.Value<string>("phone"),
                     CityHe = obj.Value<string>("city_he"),
                     Languages = obj.Value<string>("languages"),
-                    WorkExperience = obj["work_experience"]?.ToObject<List<string>>() ?? [],
-                    ProfessionWords = obj["profession_words"]?.ToObject<List<string>>() ?? [],
-                    ProfessionSkills = obj["profession_skills"]?.ToObject<List<string>>() ?? [],
+                    WorkExperience = obj["work_experience"]?.ToString() ?? "[]",
+                    ProfessionWords = obj["profession_words"]?.ToString() ?? "[]",
+                    ProfessionSkills = obj["profession_skills"]?.ToString() ?? "[]",
                     Seniority = obj.Value<string>("seniority"),
                     Education = obj["education_he"]?.ToObject<List<string>>() ?? [],
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
@@ -190,58 +190,44 @@ namespace CvAnalyzeEmbedOpenAiLibrary
         #endregion
 
         #region private methods for parsing and cleaning the ai result
-        private (List<string>, List<string>, List<string>) splitWorkExperience(List<string>? workExperience)
+        private (List<string>, List<string>, List<string>) splitWorkExperience(string? workExperienceJson)
         {
-            if (workExperience == null || workExperience.Count == 0)
-            {
+            if (string.IsNullOrWhiteSpace(workExperienceJson))
                 return ([], [], []);
-            }
+
+            var arr = JArray.Parse(workExperienceJson);
 
             List<string> companies = [];
-            List<string> jobsTitlesEn = [];
             List<string> jobsTitlesHe = [];
+            List<string> jobsTitlesEn = [];
 
-            foreach (var item in workExperience)
+            foreach (var item in arr)
             {
-                var splitArr = item.Split("::");
-
-                companies.Add(splitArr.Length > 0 ? splitArr[0].Trim() : "");
-                jobsTitlesEn.Add(splitArr.Length > 1 ? splitArr[1].Trim() : "");
-                jobsTitlesHe.Add(splitArr.Length > 2 ? splitArr[2].Trim() : "");
+                companies.Add(item.Value<string>("company") ?? "");
+                jobsTitlesHe.Add(item.Value<string>("job_title_hebrew") ?? "");
+                jobsTitlesEn.Add(item.Value<string>("job_title_english") ?? "");
             }
 
-            return (companies, jobsTitlesEn, jobsTitlesHe);
+            return (companies, jobsTitlesHe, jobsTitlesEn);
         }
 
-        private (List<string>, List<string>) splitHeEnList(List<string> professionWordsEn)
+        private (List<string>, List<string>) splitHeEnList(string? json)
         {
-            if (professionWordsEn.Count == 0)
-            {
+            if (string.IsNullOrWhiteSpace(json))
                 return ([], []);
-            }
+
+            var arr = JArray.Parse(json);
 
             List<string> heList = [];
             List<string> enList = [];
 
-            foreach (var item in professionWordsEn)
+            foreach (var item in arr)
             {
-                var heEnSplit = splitHeEnString(item);
-                heList.Add(heEnSplit.Item1);
-                enList.Add(heEnSplit.Item2);
+                heList.Add(item.Value<string>("hebrew") ?? "");
+                enList.Add(item.Value<string>("english") ?? "");
             }
 
             return (heList, enList);
-        }
-
-        private (string, string) splitHeEnString(string? strEnHe)
-        {
-            if (string.IsNullOrWhiteSpace(strEnHe))
-            {
-                return ("", "");
-            }
-
-            var splitArr = strEnHe.Split("::");
-            return (splitArr[0].Trim(), splitArr[1].Trim());
         }
 
         private (string?, string?) FindAreaRegion(string? location)

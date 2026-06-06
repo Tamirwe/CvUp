@@ -52,9 +52,25 @@ Return the result in JSON format only.
   "city_he": "",
   "estimate_age: number | null,
   "languages":"",
-  "work_experience:[]",  // return string like this - "company :: job_title_en :: job_title_he".
-  "profession_words":[], // male form words that describe profession in hebrew and english like this - "יוצר תוכן :: Content Creator".
-  "profession_skills":[] // male form words that describe the profession skils in hebrew and english like this - "תמיכה טכנית :: Technical Support".
+  "work_experience": [
+                    {{
+                      "company": "",
+                      "job_title_english": "",
+                      "job_title_hebrew": ""
+                    }}
+                  ],
+  "profession_words": [
+                    {{
+                      "hebrew": "",
+                      "english": ""
+                    }}
+                  ], // male form words that describe profession in hebrew and english 
+ "profession_skills": [
+                    {{
+                      "hebrew": "",
+                      "english": ""
+                    }}
+                  ],// male form words that describe the profession skils in hebrew and english
   "seniority":"",
   "education_he":[],
   "skills": [],

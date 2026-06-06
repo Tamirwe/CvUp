@@ -64,15 +64,12 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 
                 (List<string>, List<string>, List<string>) JobsTitles = splitWorkExperience(AnalyzedCv.WorkExperience);
                 (List<string>, List<string>) professionWordsHeEn = splitHeEnList(AnalyzedCv.ProfessionWords);
-                (List<string>, List<string>) professionSkillsHeEn = splitHeEnList(AnalyzedCv.ProfessionSkills);
 
                 AnalyzedCv.Companies = JobsTitles.Item1;
                 AnalyzedCv.JobsTitlesHe = JobsTitles.Item2;
                 AnalyzedCv.JobsTitlesEn = JobsTitles.Item3;
                 AnalyzedCv.professionWordsHe = professionWordsHeEn.Item1;
                 AnalyzedCv.professionWordsEn = professionWordsHeEn.Item2;
-                AnalyzedCv.professionSkillsHe = professionSkillsHeEn.Item1;
-                AnalyzedCv.professionSkillsEn = professionSkillsHeEn.Item2;
 
                 AnalyzedCv.CvLanguage = cvLanguage;
                 AnalyzedCv.CandidateId = candId;
@@ -126,21 +123,22 @@ namespace CvAnalyzeEmbedOpenAiLibrary
                 return new AnalyzedCvModel
                 {
                     Name = obj.Value<string>("name"),
-                    EstimateAge = myParseInt(obj.Value<string>("estimate_age")),
+                    EstimateAge = obj["estimate_age"]?.ToObject<int?>(),
                     Email = obj.Value<string>("email"),
                     Phone = obj.Value<string>("phone"),
                     CityHe = obj.Value<string>("city_he"),
-                    Languages = obj.Value<string>("languages"),
+                    Languages = obj["languages"]?.ToObject<List<string>>() ?? [],
                     WorkExperience = obj["work_experience"]?.ToString() ?? "[]",
                     ProfessionWords = obj["profession_words"]?.ToString() ?? "[]",
-                    ProfessionSkills = obj["profession_skills"]?.ToString() ?? "[]",
-                    Seniority = obj.Value<string>("seniority"),
-                    Education = obj["education_he"]?.ToObject<List<string>>() ?? [],
+                    SeniorityHe = obj.Value<string>("seniority_he"),
+                    SeniorityEn = obj.Value<string>("seniority_en"),
+                    Education = obj["education"]?.ToString() ?? "[]",
                     Skills = obj["skills"]?.ToObject<List<string>>() ?? [],
-                    MilitaryService = obj.Value<string>("military_service_he"),
+                    MilitaryServiceHe = obj.Value<string>("military_service_he"),
+                    MilitaryServiceEn = obj.Value<string>("military_service_en"),
                     SummaryEn = obj.Value<string>("summary_en") ?? "",
                     SummaryHe = obj.Value<string>("summary_he") ?? "",
-                    YearsExperience = myParseInt(obj.Value<string>("years_experience")),
+                    YearsExperience = obj["years_experience"]?.ToObject<int?>(),
                 };
             }
             catch (Exception ex)
@@ -204,8 +202,8 @@ namespace CvAnalyzeEmbedOpenAiLibrary
             foreach (var item in arr)
             {
                 companies.Add(item.Value<string>("company") ?? "");
-                jobsTitlesHe.Add(item.Value<string>("job_title_hebrew") ?? "");
-                jobsTitlesEn.Add(item.Value<string>("job_title_english") ?? "");
+                jobsTitlesHe.Add(item.Value<string>("title_he") ?? "");
+                jobsTitlesEn.Add(item.Value<string>("title_en") ?? "");
             }
 
             return (companies, jobsTitlesHe, jobsTitlesEn);

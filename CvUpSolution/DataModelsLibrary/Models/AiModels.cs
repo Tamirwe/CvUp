@@ -13,15 +13,16 @@ namespace DataModelsLibrary.Models
         [JsonProperty("email")] public string? Email { get; set; }
         [JsonProperty("phone")] public string? Phone { get; set; }
         [JsonProperty("city_he")] public string? CityHe { get; set; }
-        [JsonProperty("languages")] public string? Languages { get; set; }
+        [JsonProperty("languages")] public List<string> Languages { get; set; } = [];
         [JsonProperty("work_experience")] public string WorkExperience { get; set; } = "[]";
         [JsonProperty("profession_words")] public string ProfessionWords { get; set; } = "[]";
-        [JsonProperty("profession_skills")] public string ProfessionSkills { get; set; } = "[]";
-        [JsonProperty("seniority")] public string? Seniority { get; set; }
-        [JsonProperty("education_he")] public List<string> Education { get; set; } = [];
+        [JsonProperty("seniority_he")] public string? SeniorityHe { get; set; }
+        [JsonProperty("seniority_en")] public string? SeniorityEn { get; set; }
+        [JsonProperty("education")] public string Education { get; set; } = "[]";
         [JsonProperty("companies")] public List<string> Companies { get; set; } = [];
         [JsonProperty("skills")] public List<string> Skills { get; set; } = [];
-        [JsonProperty("military_service_he")] public string? MilitaryService { get; set; }
+        [JsonProperty("military_service_he")] public string? MilitaryServiceHe { get; set; }
+        [JsonProperty("military_service_en")] public string? MilitaryServiceEn { get; set; }
         [JsonProperty("summary_en")] public string SummaryEn { get; set; } = "";
         [JsonProperty("summary_he")] public string SummaryHe { get; set; } = "";
         [JsonProperty("years_experience")] public int? YearsExperience { get; set; }
@@ -31,8 +32,6 @@ namespace DataModelsLibrary.Models
         [Newtonsoft.Json.JsonIgnore] public List<string> JobsTitlesHe { get; set; } = [];
         [Newtonsoft.Json.JsonIgnore] public List<string> professionWordsEn { get; set; } = [];
         [Newtonsoft.Json.JsonIgnore] public List<string> professionWordsHe { get; set; } = [];
-        [Newtonsoft.Json.JsonIgnore] public List<string> professionSkillsEn { get; set; } = [];
-        [Newtonsoft.Json.JsonIgnore] public List<string> professionSkillsHe { get; set; } = [];
 
 
         [Newtonsoft.Json.JsonIgnore] public string? Region { get; set; }

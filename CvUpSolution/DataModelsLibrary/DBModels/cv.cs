@@ -37,6 +37,8 @@ public partial class cv
 
     public int? position_type_id { get; set; }
 
+    public virtual ICollection<analyzed_cv> analyzed_cvs { get; set; } = new List<analyzed_cv>();
+
     public virtual candidate candidate { get; set; } = null!;
 
     public virtual ICollection<cvs_txt> cvs_txts { get; set; } = new List<cvs_txt>();

@@ -17,6 +17,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<ai_analyze_cv> ai_analyze_cvs { get; set; }
 
+    public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
+
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
 
     public virtual DbSet<black_cand> black_cands { get; set; }
@@ -73,6 +75,7 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
@@ -111,6 +114,36 @@ public partial class cvupdbContext : DbContext
             entity.HasOne(d => d.candidate).WithMany(p => p.ai_analyze_cvs)
                 .HasForeignKey(d => d.candidate_id)
                 .HasConstraintName("fk_ai_analyze_cvs_candidate_id_candidates_id");
+        });
+
+        modelBuilder.Entity<analyzed_cv>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("analyzed_cvs_pkey");
+
+            entity.Property(e => e.area).HasMaxLength(20);
+            entity.Property(e => e.city_he).HasMaxLength(50);
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.education).HasColumnType("jsonb");
+            entity.Property(e => e.email).HasMaxLength(255);
+            entity.Property(e => e.military_service_he).HasMaxLength(255);
+            entity.Property(e => e.name).HasMaxLength(255);
+            entity.Property(e => e.phone).HasMaxLength(50);
+            entity.Property(e => e.profession_words).HasColumnType("jsonb");
+            entity.Property(e => e.region).HasMaxLength(20);
+            entity.Property(e => e.seniority_en).HasMaxLength(50);
+            entity.Property(e => e.seniority_he).HasMaxLength(50);
+            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.work_experience).HasColumnType("jsonb");
+
+            entity.HasOne(d => d.candidate).WithMany(p => p.analyzed_cvs)
+                .HasForeignKey(d => d.candidate_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("analyzed_cvs_candidate_id_fkey");
+
+            entity.HasOne(d => d.cv).WithMany(p => p.analyzed_cvs)
+                .HasForeignKey(d => d.cv_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("analyzed_cvs_cv_id_fkey");
         });
 
         modelBuilder.Entity<auth_out_email>(entity =>

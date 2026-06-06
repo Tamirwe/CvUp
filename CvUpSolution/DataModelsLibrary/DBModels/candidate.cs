@@ -53,6 +53,8 @@ public partial class candidate
 
     public virtual ICollection<ai_analyze_cv> ai_analyze_cvs { get; set; } = new List<ai_analyze_cv>();
 
+    public virtual ICollection<analyzed_cv> analyzed_cvs { get; set; } = new List<analyzed_cv>();
+
     public virtual company company { get; set; } = null!;
 
     public virtual ICollection<cv> cvs { get; set; } = new List<cv>();

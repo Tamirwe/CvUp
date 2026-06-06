@@ -8,6 +8,7 @@ namespace GeneralLibrary.IsraelCities
     public class IsraeliCitiesModel
     {
         [JsonProperty("city")] public required string city { get; set; }
+        [JsonProperty("city_normalized")] public required string city_normalized { get; set; }
         [JsonProperty("region")] public required string region { get; set; }
         [JsonProperty("area")] public required string area { get; set; }
     }

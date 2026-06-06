@@ -70,7 +70,7 @@ namespace DataModelsLibrary.Models
         public string? Location { get; set; }
         public string? Region { get; set; }
         public string? Area { get; set; }
-        public string? Languages { get; set; }
+        public List<string>? Languages { get; set; } = [];
         public List<string>? JobsTitlesEn { get; set; } = [];
         public List<string>? JobsTitlesHe { get; set; } = [];
         public List<string>? ProfessionWordsEn { get; set; } = [];

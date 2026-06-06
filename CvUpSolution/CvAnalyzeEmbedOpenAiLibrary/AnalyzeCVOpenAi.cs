@@ -234,16 +234,31 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 
             if (!string.IsNullOrWhiteSpace(location) && _citiesRegionList != null)
             {
-                location = location.Replace("קיבוץ", "").Replace("קריית", "קרית").Trim();
                 location = location.Contains("תל אביב") ? "תל אביב - יפו" : location;
 
+                var normalized = System.Text.RegularExpressions.Regex.Replace(
+                    location.Replace("׳", "").Replace("'", "").Replace("'", "")
+                            .Replace("״", "").Replace("\"", "")
+                            .Replace("(", " ").Replace(")", " ").Replace("-", " ")
+                            .Replace("קריית", "קרית"),
+                    @"\s+", " ").Trim();
 
-                IsraeliCitiesModel? locationRecord = _citiesRegionList.FirstOrDefault(x => x.city == location);
+                IsraeliCitiesModel? locationRecord =
+                    _citiesRegionList.FirstOrDefault(x => x.city_normalized == normalized);
 
                 if (locationRecord == null)
                 {
-                    locationRecord = _citiesRegionList.Where(item => Fuzz.Ratio(location, item.city) > 70).ToList().FirstOrDefault();
+                    if (normalized.Contains("כפר") || normalized.Contains("קיבוץ"))
+                    {
+                        normalized = System.Text.RegularExpressions.Regex.Replace(
+                        normalized.Replace("כפר", "").Replace("קיבוץ", ""),
+                        @"\s+", " ").Trim();
+                    }
+
+                    locationRecord = _citiesRegionList.FirstOrDefault(x => x.city_normalized.Contains(normalized));
                 }
+
+                locationRecord ??= _citiesRegionList.FirstOrDefault(x => Fuzz.Ratio(normalized, x.city_normalized) > 70);
 
                 if (locationRecord != null)
                 {
@@ -254,6 +269,7 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 
             return (area, region);
         }
+
         #endregion
 
     }

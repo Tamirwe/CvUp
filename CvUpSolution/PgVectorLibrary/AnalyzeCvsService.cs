@@ -51,29 +51,27 @@ namespace PgVectorLibrary
                 return;
             }
 
-            ai_analyze_cv analyzeCv = new ai_analyze_cv();
+            analyzed_cv analyzeCv = new analyzed_cv();
             analyzeCv.candidate_id = analyzedCv.CandidateId;
             analyzeCv.cv_id = analyzedCv.CvId;
-            analyzeCv.name = GL.UtilsStr.limitLen(analyzedCv.Name, 101);
-            analyzeCv.estimate_age = analyzedCv.EstimateAge;
-            analyzeCv.email = GL.UtilsStr.limitLen(analyzedCv.Email, 150);
-            analyzeCv.phone = GL.UtilsStr.limitLen(analyzedCv.Phone, 20);
-            analyzeCv.city = GL.UtilsStr.limitLen(analyzedCv.CityHe, 50);
+            analyzeCv.name = GL.UtilsStr.limitLen(analyzedCv.Name, 255);
+            analyzeCv.estimate_age = (short?)analyzedCv.EstimateAge;
+            analyzeCv.email = GL.UtilsStr.limitLen(analyzedCv.Email, 255);
+            analyzeCv.phone = GL.UtilsStr.limitLen(analyzedCv.Phone, 50);
+            analyzeCv.city_he = GL.UtilsStr.limitLen(analyzedCv.CityHe, 50);
             analyzeCv.region = GL.UtilsStr.limitLen(analyzedCv.Region, 20);
             analyzeCv.area = GL.UtilsStr.limitLen(analyzedCv.Area, 20);
-            analyzeCv.languages = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Languages), 150);
-            analyzeCv.jobs_titles_en = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.JobsTitlesEn), 500);
-            analyzeCv.jobs_titles_he = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.JobsTitlesHe), 500);
-            analyzeCv.profession_words_en = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionWordsEn), 500);
-            analyzeCv.profession_words_he = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.professionWordsHe), 500);
-            analyzeCv.seniority = GL.UtilsStr.limitLen(analyzedCv.SeniorityHe, 50);
-            analyzeCv.education = GL.UtilsStr.limitLen(analyzedCv.Education, 500);
-            analyzeCv.companies = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Companies), 500);
-            analyzeCv.skills = GL.UtilsStr.limitLen(string.Join(", ", analyzedCv.Skills), 600);
-            analyzeCv.military_service = GL.UtilsStr.limitLen(analyzedCv.MilitaryServiceHe, 250);
+            analyzeCv.languages = analyzedCv.Languages;
+            analyzeCv.skills = analyzedCv.Skills;
+            analyzeCv.work_experience = analyzedCv.WorkExperience;
+            analyzeCv.profession_words = analyzedCv.ProfessionWords;
+            analyzeCv.education = analyzedCv.Education;
+            analyzeCv.seniority_he = GL.UtilsStr.limitLen(analyzedCv.SeniorityHe, 50);
+            analyzeCv.seniority_en = GL.UtilsStr.limitLen(analyzedCv.SeniorityEn, 50);
+            analyzeCv.military_service_he = GL.UtilsStr.limitLen(analyzedCv.MilitaryServiceHe, 255);
             analyzeCv.summary_en = GL.UtilsStr.limitLen(analyzedCv.SummaryEn, 1000);
             analyzeCv.summary_he = GL.UtilsStr.limitLen(analyzedCv.SummaryHe, 1000);
-            analyzeCv.years_experience = analyzedCv.YearsExperience;
+            analyzeCv.years_experience = (short?)analyzedCv.YearsExperience;
 
             await _aiQueries.AddCandidateAnalyzeCv(analyzeCv);
         }

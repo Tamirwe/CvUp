@@ -12,7 +12,7 @@ namespace DataModelsLibrary.Queries
             using var dbContext = new cvupdbContext();
             var vectorLiteral = new Vector(embedding).ToString();
             await dbContext.Database.ExecuteSqlRawAsync(
-                $"UPDATE ai_analyze_cvs SET embedding = '{vectorLiteral}', is_embedded = true WHERE candidate_id = {candidateId}");
+                $"UPDATE analyzed_cvs SET embedding = '{vectorLiteral}' WHERE candidate_id = {candidateId}");
         }
 
         public async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0)
@@ -31,12 +31,12 @@ namespace DataModelsLibrary.Queries
             return await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
         }
 
-        public async Task AddCandidateAnalyzeCv(ai_analyze_cv analyzeCv)
+        public async Task AddCandidateAnalyzeCv(analyzed_cv analyzeCv)
         {
             await DeleteCandidateAnalyzeCv(analyzeCv.candidate_id);
 
             using var dbContext = new cvupdbContext();
-            dbContext.ai_analyze_cvs.Add(analyzeCv);
+            dbContext.analyzed_cvs.Add(analyzeCv);
             await dbContext.SaveChangesAsync();
 
             await UpdateCandIsAnalyzed(analyzeCv.candidate_id, true);
@@ -46,12 +46,12 @@ namespace DataModelsLibrary.Queries
         {
             using var dbContext = new cvupdbContext();
 
-            ai_analyze_cv? record = await dbContext.ai_analyze_cvs
+            analyzed_cv? record = await dbContext.analyzed_cvs
                 .FirstOrDefaultAsync(x => x.candidate_id == candidateId);
 
             if (record != null)
             {
-                dbContext.ai_analyze_cvs.Remove(record);
+                dbContext.analyzed_cvs.Remove(record);
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -74,8 +74,7 @@ namespace DataModelsLibrary.Queries
         {
             using var dbContext = new cvupdbContext();
 
-            var query = from ai in dbContext.ai_analyze_cvs
-                        where ai.is_embedded == false
+            var query = from ai in dbContext.analyzed_cvs
                         select new AnalyzedCvsForEmbeedingModel
                         {
                             CandidateId = ai.candidate_id,
@@ -84,21 +83,14 @@ namespace DataModelsLibrary.Queries
                             Email = ai.email,
                             EstimateAge = ai.estimate_age,
                             Phone = ai.phone,
-                            Location = ai.city,
+                            Location = ai.city_he,
                             Region = ai.region,
                             Area = ai.area,
                             Languages = ai.languages,
-                            JobsTitlesEn = StringToList(ai.jobs_titles_en),
-                            JobsTitlesHe = StringToList(ai.jobs_titles_he),
-                            ProfessionWordsEn = StringToList(ai.profession_words_en),
-                            ProfessionWordsHe = StringToList(ai.profession_words_he),
-                            ProfessionSkillsEn = StringToList(ai.profession_skills_en),
-                            ProfessionSkillsHe = StringToList(ai.profession_skills_he),
-                            Seniority = ai.seniority,
+                            Skills = ai.skills,
+                            Seniority = ai.seniority_he,
                             Education = ai.education,
-                            Companies = StringToList(ai.companies),
-                            Skills = StringToList(ai.skills),
-                            MilitaryService = ai.military_service,
+                            MilitaryService = ai.military_service_he,
                             SummaryEn = ai.summary_en ?? "",
                             SummaryHe = ai.summary_he ?? "",
                             YearsExperience = ai.years_experience,
@@ -107,25 +99,18 @@ namespace DataModelsLibrary.Queries
             return await query.Take(300).ToListAsync();
         }
 
-        public async Task<List<CandidateSearchResultModel>> SearchCvsByEmbedding(float[] queryVector,  int limit = 20)
+        public async Task<List<CandidateSearchResultModel>> SearchCvsByEmbedding(float[] queryVector, int limit = 20)
         {
             using var dbContext = new cvupdbContext();
             var vectorLiteral = new Vector(queryVector).ToString();
-            var sql = $@"SELECT a.candidate_id AS candidateId, a.cv_id AS cvId, a.name, a.city, a.jobs_titles_he AS jobsTitles,
-                         a.profession_words_he AS professionWords, a.estimate_age AS age, a.education, a.companies, a.summary_he AS summary,
-                         a.embedding <=> '{vectorLiteral}' AS distance 
-                         FROM ai_analyze_cvs a
+            var sql = $@"SELECT a.candidate_id AS candidateId, a.cv_id AS cvId, a.name, a.city_he AS city,
+                         a.profession_words AS professionWords, a.estimate_age AS age, a.education, a.summary_he AS summary,
+                         a.embedding <=> '{vectorLiteral}' AS distance
+                         FROM analyzed_cvs a
                          JOIN candidates c ON c.id = a.candidate_id
-                         WHERE a.is_embedded = true
                          ORDER BY distance
                          LIMIT {limit}";
             return await dbContext.candidateSearchResults.FromSqlRaw(sql).ToListAsync();
-        }
-
-        private static List<string>? StringToList(string? str)
-        {
-            if (str == null) return null;
-            return str.Split(',').ToList();
         }
     }
 }

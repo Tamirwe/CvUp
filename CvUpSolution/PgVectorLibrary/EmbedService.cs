@@ -1,4 +1,4 @@
-﻿using CvAnalyzeEmbedOpenAiLibrary;
+using CvAnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 
@@ -21,15 +21,13 @@ namespace PgVectorLibrary
         {
             List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding();
 
+            int total = analyzedCvsForEmbeedingList.Count, counter = 0;
+
             foreach (var analyzeCv in analyzedCvsForEmbeedingList)
             {
-                if (string.IsNullOrEmpty(analyzeCv.SummaryHe) && string.IsNullOrEmpty(analyzeCv.SummaryEn))
-                {
-                    continue;
-                }
-
-                float[] vector = await _embedCvOpenAi.EmbedCv(analyzeCv);
-                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, vector);
+                CvEmbeddings embeddings = await _embedCvOpenAi.EmbedCv(analyzeCv);
+                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, embeddings.Titles, embeddings.Skills, embeddings.Summary, embeddings.Companies);
+                Console.WriteLine($"Embedded candidate {analyzeCv.CandidateId} ({++counter}/{total})");
             }
         }
     }

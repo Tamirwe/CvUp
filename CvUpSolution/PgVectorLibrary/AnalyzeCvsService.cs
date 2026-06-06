@@ -30,7 +30,7 @@ namespace PgVectorLibrary
             {
                 try
                 {
-                    AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.id, candCv.cvTxt);
+                    AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
                     await SaveAnalyzedCv(analyzedCv);
 
                     Console.WriteLine($"Analyzed candidate {candCv.candidateId}  ({++counter}/{total})");

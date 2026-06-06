@@ -1,12 +1,5 @@
 ﻿using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Pgvector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Database.models
 {
@@ -29,15 +22,6 @@ namespace Database.models
         {
             modelBuilder.Entity<CandidateSearchResultModel>().HasNoKey();
 
-            var embeddingProp = modelBuilder.Entity<ai_analyze_cv>()
-                .Property(e => e.embedding)
-                .HasColumnType("vector(1536)")
-                .HasConversion(
-                    v => v == null ? null! : v.ToString(),
-                    v => v == null ? null! : new Vector(v));
-
-            embeddingProp.Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
-            embeddingProp.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         }
     }
 }

@@ -30,6 +30,6 @@ var host = builder.Build();
 
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
 var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
-await analyzeCvsService.AnalyzeCandidatesLastCv();
-//await embedSaveService.EmbedAnalyzeCvs();
+//await analyzeCvsService.AnalyzeCandidatesLastCv();
+await embedSaveService.EmbedAnalyzeCvs();
 

@@ -71,19 +71,20 @@ namespace DataModelsLibrary.Models
         public string? Region { get; set; }
         public string? Area { get; set; }
         public List<string>? Languages { get; set; } = [];
-        public List<string>? JobsTitlesEn { get; set; } = [];
-        public List<string>? JobsTitlesHe { get; set; } = [];
-        public List<string>? ProfessionWordsEn { get; set; } = [];
-        public List<string>? ProfessionWordsHe { get; set; } = [];
-        public List<string>? ProfessionSkillsEn { get; set; } = [];
-        public List<string>? ProfessionSkillsHe { get; set; } = [];
-        public string? Seniority { get; set; }
+        public string? SeniorityHe { get; set; }
+        public string? SeniorityEn { get; set; }
         public string? Education { get; set; }
-        public List<string>? Companies { get; set; } = [];
         public List<string>? Skills { get; set; } = [];
         public string? MilitaryService { get; set; }
-        public string SummaryEn { get; set; } = "";
-        public string SummaryHe { get; set; } = "";
+        public string? WorkExperience { get; set; }
+        public string? ProfessionWords { get; set; }
+        public string? SummaryEn { get; set; }
+        public string? SummaryHe { get; set; }
         public int? YearsExperience { get; set; }
+        public List<string> Companies { get; set; } = [];
+        public List<string> JobsTitlesHe { get; set; } = [];
+        public List<string> JobsTitlesEn { get; set; } = [];
+        public List<string> ProfessionWordsHe { get; set; } = [];
+        public List<string> ProfessionWordsEn { get; set; } = [];
     }
 }

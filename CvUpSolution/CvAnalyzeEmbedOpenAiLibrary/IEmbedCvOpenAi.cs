@@ -4,6 +4,7 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 {
     public interface IEmbedCvOpenAi
     {
-        Task<float[]> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv);
+        Task<CvEmbeddings> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv);
+        Task<float[]?> EmbedText(string? text);
     }
 }

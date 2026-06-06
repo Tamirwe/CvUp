@@ -1,11 +1,13 @@
-﻿using DataModelsLibrary.Models;
+using DataModelsLibrary.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using OpenAI.Embeddings;
-using System.Numerics;
 
 namespace CvAnalyzeEmbedOpenAiLibrary
 {
-    public class EmbedCvOpenAi: IEmbedCvOpenAi
+    public record CvEmbeddings(float[]? Titles, float[]? Skills, float[]? Summary, float[]? Companies);
+
+    public class EmbedCvOpenAi : IEmbedCvOpenAi
     {
         private readonly EmbeddingClient _client;
         public const string _embeddingModel = "text-embedding-3-small";
@@ -16,39 +18,76 @@ namespace CvAnalyzeEmbedOpenAiLibrary
             _client = new EmbeddingClient(_embeddingModel, apiKey);
         }
 
-        public async Task<float[]> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv)
+        public async Task<CvEmbeddings> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv)
         {
-            var text = BuildTextForEmbedding(analyzeCv);
-            var result = await _client.GenerateEmbeddingAsync(text);
-            float[] vector =  result.Value.ToFloats().ToArray();
-            return vector;
+            ParseWorkExperience(analyzeCv);
+            ParseProfessionWords(analyzeCv);
+
+            var titlesText    = Join(analyzeCv.JobsTitlesHe, analyzeCv.JobsTitlesEn, analyzeCv.ProfessionWordsHe, analyzeCv.ProfessionWordsEn);
+            var skillsText    = Join(analyzeCv.Skills);
+            var summaryText   = Join(analyzeCv.SummaryHe, analyzeCv.SummaryEn);
+            var companiesText = Join(analyzeCv.Companies);
+
+            return new CvEmbeddings(
+                Titles:    await EmbedText(titlesText),
+                Skills:    await EmbedText(skillsText),
+                Summary:   await EmbedText(summaryText),
+                Companies: await EmbedText(companiesText)
+            );
         }
 
-        private static string BuildTextForEmbedding(AnalyzedCvsForEmbeedingModel analyzeCv) =>
-           string.Join(" ",
-               analyzeCv.Name ?? "",
-               analyzeCv.Email ?? "",
-               analyzeCv.Phone ?? "",
-               analyzeCv.Location ?? "",
-               analyzeCv.Region ?? "",
-               analyzeCv.Area ?? "",
-               analyzeCv.JobsTitlesEn != null ? string.Join(" ", analyzeCv.JobsTitlesEn) : "",
-               analyzeCv.JobsTitlesHe != null ? string.Join(" ", analyzeCv.JobsTitlesHe) : "",
-               analyzeCv.ProfessionWordsEn != null ? string.Join(" ", analyzeCv.ProfessionWordsEn) : "",
-               analyzeCv.ProfessionWordsHe != null ? string.Join(" ", analyzeCv.ProfessionWordsHe) : "",
-               analyzeCv.ProfessionSkillsEn != null ? string.Join(" ", analyzeCv.ProfessionSkillsEn) : "",
-               analyzeCv.ProfessionSkillsHe != null ? string.Join(" ", analyzeCv.ProfessionSkillsHe) : "",
-               analyzeCv.Seniority ?? "",
-               analyzeCv.Education ?? "",
-               analyzeCv.Companies != null ? string.Join(" ", analyzeCv.Companies) : "",
-               analyzeCv.Skills != null ? string.Join(" ", analyzeCv.Skills) : "",
-               analyzeCv.MilitaryService ?? "",
-               analyzeCv.SummaryEn ?? "",
-               analyzeCv.SummaryHe ?? "",
-               analyzeCv.YearsExperience > 0 ? $"{analyzeCv.YearsExperience} years" : ""
-           ).Trim();
+        public async Task<float[]?> EmbedText(string? text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+            var result = await _client.GenerateEmbeddingAsync(text);
+            return result.Value.ToFloats().ToArray();
+        }
 
-       
+        private static void ParseWorkExperience(AnalyzedCvsForEmbeedingModel analyzeCv)
+        {
+            if (string.IsNullOrWhiteSpace(analyzeCv.WorkExperience)) return;
 
+            var arr = JArray.Parse(analyzeCv.WorkExperience);
+            foreach (var item in arr)
+            {
+                var company = item.Value<string>("company");
+                var titleHe = item.Value<string>("title_he");
+                var titleEn = item.Value<string>("title_en");
+
+                if (!string.IsNullOrWhiteSpace(company)) analyzeCv.Companies.Add(company);
+                if (!string.IsNullOrWhiteSpace(titleHe)) analyzeCv.JobsTitlesHe.Add(titleHe);
+                if (!string.IsNullOrWhiteSpace(titleEn)) analyzeCv.JobsTitlesEn.Add(titleEn);
+            }
+        }
+
+        private static void ParseProfessionWords(AnalyzedCvsForEmbeedingModel analyzeCv)
+        {
+            if (string.IsNullOrWhiteSpace(analyzeCv.ProfessionWords)) return;
+
+            var arr = JArray.Parse(analyzeCv.ProfessionWords);
+            foreach (var item in arr)
+            {
+                var he = item.Value<string>("hebrew");
+                var en = item.Value<string>("english");
+
+                if (!string.IsNullOrWhiteSpace(he)) analyzeCv.ProfessionWordsHe.Add(he);
+                if (!string.IsNullOrWhiteSpace(en)) analyzeCv.ProfessionWordsEn.Add(en);
+            }
+        }
+
+        private static string? Join(params IEnumerable<string?>?[] parts)
+        {
+            var text = string.Join(" ", parts
+                .Where(p => p != null)
+                .SelectMany(p => p!)
+                .Where(s => !string.IsNullOrWhiteSpace(s)));
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
+
+        private static string? Join(params string?[] parts)
+        {
+            var text = string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
     }
 }

@@ -9,10 +9,10 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private ILuceneService _luceneService;
-        public SearchController(ILuceneService luceneService)
+        private ILuceneSearchService _luceneSearchService;
+        public SearchController(ILuceneSearchService luceneSearchService)
         {
-            _luceneService = luceneService;
+            _luceneSearchService = luceneSearchService;
         }
 
         // GET: api/<EmailController>

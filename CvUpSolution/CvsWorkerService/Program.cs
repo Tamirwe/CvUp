@@ -10,7 +10,8 @@ using LuceneLibrary;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        services.AddTransient<ILuceneService, LuceneService>();
+        services.AddTransient<ILuceneSearchService, LuceneSearchService>();
+        services.AddTransient<ILuceneIndexService, LuceneIndexService>();
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IEmailQueries, EmailQueries>();
         services.AddTransient<ICvsFilesService, CvsFilesService>();

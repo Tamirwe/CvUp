@@ -13,16 +13,19 @@ namespace CandsPositionsLibrary
     public partial class CandsPositionsServise : ICandsPositionsServise
     {
         private ICandsPositionsQueries _cvsPositionsQueries;
-        private ILuceneService _luceneService;
+        private ILuceneSearchService _luceneSearchService;
+        private ILuceneIndexService _luceneIndexService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
 
-        public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries, ILuceneService luceneService,
+        public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries,
+            ILuceneSearchService luceneSearchService, ILuceneIndexService luceneIndexService,
             IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
-            _luceneService = luceneService;
+            _luceneSearchService = luceneSearchService;
+            _luceneIndexService = luceneIndexService;
             _emailService = emailService;
             _emailQueries = emailQueries;
             _cvsFilesService = cvsFilesService;
@@ -133,7 +136,7 @@ namespace CandsPositionsLibrary
         public async Task IndexAllCandidates(int companyId)
         {
             List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, 0);
-            await _luceneService.IndexAllCandidates(companyId, cvPropsToIndexList);
+            await _luceneIndexService.IndexAllCandidates(companyId, cvPropsToIndexList);
         }
 
         //public async Task IndexCompanyCvs(int companyId)
@@ -285,14 +288,7 @@ namespace CandsPositionsLibrary
         {
             List<SearchEntry> results = [];
 
-            if (searchVals.exact)
-            {
-                results = await _luceneService.Search(companyId, searchVals);
-            }
-            else
-            {
-                results = await _luceneService.FuzzySearch(companyId, searchVals);
-            }
+            results = await _luceneSearchService.Search(companyId, searchVals);
 
             return results;
         }
@@ -357,7 +353,7 @@ namespace CandsPositionsLibrary
 
             if (cvPropsToIndexList.Count == 0) return;   
 
-            await _luceneService.AddUpdateCandidateDataToIndex( cvPropsToIndexList.First());
+            await _luceneIndexService.AddUpdateCandidateDataToIndex(cvPropsToIndexList.First());
 
             //await _luceneService.DocumentUpdate(companyId, cvPropsToIndexList);
         }

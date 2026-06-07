@@ -17,7 +17,7 @@ namespace DataModelsLibrary.Queries
             if (summaryEmbedding != null)   setClauses.Add($"summary_embedding = '{new Vector(summaryEmbedding)}'");
             if (companiesEmbedding != null) setClauses.Add($"companies_embedding = '{new Vector(companiesEmbedding)}'");
 
-            if (setClauses.Count == 0) return;
+            setClauses.Add("is_embedded = true");
 
             await dbContext.Database.ExecuteSqlRawAsync(
                 $"UPDATE analyzed_cvs SET {string.Join(", ", setClauses)} WHERE candidate_id = {candidateId}");
@@ -90,33 +90,33 @@ namespace DataModelsLibrary.Queries
         {
             using var dbContext = new cvupdbContext();
 
-            var sql = @"SELECT * FROM analyzed_cvs WHERE titles_embedding IS NULL AND skills_embedding IS NULL";
+            var query = from ai in dbContext.analyzed_cvs
+                        where ai.is_embedded == false
+                        select new AnalyzedCvsForEmbeedingModel
+                        {
+                            CandidateId     = ai.candidate_id,
+                            CvId            = ai.cv_id,
+                            Name            = ai.name,
+                            Email           = ai.email,
+                            EstimateAge     = ai.estimate_age,
+                            Phone           = ai.phone,
+                            Location        = ai.city_he,
+                            Region          = ai.region,
+                            Area            = ai.area,
+                            Languages       = ai.languages,
+                            Skills          = ai.skills,
+                            SeniorityHe     = ai.seniority_he,
+                            SeniorityEn     = ai.seniority_en,
+                            Education       = ai.education,
+                            MilitaryService = ai.military_service_he,
+                            WorkExperience  = ai.work_experience,
+                            ProfessionWords = ai.profession_words,
+                            SummaryEn       = ai.summary_en,
+                            SummaryHe       = ai.summary_he,
+                            YearsExperience = ai.years_experience,
+                        };
 
-            var rows = await dbContext.analyzed_cvs.FromSqlRaw(sql).ToListAsync();
-
-            return rows.Select(ai => new AnalyzedCvsForEmbeedingModel
-            {
-                CandidateId    = ai.candidate_id,
-                CvId           = ai.cv_id,
-                Name           = ai.name,
-                Email          = ai.email,
-                EstimateAge    = ai.estimate_age,
-                Phone          = ai.phone,
-                Location       = ai.city_he,
-                Region         = ai.region,
-                Area           = ai.area,
-                Languages      = ai.languages,
-                Skills         = ai.skills,
-                SeniorityHe    = ai.seniority_he,
-                SeniorityEn    = ai.seniority_en,
-                Education      = ai.education,
-                MilitaryService = ai.military_service_he,
-                WorkExperience = ai.work_experience,
-                ProfessionWords = ai.profession_words,
-                SummaryEn      = ai.summary_en,
-                SummaryHe      = ai.summary_he,
-                YearsExperience = ai.years_experience,
-            }).ToList();
+            return await query.ToListAsync();
         }
 
        

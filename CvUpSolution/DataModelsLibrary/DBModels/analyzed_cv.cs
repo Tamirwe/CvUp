@@ -51,6 +51,8 @@ public partial class analyzed_cv
 
     public DateTime? updated_at { get; set; }
 
+    public bool is_embedded { get; set; }
+
     public virtual candidate candidate { get; set; } = null!;
 
     public virtual cv cv { get; set; } = null!;

@@ -18,7 +18,6 @@ builder.Configuration.AddDotNetEnv(envPath);
 string israeliCitiesString = File.ReadAllText("IsraelCities//israeliCities.json");
 List<IsraeliCitiesModel> citiesRegionList = JsonConvert.DeserializeObject<List<IsraeliCitiesModel>>(israeliCitiesString)!;
 
-
 builder.Services.AddSingleton(citiesRegionList);
 builder.Services.AddTransient<IAiQueries, AiQueries>();
 builder.Services.AddTransient<IAnalyzeCvOpenAi, AnalyzeCvOpenAi>();
@@ -30,6 +29,6 @@ var host = builder.Build();
 
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
 var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
-//await analyzeCvsService.AnalyzeCandidatesLastCv();
+await analyzeCvsService.AnalyzeCandidatesLastCv();
 await embedSaveService.EmbedAnalyzeCvs();
 

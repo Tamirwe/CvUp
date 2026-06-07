@@ -75,7 +75,7 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
-    
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");

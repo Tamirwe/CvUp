@@ -76,26 +76,28 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                       whiteSpace: "normal",
                     }}
                   >
-                    <span style={{ color: "#312f2f", fontSize: "0.625rem" }}>
-                      {cand.score}
-                    </span>
-                    <span style={{ color: "#a38c14", fontWeight: "bold" }}>
-                      {`${cand.nameAI && ` - ${cand.nameAI}`}`}
-                    </span>
-                    <span style={{ color: "#9b9b9b" }}>
-                      {cand.estimateAgeAI > 0 && ` - ${cand.estimateAgeAI}`}
-                    </span>
-                    <span style={{ color: "#9b9b9b" }}>
-                      {cand.locationAI && ` - ${cand.locationAI}`}
-                    </span>
+                    <div>
+                      <span style={{ color: "#312f2f", fontSize: "0.625rem" }}>
+                        {cand.score}
+                      </span>
+                      <span style={{ color: "#a38c14", fontWeight: "bold" }}>
+                        {`${cand.nameAI ? ` - ${cand.nameAI}` : ` - ${cand.firstName} ${cand.lastName}`}`}
+                      </span>
+                      <span style={{ color: "#9b9b9b" }}>
+                        {cand.estimateAgeAI > 0 && ` - ${cand.estimateAgeAI}`}
+                      </span>
+                      <span style={{ color: "#9b9b9b" }}>
+                        {cand.locationAI && ` - ${cand.locationAI}`}
+                      </span>
+                    </div>
                     <div
                       style={{
-                        color: "#68a6e9",
+                        whiteSpace: "normal",
+                        color: "gray",
+                        paddingTop: "4px",
                       }}
                     >
-                      {cand.professionWordsAI &&
-                        cand.professionWordsAI.join(", ")}
-                      {"."}
+                      {cand.summaryAI}
                     </div>
                     <div
                       style={{
@@ -144,16 +146,8 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                       {"."}
                     </div> */}
                   </div>
-                  <div
-                    style={{
-                      whiteSpace: "normal",
-                      color: "gray",
-                      paddingTop: "4px",
-                    }}
-                  >
-                    {cand.summaryAI}
-                  </div>
-                  <div
+
+                  {/* <div
                     style={{
                       whiteSpace: "normal",
                       fontSize: "0.875rem",
@@ -162,7 +156,7 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                     }}
                   >
                     {cand.educationAI}
-                  </div>
+                  </div> */}
                 </div>
               </Box>
             </ListItemButton>

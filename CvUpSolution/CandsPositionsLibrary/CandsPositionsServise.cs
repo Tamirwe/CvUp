@@ -498,7 +498,7 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.UpdateBlackCandidateEmailCount(blackCand);
         }
 
-        public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<CandidateSearchResultModel> aiResults)
+        public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<AiCandidateSearchModel> aiResults)
         {
             var candsDict = candsList
                 .Where(x => x != null)
@@ -513,13 +513,12 @@ namespace CandsPositionsLibrary
 
                 cand.NameAI = aiItem.name;
                 cand.LocationAI = aiItem.city;
-                cand.JobsTitlesAI = aiItem.jobsTitles?.Split(',') ?? [];
-                cand.ProfessionWordsAI = aiItem.professionWords?.Split(',') ?? [];
+                cand.JobsTitlesAI = aiItem.jobsTitlesHe.ToArray();
                 cand.EstimateAgeAI = aiItem.age;
                 cand.EducationAI = aiItem.education;
-                cand.CompaniesAI = aiItem.companies?.Split(',') ?? [];
+                cand.CompaniesAI = aiItem.companies.ToArray();
                 cand.SummaryAI = aiItem.summary;
-                cand.score = (int)((1-aiItem.distance) * 100);
+                cand.score = aiItem.score;
                 result.Add(cand);
             }
 

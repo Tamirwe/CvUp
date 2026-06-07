@@ -1,6 +1,7 @@
 using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Pgvector;
 
 namespace DataModelsLibrary.Queries
@@ -121,30 +122,48 @@ namespace DataModelsLibrary.Queries
 
        
 
-
-
-        public async Task<List<CandidateSearchResultModel>> SearchCvsByEmbedding(float[] queryVector, int limit = 20)
+        public async Task<List<AiCandidateSearchModel>> SearchCvsByEmbedding(float[] queryVector, int limit = 20)
         {
             using var dbContext = new cvupdbContext();
             var v = new Vector(queryVector).ToString();
-            var sql = $@"SELECT a.candidate_id AS candidateId, a.cv_id AS cvId, a.name, a.city_he AS city,
-                         a.profession_words AS professionWords, a.estimate_age AS age, a.education, a.summary_he AS summary,
-                         (
-                             COALESCE(a.titles_embedding    <=> '{v}', 0) +
-                             COALESCE(a.skills_embedding    <=> '{v}', 0) +
-                             COALESCE(a.summary_embedding   <=> '{v}', 0) +
-                             COALESCE(a.companies_embedding <=> '{v}', 0)
-                         ) / NULLIF(
-                             (CASE WHEN a.titles_embedding    IS NOT NULL THEN 1 ELSE 0 END +
-                              CASE WHEN a.skills_embedding    IS NOT NULL THEN 1 ELSE 0 END +
-                              CASE WHEN a.summary_embedding   IS NOT NULL THEN 1 ELSE 0 END +
-                              CASE WHEN a.companies_embedding IS NOT NULL THEN 1 ELSE 0 END),
-                         0) AS distance
-                         FROM analyzed_cvs a
-                         JOIN candidates c ON c.id = a.candidate_id
-                         ORDER BY distance
-                         LIMIT {limit}";
-            return await dbContext.candidateSearchResults.FromSqlRaw(sql).ToListAsync();
+            var sql = $@"
+                SELECT
+                    a.candidate_id     AS candidateId,
+                    a.cv_id            AS cvId,
+                    a.name,
+                    a.city_he          AS city,
+                    a.work_experience  AS workExperience,
+                    a.estimate_age     AS age,
+                    a.education,
+                    a.summary_he       AS summary,
+                    (
+                        CASE WHEN a.titles_embedding    IS NOT NULL THEN (a.titles_embedding    <=> '{v}') * 0.40 ELSE 0 END +
+                        CASE WHEN a.skills_embedding    IS NOT NULL THEN (a.skills_embedding    <=> '{v}') * 0.20 ELSE 0 END +
+                        CASE WHEN a.summary_embedding   IS NOT NULL THEN (a.summary_embedding   <=> '{v}') * 0.20 ELSE 0 END +
+                        CASE WHEN a.companies_embedding IS NOT NULL THEN (a.companies_embedding <=> '{v}') * 0.20 ELSE 0 END
+                    ) / NULLIF(
+                        CASE WHEN a.titles_embedding    IS NOT NULL THEN 0.40 ELSE 0 END +
+                        CASE WHEN a.skills_embedding    IS NOT NULL THEN 0.20 ELSE 0 END +
+                        CASE WHEN a.summary_embedding   IS NOT NULL THEN 0.20 ELSE 0 END +
+                        CASE WHEN a.companies_embedding IS NOT NULL THEN 0.20 ELSE 0 END
+                    , 0) AS distance
+                FROM analyzed_cvs a
+                WHERE a.is_embedded = true
+                ORDER BY distance
+                LIMIT {limit}";
+
+            var results = await dbContext.candidateSearchResults.FromSqlRaw(sql).ToListAsync();
+
+            foreach (var r in results)
+            {
+                if (string.IsNullOrWhiteSpace(r.workExperience)) continue;
+                var arr = JArray.Parse(r.workExperience);
+                r.companies    = arr.Select(x => x.Value<string>("company")  ?? "").Where(s => s != "").ToList();
+                r.jobsTitlesHe = arr.Select(x => x.Value<string>("title_he") ?? "").Where(s => s != "").ToList();
+            }
+
+            return results;
         }
+
     }
 }

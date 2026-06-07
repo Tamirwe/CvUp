@@ -42,21 +42,20 @@ namespace DataModelsLibrary.Models
 
     }
 
-    public class CandidateSearchResultModel
+    public class AiCandidateSearchModel
     {
         public int candidateId { get; set; }
         public int cvId { get; set; }
-        public double distance { get; set; }
         public string? name { get; set; }
         public string? city { get; set; }
-        public string? jobsTitles { get; set; }
-        public string? professionWords { get; set; }
+        public string? workExperience { get; set; }
         public int? age { get; set; }
         public string? education { get; set; }
-        public string? companies { get; set; }
         public string? summary { get; set; }
-
-       
+        public double distance { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped] public int score => (int)Math.Round((1 - distance) * 100);
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped] public List<string> companies { get; set; } = [];
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped] public List<string> jobsTitlesHe { get; set; } = [];
     }
 
     public class AnalyzedCvsForEmbeedingModel

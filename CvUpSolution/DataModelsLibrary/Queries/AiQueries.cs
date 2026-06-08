@@ -29,7 +29,9 @@ namespace DataModelsLibrary.Queries
             using var dbContext = new cvupdbContext();
             dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            string sql = sql = @"
+            string candidateFilter = candidateId > 0 ? $"AND ctx.candidate_id = {candidateId}" : "";
+
+            string sql = sql = $@"
                     WITH valid_cvs AS (
                         SELECT candidate_id, MAX(cv_id) AS max_cv_id
                         FROM public.cvs_txt
@@ -41,8 +43,9 @@ namespace DataModelsLibrary.Queries
                     INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
                     INNER JOIN valid_cvs v ON v.candidate_id = ctx.candidate_id AND v.max_cv_id = ctx.cv_id
                     WHERE cnd.is_cv_analyzed = false
+                    {candidateFilter}
                     ORDER BY ctx.candidate_id DESC
-                    LIMIT 5";
+                    LIMIT 500";
 
 
             return await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
@@ -137,15 +140,15 @@ namespace DataModelsLibrary.Queries
                     a.education,
                     a.summary_he       AS summary,
                     (
-                        CASE WHEN a.titles_embedding    IS NOT NULL THEN (a.titles_embedding    <=> '{v}') * 0.40 ELSE 0 END +
-                        CASE WHEN a.skills_embedding    IS NOT NULL THEN (a.skills_embedding    <=> '{v}') * 0.20 ELSE 0 END +
-                        CASE WHEN a.summary_embedding   IS NOT NULL THEN (a.summary_embedding   <=> '{v}') * 0.20 ELSE 0 END +
-                        CASE WHEN a.companies_embedding IS NOT NULL THEN (a.companies_embedding <=> '{v}') * 0.20 ELSE 0 END
+                        CASE WHEN a.titles_embedding    IS NOT NULL THEN (a.titles_embedding    <=> '{v}') * 0.70 ELSE 0 END +
+                        CASE WHEN a.skills_embedding    IS NOT NULL THEN (a.skills_embedding    <=> '{v}') * 0.12 ELSE 0 END +
+                        CASE WHEN a.summary_embedding   IS NOT NULL THEN (a.summary_embedding   <=> '{v}') * 0.13 ELSE 0 END +
+                        CASE WHEN a.companies_embedding IS NOT NULL THEN (a.companies_embedding <=> '{v}') * 0.5 ELSE 0 END
                     ) / NULLIF(
-                        CASE WHEN a.titles_embedding    IS NOT NULL THEN 0.40 ELSE 0 END +
-                        CASE WHEN a.skills_embedding    IS NOT NULL THEN 0.20 ELSE 0 END +
-                        CASE WHEN a.summary_embedding   IS NOT NULL THEN 0.20 ELSE 0 END +
-                        CASE WHEN a.companies_embedding IS NOT NULL THEN 0.20 ELSE 0 END
+                        CASE WHEN a.titles_embedding    IS NOT NULL THEN 0.70 ELSE 0 END +
+                        CASE WHEN a.skills_embedding    IS NOT NULL THEN 0.12 ELSE 0 END +
+                        CASE WHEN a.summary_embedding   IS NOT NULL THEN 0.13 ELSE 0 END +
+                        CASE WHEN a.companies_embedding IS NOT NULL THEN 0.5 ELSE 0 END
                     , 0) AS distance
                 FROM analyzed_cvs a
                 WHERE a.is_embedded = true

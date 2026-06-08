@@ -22,7 +22,7 @@ namespace PgVectorLibrary
 
         public async Task AnalyzeCandidatesLastCv()
         {
-            List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId);
+            List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId, 0);
 
             int counter = 0, total = candsLastCvList.Count;
 

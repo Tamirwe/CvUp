@@ -73,6 +73,75 @@ namespace GeneralLibrary
             return cleanText;
         }
 
+        public static bool IsLikelyReversedHebrew(string text)
+        {
+            string[] normalWords =
+            {
+        // Common words
+        "של", "את", "עם", "על", "אני", "הוא", "היא", "לא", "כן", "רחוב",
+        // CV domain
+        "ניסיון", "ניהול", "תאריך", "כישורים", "השכלה", "תעסוקה", "עבודה",
+        "תפקיד", "חברה", "פרויקט", "צוות", "תקציב", "דוחות", "הכשרה",
+        "מיומנויות", "הישגים", "אחריות", "תכנון", "פיתוח", "שיווק",
+        "מכירות", "לקוחות", "ספקים", "תהליכים", "אסטרטגיה", "הנהלה",
+        "כספים", "שכר", "גיוס", "הדרכה", "בקרה", "תפעול", "רכש",
+        // Education
+        "תואר", "אוניברסיטה", "מכללה", "לימודים", "הסמכה", "קורס",
+        // Time
+        "שנים", "חודשים", "שנה", "נוכחי", "עד", "מאז",
+        // Seniority
+        "מנהל", "סמנכל", "מנכל", "ראש", "עוזר", "בכיר", "זוטר",
+    };
+
+            string[] reversedWords =
+            {
+        // Common words
+        "לש", "תא", "םע", "לע", "ינא", "אוה", "איה", "אל", "ןכ", "בוחר",
+        // CV domain
+        "ןויסינ", "לוהינ", "ךיראת", "םירושיכ", "הלכשה", "הקוסעת", "הדובע",
+        "דיקפת", "הרבח", "טקיורפ", "תווצ", "ביצקת", "תוחוד", "הרשכה",
+        "תויונמוימ", "םיגשיה", "תוירחא", "ןונכת", "חותיפ", "קוויש",
+        "תוריכמ", "תוחוקל", "םיקפס", "םיכילהת", "היגטרטסא", "הלהנה",
+        "םיפסכ", "רכש", "סויג", "הכרדה", "הרקב", "לועפת", "שכר",
+        // Education
+        "ראות", "הטיסרבינוא", "הללכמ", "םידומיל", "הכמסה", "סרוק",
+        // Time
+        "םינש", "םישדוח", "הנש", "יחכונ", "דע", "זאמ",
+        // Seniority
+        "להנמ", "לכנמס", "לכנמ", "שאר", "רזוע", "ריכב", "רטוז",
+    };
+
+            int normalCount = normalWords.Count(w => text.Contains(w));
+            int reversedCount = reversedWords.Count(w => text.Contains(w));
+
+            return reversedCount > normalCount;
+        }
+
+        public static string Reverse(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+
+            // Split into tokens preserving whitespace
+            var tokens = Regex.Split(input, @"(\s+)");
+
+            // Reverse only the non-whitespace tokens, keep whitespace in place
+            var words = tokens.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+            var spaces = tokens.Where(t => string.IsNullOrWhiteSpace(t)).ToArray();
+
+            Array.Reverse(words);
+
+            // Interleave words and spaces back together
+            var sb = new StringBuilder();
+            for (int i = 0; i < words.Length; i++)
+            {
+                sb.Append(words[i]);
+                if (i < spaces.Length)
+                    sb.Append(spaces[i]);
+            }
+
+            return sb.ToString();
+        }
+
         //public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
         //{
         //    // Remove invisible bidirectional marks
@@ -117,46 +186,21 @@ namespace GeneralLibrary
         //    return cleanText;
         //}
 
-        public static bool IsLikelyReversedHebrew(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return false;
 
-            // Split into individual words
-            string[] words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Final forms that should ONLY be at the end of a word
-            char[] sofitLetters = { 'ך', 'ם', 'ן', 'ף', 'ץ' };
-            // Non-final forms that should NOT be at the end of a word
-            char[] nonSofitEndings = { 'כ', 'מ', 'נ', 'פ', 'צ' };
 
-            int count = 0;
+        //public static string Reverse(string input)
+        //{
+        //    if (string.IsNullOrEmpty(input)) return input;
 
-            foreach (var word in words)
-            {
-                // 1. Check if word starts with a "Final" letter
-                if (sofitLetters.Contains(word[0]) && word.Length > 1) count++;
+        //    //return Regex.Replace(input, @"\S+", m =>
+        //    //    new string(m.Value.Reverse().ToArray()));
 
-                if (count > 3)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static string Reverse(string input)
-        {
-            if (string.IsNullOrEmpty(input)) return input;
-
-            //return Regex.Replace(input, @"\S+", m =>
-            //    new string(m.Value.Reverse().ToArray()));
-
-            return string.Create(input.Length, input, (chars, state) =>
-            {
-                state.AsSpan().CopyTo(chars);
-                chars.Reverse();
-            });
-        }
+        //    return string.Create(input.Length, input, (chars, state) =>
+        //    {
+        //        state.AsSpan().CopyTo(chars);
+        //        chars.Reverse();
+        //    });
+        //}
     }
 }

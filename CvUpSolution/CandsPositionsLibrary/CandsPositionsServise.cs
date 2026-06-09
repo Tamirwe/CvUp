@@ -3,11 +3,8 @@ using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
-using Google.Protobuf.WellKnownTypes;
 using LuceneLibrary;
 using QueueLibrary;
-using System.Xml.Linq;
-using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace CandsPositionsLibrary
 {
@@ -15,20 +12,18 @@ namespace CandsPositionsLibrary
     {
         private ICandsPositionsQueries _cvsPositionsQueries;
         private ILuceneSearchService _luceneSearchService;
-        private ILuceneIndexService _luceneIndexService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
         private IDbQueueService _queueService;
 
         public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries,
-            ILuceneSearchService luceneSearchService, ILuceneIndexService luceneIndexService,
+            ILuceneSearchService luceneSearchService, 
             IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService,
             IDbQueueService queueService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
-            _luceneIndexService = luceneIndexService;
             _emailService = emailService;
             _emailQueries = emailQueries;
             _cvsFilesService = cvsFilesService;
@@ -333,7 +328,6 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
             await _queueService.EnqueueAsync("index cv", candReview.candidateId.ToString());
 
-            //Task backgroundTask = Task.Run(() => _luceneIndexService.AddUpdateCandidateDataToIndex(companyId, candReview.candidateId));
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
@@ -355,7 +349,6 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
             await _queueService.EnqueueAsync("index cv", candDetails.candidateId.ToString());
-            //await _luceneIndexService.AddUpdateCandidateDataToIndex(candDetails.companyId, candDetails.candidateId);
         }
 
         public async Task UpdateIsSeen(int companyId, int cvId)

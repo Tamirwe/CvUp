@@ -28,7 +28,6 @@ namespace ImportCvsLibrary
 
         ICandsPositionsServise _cvsPositionsServise;
         IDbQueueService _queueService;
-        ILuceneIndexService _luceneIndexService;
         string _filesRootFolder;
         string _cvupNotBackedUpRootFolder;
         string _gmailUserName;
@@ -44,19 +43,15 @@ namespace ImportCvsLibrary
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
 
-        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService, ILuceneIndexService luceneIndexService)
+        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"]!;
             _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"]!;
             _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"]!;
             _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"]!;
 
-            //EventViewerWriter.InfoMessage($"_gmailUserName: {_gmailUserName}");
-            //EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
-
             _cvsPositionsServise = cvsPositionsServise;
             _queueService = queueService;
-            _luceneIndexService = luceneIndexService;
             _cache = cache;
         }
 

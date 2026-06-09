@@ -18,7 +18,6 @@ namespace CvUpAPI.Startup
         {
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ILuceneSearchService, LuceneSearchService>();
-            services.AddTransient<ILuceneIndexService, LuceneIndexService>();
             services.AddTransient<IEmailQueries, EmailQueries>();
             services.AddTransient<IAuthQueries, AuthQueries>();
             services.AddTransient<IAuthServise, AuthServise>();
@@ -35,9 +34,6 @@ namespace CvUpAPI.Startup
             services.AddTransient<IAiQueries, AiQueries>();
             services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
             services.AddTransient<ISearchCvsService, SearchCvsService>();
-            //services.AddTransient<IOpenAiEmbedderService, OpenAiEmbedderService>();
-            //services.AddTransient<IStoreService, StoreService>();
-            //services.AddTransient<ISearcherService, SearcherService>();
 
             return services;
         }

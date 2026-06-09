@@ -5,6 +5,7 @@ namespace DataModelsLibrary.Models
     public class ImportCvModel
     {
         public int companyId { get; set; }
+        public int candidateId { get; set; } = 0;
         public int cvId { get; set; }
         public DateTime dateCreated { get; set; }
         public string cvKey { get; set; } = "";
@@ -14,7 +15,6 @@ namespace DataModelsLibrary.Models
         public string phone { get; set; } = "";
         public string? city { get; set; }
         public string emailAddress { get; set; } = "";
-        public int candidateId { get; set; } = 0;
         public bool isNewCandidate { get; set; } = false;
         public string candidateName { get; set; } = "";
         public string firstName { get; set; } = "";

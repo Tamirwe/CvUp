@@ -14,7 +14,7 @@ namespace SchedulerWorkerService.Jobs
 
             try
             {
-                await analyzeCvsService.AnalyzeCandidatesLastCv();
+                while (await analyzeCvsService.AnalyzeCvFromQueue()) { }
             }
             catch (OperationCanceledException)
             {

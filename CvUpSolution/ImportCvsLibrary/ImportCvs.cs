@@ -1,5 +1,6 @@
 ﻿using CandsPositionsLibrary;
 using Database.models;
+using QueueLibrary;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using GeneralLibrary;
@@ -25,6 +26,7 @@ namespace ImportCvsLibrary
     {
 
         ICandsPositionsServise _cvsPositionsServise;
+        IDbQueueService _queueService;
         string _filesRootFolder;
         string _cvupNotBackedUpRootFolder;
         string _gmailUserName;
@@ -40,7 +42,7 @@ namespace ImportCvsLibrary
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
 
-        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration)
+        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
             _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"];
@@ -51,6 +53,7 @@ namespace ImportCvsLibrary
             //EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
 
             _cvsPositionsServise = cvsPositionsServise;
+            _queueService = queueService;
             _cache = cache;
         }
 
@@ -169,6 +172,7 @@ namespace ImportCvsLibrary
                                         await CvExtractDataAndSave();
                                         _importCv.exceptionRow = "1500";
 
+                                        
                                     }
                                 }
                             }
@@ -226,6 +230,8 @@ namespace ImportCvsLibrary
                     await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
                     _importCv.exceptionRow = "1400";
                     await AddCandToMatchPosition();
+                    await _queueService.EnqueueAsync("analyze new cv", _importCv.candidateId.ToString());
+
                 }
             }
         }

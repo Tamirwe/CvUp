@@ -2,6 +2,7 @@
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using QueueLibrary;
 using GL = GeneralLibrary;
 
 namespace PgVectorLibrary
@@ -11,12 +12,14 @@ namespace PgVectorLibrary
 
         private readonly IAiQueries _aiQueries;
         private readonly IAnalyzeCvOpenAi _analyzeCvOpenAi;
+        private readonly IDbQueueService _queueService;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, IDbQueueService queueService, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
+            _queueService = queueService;
             _companyId = companyId;
         }
 
@@ -41,6 +44,39 @@ namespace PgVectorLibrary
                     Console.WriteLine($"  problem: {ex.Message}");
                     //throw ex;
                 }
+            }
+        }
+
+        public async Task<bool> AnalyzeCvFromQueue()
+        {
+            var job = await _queueService.DequeueAsync("analyze new cv", "AnalyzeCvsService");
+
+            if (job == null) return false;
+
+            try
+            {
+                int candidateId = int.Parse(job.payload);
+                List<CandCvTxtModel> cvList = await _aiQueries.GetCandsLastCvText(_companyId, candidateId);
+
+                if (cvList.Count == 0)
+                {
+                    await _queueService.CompleteAsync(job.id);
+                    return true;
+                }
+
+                var candCv = cvList[0];
+                AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
+                await SaveAnalyzedCv(analyzedCv);
+
+                await _queueService.CompleteAsync(job.id);
+                Console.WriteLine($"Queue analyzed candidate {candidateId}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Queue analyze failed: {ex.Message}");
+                await _queueService.FailAsync(job.id);
+                return true;
             }
         }
 

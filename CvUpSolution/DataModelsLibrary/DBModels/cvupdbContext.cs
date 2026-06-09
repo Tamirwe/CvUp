@@ -47,6 +47,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<folders_cand> folders_cands { get; set; }
 
+    public virtual DbSet<job_queue> job_queues { get; set; }
+
     public virtual DbSet<keyword> keywords { get; set; }
 
     public virtual DbSet<keywords_group> keywords_groups { get; set; }
@@ -75,7 +77,6 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
@@ -390,6 +391,21 @@ public partial class cvupdbContext : DbContext
             entity.HasOne(d => d.folder).WithMany(p => p.folders_cands)
                 .HasForeignKey(d => d.folder_id)
                 .HasConstraintName("fk_folders_cands_folder_id_folders_id");
+        });
+
+        modelBuilder.Entity<job_queue>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("job_queue_pkey");
+
+            entity.ToTable("job_queue");
+
+            entity.HasIndex(e => new { e.queue_name, e.status, e.visible_at }, "ix_job_queue_pop").HasFilter("(status = 'pending'::text)");
+
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.payload).HasColumnType("jsonb");
+            entity.Property(e => e.queue_name).HasDefaultValueSql("'default'::text");
+            entity.Property(e => e.status).HasDefaultValueSql("'pending'::text");
+            entity.Property(e => e.visible_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<keyword>(entity =>

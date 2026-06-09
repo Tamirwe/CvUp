@@ -1,5 +1,6 @@
 ﻿using CvAnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Queries;
+using QueueLibrary;
 using DotNetEnv.Configuration;
 using GeneralLibrary.IsraelCities;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,8 @@ builder.Services.AddSingleton(citiesRegionList);
 builder.Services.AddTransient<IAiQueries, AiQueries>();
 builder.Services.AddTransient<IAnalyzeCvOpenAi, AnalyzeCvOpenAi>();
 builder.Services.AddTransient<IEmbedCvOpenAi, EmbedCvOpenAi>();
+builder.Services.AddTransient<IQueueQueries, QueueQueries>();
+builder.Services.AddTransient<IDbQueueService, DbQueueService>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 builder.Services.AddTransient<IEmbedService, EmbedService>();
 

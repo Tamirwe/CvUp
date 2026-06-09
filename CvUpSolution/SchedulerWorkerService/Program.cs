@@ -10,6 +10,7 @@ using GeneralLibrary.IsraelCities;
 using Google.Api;
 using ImportCvsLibrary;
 using LuceneLibrary;
+using QueueLibrary;
 using Newtonsoft.Json;
 using PgVectorLibrary;
 using Quartz;
@@ -48,6 +49,8 @@ builder.Services.AddTransient<IEmailQueries, EmailQueries>();
 builder.Services.AddTransient<ICvsFilesService, CvsFilesService>();
 builder.Services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
 builder.Services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+builder.Services.AddTransient<IQueueQueries, QueueQueries>();
+builder.Services.AddTransient<IDbQueueService, DbQueueService>();
 builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
@@ -135,23 +138,17 @@ else
             .WithCronSchedule("0 0 1-4 ? * *"));
 
         //// --- Job 4: AI Analyze New Cvs    ---
-        //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
 
-        //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
-        //   .WithIdentity(aiAnalyzeNewCvs)
-        //   .WithDescription("AI Analyze New Cvs"));
+        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+           .WithIdentity(aiAnalyzeNewCvs)
+           .WithDescription("AI Analyze New Cvs"));
 
-        //// Every minute between 7AM-11PM, Sunday to Friday
-        //q.AddTrigger(opts => opts
-        //    .ForJob(aiAnalyzeNewCvs)
-        //    .WithIdentity("Ai-Analyze-New-Cvs-WeekdayTrigger")
-        //    .WithCronSchedule("0 * 7-22 ? * SUN-FRI"));
-
-        //// Every 2 minutes between 7AM-11PM, Saturday
-        //q.AddTrigger(opts => opts
-        //    .ForJob(aiAnalyzeNewCvs)
-        //    .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
-        //    .WithCronSchedule("0 0/2 7-22 ? * SAT"));
+        // every 10 minutes, between 8:00 AM and 9:50 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(aiAnalyzeNewCvs)
+            .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
+            .WithCronSchedule("0 0/10 8-21 ? * *"));
     });
 }
 

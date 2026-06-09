@@ -6,6 +6,7 @@ using EmailsLibrary;
 using Google.Api;
 using ImportCvsLibrary;
 using LuceneLibrary;
+using QueueLibrary;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
@@ -17,6 +18,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+        services.AddTransient<IQueueQueries, QueueQueries>();
+        services.AddTransient<IDbQueueService, DbQueueService>();
         services.AddTransient<IImportCvs, ImportCvs>();
         services.AddTransient<IDataBaseBackup, DataBaseBackup>();
         services.AddMemoryCache();

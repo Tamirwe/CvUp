@@ -18,6 +18,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((_, services) =>
     {
+        services.AddTransient<ILuceneQueries, LuceneQueries>();
         services.AddTransient<ILuceneSearchService, LuceneSearchService>();
         services.AddTransient<ILuceneIndexService, LuceneIndexService>();
         services.AddTransient<IEmailService, EmailService>();

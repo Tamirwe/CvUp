@@ -9,7 +9,6 @@ namespace DataModelsLibrary.Queries
         Task<int> AddCandidate(candidate importCv);
         Task UpdateCandidate(candidate cand);
         Task<candidate?> GetCandidateByEmail(string email);
-        Task<List<CvsToIndexModel>> GetCandidatesLastCvsToIndex(int companyId, int candidateId = 0);
         //Task<List<CvsToIndexModel>> GetCompanyCvsToIndex(int companyId, int candidateId);
         Task<CandModel?> GetCandidate(int companyId, int candId);
         Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId);

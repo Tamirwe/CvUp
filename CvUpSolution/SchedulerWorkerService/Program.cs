@@ -43,6 +43,7 @@ builder.Services.AddTransient<IAiQueries, AiQueries>();
 builder.Services.AddTransient<IAnalyzeCvOpenAi, AnalyzeCvOpenAi>();
 builder.Services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
 builder.Services.AddTransient<ILuceneSearchService, LuceneSearchService>();
+builder.Services.AddTransient<ILuceneQueries, LuceneQueries>();
 builder.Services.AddTransient<ILuceneIndexService, LuceneIndexService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IEmailQueries, EmailQueries>();

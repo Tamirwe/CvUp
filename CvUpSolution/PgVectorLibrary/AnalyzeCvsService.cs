@@ -23,7 +23,7 @@ namespace PgVectorLibrary
             _companyId = companyId;
         }
 
-        public async Task AnalyzeCandidatesLastCv()
+        public async Task AnalyzeCvsBatch()
         {
             List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId, 0);
 

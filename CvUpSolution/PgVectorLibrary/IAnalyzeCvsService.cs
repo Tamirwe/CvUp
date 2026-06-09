@@ -2,7 +2,7 @@
 {
     public interface IAnalyzeCvsService
     {
-        Task AnalyzeCandidatesLastCv();
+        Task AnalyzeCvsBatch();
         Task<bool> AnalyzeCvFromQueue();
     }
 }

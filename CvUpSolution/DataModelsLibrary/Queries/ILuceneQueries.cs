@@ -4,6 +4,7 @@ namespace DataModelsLibrary.Queries
 {
     public interface ILuceneQueries
     {
-        Task<List<CvsToIndexModel>> GetCandidatesLastCvsToIndex(int companyId, int candidateId = 0);
+        Task<List<CandLastCvModel>> AllCandidatesLastCv();
+        Task<CandLastCvModel?> CandidateLastCv(int candidateId);
     }
 }

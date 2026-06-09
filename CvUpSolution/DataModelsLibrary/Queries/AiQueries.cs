@@ -24,31 +24,64 @@ namespace DataModelsLibrary.Queries
                 $"UPDATE analyzed_cvs SET {string.Join(", ", setClauses)} WHERE candidate_id = {candidateId}");
         }
 
-        public async Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0)
+        public async Task<List<CandLastCvModel>> AllCandidatesLastCvNotAnalysed()
         {
             using var dbContext = new cvupdbContext();
             dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            string candidateFilter = candidateId > 0 ? $"AND ctx.candidate_id = {candidateId}" : "";
-
-            string sql = sql = $@"
+            string sql = $@"
                     WITH valid_cvs AS (
                         SELECT candidate_id, MAX(cv_id) AS max_cv_id
                         FROM public.cvs_txt
                         WHERE cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
                         GROUP BY candidate_id
                     )
-                    SELECT ctx.id, ctx.candidate_id AS candidateId, ctx.cv_id AS cvId, ctx.cv_txt AS cvTxt
+                    SELECT ctx.candidate_id AS candidateId,
+                           ctx.cv_id        AS cvId,
+                           cnd.first_name   AS firstName,
+                           cnd.last_name    AS lastName,
+                           cnd.review  AS reviewText,
+                           cnd.email,
+                           cnd.phone,
+                           ctx.cv_txt       AS cvTxt
                     FROM public.cvs_txt ctx
                     INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
                     INNER JOIN valid_cvs v ON v.candidate_id = ctx.candidate_id AND v.max_cv_id = ctx.cv_id
                     WHERE cnd.is_cv_analyzed = false
-                    {candidateFilter}
+                    AND cnd.is_black_list = false
                     ORDER BY ctx.candidate_id DESC
                     LIMIT 500";
 
+            return await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync();
+        }
 
-            return await dbContext.candCvTxtModel.FromSqlRaw(sql).ToListAsync();
+        public async Task<CandLastCvModel?> CandidateLastCvNotAnalysed(int candidateId)
+        {
+            using var dbContext = new cvupdbContext();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            string sql = $@"
+                   SELECT ctx.candidate_id AS candidateId,
+                   ctx.cv_id        AS cvId,
+                   cnd.first_name   AS firstName,
+                   cnd.last_name    AS lastName,
+                   cnd.review       AS reviewText,
+                   cnd.email,
+                   cnd.phone,
+                   ctx.cv_txt       AS cvTxt
+                        FROM public.cvs_txt ctx
+                        INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
+                        WHERE ctx.candidate_id = {candidateId}
+                        AND cnd.is_black_list = false
+                        AND ctx.cv_txt IS NOT NULL AND TRIM(ctx.cv_txt) <> ''
+                        AND ctx.cv_id = (
+                            SELECT MAX(cv_id)
+                            FROM public.cvs_txt
+                            WHERE candidate_id = {candidateId}
+                            AND cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
+                        )";
+
+            return await dbContext.candLastCv.FromSqlRaw(sql).FirstOrDefaultAsync();
         }
 
         public async Task AddCandidateAnalyzeCv(analyzed_cv analyzeCv)
@@ -168,5 +201,6 @@ namespace DataModelsLibrary.Queries
             return results;
         }
 
+      
     }
 }

@@ -25,7 +25,7 @@ namespace PgVectorLibrary
 
         public async Task AnalyzeCvsBatch()
         {
-            List<CandCvTxtModel> candsLastCvList = await _aiQueries.GetCandsLastCvText(_companyId, 0);
+            List<CandLastCvModel> candsLastCvList = await _aiQueries.AllCandidatesLastCvNotAnalysed();
 
             int counter = 0, total = candsLastCvList.Count;
 
@@ -56,7 +56,7 @@ namespace PgVectorLibrary
             try
             {
                 int candidateId = int.Parse(job.payload);
-                List<CandCvTxtModel> cvList = await _aiQueries.GetCandsLastCvText(_companyId, candidateId);
+                List<CandLastCvModel> cvList = await _aiQueries.CandidateLastCvNotAnalysed( candidateId);
 
                 if (cvList.Count == 0)
                 {

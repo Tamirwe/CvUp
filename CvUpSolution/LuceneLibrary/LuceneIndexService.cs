@@ -1,4 +1,5 @@
 using DataModelsLibrary.Models;
+using DataModelsLibrary.Queries;
 using GeneralLibrary;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
@@ -8,7 +9,6 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 using Microsoft.Extensions.Configuration;
-using System.Text.RegularExpressions;
 
 namespace LuceneLibrary
 {
@@ -30,23 +30,21 @@ namespace LuceneLibrary
 
         public async Task AddUpdateCandidateDataToIndex(int companyId, int candidateId)
         {
-            List<CvsToIndexModel> cvPropsToIndexList = await _luceneQueries.GetCandidatesLastCvsToIndex(companyId, candidateId);
+            CandLastCvModel? cvPropsToIndex = await _luceneQueries.CandidateLastCv( candidateId);
 
-            if (cvPropsToIndexList.Count == 0) return;
+            if (cvPropsToIndex == null) return;
 
-            var candidateDataToIndex = cvPropsToIndexList.First();
-
-            await DocumentDelete(candidateDataToIndex.candidateId);
+            await DocumentDelete(cvPropsToIndex.candidateId);
 
             using var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer);
             using var indexWriter = new IndexWriter(indexDir, config);
-            await Task.Run(() => indexWriter.AddDocument(CandTextToDocument(candidateDataToIndex)));
+            await Task.Run(() => indexWriter.AddDocument(CandTextToDocument(cvPropsToIndex)));
         }
 
         public async Task IndexAllCandidates()
         {
-            List<CvsToIndexModel> allCandsTextToIndexList = await _luceneQueries.GetCandidatesLastCvsToIndex(_companyId, 0);
+            List<CandLastCvModel> allCandsTextToIndexList = await _luceneQueries.AllCandidatesLastCv();
 
             using var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer);
@@ -69,6 +67,17 @@ namespace LuceneLibrary
         private Document CandTextToDocument(CvsToIndexModel cvCand)
         {
             var plainText = CleanString.ExtractPlainText(cvCand.cvsTxt ?? "").ToLowerInvariant();
+            return new Document
+            {
+                new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES),
+                new StoredField("Updated", DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
+                new TextField("CV", plainText, Field.Store.YES)
+            };
+        }
+
+        private Document CandTextToDocument(CandLastCvModel cvCand)
+        {
+            var plainText = CleanString.ExtractPlainText(cvCand.cvTxt ?? "").ToLowerInvariant();
             return new Document
             {
                 new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES),

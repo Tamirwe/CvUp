@@ -6,40 +6,69 @@ namespace DataModelsLibrary.Queries
 {
     public class LuceneQueries : ILuceneQueries
     {
-        public async Task<List<CvsToIndexModel>> GetCandidatesLastCvsToIndex(int companyId, int candidateId = 0)
+
+        public async Task<List<CandLastCvModel>> AllCandidatesLastCv()
         {
             using var dbContext = new cvupdbContext();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            var query = from cand in dbContext.candidates
-                        join cvt in dbContext.cvs_txts
-                        on new { ID = cand.id, cvId = (int)cand.last_cv_id! }
-                        equals new { ID = (int)cvt.candidate_id!, cvId = cvt.cv_id }
-                        where cand.company_id == companyId
-                           && cand.is_black_list == false
-                           && cand.last_cv_id != null
-                           && cvt.candidate_id != null
-                        select new CvsToIndexModel
-                        {
-                            candidateId = cand.id,
-                            firstName = cand.first_name,
-                            lastName = cand.last_name,
-                            reviewText = cand.review,
-                            cvsTxt = cvt.cv_txt,
-                            email = cand.email,
-                            phone = cand.phone,
-                        };
+            string sql = $@"
+                WITH valid_cvs AS (
+                         SELECT candidate_id, MAX(cv_id) AS max_cv_id
+                         FROM public.cvs_txt
+                         WHERE cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
+                         GROUP BY candidate_id
+                     )
+                     SELECT ctx.candidate_id AS candidateId,
+                            ctx.cv_id        AS cvId,
+                            cnd.first_name   AS firstName,
+                            cnd.last_name    AS lastName,
+                            cnd.review  AS reviewText,
+                            cnd.email,
+                            cnd.phone,
+                            ctx.cv_txt       AS cvTxt
+                     FROM public.cvs_txt ctx
+                     INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
+                     INNER JOIN valid_cvs v ON v.candidate_id = ctx.candidate_id AND v.max_cv_id = ctx.cv_id
+                     WHERE cnd.is_black_list = false
+                     ORDER BY ctx.candidate_id DESC";
 
-            if (candidateId > 0)
-                query = query.Where(c => c.candidateId == candidateId);
-
-            List<CvsToIndexModel> candsCvs = await query.ToListAsync();
+            List<CandLastCvModel> candsCvs = await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync();
 
             foreach (var cnd in candsCvs)
-            {
-                cnd.cvsTxt = $"{cnd.candidateId} {cnd.email} {cnd.phone} {cnd.firstName} {cnd.lastName} {cnd.reviewText} {cnd.cvsTxt}";
-            }
+                cnd.cvTxt = $"{cnd.candidateId} {cnd.email} {cnd.phone} {cnd.firstName} {cnd.lastName} {cnd.reviewText} {cnd.cvTxt}";
 
             return candsCvs;
         }
+
+        public async Task<CandLastCvModel?> CandidateLastCv(int candidateId)
+        {
+            using var dbContext = new cvupdbContext();
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            string sql = $@"
+                   SELECT ctx.candidate_id AS candidateId,
+                   ctx.cv_id        AS cvId,
+                   cnd.first_name   AS firstName,
+                   cnd.last_name    AS lastName,
+                   cnd.review       AS reviewText,
+                   cnd.email,
+                   cnd.phone,
+                   ctx.cv_txt       AS cvTxt
+                        FROM public.cvs_txt ctx
+                        INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
+                        WHERE ctx.candidate_id = {candidateId}
+                        AND cnd.is_black_list = false
+                        AND ctx.cv_txt IS NOT NULL AND TRIM(ctx.cv_txt) <> ''
+                        AND ctx.cv_id = (
+                            SELECT MAX(cv_id)
+                            FROM public.cvs_txt
+                            WHERE candidate_id = {candidateId}
+                            AND cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
+                        )";
+
+            return await dbContext.candLastCv.FromSqlRaw(sql).FirstOrDefaultAsync();
+        }
+
     }
 }

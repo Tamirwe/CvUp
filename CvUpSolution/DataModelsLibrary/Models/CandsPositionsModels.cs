@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModelsLibrary.Models
 {
@@ -50,6 +51,28 @@ namespace DataModelsLibrary.Models
         public DateTime? lastCvSent { get; set; }
     }
 
+    public class CandLastCvModel
+    {
+        [Key]
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public string? firstName { get; set; } = "";
+        public string? lastName { get; set; } = "";
+        public string? reviewText { get; set; } = "";
+        public string? email { get; set; } = "";
+        public string? phone { get; set; } = "";
+        public string? cvTxt { get; set; } = "";
+    }
+
+    public class CandCvTxtModel
+    {
+        public int id { get; set; }
+        public int candidateId { get; set; }
+        public int cvId { get; set; }
+        public string? cvTxt { get; set; } = "";
+    }
+
+
     public class AiCvModel
     {
         public int id { get; set; }
@@ -73,14 +96,6 @@ namespace DataModelsLibrary.Models
         public int? candidateId { get; set; }
         public string? cvTxt { get; set; } = "";
         public int? asciiSum { get; set; }
-    }
-
-    public class CandCvTxtModel
-    {
-        public int id { get; set; }
-        public int candidateId { get; set; }
-        public int cvId { get; set; }
-        public string? cvTxt { get; set; } = "";
     }
 
     public class CandCvModel

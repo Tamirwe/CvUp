@@ -37,7 +37,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         {
             await LoadJsonRegionCitiesAsync();
 
-            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+            List<CandLastCvModel> candidatesCvToAnalyzeList = await _candsCvsQueries.AllCandidatesLastCvNotAnalysed(_companyId);
             await AiAnalyzeAndStoreCandidatesLastCv(candidatesCvToAnalyzeList);
         }
 
@@ -45,11 +45,11 @@ namespace OpenAiLibrary.AnalyzeCvsAI
         {
             await LoadJsonRegionCitiesAsync();
 
-            List<CandCvTxtModel> candidatesCvToAnalyzeList = await _candsCvsQueries.GetCandsLastCvText(_companyId);
+            List<CandLastCvModel> candidatesCvToAnalyzeList = await _candsCvsQueries.AllCandidatesLastCvNotAnalysed(_companyId);
             await AiAnalyzeAndStoreCandidatesLastCv(candidatesCvToAnalyzeList);
         }
 
-        private async Task AiAnalyzeAndStoreCandidatesLastCv(List<CandCvTxtModel> candidatesCvToAnalyzeList)
+        private async Task AiAnalyzeAndStoreCandidatesLastCv(List<CandLastCvModel> candidatesCvToAnalyzeList)
         {
             string? json;
 
@@ -100,7 +100,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
                     AnalyzedCv.CvLanguage = cvLanguage;
                     AnalyzedCv.CandidateId = candCv.candidateId;
-                    AnalyzedCv.CvId = candCv.id;
+                    AnalyzedCv.CvId = candCv.cvId;
 
                     (string?, string?) areaRegion = FindAreaRegion(AnalyzedCv.CityHe);
 
@@ -262,10 +262,10 @@ namespace OpenAiLibrary.AnalyzeCvsAI
 
 
 
-//public async Task AiAnalyzeAndStoreAllCandidatesLastCv(int companyId = 154)
+//public async Task AiAnalyzeAndStoreAllCandidatesLastCvNotAnalysed(int companyId = 154)
 //{
 //    await LoadJsonRegionCitiesAsync();
-//    List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.GetCandsLastCvText(companyId);
+//    List<CandCvTxtModel> allCandidatesLastCvList = await _candsCvsQueries.AllCandidatesLastCvNotAnalysed(companyId);
 
 //    foreach (var candCv in allCandidatesLastCvList)
 //    {

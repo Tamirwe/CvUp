@@ -5,7 +5,8 @@ namespace DataModelsLibrary.Queries
 {
     public interface IAiQueries
     {
-        Task<List<CandCvTxtModel>> GetCandsLastCvText(int companyId = 154, int candidateId = 0);
+        Task<List<CandLastCvModel>> AllCandidatesLastCvNotAnalysed();
+        Task<CandLastCvModel?> CandidateLastCvNotAnalysed(int candidateId);
         Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding();
         Task AddCandidateAnalyzeCv(analyzed_cv analyzeCv);
         Task DeleteCandidateAnalyzeCv(int candidateId);

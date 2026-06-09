@@ -327,23 +327,7 @@ namespace CandsPositionsLibrary
         public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
-            //await SaveCandidateToIndex(companyId, candReview.candidateId);
-
-            Task backgroundTask = Task.Run(() => SaveCandidateToIndex(companyId, candReview.candidateId));
-
-        }
-
-        public async Task SaveCandidateToIndex(int companyId, int candidateId)
-        {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, candidateId);
-
-            //List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, candidateId);
-
-            if (cvPropsToIndexList.Count == 0) return;   
-
-            await _luceneIndexService.AddUpdateCandidateDataToIndex(cvPropsToIndexList.First());
-
-            //await _luceneService.DocumentUpdate(companyId, cvPropsToIndexList);
+            Task backgroundTask = Task.Run(() => _luceneIndexService.AddUpdateCandidateDataToIndex(companyId, candReview.candidateId));
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
@@ -364,7 +348,7 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandDetails(CandDetailsModel candDetails)
         {
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
-            await SaveCandidateToIndex(candDetails.companyId, candDetails.candidateId);
+            await _luceneIndexService.AddUpdateCandidateDataToIndex(candDetails.companyId, candDetails.candidateId);
         }
 
         public async Task UpdateIsSeen(int companyId, int cvId)

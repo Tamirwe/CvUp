@@ -1,10 +1,8 @@
-using DataModelsLibrary.Models;
-
 namespace LuceneLibrary
 {
     public interface ILuceneIndexService
     {
-        Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex);
+        Task AddUpdateCandidateDataToIndex(int companyId, int candidateId);
         Task IndexAllCandidates();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CandsPositionsLibrary;
 using Database.models;
+using LuceneLibrary;
 using QueueLibrary;
 using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
@@ -27,6 +28,7 @@ namespace ImportCvsLibrary
 
         ICandsPositionsServise _cvsPositionsServise;
         IDbQueueService _queueService;
+        ILuceneIndexService _luceneIndexService;
         string _filesRootFolder;
         string _cvupNotBackedUpRootFolder;
         string _gmailUserName;
@@ -42,7 +44,7 @@ namespace ImportCvsLibrary
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
 
-        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService)
+        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService, ILuceneIndexService luceneIndexService)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
             _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"];
@@ -54,6 +56,7 @@ namespace ImportCvsLibrary
 
             _cvsPositionsServise = cvsPositionsServise;
             _queueService = queueService;
+            _luceneIndexService = luceneIndexService;
             _cache = cache;
         }
 
@@ -227,7 +230,7 @@ namespace ImportCvsLibrary
                     _importCv.exceptionRow = "1200";
                     await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
                     _importCv.exceptionRow = "1300";
-                    await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
+                    await _luceneIndexService.AddUpdateCandidateDataToIndex(_importCv.companyId, _importCv.candidateId);
                     _importCv.exceptionRow = "1400";
                     await AddCandToMatchPosition();
                     await _queueService.EnqueueAsync("analyze new cv", _importCv.candidateId.ToString());

@@ -29,8 +29,14 @@ namespace LuceneLibrary
             _candsPositionsQueries = candsPositionsQueries;
         }
 
-        public async Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex)
+        public async Task AddUpdateCandidateDataToIndex(int companyId, int candidateId)
         {
+            List<CvsToIndexModel> cvPropsToIndexList = await _candsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, candidateId);
+
+            if (cvPropsToIndexList.Count == 0) return;
+
+            var candidateDataToIndex = cvPropsToIndexList.First();
+
             await DocumentDelete(candidateDataToIndex.candidateId);
 
             using var indexDir = FSDirectory.Open(new DirectoryInfo(_indexFolder));

@@ -5,6 +5,7 @@ using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using Google.Protobuf.WellKnownTypes;
 using LuceneLibrary;
+using QueueLibrary;
 using System.Xml.Linq;
 using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
@@ -18,10 +19,12 @@ namespace CandsPositionsLibrary
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
+        private IDbQueueService _queueService;
 
         public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries,
             ILuceneSearchService luceneSearchService, ILuceneIndexService luceneIndexService,
-            IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService)
+            IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService,
+            IDbQueueService queueService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
@@ -29,6 +32,7 @@ namespace CandsPositionsLibrary
             _emailService = emailService;
             _emailQueries = emailQueries;
             _cvsFilesService = cvsFilesService;
+            _queueService = queueService;
         }
 
         public async Task<int> AddCv(ImportCvModel importCv)
@@ -327,7 +331,9 @@ namespace CandsPositionsLibrary
         public async Task SaveCandReview(int companyId, CandReviewModel candReview)
         {
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
-            Task backgroundTask = Task.Run(() => _luceneIndexService.AddUpdateCandidateDataToIndex(companyId, candReview.candidateId));
+            await _queueService.EnqueueAsync("index cv", candReview.candidateId.ToString());
+
+            //Task backgroundTask = Task.Run(() => _luceneIndexService.AddUpdateCandidateDataToIndex(companyId, candReview.candidateId));
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
@@ -348,7 +354,8 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandDetails(CandDetailsModel candDetails)
         {
             await _cvsPositionsQueries.UpdateCandDetails(candDetails);
-            await _luceneIndexService.AddUpdateCandidateDataToIndex(candDetails.companyId, candDetails.candidateId);
+            await _queueService.EnqueueAsync("index cv", candDetails.candidateId.ToString());
+            //await _luceneIndexService.AddUpdateCandidateDataToIndex(candDetails.companyId, candDetails.candidateId);
         }
 
         public async Task UpdateIsSeen(int companyId, int cvId)

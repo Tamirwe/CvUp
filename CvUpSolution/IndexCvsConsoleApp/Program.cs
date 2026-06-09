@@ -7,6 +7,7 @@ using EmailsLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QueueLibrary;
 
 Console.WriteLine("Hello, World!");
 
@@ -25,6 +26,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IEmailQueries, EmailQueries>();
         services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+        services.AddTransient<IQueueQueries, QueueQueries>();
+        services.AddTransient<IDbQueueService, DbQueueService>();
         services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
     })
     .Build();

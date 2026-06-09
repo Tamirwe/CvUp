@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CandsPositionsLibrary\CandsPositionsLibrary.csproj" />
-    <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
     <ProjectReference Include="..\QueueLibrary\QueueLibrary.csproj" />
   </ItemGroup>
 

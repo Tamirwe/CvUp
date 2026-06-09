@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+    <ProjectReference Include="..\QueueLibrary\QueueLibrary.csproj" />
   </ItemGroup>
 
 </Project>

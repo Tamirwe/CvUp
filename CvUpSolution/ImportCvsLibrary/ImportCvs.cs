@@ -46,10 +46,10 @@ namespace ImportCvsLibrary
 
         public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService, ILuceneIndexService luceneIndexService)
         {
-            _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
-            _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"];
-            _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"];
-            _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"];
+            _filesRootFolder = configuration["CVS_ROOT_FOLDER"]!;
+            _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"]!;
+            _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"]!;
+            _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"]!;
 
             //EventViewerWriter.InfoMessage($"_gmailUserName: {_gmailUserName}");
             //EventViewerWriter.InfoMessage($"_mailPassword: {_mailPassword}");
@@ -205,34 +205,25 @@ namespace ImportCvsLibrary
 
             if (!isBlackCand)
             {
-                _importCv.exceptionRow = "500";
                 await CandidateFindOrCreate();
 
-                _importCv.exceptionRow = "600";
                 GetCvAsciiSum();
-                _importCv.exceptionRow = "700";
                 await CheckIsCvDuplicateOrSameCv();
 
                 if (_importCv.isSameCvEmailSubject)
                 {
-                    _importCv.exceptionRow = "800";
                     await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
                 }
                 else
                 {
                     //await AddPositionName();
-                    _importCv.exceptionRow = "900";
                     await AddCvToDb();
-                    _importCv.exceptionRow = "1000";
                     RenameAndMoveAttachmentToFolder();
-                    _importCv.exceptionRow = "1100";
                     await _cvsPositionsServise.UpdateCvKeyId(_importCv);
-                    _importCv.exceptionRow = "1200";
                     await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
-                    _importCv.exceptionRow = "1300";
-                    await _luceneIndexService.AddUpdateCandidateDataToIndex(_importCv.companyId, _importCv.candidateId);
-                    _importCv.exceptionRow = "1400";
                     await AddCandToMatchPosition();
+                    
+                    await _queueService.EnqueueAsync("index cv", _importCv.candidateId.ToString());
                     await _queueService.EnqueueAsync("analyze new cv", _importCv.candidateId.ToString());
 
                 }

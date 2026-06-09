@@ -8,6 +8,7 @@ using EmailsLibrary;
 using FoldersLibrary;
 using LuceneLibrary;
 using PgVectorLibrary;
+using QueueLibrary;
 
 namespace CvUpAPI.Startup
 {
@@ -26,6 +27,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IFoldersService, FoldersService>();
             services.AddTransient<ICvsFilesService, CvsFilesService>();
             services.AddTransient<ICustomersContactsService, CustomersContactsService>();
+            services.AddTransient<IQueueQueries, QueueQueries>();
+            services.AddTransient<IDbQueueService, DbQueueService>();
             services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();

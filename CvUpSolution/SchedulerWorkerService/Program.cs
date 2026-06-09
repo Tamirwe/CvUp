@@ -145,11 +145,24 @@ else
            .WithIdentity(aiAnalyzeNewCvs)
            .WithDescription("AI Analyze New Cvs"));
 
-        // every 10 minutes, between 8:00 AM and 9:50 PM, every day.
+        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
         q.AddTrigger(opts => opts
             .ForJob(aiAnalyzeNewCvs)
             .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
-            .WithCronSchedule("0 0/10 8-21 ? * *"));
+            .WithCronSchedule("0 0/2 8-21 ? * *"));
+
+        //// --- Job 5: Lucene Index Cvs    ---
+        var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
+
+        q.AddJob<LuceneIndexCvsJob>(opts => opts
+           .WithIdentity(luceneIndexCvs)
+           .WithDescription("Lucene Index Cvs"));
+
+        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(luceneIndexCvs)
+            .WithIdentity("Lucene-Index-Cvs-SaturdayTrigger")
+            .WithCronSchedule("0 0/2 8-21 ? * *"));
     });
 }
 

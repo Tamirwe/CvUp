@@ -29,9 +29,10 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var cvsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();
+var luceneIndexService = host.Services.GetRequiredService<ILuceneIndexService>();
 //await cvsPositionsServise.UpdateCvsAsciiSum(154);
 
-await cvsPositionsServise.IndexAllCandidates(154);
+await luceneIndexService.IndexAllCandidates();
 
 //await cvsPositionsServise.IndexCompanyCvs(154);
 

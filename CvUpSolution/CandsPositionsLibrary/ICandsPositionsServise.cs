@@ -15,7 +15,6 @@ namespace CandsPositionsLibrary
         Task DeleteCv(int companyId, int candidateId, int cvId);
         Task DeleteCandidate(int companyId, int candidateId);
         Task AddUpdateCandidateFromCvImport(ImportCvModel importCv);
-        Task IndexAllCandidates(int companyId);
         //Task IndexCompanyCvs(int companyId);
         Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds);
         Task<int> AddPosition(PositionModel data, int companyId, int userId);

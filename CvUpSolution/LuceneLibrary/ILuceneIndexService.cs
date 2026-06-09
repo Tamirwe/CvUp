@@ -5,6 +5,6 @@ namespace LuceneLibrary
     public interface ILuceneIndexService
     {
         Task AddUpdateCandidateDataToIndex(CvsToIndexModel candidateDataToIndex);
-        Task IndexAllCandidates(int companyId, List<CvsToIndexModel> allCandsTextToIndexList);
+        Task IndexAllCandidates();
     }
 }

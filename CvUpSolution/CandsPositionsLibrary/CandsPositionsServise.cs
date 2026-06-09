@@ -133,18 +133,6 @@ namespace CandsPositionsLibrary
             }
         }
 
-        public async Task IndexAllCandidates(int companyId)
-        {
-            List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCandidatesLastCvsToIndex(companyId, 0);
-            await _luceneIndexService.IndexAllCandidates(companyId, cvPropsToIndexList);
-        }
-
-        //public async Task IndexCompanyCvs(int companyId)
-        //{
-        //    List<CvsToIndexModel> cvPropsToIndexList = await _cvsPositionsQueries.GetCompanyCvsToIndex(companyId, 0);
-        //    await _luceneService.CompanyIndexAddDocuments(companyId, cvPropsToIndexList, true);
-        //}
-
         public async Task<CandModel?> GetCandidate(int companyId, int candId)
         {
             var result = await _cvsPositionsQueries.GetCandidate(companyId, candId);

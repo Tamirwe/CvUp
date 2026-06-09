@@ -47,7 +47,7 @@ namespace LuceneLibrary
 
         public async Task<bool> IndexNewCvFromQueue()
         {
-            var job = await _queueService.DequeueAsync("index new cv", "LuceneIndexService");
+            var job = await _queueService.DequeueAsync("index cv", "LuceneIndexService");
 
             if (job == null) return false;
 

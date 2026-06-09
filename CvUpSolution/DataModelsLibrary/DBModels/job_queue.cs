@@ -15,8 +15,6 @@ public partial class job_queue
 
     public int attempts { get; set; }
 
-    public int max_attempts { get; set; }
-
     public DateTime created_at { get; set; }
 
     public DateTime visible_at { get; set; }
@@ -24,4 +22,6 @@ public partial class job_queue
     public DateTime? locked_at { get; set; }
 
     public string? locked_by { get; set; }
+
+    public int max_attempts { get; set; }
 }

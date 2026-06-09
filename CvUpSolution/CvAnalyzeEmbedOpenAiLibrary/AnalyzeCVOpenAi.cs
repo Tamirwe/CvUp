@@ -13,21 +13,22 @@ namespace CvAnalyzeEmbedOpenAiLibrary
     public class AnalyzeCvOpenAi : IAnalyzeCvOpenAi
     {
 
-        private OpenAIClient client;
-        private ChatClient chatClient;
-
-        private List<IsraeliCitiesModel> _citiesRegionList;
-        private string promptForCvAnalyze = "";
+        private ChatClient? _chatClient;
+        private readonly string? _apiKey;
+        private readonly List<IsraeliCitiesModel> _citiesRegionList;
+        private string? _prompt;
 
         public AnalyzeCvOpenAi(IConfiguration configuration, List<IsraeliCitiesModel> citiesRegionList)
         {
-            var apiKey = configuration["API_KEY"];
-
-            client = new OpenAIClient(apiKey);
-            chatClient = client.GetChatClient("gpt-4o-mini");
-            promptForCvAnalyze = File.ReadAllText("cv_prompt.txt");
+            _apiKey = configuration["API_KEY"];
             _citiesRegionList = citiesRegionList;
         }
+
+        private ChatClient ChatClient =>
+            _chatClient ??= new OpenAIClient(_apiKey).GetChatClient("gpt-4o-mini");
+
+        private string Prompt =>
+            _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "cv_prompt.txt"));
 
         public async Task<AnalyzedCvModel?> AiAnalyzeCv(int candId, int cvId, string? cvText)
         {
@@ -46,7 +47,7 @@ namespace CvAnalyzeEmbedOpenAiLibrary
 
                 var messages = new List<ChatMessage>
                     {
-                        new SystemChatMessage(promptForCvAnalyze),
+                        new SystemChatMessage(Prompt),
                         new UserChatMessage(textCv)
                     };
 
@@ -56,7 +57,7 @@ namespace CvAnalyzeEmbedOpenAiLibrary
                     ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
                 };
 
-                var completion = await chatClient.CompleteChatAsync(messages, chatOptions);
+                var completion = await ChatClient.CompleteChatAsync(messages, chatOptions);
 
                 json = completion.Value.Content[0].Text;
 

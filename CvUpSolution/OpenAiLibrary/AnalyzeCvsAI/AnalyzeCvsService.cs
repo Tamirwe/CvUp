@@ -29,7 +29,7 @@ namespace OpenAiLibrary.AnalyzeCvsAI
             _candsCvsQueries = candsCvsQueries;
             client = new OpenAIClient(apiKey);
             chatClient = client.GetChatClient("gpt-4o-mini");
-            promptForCvAnalyze = File.ReadAllText("AnalyzeCvsAI\\cv_prompt.txt");
+            promptForCvAnalyze = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "AnalyzeCvsAI", "cv_prompt.txt"));
             _companyId = companyId;
         }
 

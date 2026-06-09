@@ -402,6 +402,7 @@ public partial class cvupdbContext : DbContext
             entity.HasIndex(e => new { e.queue_name, e.status, e.visible_at }, "ix_job_queue_pop").HasFilter("(status = 'pending'::text)");
 
             entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.max_attempts).HasDefaultValue(3);
             entity.Property(e => e.payload).HasColumnType("jsonb");
             entity.Property(e => e.queue_name).HasDefaultValueSql("'default'::text");
             entity.Property(e => e.status).HasDefaultValueSql("'pending'::text");

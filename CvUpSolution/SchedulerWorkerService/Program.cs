@@ -58,13 +58,14 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 
-bool isDebugMode = builder.Configuration.GetValue<bool>("DebugMode");
+bool isDebugMode = builder.Environment.IsDevelopment();
 
 if (isDebugMode)
 {
     // ****** Debug: jobs fire immediately on startup
     builder.Services.AddQuartz(q =>
     {
+        //// --- Job 1: Import Gmail Cvs  ---
         var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
         q.AddJob<ImportGmailCvsJob>(opts => opts
@@ -74,6 +75,31 @@ if (isDebugMode)
         q.AddTrigger(opts => opts
             .ForJob(importGmailCvsJobKey)
             .WithIdentity("ImportGmailCvs").StartNow());
+
+        //// --- Job 4: AI Analyze New Cvs    ---
+        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+
+        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+           .WithIdentity(aiAnalyzeNewCvs)
+           .WithDescription("AI Analyze New Cvs"));
+
+        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(aiAnalyzeNewCvs)
+            .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
+
+        //// --- Job 5: Lucene Index Cvs    ---
+        var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
+
+        q.AddJob<LuceneIndexCvsJob>(opts => opts
+           .WithIdentity(luceneIndexCvs)
+           .WithDescription("Lucene Index Cvs"));
+
+        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(luceneIndexCvs)
+            .WithIdentity("LuceneIndexCvsJob").StartNow());
+
 
         //var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 

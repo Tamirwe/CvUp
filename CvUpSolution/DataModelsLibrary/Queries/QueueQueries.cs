@@ -24,24 +24,30 @@ namespace DataModelsLibrary.Queries
         public async Task<job_queue?> DequeueAsync(string queueName, string workerId)
         {
             using var db = new cvupdbContext();
-            var sql = $@"
-                UPDATE job_queue
-                SET    status    = 'processing',
-                       locked_at = NOW(),
-                       locked_by = '{workerId}',
-                       attempts  = attempts + 1
-                WHERE  id = (
-                    SELECT id FROM job_queue
-                    WHERE  queue_name = '{queueName}'
-                      AND  status     = 'pending'
-                      AND  visible_at <= NOW()
-                    ORDER  BY visible_at
-                    LIMIT  1
-                    FOR UPDATE SKIP LOCKED
-                )
-                RETURNING *";
 
-            return await db.job_queues.FromSqlRaw(sql).FirstOrDefaultAsync();
+            var ids = await db.Database
+                .SqlQuery<long>($"""
+                    UPDATE job_queue
+                    SET    status    = 'processing',
+                           locked_at = NOW(),
+                           locked_by = {workerId},
+                           attempts  = attempts + 1
+                    WHERE  id = (
+                        SELECT id FROM job_queue
+                        WHERE  queue_name = {queueName}
+                          AND  status     = 'pending'
+                          AND  visible_at <= NOW()
+                        ORDER  BY visible_at
+                        LIMIT  1
+                        FOR UPDATE SKIP LOCKED
+                    )
+                    RETURNING id
+                    """)
+                .ToListAsync();
+
+            if (ids.Count == 0) return null;
+
+            return await db.job_queues.FindAsync(ids[0]);
         }
 
         public async Task CompleteAsync(long jobId)

@@ -67,7 +67,7 @@ namespace DataModelsLibrary.Queries
                             AND cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
                         )";
 
-            return await dbContext.candLastCv.FromSqlRaw(sql).FirstOrDefaultAsync();
+            return (await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync()).FirstOrDefault();
         }
 
     }

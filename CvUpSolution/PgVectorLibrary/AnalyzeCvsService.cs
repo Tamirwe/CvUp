@@ -80,6 +80,28 @@ namespace PgVectorLibrary
             }
         }
 
+        /// <summary>
+        /// Analyze Candidate - For Debug
+        /// </summary>
+        /// <param name="candidateId"></param>
+        /// <returns></returns>
+        public async Task AnalyzeCandidate(int candidateId)
+        {
+            try
+            {
+                CandLastCvModel? cv = await _aiQueries.CandidateLastCvNotAnalysed(candidateId);
+
+                var candCv = cv;
+                AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
+                await SaveAnalyzedCv(analyzedCv);
+              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Queue analyze failed: {ex.Message}");
+            }
+        }
+
         private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
         {
             if (analyzedCv == null)

@@ -4,5 +4,6 @@
     {
         Task AnalyzeCvsBatch();
         Task<bool> AnalyzeCvFromQueue();
+        Task AnalyzeCandidate(int candidateId);
     }
 }

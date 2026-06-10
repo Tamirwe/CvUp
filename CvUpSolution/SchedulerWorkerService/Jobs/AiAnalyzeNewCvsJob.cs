@@ -6,7 +6,7 @@ namespace SchedulerWorkerService.Jobs
 {
 
     [DisallowConcurrentExecution] // Prevents overlapping runs
-    public class AiAnalyzeNewCvsJob(IAnalyzeCvsService analyzeCvsService, ILogger<AiAnalyzeNewCvsJob> logger) : IJob
+    public class AiAnalyzeNewCvsJob(IAnalyzeCvsService analyzeCvsService, IEmbedService embedService, ILogger<AiAnalyzeNewCvsJob> logger) : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
@@ -14,7 +14,9 @@ namespace SchedulerWorkerService.Jobs
 
             try
             {
-                while (await analyzeCvsService.AnalyzeCvFromQueue()) { }
+                var hasProcessed = false;
+                while (await analyzeCvsService.AnalyzeCvFromQueue()) { hasProcessed = true; }
+                if (hasProcessed) await embedService.EmbedAnalyzeCvs();
             }
             catch (OperationCanceledException)
             {

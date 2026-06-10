@@ -32,6 +32,17 @@ var host = builder.Build();
 
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
 var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
-await analyzeCvsService.AnalyzeCvsBatch();
+
+int candidateId = 394884;
+
+if (candidateId == 0)
+{
+    await analyzeCvsService.AnalyzeCvsBatch();
+}
+else
+{
+    await analyzeCvsService.AnalyzeCandidate(candidateId);
+}
+
 await embedSaveService.EmbedAnalyzeCvs();
 

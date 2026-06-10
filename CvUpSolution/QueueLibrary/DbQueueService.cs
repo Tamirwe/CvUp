@@ -24,7 +24,7 @@ namespace QueueLibrary
         public Task FailAsync(long jobId, DateTime? retryVisibleAt = null) =>
             _queueQueries.FailAsync(jobId, retryVisibleAt);
 
-        public Task CleanupAsync(string queueName, int olderThanDays = 7) =>
-            _queueQueries.CleanupAsync(queueName, olderThanDays);
+        public Task CleanupAsync(int olderThanDays = 7) =>
+            _queueQueries.CleanupAsync(olderThanDays);
     }
 }

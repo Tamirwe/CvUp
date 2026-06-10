@@ -100,6 +100,16 @@ if (isDebugMode)
             .ForJob(luceneIndexCvs)
             .WithIdentity("LuceneIndexCvsJob").StartNow());
 
+        //// --- Job 6: Queue Cleanup ---
+        var queueCleanup = new JobKey("QueueCleanupJob");
+
+        q.AddJob<QueueCleanupJob>(opts => opts
+           .WithIdentity(queueCleanup)
+           .WithDescription("Queue Cleanup"));
+
+        q.AddTrigger(opts => opts
+            .ForJob(queueCleanup)
+            .WithIdentity("QueueCleanupJob").StartNow());
 
         //var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 
@@ -189,6 +199,19 @@ else
             .ForJob(luceneIndexCvs)
             .WithIdentity("Lucene-Index-Cvs-SaturdayTrigger")
             .WithCronSchedule("0 0/2 8-21 ? * *"));
+
+        // --- Job 6: Queue Cleanup ---
+        var queueCleanup = new JobKey("QueueCleanupJob");
+
+        q.AddJob<QueueCleanupJob>(opts => opts
+           .WithIdentity(queueCleanup)
+           .WithDescription("Queue Cleanup"));
+
+        // once a day at 4:00 AM
+        q.AddTrigger(opts => opts
+            .ForJob(queueCleanup)
+            .WithIdentity("Queue-Cleanup")
+            .WithCronSchedule("0 0 4 * * ?"));
     });
 }
 

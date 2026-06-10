@@ -80,11 +80,11 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task CleanupAsync(string queueName, int olderThanDays = 7)
+        public async Task CleanupAsync(int olderThanDays = 7)
         {
             using var db = new cvupdbContext();
             await db.Database.ExecuteSqlRawAsync(
-                $"DELETE FROM job_queue WHERE queue_name = '{queueName}' AND status IN ('completed', 'failed') AND created_at < NOW() - INTERVAL '{olderThanDays} days'");
+                $"DELETE FROM job_queue WHERE status IN ('completed', 'failed') AND created_at < NOW() - INTERVAL '{olderThanDays} days'");
         }
     }
 }

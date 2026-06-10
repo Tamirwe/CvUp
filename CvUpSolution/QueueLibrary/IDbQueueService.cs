@@ -8,6 +8,6 @@ namespace QueueLibrary
         Task<job_queue?> DequeueAsync(string queueName, string workerId);
         Task CompleteAsync(long jobId);
         Task FailAsync(long jobId, DateTime? retryVisibleAt = null);
-        Task CleanupAsync(string queueName, int olderThanDays = 7);
+        Task CleanupAsync(int olderThanDays = 7);
     }
 }

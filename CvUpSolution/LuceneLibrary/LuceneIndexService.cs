@@ -90,14 +90,35 @@ namespace LuceneLibrary
             await Task.Run(() => indexWriter.DeleteDocuments(new TermQuery(new Term("Id", id.ToString()))));
         }
 
+        //        private Document documentToIndex(CvsToIndexModel cvCand)
+        //        {
+        //            var phoneNumbersOnly = string.Concat(nn(cvCand.phone).Where(char.IsNumber));
+
+        //            string txtToIndex = $"{nn(cvCand.email)} {phoneNumbersOnly} {nn(cvCand.reviewText)} {nn(cvCand.firstName)} {nn(cvCand.lastName)} {nn(cvCand.cvsTxt)}";
+        //            txtToIndex = txtIndexMange(txtToIndex);
+
+        //            var updatedDate = cvCand.lastCvSent != null ? ((DateTimeOffset)cvCand.lastCvSent).ToUnixTimeSeconds() : 0;
+
+        //            var doc = new Document() {{ new TextField("Id", cvCand.candidateId.ToString(), Lucene.Net.Documents.Field.Store.YES) },
+        //                { new StoredField("Updated",updatedDate)},
+        //                {new TextField("CV", txtToIndex, Lucene.Net.Documents.Field.Store.YES) }};
+
+        //            return doc;
+        //        }
         private Document CandTextToDocument(CandLastCvModel cvCand)
         {
+            var name = $"{cvCand.firstName} {cvCand.lastName}".ToLowerInvariant();
+            var meta = $"{cvCand.candidateId} {cvCand.email} {cvCand.phone}".ToLowerInvariant();
             var plainText = CleanString.ExtractPlainText(cvCand.cvTxt ?? "").ToLowerInvariant();
+            var reviewText = (cvCand.reviewText ?? "").ToLowerInvariant();
+
             return new Document
             {
                 new TextField("Id", cvCand.candidateId.ToString(), Field.Store.YES),
                 new StoredField("Updated", DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
-                new TextField("CV", plainText, Field.Store.YES)
+                new TextField("Name", name, Field.Store.YES),
+                new TextField("Review", reviewText, Field.Store.YES),
+                new TextField("CV", $"{meta} {plainText}", Field.Store.YES)
             };
         }
     }

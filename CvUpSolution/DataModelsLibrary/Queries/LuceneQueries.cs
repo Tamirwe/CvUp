@@ -33,12 +33,7 @@ namespace DataModelsLibrary.Queries
                      WHERE cnd.is_black_list = false
                      ORDER BY ctx.candidate_id DESC";
 
-            List<CandLastCvModel> candsCvs = await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync();
-
-            foreach (var cnd in candsCvs)
-                cnd.cvTxt = $"{cnd.candidateId} {cnd.email} {cnd.phone} {cnd.firstName} {cnd.lastName} {cnd.reviewText} {cnd.cvTxt}";
-
-            return candsCvs;
+            return await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync();
         }
 
         public async Task<CandLastCvModel?> CandidateLastCv(int candidateId)

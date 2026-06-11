@@ -89,9 +89,10 @@ namespace PgVectorLibrary
         {
             try
             {
-                CandLastCvModel? cv = await _aiQueries.CandidateLastCvNotAnalysed(candidateId);
+                CandLastCvModel? candCv = await _aiQueries.CandidateLastCvNotAnalysed(candidateId);
 
-                var candCv = cv;
+                if (candCv == null) return;
+
                 AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
                 await SaveAnalyzedCv(analyzedCv);
               

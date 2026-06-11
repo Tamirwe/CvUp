@@ -66,17 +66,17 @@ namespace CvUpAPI.Controllers
             if (searchVals.folderId > 0)
             {
                 candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId);
-                candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
+                candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else if (searchVals.positionId > 0)
             {
                 candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, searchVals.positionId);
-                candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
+                candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else if (searchVals.positionTypeId > 0)
             {
                 candsList = await _candPosService.GetPosTypeCandsList(Globals.CompanyId, searchVals.positionTypeId);
-                candsList = candsList.Where(x => candsIds.Any(y => y == x.candidateId)).ToList();
+                candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else
             {
@@ -86,7 +86,7 @@ namespace CvUpAPI.Controllers
 
             foreach (var res in results)
             {
-                var itemToChange = candsList.FirstOrDefault(x => x.candidateId == res.Id);
+                var itemToChange = candsList.FirstOrDefault(x => x != null && x.candidateId == res.Id);
 
                 if (itemToChange != null)
                 {
@@ -94,7 +94,7 @@ namespace CvUpAPI.Controllers
                 }
             }
 
-            var sortedCands = candsList.OrderByDescending(x => x.score).ToList();
+            var sortedCands = candsList.OrderByDescending(x => x?.score).ToList();
             return sortedCands;
         }
 

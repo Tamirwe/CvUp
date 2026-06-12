@@ -11,6 +11,7 @@ namespace CandsPositionsLibrary
     public partial class CandsPositionsServise : ICandsPositionsServise
     {
         private ICandsPositionsQueries _cvsPositionsQueries;
+        private ICandsListsQueries _candsListsQueries;
         private ILuceneSearchService _luceneSearchService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
@@ -18,11 +19,13 @@ namespace CandsPositionsLibrary
         private IDbQueueService _queueService;
 
         public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries,
-            ILuceneSearchService luceneSearchService, 
+            ICandsListsQueries candsListsQueries,
+            ILuceneSearchService luceneSearchService,
             IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService,
             IDbQueueService queueService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
+            _candsListsQueries = candsListsQueries;
             _luceneSearchService = luceneSearchService;
             _emailService = emailService;
             _emailQueries = emailQueries;
@@ -140,29 +143,29 @@ namespace CandsPositionsLibrary
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
         {
-            var result = await _cvsPositionsQueries.GetPositionCandidate(companyId, candId, positionId);
+            var result = await _candsListsQueries.GetPositionCandidate(companyId, candId, positionId);
             return result;
         }
 
         public async Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds)
         {
-            var result = await _cvsPositionsQueries.GetCandsList(companyId, candsIds);
+            var result = await _candsListsQueries.GetCandsList(companyId, candsIds);
             return result;
         }
 
         public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId)
         {
-            return await _cvsPositionsQueries.GetPosCandsList(companyId, positionId);
+            return await _candsListsQueries.GetPosCandsList(companyId, positionId);
         }
 
         public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
         {
-            return await _cvsPositionsQueries.GetPosTypeCandsList(companyId, positionTypeId);
+            return await _candsListsQueries.GetPosTypeCandsList(companyId, positionTypeId);
         }
 
         public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
         {
-            return await _cvsPositionsQueries.GetFolderCandsList(companyId, folderId);
+            return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)

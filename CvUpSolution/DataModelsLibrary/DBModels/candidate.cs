@@ -51,8 +51,6 @@ public partial class candidate
 
     public bool is_cv_analyzed { get; set; }
 
-    public virtual ICollection<ai_analyze_cv> ai_analyze_cvs { get; set; } = new List<ai_analyze_cv>();
-
     public virtual ICollection<analyzed_cv> analyzed_cvs { get; set; } = new List<analyzed_cv>();
 
     public virtual company company { get; set; } = null!;

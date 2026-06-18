@@ -1,5 +1,4 @@
-﻿using Database.models;
-using DataModelsLibrary.Models;
+﻿using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using FuzzySharp;
 using GeneralLibrary;
@@ -110,8 +109,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         AnalyzedCv.Area = areaRegion.Item2;
                     }
 
-                    await SaveAnalyzedCv(AnalyzedCv);
-
                 }
                 catch (Exception ex)
                 {
@@ -210,37 +207,6 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                 return original.Substring(0, Math.Min(original.Length, maxLength));
             }
             return null;
-        }
-
-        private async Task SaveAnalyzedCv(AnalyzedCvModelOLD analyzedCvResult)
-        {
-            ai_analyze_cv analyzeCv = new ai_analyze_cv();
-            analyzeCv.candidate_id = analyzedCvResult.CandidateId;
-            analyzeCv.cv_id = analyzedCvResult.CvId;
-            analyzeCv.name = limitLen(analyzedCvResult.Name, 101);
-            analyzeCv.estimate_age = analyzedCvResult.EstimateAge;
-            analyzeCv.email = limitLen(analyzedCvResult.Email, 150);
-            analyzeCv.phone = limitLen(analyzedCvResult.Phone, 20);
-            analyzeCv.city = limitLen(analyzedCvResult.CityHe, 50);
-            analyzeCv.region = limitLen(analyzedCvResult.Region, 20);
-            analyzeCv.area = limitLen(analyzedCvResult.Area, 20);
-            analyzeCv.languages = limitLen(analyzedCvResult.Languages, 150);
-            analyzeCv.jobs_titles_en = limitLen(string.Join(", ", analyzedCvResult.JobsTitlesEn), 500);
-            analyzeCv.jobs_titles_he = limitLen(string.Join(", ", analyzedCvResult.JobsTitlesHe), 500);
-            analyzeCv.profession_words_en = limitLen(string.Join(", ", analyzedCvResult.professionWordsEn), 500);
-            analyzeCv.profession_words_he = limitLen(string.Join(", ", analyzedCvResult.professionWordsHe), 500);
-            analyzeCv.profession_skills_en = limitLen(string.Join(", ", analyzedCvResult.professionSkillsEn), 500);
-            analyzeCv.profession_skills_he = limitLen(string.Join(", ", analyzedCvResult.professionSkillsHe), 500);
-            analyzeCv.seniority = limitLen(analyzedCvResult.Seniority, 50);
-            analyzeCv.education = limitLen(string.Join(", ", analyzedCvResult.Education), 500);
-            analyzeCv.companies = limitLen(string.Join(", ", analyzedCvResult.Companies), 500);
-            analyzeCv.skills = limitLen(string.Join(", ", analyzedCvResult.Skills), 600);
-            analyzeCv.military_service = limitLen(analyzedCvResult.MilitaryService, 250);
-            analyzeCv.summary_en = limitLen(analyzedCvResult.SummaryEn, 1000);
-            analyzeCv.summary_he = limitLen(analyzedCvResult.SummaryHe, 1000);
-            analyzeCv.years_experience = analyzedCvResult.YearsExperience;
-
-            await _candsCvsQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
 
         private async Task LoadJsonRegionCitiesAsync()

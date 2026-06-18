@@ -15,8 +15,6 @@ public partial class cvupdbContext : DbContext
     {
     }
 
-    public virtual DbSet<ai_analyze_cv> ai_analyze_cvs { get; set; }
-
     public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
 
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
@@ -80,42 +78,6 @@ public partial class cvupdbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
-
-        modelBuilder.Entity<ai_analyze_cv>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("ai_analyze_cvs_pkey");
-
-            entity.Property(e => e.area).HasMaxLength(20);
-            entity.Property(e => e.city).HasMaxLength(50);
-            entity.Property(e => e.companies).HasMaxLength(500);
-            entity.Property(e => e.date_created)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone");
-            entity.Property(e => e.date_updated)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone");
-            entity.Property(e => e.education).HasMaxLength(500);
-            entity.Property(e => e.email).HasMaxLength(150);
-            entity.Property(e => e.jobs_titles_en).HasMaxLength(500);
-            entity.Property(e => e.jobs_titles_he).HasMaxLength(500);
-            entity.Property(e => e.languages).HasMaxLength(150);
-            entity.Property(e => e.military_service).HasMaxLength(250);
-            entity.Property(e => e.name).HasMaxLength(101);
-            entity.Property(e => e.phone).HasMaxLength(20);
-            entity.Property(e => e.profession_skills_en).HasMaxLength(500);
-            entity.Property(e => e.profession_skills_he).HasMaxLength(500);
-            entity.Property(e => e.profession_words_en).HasMaxLength(500);
-            entity.Property(e => e.profession_words_he).HasMaxLength(500);
-            entity.Property(e => e.region).HasMaxLength(20);
-            entity.Property(e => e.seniority).HasMaxLength(50);
-            entity.Property(e => e.skills).HasMaxLength(600);
-            entity.Property(e => e.summary_en).HasMaxLength(1000);
-            entity.Property(e => e.summary_he).HasMaxLength(1000);
-
-            entity.HasOne(d => d.candidate).WithMany(p => p.ai_analyze_cvs)
-                .HasForeignKey(d => d.candidate_id)
-                .HasConstraintName("fk_ai_analyze_cvs_candidate_id_candidates_id");
-        });
 
         modelBuilder.Entity<analyzed_cv>(entity =>
         {

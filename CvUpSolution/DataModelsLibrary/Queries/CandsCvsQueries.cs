@@ -29,27 +29,6 @@ namespace DataModelsLibrary.Queries
             return candsParams;
         }
 
-        public async Task UpdateIsEmbeddedBatch(List<AnalyzedCvsForEmbeedingModel> cvs)
-        {
-            using (var dbContext = new cvupdbContext())
-            {
-                foreach (var cv in cvs)
-                {
-                    ai_analyze_cv? cand = dbContext.ai_analyze_cvs.FirstOrDefault(x => x.candidate_id == cv.CandidateId);
-
-                    if (cand != null)
-                    {
-                        cand.is_embedded = true;
-
-                        var result = dbContext.ai_analyze_cvs.Update(cand);
-                    }
-                }
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-
         private async Task<List<CvTxtModel>> GetCvsText(int companyId = 154, int candidateId = 0)
         {
             using (var dbContext = new cvupdbContext())

@@ -30,10 +30,11 @@ interface IProps {
   candsListData: ICand[];
   candsSource: CandsSourceEnum;
   advancedOpen?: boolean;
+  showAiDetails?: boolean;
 }
 
 export const CandsList = observer(
-  ({ candsListData, candsSource, advancedOpen }: IProps) => {
+  ({ candsListData, candsSource, advancedOpen, showAiDetails }: IProps) => {
     const { candsStore, generalStore, positionsStore } = useStore();
     let location = useLocation();
     const navigate = useNavigate();
@@ -319,87 +320,93 @@ export const CandsList = observer(
                       </ListItemIcon> */}
                       </div>
                     </div>
-                    {(cand.city ||
-                      cand.estimateAgeAI ||
-                      cand.seniorityHeAI) && (
+                    {cand.city && (
                       <div
                         className={classNames({
                           [styles.listItemCity]: true,
                           [styles.isMobile]: isMobile,
                         })}
-                        style={{
-                          display: "flex",
-                          gap: "0.4rem",
-                          color: "#a38c14",
-                        }}
                       >
-                        {cand.city && <span>{cand.city}</span>}
+                        {cand.city}
+                      </div>
+                    )}
+                    {showAiDetails && (
+                      <>
                         {((cand.estimateAgeAI != null &&
                           cand.estimateAgeAI > 0) ||
                           cand.seniorityHeAI) && (
-                          <span>{`(${[
-                            cand.seniorityHeAI,
-                            cand.estimateAgeAI != null && cand.estimateAgeAI > 0
-                              ? cand.estimateAgeAI
-                              : null,
-                          ]
-                            .filter(Boolean)
-                            .join(", ")})`}</span>
+                          <div
+                            className={classNames({
+                              [styles.listItemCity]: true,
+                              [styles.isMobile]: isMobile,
+                            })}
+                            style={{ color: "#a38c14" }}
+                          >
+                            {`(${[
+                              cand.seniorityHeAI,
+                              cand.estimateAgeAI != null &&
+                              cand.estimateAgeAI > 0
+                                ? cand.estimateAgeAI
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")})`}
+                          </div>
                         )}
-                      </div>
-                    )}
-                    {cand.workExperienceAI?.length > 0 && (
-                      <table
-                        style={{
-                          width: "100%",
-                          fontSize: "0.85rem",
-                          fontWeight: "normal",
-                          color: "#444444",
-                          borderCollapse: "collapse",
-                        }}
-                      >
-                        <tbody>
-                          {cand.workExperienceAI.map((w, i) => (
-                            <tr key={i}>
-                              <td
-                                style={{
-                                  padding: "1px 4px",
-                                  fontWeight: "500",
-                                  textAlign: "right",
-                                  color: "#007edb",
-                                }}
-                              >
-                                {w.company}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "1px 4px",
-                                  textAlign: "right",
-                                  color: "#2a6ab5",
-                                }}
-                              >
-                                {w.title_he}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                    {cand.summaryAI && (
-                      <div
-                        style={{
-                          fontSize: "0.9rem",
-                          fontWeight: "normal",
-                          color: "#9b9b9b",
-                          whiteSpace: "normal",
-                          wordBreak: "break-word",
-                          textAlign: "right",
-                          paddingLeft: "3.0rem",
-                        }}
-                        title={cand.summaryAI}
-                      >
-                        {cand.summaryAI}
-                      </div>
+                        {cand.workExperienceAI?.length > 0 && (
+                          <table
+                            style={{
+                              width: "100%",
+                              fontSize: "0.85rem",
+                              fontWeight: "normal",
+                              color: "#444444",
+                              borderCollapse: "collapse",
+                            }}
+                          >
+                            <tbody>
+                              {cand.workExperienceAI.map((w, i) => (
+                                <tr key={i}>
+                                  <td
+                                    style={{
+                                      padding: "1px 4px",
+                                      fontWeight: "500",
+                                      textAlign: "right",
+                                      color: "#007edb",
+                                    }}
+                                  >
+                                    {w.company}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "1px 4px",
+                                      textAlign: "right",
+                                      color: "#2a6ab5",
+                                    }}
+                                  >
+                                    {w.title_he}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        )}
+                        {cand.summaryAI && (
+                          <div
+                            style={{
+                              fontSize: "0.9rem",
+                              fontWeight: "normal",
+                              color: "#9b9b9b",
+                              whiteSpace: "normal",
+                              wordBreak: "break-word",
+                              textAlign: "right",
+                              paddingLeft: "3.0rem",
+                            }}
+                            title={cand.summaryAI}
+                          >
+                            {cand.summaryAI}
+                          </div>
+                        )}
+                      </>
                     )}
                     {candsStore.shoePosStages && (
                       <CandsPosStagesList

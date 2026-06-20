@@ -9,7 +9,7 @@ namespace CvsWorkerService
     {
         private readonly IImportCvs _importCvs;
         private readonly IDataBaseBackup _dataBaseBackup;
-        private ICandsPositionsServise _candPosService;
+        private IPositionsServise _positionsService;
 
         private readonly ILogger<CvsImportWorker> _logger;
         private bool _isRunning = false;
@@ -18,11 +18,11 @@ namespace CvsWorkerService
         private bool _isHourChanged = false;
         private List<blackCandModel> _blackCandidatesList;
 
-        public CvsImportWorker(IImportCvs importCvs, IDataBaseBackup dataBaseBackup, ICandsPositionsServise candPosService, ILogger<CvsImportWorker> logger)
+        public CvsImportWorker(IImportCvs importCvs, IDataBaseBackup dataBaseBackup, IPositionsServise positionsService, ILogger<CvsImportWorker> logger)
         {
             _importCvs = importCvs;
             _dataBaseBackup = dataBaseBackup;
-            _candPosService = candPosService;
+            _positionsService = positionsService;
             _logger = logger;
             _isRunning = false;
         }
@@ -47,7 +47,7 @@ namespace CvsWorkerService
                     {
                         if (_isHourChanged)
                         {
-                            await _candPosService.CalculatePositionTypesCount(154);
+                            await _positionsService.CalculatePositionTypesCount(154);
                         }
 
 

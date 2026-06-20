@@ -1,5 +1,4 @@
 ﻿using CandsPositionsLibrary;
-using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,12 +11,10 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class GeneralController : ControllerBase
     {
-        private ICandsPositionsServise _cvsPosService;
         private ITranslateService _translateService;
 
-        public GeneralController(ICandsPositionsServise cvsPosService, ITranslateService translateService)
+        public GeneralController(ITranslateService translateService)
         {
-            _cvsPosService = cvsPosService;
             _translateService = translateService;
         }
 

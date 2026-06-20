@@ -19,7 +19,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<ICandsListsQueries, CandsListsQueries>();
-        services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+        services.AddTransient<ICandsServise, CandsServise>();
+        services.AddTransient<IPositionsServise, PositionsServise>();
         services.AddTransient<IQueueQueries, QueueQueries>();
         services.AddTransient<IDbQueueService, DbQueueService>();
         services.AddTransient<IImportCvs, ImportCvs>();

@@ -26,7 +26,8 @@ namespace ImportCvsLibrary
     public class ImportCvs : IImportCvs
     {
 
-        ICandsPositionsServise _cvsPositionsServise;
+        ICandsServise _candsServise;
+        IPositionsServise _positionsServise;
         IDbQueueService _queueService;
         string _filesRootFolder;
         string _cvupNotBackedUpRootFolder;
@@ -43,14 +44,15 @@ namespace ImportCvsLibrary
         private List<blackCandModel>? _blackCandidatesList =null;
         private readonly IMemoryCache _cache;
 
-        public ImportCvs(IMemoryCache cache, ICandsPositionsServise cvsPositionsServise, IConfiguration configuration, IDbQueueService queueService)
+        public ImportCvs(IMemoryCache cache, ICandsServise candsServise, IPositionsServise positionsServise, IConfiguration configuration, IDbQueueService queueService)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"]!;
             _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"]!;
             _gmailUserName = configuration["IMPORT_GMAIL_USER_NAME"]!;
             _mailPassword = configuration["IMPORT_GMAIL_PASSWORD"]!;
 
-            _cvsPositionsServise = cvsPositionsServise;
+            _candsServise = candsServise;
+            _positionsServise = positionsServise;
             _queueService = queueService;
             _cache = cache;
         }
@@ -62,7 +64,7 @@ namespace ImportCvsLibrary
 
             if (_blackCandidatesList == null)
             {
-                 _blackCandidatesList = await _cvsPositionsServise.GetBlackCandidatesList();
+                 _blackCandidatesList = await _candsServise.GetBlackCandidatesList();
                 _cache.Set("blackCandidatesList", _blackCandidatesList, TimeSpan.FromHours(1));
             }
 
@@ -101,7 +103,7 @@ namespace ImportCvsLibrary
 
             if (uids != null && uids.Count > 0)
             {
-                _parsersRulesAllCompanies = await _cvsPositionsServise.GetParsersRules();
+                _parsersRulesAllCompanies = await _positionsServise.GetParsersRules();
 
                 foreach (var uid in uids)
                 {
@@ -207,15 +209,15 @@ namespace ImportCvsLibrary
 
                 if (_importCv.isSameCvEmailSubject)
                 {
-                    await _cvsPositionsServise.UpdateCvDate(_importCv.cvId);
+                    await _candsServise.UpdateCvDate(_importCv.cvId);
                 }
                 else
                 {
                     //await AddPositionName();
                     await AddCvToDb();
                     RenameAndMoveAttachmentToFolder();
-                    await _cvsPositionsServise.UpdateCvKeyId(_importCv);
-                    await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
+                    await _candsServise.UpdateCvKeyId(_importCv);
+                    await _candsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
                     await AddCandToMatchPosition();
                     
                     await _queueService.EnqueueAsync("index cv", _importCv.candidateId.ToString());
@@ -227,11 +229,11 @@ namespace ImportCvsLibrary
 
         private async Task AddCandToMatchPosition()
         {
-            position? matchPos = await _cvsPositionsServise.GetPositionByMatchStr(_importCv.companyId, _importCv.subject);
+            position? matchPos = await _positionsServise.GetPositionByMatchStr(_importCv.companyId, _importCv.subject);
 
             if (matchPos != null)
             {
-                await _cvsPositionsServise.AttachPosCandCv(new AttachePosCandCvModel
+                await _candsServise.AttachPosCandCv(new AttachePosCandCvModel
                 {
                     positionId = matchPos.id,
                     candidateId = _importCv.candidateId,
@@ -342,7 +344,7 @@ namespace ImportCvsLibrary
             {
                 isBlackCand = true;
                 blackCand.cvs_count = blackCand.cvs_count + 1;
-                Task.Run(() => _cvsPositionsServise.UpdateBlackCandidateEmailCount(blackCand));
+                Task.Run(() => _candsServise.UpdateBlackCandidateEmailCount(blackCand));
             }
 
             return isBlackCand;
@@ -352,7 +354,7 @@ namespace ImportCvsLibrary
         {
             if (!_importCv.isNewCandidate)
             {
-                List<CandCvModel> cvs = await _cvsPositionsServise.GetCandCvsList(_importCv.companyId, _importCv.candidateId);
+                List<CandCvModel> cvs = await _candsServise.GetCandCvsList(_importCv.companyId, _importCv.candidateId);
 
                 if (cvs.Count > 0)
                 {
@@ -370,7 +372,7 @@ namespace ImportCvsLibrary
 
                     if (isSubjectduplicate)
                     {
-                        cvs_txt? cvTxt = await _cvsPositionsServise.CheckIsSameCv(_importCv.companyId, _importCv.candidateId, _importCv.cvAsciiSum);
+                        cvs_txt? cvTxt = await _candsServise.CheckIsSameCv(_importCv.companyId, _importCv.candidateId, _importCv.cvAsciiSum);
 
                         if (cvTxt != null)
                         {
@@ -458,7 +460,7 @@ namespace ImportCvsLibrary
 
         private async Task CandidateFindOrCreate()
         {
-            await _cvsPositionsServise.AddUpdateCandidateFromCvImport(_importCv);
+            await _candsServise.AddUpdateCandidateFromCvImport(_importCv);
         }
 
         private async Task AddCvToDb()
@@ -471,18 +473,18 @@ namespace ImportCvsLibrary
             //{
             if (!string.IsNullOrEmpty(_importCv.positionRelated))
             {
-                int? posTypeId = await _cvsPositionsServise.GetPositionTypeId(_importCv.companyId, _importCv.positionRelated);
+                int? posTypeId = await _positionsServise.GetPositionTypeId(_importCv.companyId, _importCv.positionRelated);
 
                 if (posTypeId == null)
                 {
-                    posTypeId = await _cvsPositionsServise.AddPositionTypeName(_importCv.companyId, _importCv.positionRelated);
+                    posTypeId = await _positionsServise.AddPositionTypeName(_importCv.companyId, _importCv.positionRelated);
                 }
 
                 _importCv.positionTypeId = posTypeId;
 
             }
 
-            _importCv.cvId = await _cvsPositionsServise.AddCv(_importCv);
+            _importCv.cvId = await _candsServise.AddCv(_importCv);
             //}
         }
 

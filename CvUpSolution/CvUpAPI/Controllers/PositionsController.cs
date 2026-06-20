@@ -12,11 +12,11 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class PositionsController : ControllerBase
     {
-        private ICandsPositionsServise _cvsPosService;
+        private IPositionsServise _positionsService;
 
-        public PositionsController( ICandsPositionsServise cvsPosService)
+        public PositionsController(IPositionsServise positionsService)
         {
-            _cvsPosService = cvsPosService;
+            _positionsService = positionsService;
         }
 
         [HttpGet]
@@ -24,7 +24,7 @@ namespace CvUpAPI.Controllers
         [Route("GetPosition")]
         public async Task<IActionResult> GetPosition(int id)
         {
-            PositionModel position = await _cvsPosService.GetPosition(Globals.CompanyId, id);
+            PositionModel position = await _positionsService.GetPosition(Globals.CompanyId, id);
             return Ok(position);
         }
 
@@ -32,7 +32,7 @@ namespace CvUpAPI.Controllers
         [Route("getPositionContactsIds")]
         public async Task<IActionResult> getPositionContactsIds(int posId)
         {
-            var positionContacts = await _cvsPosService.getPositionContactsIds(Globals.CompanyId, posId);
+            var positionContacts = await _positionsService.getPositionContactsIds(Globals.CompanyId, posId);
             return Ok(positionContacts);
         }
 
@@ -40,7 +40,7 @@ namespace CvUpAPI.Controllers
         [Route("GetPositionsList")]
         public async Task<IActionResult> GetPositionsList()
         {
-            List<PositionModel> positions = await _cvsPosService.GetPositionsList(Globals.CompanyId);
+            List<PositionModel> positions = await _positionsService.GetPositionsList(Globals.CompanyId);
             return Ok(positions);
         }
 
@@ -48,7 +48,7 @@ namespace CvUpAPI.Controllers
         [Route("AddPosition")]
         public async Task<IActionResult> AddPosition(PositionModel data)
         {
-            var posId = await _cvsPosService.AddPosition(data, Globals.CompanyId, Globals.UserId);
+            var posId = await _positionsService.AddPosition(data, Globals.CompanyId, Globals.UserId);
             return Ok(posId);
         }
 
@@ -56,7 +56,7 @@ namespace CvUpAPI.Controllers
         [Route("UpdatePosition")]
         public async Task<IActionResult> UpdatePosition(PositionModel data)
         {
-            var posId = await _cvsPosService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
+            var posId = await _positionsService.UpdatePosition(data, Globals.CompanyId, Globals.UserId);
             return Ok(posId);
         }
 
@@ -64,7 +64,7 @@ namespace CvUpAPI.Controllers
         [Route("DeletePosition")]
         public async Task<IActionResult> DeletePosition(int id)
         {
-            await _cvsPosService.DeletePosition(Globals.CompanyId, id);
+            await _positionsService.DeletePosition(Globals.CompanyId, id);
             return Ok();
         }
 
@@ -72,7 +72,7 @@ namespace CvUpAPI.Controllers
         [Route("GetPositionsTypes")]
         public async Task<IActionResult> GetPositionsTypes()
         {
-            List<PositionTypeModel> positionTypes = await _cvsPosService.GetPositionsTypes(Globals.CompanyId);
+            List<PositionTypeModel> positionTypes = await _positionsService.GetPositionsTypes(Globals.CompanyId);
             return Ok(positionTypes);
         }
 
@@ -80,7 +80,7 @@ namespace CvUpAPI.Controllers
         [Route("PositionsTypesCvsCount")]
         public async Task<IActionResult> PositionsTypesCvsCount()
         {
-            List<PositionTypeCountModel> positionTypes = await _cvsPosService.PositionsTypesCvsCount(Globals.CompanyId);
+            List<PositionTypeCountModel> positionTypes = await _positionsService.PositionsTypesCvsCount(Globals.CompanyId);
             return Ok(positionTypes);
         }
     }

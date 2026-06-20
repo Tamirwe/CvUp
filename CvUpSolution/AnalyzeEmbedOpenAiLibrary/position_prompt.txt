@@ -16,5 +16,3 @@ Return ONLY a JSON object with these fields:
 - lucene_keywords: { he: [...], en: [...] } — terms to use for keyword search against CVs, in both Hebrew and English. Include variations and synonyms.
 - embedding_text: a short keyword-dense paragraph in English optimized for semantic vector search against CVs
 
-Position text:
-[paste full text here]

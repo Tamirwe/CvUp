@@ -12,12 +12,10 @@ namespace CvUpAPI.Controllers
     public class BlackCandsController : ControllerBase
     {
 
-            private ICandsPositionsServise _candPosService;
             private IAuthServise _authServise;
 
-            public BlackCandsController(ICandsPositionsServise candPosService, IAuthServise authServise)
+            public BlackCandsController(IAuthServise authServise)
             {
-                _candPosService = candPosService;
                 _authServise = authServise;
             }
 

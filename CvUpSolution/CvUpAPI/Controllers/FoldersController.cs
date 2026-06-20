@@ -13,12 +13,12 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class FoldersController : ControllerBase
     {
-        private ICandsPositionsServise _candPosService;
+        private ICandsServise _candsService;
         private IFoldersService _foldersService;
 
-        public FoldersController(ICandsPositionsServise candPosService, IFoldersService foldersService)
+        public FoldersController(ICandsServise candsService, IFoldersService foldersService)
         {
-            _candPosService = candPosService;
+            _candsService = candsService;
             _foldersService = foldersService;
         }
 
@@ -59,7 +59,7 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> AttachCandidate(FolderCandidateModel data)
         {
             await _foldersService.AttachCandidate(Globals.CompanyId, data);
-            return await _candPosService.GetCandidate(Globals.CompanyId, data.candidateId);
+            return await _candsService.GetCandidate(Globals.CompanyId, data.candidateId);
         }
 
         [HttpPost]
@@ -67,7 +67,7 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> DetachCandidate(FolderCandidateModel data)
         {
             await _foldersService.DetachCandidate(Globals.CompanyId, data);
-            return await _candPosService.GetCandidate(Globals.CompanyId, data.candidateId);
+            return await _candsService.GetCandidate(Globals.CompanyId, data.candidateId);
         }
     }
 }

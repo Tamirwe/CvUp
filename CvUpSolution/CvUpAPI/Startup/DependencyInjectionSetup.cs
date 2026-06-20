@@ -28,7 +28,9 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICustomersContactsService, CustomersContactsService>();
             services.AddTransient<IQueueQueries, QueueQueries>();
             services.AddTransient<IDbQueueService, DbQueueService>();
-            services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+            services.AddTransient<ICandsServise, CandsServise>();
+            services.AddTransient<ICandsListsServise, CandsListsServise>();
+            services.AddTransient<IPositionsServise, PositionsServise>();
             services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
             services.AddTransient<ICandsListsQueries, CandsListsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();

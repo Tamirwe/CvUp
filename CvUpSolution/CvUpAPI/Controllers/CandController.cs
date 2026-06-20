@@ -13,14 +13,19 @@ namespace CvUpAPI.Controllers
     [ApiController]
     public class CandController : ControllerBase
     {
-        private ICandsPositionsServise _candPosService;
+        private ICandsServise _candsService;
+        private ICandsListsServise _candsListsService;
+        private IPositionsServise _positionsService;
         private IAuthServise _authServise;
         private ICvsFilesService _cvsFilesService;
         private ISearchCvsService _aiSearchCvsService;
 
-        public CandController(ICandsPositionsServise candPosService, IAuthServise authServise, ICvsFilesService cvsFilesService, ISearchCvsService aiSearchCvsService)
+        public CandController(ICandsServise candsService, ICandsListsServise candsListsService, IPositionsServise positionsService,
+            IAuthServise authServise, ICvsFilesService cvsFilesService, ISearchCvsService aiSearchCvsService)
         {
-            _candPosService = candPosService;
+            _candsService = candsService;
+            _candsListsService = candsListsService;
+            _positionsService = positionsService;
             _authServise = authServise;
             _cvsFilesService = cvsFilesService;
             _aiSearchCvsService = aiSearchCvsService;
@@ -37,21 +42,21 @@ namespace CvUpAPI.Controllers
         [Route("GetCandsList")]
         public async Task<List<CandModel?>> GetCandsList(int page = 1, int take = 200)
         {
-            return await _candPosService.GetCandsList(Globals.CompanyId, null);
+            return await _candsListsService.GetCandsList(Globals.CompanyId, null);
         }
 
         [HttpGet]
         [Route("GetFolderCandsList")]
         public async Task<List<CandModel?>> GetFolderCandsList(int folderId)
         {
-            return await _candPosService.GetFolderCandsList(Globals.CompanyId, folderId);
+            return await _candsListsService.GetFolderCandsList(Globals.CompanyId, folderId);
         }
 
         [HttpGet]
         [Route("GetPosTypeCandsList")]
         public async Task<List<CandModel?>> GetPosTypeCandsList(int positionTypeId)
         {
-            return await _candPosService.GetPosTypeCandsList(Globals.CompanyId, positionTypeId);
+            return await _candsListsService.GetPosTypeCandsList(Globals.CompanyId, positionTypeId);
         }
 
         [HttpPost]
@@ -59,29 +64,29 @@ namespace CvUpAPI.Controllers
         public async Task<IEnumerable<CandModel?>> SearchCands(searchCandCvModel searchVals)
         {
             List<CandModel?> candsList = new List<CandModel?>();
-            var results = await _candPosService.SearchCands(Globals.CompanyId, searchVals);
+            var results = await _candsService.SearchCands(Globals.CompanyId, searchVals);
 
             var candsIds = results.Select(e => e.Id).ToList();
 
             if (searchVals.folderId > 0)
             {
-                candsList = await _candPosService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId);
+                candsList = await _candsListsService.GetFolderCandsList(Globals.CompanyId, searchVals.folderId);
                 candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else if (searchVals.positionId > 0)
             {
-                candsList = await _candPosService.GetPosCandsList(Globals.CompanyId, searchVals.positionId);
+                candsList = await _candsListsService.GetPosCandsList(Globals.CompanyId, searchVals.positionId);
                 candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else if (searchVals.positionTypeId > 0)
             {
-                candsList = await _candPosService.GetPosTypeCandsList(Globals.CompanyId, searchVals.positionTypeId);
+                candsList = await _candsListsService.GetPosTypeCandsList(Globals.CompanyId, searchVals.positionTypeId);
                 candsList = candsList.Where(x => x != null && candsIds.Any(y => y == x.candidateId)).ToList();
             }
             else
             {
                 var firstRows = candsIds.GetRange(0, candsIds.Count > 300 ? 300: candsIds.Count);
-                candsList = await _candPosService.GetCandsList(Globals.CompanyId, firstRows);
+                candsList = await _candsListsService.GetCandsList(Globals.CompanyId, firstRows);
             }
 
             foreach (var res in results)
@@ -104,8 +109,8 @@ namespace CvUpAPI.Controllers
         {
             var aiResults = await _aiSearchCvsService.SearchCvs(query: searchQuery, limit: 10);
             var candsIds = aiResults.Select(e => e.candidateId).ToList();
-            var candsList = await _candPosService.GetCandsList(Globals.CompanyId, candsIds);
-            List<CandModel> results = _candPosService.MergeAiResultsWithCandsList(candsList, aiResults);
+            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIds);
+            List<CandModel> results = _candsService.MergeAiResultsWithCandsList(candsList, aiResults);
 
             return results;
         }
@@ -114,29 +119,29 @@ namespace CvUpAPI.Controllers
         [Route("GetCandCvsList")]
         public async Task<List<CandCvModel>> GetCandCvsList(int candidateId)
         {
-            return await _candPosService.GetCandCvsList(Globals.CompanyId, candidateId);
+            return await _candsService.GetCandCvsList(Globals.CompanyId, candidateId);
         }
 
         [HttpGet]
         [Route("GetPosCandsList")]
         public async Task<List<CandModel?>> GetPosCandsList(int positionId)
         {
-            return await _candPosService.GetPosCandsList(Globals.CompanyId, positionId);
+            return await _candsListsService.GetPosCandsList(Globals.CompanyId, positionId);
         }
 
         [HttpGet]
         [Route("getCv")]
         public async Task<CvModel?> getCv(int cvId)
         {
-            return await _candPosService.GetCv(cvId, Globals.CompanyId);
+            return await _candsService.GetCv(cvId, Globals.CompanyId);
         }
 
         [HttpPut]
         [Route("SaveCandReview")]
         public async Task<CandModel?> SaveCandReview(CandReviewModel candReview)
         {
-            await _candPosService.SaveCandReview(Globals.CompanyId, candReview);
-            return await _candPosService.GetCandidate(Globals.CompanyId, candReview.candidateId);
+            await _candsService.SaveCandReview(Globals.CompanyId, candReview);
+            return await _candsService.GetCandidate(Globals.CompanyId, candReview.candidateId);
         }
 
         [HttpPost]
@@ -144,10 +149,9 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> AttachPosCandCv(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            await _candPosService.AttachPosCandCv(posCv);
-            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
-            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
-
+            await _candsService.AttachPosCandCv(posCv);
+            await _positionsService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
+            return await _candsService.GetCandidate(posCv.companyId, posCv.candidateId);
         }
 
         [HttpPost]
@@ -155,16 +159,16 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> DetachPosCand(AttachePosCandCvModel posCv)
         {
             posCv.companyId = Globals.CompanyId;
-            await _candPosService.DetachPosCand(posCv);
-            await _candPosService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
-            return await _candPosService.GetCandidate(posCv.companyId, posCv.candidateId);
+            await _candsService.DetachPosCand(posCv);
+            await _positionsService.UpdatePositionDate(posCv.companyId, posCv.positionId, true);
+            return await _candsService.GetCandidate(posCv.companyId, posCv.candidateId);
         }
 
         [HttpGet]
         [Route("GetCandPosStagesTypes")]
         public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes()
         {
-            return await _candPosService.GetCandPosStagesTypes(Globals.CompanyId);
+            return await _candsService.GetCandPosStagesTypes(Globals.CompanyId);
         }
 
         [HttpPost]
@@ -173,8 +177,8 @@ namespace CvUpAPI.Controllers
         {
             emailData.companyId = Globals.CompanyId;
             UserModel? user = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
-            await _candPosService.SendEmail(emailData, user);
-            await _candPosService.AddSendEmail(emailData, Globals.UserId);
+            await _candsService.SendEmail(emailData, user);
+            await _candsService.AddSendEmail(emailData, Globals.UserId);
             return Ok();
         }
 
@@ -183,9 +187,9 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> UpdateCandPositionStatus(CandPosStageTypeUpdateModel posStatus)
         {
             posStatus.companyId = Globals.CompanyId;
-            await _candPosService.UpdateCandPositionStatus(posStatus);
-            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
-            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            await _candsService.UpdateCandPositionStatus(posStatus);
+            await _positionsService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
+            return await _candsListsService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
         }
 
         [HttpPost]
@@ -193,9 +197,9 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> UpdatePosStageDate(CandPosStageTypeUpdateModel posStatus)
         {
             posStatus.companyId = Globals.CompanyId;
-            await _candPosService.UpdatePosStageDate(posStatus);
-            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
-            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            await _candsService.UpdatePosStageDate(posStatus);
+            await _positionsService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
+            return await _candsListsService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
         }
 
         [HttpPost]
@@ -203,16 +207,16 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> RemovePosStage(CandPosStageTypeUpdateModel posStatus)
         {
             posStatus.companyId = Globals.CompanyId;
-            await _candPosService.RemovePosStage(posStatus);
-            await _candPosService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
-            return await _candPosService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
+            await _candsService.RemovePosStage(posStatus);
+            await _positionsService.UpdatePositionDate(posStatus.companyId, posStatus.positionId, false);
+            return await _candsListsService.GetPositionCandidate(posStatus.companyId, posStatus.candidateId, posStatus.positionId);
         }
 
         [HttpGet]
         [Route("GetEmailTemplates")]
         public async Task<List<EmailTemplateModel>> GetEmailTemplates()
         {
-            return await _candPosService.GetEmailTemplates(Globals.CompanyId);
+            return await _candsService.GetEmailTemplates(Globals.CompanyId);
         }
 
         [HttpPost]
@@ -220,7 +224,7 @@ namespace CvUpAPI.Controllers
         public async Task<IActionResult> AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)
         {
             emailTemplate.companyId = Globals.CompanyId;
-            await _candPosService.AddUpdateEmailTemplate(emailTemplate);
+            await _candsService.AddUpdateEmailTemplate(emailTemplate);
             return Ok();
         }
 
@@ -228,7 +232,7 @@ namespace CvUpAPI.Controllers
         [Route("DeleteEmailTemplate")]
         public async Task<IActionResult> DeleteEmailTemplate(int id)
         {
-            await _candPosService.DeleteEmailTemplate(Globals.CompanyId, id);
+            await _candsService.DeleteEmailTemplate(Globals.CompanyId, id);
             return Ok();
         }
 
@@ -237,15 +241,15 @@ namespace CvUpAPI.Controllers
         public async Task<CandModel?> UpdateCandDetails(CandDetailsModel candDetails)
         {
             candDetails.companyId = Globals.CompanyId;
-            await _candPosService.UpdateCandDetails(candDetails);
-            return await _candPosService.GetCandidate(candDetails.companyId, candDetails.candidateId);
+            await _candsService.UpdateCandDetails(candDetails);
+            return await _candsService.GetCandidate(candDetails.companyId, candDetails.candidateId);
         }
 
         //[HttpGet]
         //[Route("UpdateIsSeen")]
         //public async Task<IActionResult> UpdateIsSeen(int cvId)
         //{
-        //    await _candPosService.UpdateIsSeen(Globals.CompanyId, cvId);
+        //    await _candsService.UpdateIsSeen(Globals.CompanyId, cvId);
         //    return Ok();
         //}
 
@@ -253,30 +257,29 @@ namespace CvUpAPI.Controllers
         [Route("UpdateIsSeen")]
         public void UpdateIsSeen(int cvId)
         {
-            Task backgroundTask = Task.Run(() => _candPosService.UpdateIsSeen(Globals.CompanyId, cvId));
+            Task backgroundTask = Task.Run(() => _candsService.UpdateIsSeen(Globals.CompanyId, cvId));
         }
 
         [HttpGet]
         [Route("CandsReport")]
         public async Task<List<CandReportModel?>> CandsReport(string stageType)
         {
-            return await _candPosService.CandsReport(Globals.CompanyId, stageType);
+            return await _candsService.CandsReport(Globals.CompanyId, stageType);
         }
 
         [HttpDelete]
         [Route("DeleteCv")]
         public async Task<CandModel?> DeleteCv(int cnid, int cvId)
         {
-            await _candPosService.DeleteCv(Globals.CompanyId, cnid, cvId);
-            return await _candPosService.GetCandidate(Globals.CompanyId, cnid);
-
+            await _candsService.DeleteCv(Globals.CompanyId, cnid, cvId);
+            return await _candsService.GetCandidate(Globals.CompanyId, cnid);
         }
 
         [HttpDelete]
         [Route("DeleteCandidate")]
         public async Task<IActionResult> DeleteCandidate(int id)
         {
-            await _candPosService.DeleteCandidate(Globals.CompanyId, id);
+            await _candsService.DeleteCandidate(Globals.CompanyId, id);
             return Ok();
         }
 
@@ -284,30 +287,30 @@ namespace CvUpAPI.Controllers
         [Route("SaveCustomerCandReview")]
         public async Task<CandModel?> SaveCustomerCandReview(CandReviewModel customerCandReview)
         {
-            await _candPosService.SaveCustomerCandReview(Globals.CompanyId, customerCandReview);
-            return await _candPosService.GetCandidate(Globals.CompanyId, customerCandReview.candidateId);
+            await _candsService.SaveCustomerCandReview(Globals.CompanyId, customerCandReview);
+            return await _candsService.GetCandidate(Globals.CompanyId, customerCandReview.candidateId);
         }
 
         [HttpGet]
         [Route("GetSearches")]
         public async Task<List<SearchModel>> GetSearches()
         {
-            return await _candPosService.GetSearches(Globals.CompanyId);
+            return await _candsService.GetSearches(Globals.CompanyId);
         }
 
         [HttpPost]
         [Route("SaveSearch")]
         public async Task<IActionResult> SaveSearch(SearchModel searchVals)
         {
-            await _candPosService.SaveSearch(Globals.CompanyId, searchVals);
+            await _candsService.SaveSearch(Globals.CompanyId, searchVals);
             return Ok();
         }
-      
+
         [HttpPut]
         [Route("DeleteSearch")]
         public async Task<IActionResult> DeleteSearch(SearchModel searchVals)
         {
-            await _candPosService.DeleteSearch(Globals.CompanyId, searchVals);
+            await _candsService.DeleteSearch(Globals.CompanyId, searchVals);
             return Ok();
         }
 
@@ -315,7 +318,7 @@ namespace CvUpAPI.Controllers
         [Route("StarSearch")]
         public async Task<IActionResult> StarSearch(SearchModel searchVals)
         {
-            await _candPosService.StarSearch(Globals.CompanyId, searchVals);
+            await _candsService.StarSearch(Globals.CompanyId, searchVals);
             return Ok();
         }
 
@@ -323,22 +326,22 @@ namespace CvUpAPI.Controllers
         [Route("DeleteAllNotStarSearches")]
         public async Task<List<SearchModel>> DeleteAllNotStarSearches()
         {
-            await _candPosService.DeleteAllNotStarSearches(Globals.CompanyId);
-            return await _candPosService.GetSearches(Globals.CompanyId);
+            await _candsService.DeleteAllNotStarSearches(Globals.CompanyId);
+            return await _candsService.GetSearches(Globals.CompanyId);
         }
 
         [HttpGet]
         [Route("GetKeywordsGroups")]
         public async Task<List<keywordsGroupModel>> GetKeywordsGroups()
         {
-            return await _candPosService.GetKeywordsGroups(Globals.CompanyId);
+            return await _candsService.GetKeywordsGroups(Globals.CompanyId);
         }
 
         [HttpPost]
         [Route("SaveKeywordsGroup")]
         public async Task<IActionResult> SaveKeywordsGroup(keywordsGroupModel keywordsGroup)
         {
-            await _candPosService.SaveKeywordsGroup(Globals.CompanyId, keywordsGroup);
+            await _candsService.SaveKeywordsGroup(Globals.CompanyId, keywordsGroup);
             return Ok();
         }
 
@@ -346,7 +349,7 @@ namespace CvUpAPI.Controllers
         [Route("DeleteKeywordsGroup")]
         public async Task<IActionResult> DeleteKeywordsGroup(int id)
         {
-            await _candPosService.DeleteKeywordsGroup(Globals.CompanyId, id);
+            await _candsService.DeleteKeywordsGroup(Globals.CompanyId, id);
             return Ok();
         }
 
@@ -354,14 +357,14 @@ namespace CvUpAPI.Controllers
         [Route("GetKeywords")]
         public async Task<List<keywordModel>> GetKeywords()
         {
-            return await _candPosService.GetKeywords(Globals.CompanyId);
+            return await _candsService.GetKeywords(Globals.CompanyId);
         }
 
         [HttpPost]
         [Route("SaveKeyword")]
         public async Task<IActionResult> SaveKeyword(keywordModel keyword)
         {
-            await _candPosService.SaveKeyword(Globals.CompanyId, keyword);
+            await _candsService.SaveKeyword(Globals.CompanyId, keyword);
             return Ok();
         }
 
@@ -369,7 +372,7 @@ namespace CvUpAPI.Controllers
         [Route("DeleteKeyword")]
         public async Task<IActionResult> DeleteKeyword(int id)
         {
-            await _candPosService.DeleteKeyword(Globals.CompanyId, id);
+            await _candsService.DeleteKeyword(Globals.CompanyId, id);
             return Ok();
         }
     }

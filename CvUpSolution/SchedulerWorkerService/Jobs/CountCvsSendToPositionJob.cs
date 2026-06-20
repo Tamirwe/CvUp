@@ -6,7 +6,7 @@ namespace SchedulerWorkerService.Jobs
 {
 
     [DisallowConcurrentExecution] // Prevents overlapping runs
-    public class CountCvsSendToPositionJob(ICandsPositionsServise candPosService, ILogger<CountCvsSendToPositionJob> logger) : IJob
+    public class CountCvsSendToPositionJob(IPositionsServise positionsService, ILogger<CountCvsSendToPositionJob> logger) : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
@@ -15,7 +15,7 @@ namespace SchedulerWorkerService.Jobs
 
             try
             {
-                await candPosService.CalculatePositionTypesCount(154);
+                await positionsService.CalculatePositionTypesCount(154);
             }
             catch (OperationCanceledException)
             {

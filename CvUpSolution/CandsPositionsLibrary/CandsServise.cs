@@ -1,4 +1,4 @@
-﻿using CvFilesLibrary;
+using CvFilesLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
@@ -9,24 +9,21 @@ using QueueLibrary;
 
 namespace CandsPositionsLibrary
 {
-    public partial class CandsPositionsServise : ICandsPositionsServise
+    public class CandsServise : ICandsServise
     {
         private ICandsPositionsQueries _cvsPositionsQueries;
-        private ICandsListsQueries _candsListsQueries;
         private ILuceneSearchService _luceneSearchService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
         private IDbQueueService _queueService;
 
-        public CandsPositionsServise(ICandsPositionsQueries cvsPositionsQueries,
-            ICandsListsQueries candsListsQueries,
+        public CandsServise(ICandsPositionsQueries cvsPositionsQueries,
             ILuceneSearchService luceneSearchService,
-            IEmailService emailService, IEmailQueries emailQueries, ICvsFilesService cvsFilesService,
-            IDbQueueService queueService)
+            IEmailService emailService, IEmailQueries emailQueries,
+            ICvsFilesService cvsFilesService, IDbQueueService queueService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
-            _candsListsQueries = candsListsQueries;
             _luceneSearchService = luceneSearchService;
             _emailService = emailService;
             _emailQueries = emailQueries;
@@ -138,85 +135,12 @@ namespace CandsPositionsLibrary
 
         public async Task<CandModel?> GetCandidate(int companyId, int candId)
         {
-            var result = await _cvsPositionsQueries.GetCandidate(companyId, candId);
-            return result;
-        }
-
-        public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
-        {
-            var result = await _candsListsQueries.GetPositionCandidate(companyId, candId, positionId);
-            return result;
-        }
-
-        public async Task<List<CandModel?>> GetCandsList(int companyId, List<int>? candsIds)
-        {
-            var result = await _candsListsQueries.GetCandsList(companyId, candsIds);
-            return result;
-        }
-
-        public async Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId)
-        {
-            return await _candsListsQueries.GetPosCandsList(companyId, positionId);
-        }
-
-        public async Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId)
-        {
-            return await _candsListsQueries.GetPosTypeCandsList(companyId, positionTypeId);
-        }
-
-        public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
-        {
-            return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
+            return await _cvsPositionsQueries.GetCandidate(companyId, candId);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
-            List<CandCvModel> cvsList = await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
-            return cvsList;
-        }
-
-        public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
-        {
-            List<int> posContacts = await _cvsPositionsQueries.getPositionContactsIds(companyId, positionId);
-            return posContacts;
-        }
-
-        public async Task<PositionModel> GetPosition(int companyId, int positionId)
-        {
-            PositionModel pos = await _cvsPositionsQueries.GetPosition(companyId, positionId);
-            return pos;
-        }
-
-        public async Task<int> AddPosition(PositionModel data, int companyId, int userId)
-        {
-            position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
-            await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
-            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, newRec.id, data.contactsIds);
-            return newRec.id;
-        }
-
-        public async Task<int> UpdatePosition(PositionModel data, int companyId, int userId)
-        {
-            position? updRec = await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
-            //await _cvsPositionsQueries.AddUpdateInterviewers(companyId, data.id,data.interviewersIds);
-            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, data.id, data.contactsIds);
-            return data.id;
-        }
-
-        public async Task<List<PositionModel>> GetPositionsList(int companyId)
-        {
-            List<PositionModel> qList = await _cvsPositionsQueries.GetPositionsList(companyId);
-            return qList;
-        }
-
-        public async Task DeletePosition(int companyId, int id)
-        {
-            await _cvsPositionsQueries.DeletePosition(companyId, id);
-        }
-
-        public async Task<List<ParserRulesModel>> GetParsersRules()
-        {
-            return await _cvsPositionsQueries.GetParsersRules();
+            return await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
         }
 
         public async Task<CvModel?> GetCv(int cvId, int companyId)
@@ -226,8 +150,7 @@ namespace CandsPositionsLibrary
 
         public async Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum)
         {
-            cvs_txt? cvTxt = await _cvsPositionsQueries.CheckIsSameCv(companyId, candidateId, cvAsciiSum);
-            return cvTxt;
+            return await _cvsPositionsQueries.CheckIsSameCv(companyId, candidateId, cvAsciiSum);
         }
 
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
@@ -277,11 +200,7 @@ namespace CandsPositionsLibrary
 
         public async Task<List<SearchEntry>> SearchCands(int companyId, searchCandCvModel searchVals)
         {
-            List<SearchEntry> results = [];
-
-            results = await _luceneSearchService.Search(companyId, searchVals);
-
-            return results;
+            return await _luceneSearchService.Search(companyId, searchVals);
         }
 
         public async Task UpdateCvsAsciiSum(int companyId)
@@ -298,9 +217,7 @@ namespace CandsPositionsLibrary
         {
             if (user != null)
             {
-                EmailAddress from = new EmailAddress { Address = user.email, Name = $"{user.firstName} {user.lastName}" };
-
-                List<AttachmentModel>? Attachments = new List<AttachmentModel>();
+                List<AttachmentModel> Attachments = new List<AttachmentModel>();
 
                 if (emailData.attachCvs != null)
                 {
@@ -317,7 +234,6 @@ namespace CandsPositionsLibrary
                     Subject = emailData.subject,
                     Body = $"{emailData.body} {user.signature} ",
                     Attachments = Attachments,
-
                     From = new EmailAddress { Address = user.email, Name = $"{user.firstName} {user.lastName}" },
                     MailSenderUserName = user.mailUsername,
                     MailSenderPassword = user.mailPassword,
@@ -331,7 +247,6 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.SaveCandReview(companyId, candReview);
             await _queueService.EnqueueAsync("index cv", candReview.candidateId.ToString());
-
         }
 
         public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
@@ -359,18 +274,10 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdateIsSeen(companyId, cvId);
         }
+
         public async Task<List<CandReportModel?>> CandsReport(int companyId, string stageType)
         {
             return await _cvsPositionsQueries.CandsReport(companyId, stageType);
-        }
-
-        public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
-        {
-            await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId, isUpdateCount);
-        }
-        public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
-        {
-            return await _cvsPositionsQueries.GetPositionByMatchStr(companyId, matchStr);
         }
 
         public async Task AddSendEmail(SendEmailModel emailData, int userId)
@@ -378,35 +285,10 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.AddSendEmail(emailData, userId);
         }
 
-        public async Task<int?> GetPositionTypeId(int companyId, string positionRelated)
-        {
-            return await _cvsPositionsQueries.GetPositionTypeId(companyId, positionRelated);
-        }
-
-        public async Task<int> AddPositionTypeName(int companyId, string positionRelated)
-        {
-            return await _cvsPositionsQueries.AddPositionTypeName(companyId, positionRelated);
-        }
-
-        public async Task<List<PositionTypeModel>> GetPositionsTypes(int companyId)
-        {
-            return await _cvsPositionsQueries.GetPositionsTypes(companyId);
-        }
-
         public async Task SaveCustomerCandReview(int companyId, CandReviewModel customerCandReview)
         {
             await _cvsPositionsQueries.SaveCustomerCandReview(companyId, customerCandReview);
             await _cvsPositionsQueries.UpdateCandCustomersReviews(companyId, customerCandReview.candidateId);
-        }
-
-        public async Task CalculatePositionTypesCount(int companyId)
-        {
-            await _cvsPositionsQueries.CalculatePositionTypesCount(companyId);
-        }
-
-        public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
-        {
-            return await _cvsPositionsQueries.PositionsTypesCvsCount(companyId);
         }
 
         public async Task<List<SearchModel>> GetSearches(int companyId)

@@ -28,11 +28,11 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
         services.AddTransient<IQueueQueries, QueueQueries>();
         services.AddTransient<IDbQueueService, DbQueueService>();
-        services.AddTransient<ICandsPositionsServise, CandsPositionsServise>();
+        services.AddTransient<ICandsServise, CandsServise>();
     })
     .Build();
 
-var cvsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();
+var cvsPositionsServise = host.Services.GetRequiredService<ICandsServise>();
 var luceneIndexService = host.Services.GetRequiredService<ILuceneIndexService>();
 //await cvsPositionsServise.UpdateCvsAsciiSum(154);
 

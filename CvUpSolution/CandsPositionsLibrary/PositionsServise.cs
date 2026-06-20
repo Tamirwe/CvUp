@@ -1,0 +1,91 @@
+using Database.models;
+using DataModelsLibrary.Models;
+using DataModelsLibrary.Queries;
+
+namespace CandsPositionsLibrary
+{
+    public class PositionsServise : IPositionsServise
+    {
+        private ICandsPositionsQueries _cvsPositionsQueries;
+
+        public PositionsServise(ICandsPositionsQueries cvsPositionsQueries)
+        {
+            _cvsPositionsQueries = cvsPositionsQueries;
+        }
+
+        public async Task<PositionModel> GetPosition(int companyId, int positionId)
+        {
+            return await _cvsPositionsQueries.GetPosition(companyId, positionId);
+        }
+
+        public async Task<int> AddPosition(PositionModel data, int companyId, int userId)
+        {
+            position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
+            await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
+            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, newRec.id, data.contactsIds);
+            return newRec.id;
+        }
+
+        public async Task<int> UpdatePosition(PositionModel data, int companyId, int userId)
+        {
+            await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
+            await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, data.id, data.contactsIds);
+            return data.id;
+        }
+
+        public async Task<List<PositionModel>> GetPositionsList(int companyId)
+        {
+            return await _cvsPositionsQueries.GetPositionsList(companyId);
+        }
+
+        public async Task DeletePosition(int companyId, int id)
+        {
+            await _cvsPositionsQueries.DeletePosition(companyId, id);
+        }
+
+        public async Task<List<int>> getPositionContactsIds(int companyId, int positionId)
+        {
+            return await _cvsPositionsQueries.getPositionContactsIds(companyId, positionId);
+        }
+
+        public async Task<List<ParserRulesModel>> GetParsersRules()
+        {
+            return await _cvsPositionsQueries.GetParsersRules();
+        }
+
+        public async Task<position?> GetPositionByMatchStr(int companyId, string matchStr)
+        {
+            return await _cvsPositionsQueries.GetPositionByMatchStr(companyId, matchStr);
+        }
+
+        public async Task<int?> GetPositionTypeId(int companyId, string positionRelated)
+        {
+            return await _cvsPositionsQueries.GetPositionTypeId(companyId, positionRelated);
+        }
+
+        public async Task<int> AddPositionTypeName(int companyId, string positionRelated)
+        {
+            return await _cvsPositionsQueries.AddPositionTypeName(companyId, positionRelated);
+        }
+
+        public async Task<List<PositionTypeModel>> GetPositionsTypes(int companyId)
+        {
+            return await _cvsPositionsQueries.GetPositionsTypes(companyId);
+        }
+
+        public async Task CalculatePositionTypesCount(int companyId)
+        {
+            await _cvsPositionsQueries.CalculatePositionTypesCount(companyId);
+        }
+
+        public async Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId)
+        {
+            return await _cvsPositionsQueries.PositionsTypesCvsCount(companyId);
+        }
+
+        public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
+        {
+            await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId, isUpdateCount);
+        }
+    }
+}

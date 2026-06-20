@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
-import { CandsListsContainer } from "../components/containers/CandsListsContainer";
+import { CandsListsTabs } from "../candsLists/CandsListsTabs";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";
 import { useEffect } from "react";
 import { isMobile } from "react-device-detect";
@@ -44,7 +44,7 @@ export const MobileAuthLayout = observer(() => {
           top: "3rem",
         }}
       >
-        <CandsListsContainer />
+        <CandsListsTabs />
       </div>
     </>
   );

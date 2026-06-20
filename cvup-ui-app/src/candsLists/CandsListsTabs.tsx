@@ -1,30 +1,22 @@
 import { Box, Paper, Stack, Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useStore } from "../../Hooks/useStore";
-import { CandsList } from "../cands/CandsList";
+import { useStore } from "../Hooks/useStore";
 import { observer } from "mobx-react";
-import {
-  CandsSourceEnum,
-  SortByEnum,
-  TabsCandsEnum,
-} from "../../models/GeneralEnums";
-import { SearchControl } from "../header/SearchControl";
-import { ICand, ISearchModel } from "../../models/GeneralModels";
+import { SortByEnum, TabsCandsEnum } from "../models/GeneralEnums";
+import { ICand, ISearchModel } from "../models/GeneralModels";
 import { isMobile } from "react-device-detect";
-import { AiList } from "../cands/AiSearch/AiList";
+import { PositionCandsList } from "./PositionCandsList";
+import { PositionGroupCandsList } from "./PositionGroupCandsList";
+import { FolderCandsList } from "./FolderCandsList";
+import { AllCandsList } from "./AllCandsList";
+import { AiCandsList } from "./AiCandsList";
 
-export const CandsListsContainer = observer(() => {
+export const CandsListsTabs = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
-  // const [folderId, setFolderId] = useState(0);
   const [allCandsList, setAllCandsList] = useState<ICand[]>([]);
   const [candsPosList, setCandsPosList] = useState<ICand[]>([]);
   const [candsPosTypeList, setCandsPosTypeList] = useState<ICand[]>([]);
   const [candsFolderList, setCandsFolderList] = useState<ICand[]>([]);
-  const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
-  const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
-  const [positionsTypesAdvancedOpen, setPositionsTypesAdvancedOpen] =
-    useState(false);
-  const [foldersAdvancedOpen, setFoldersAdvancedOpen] = useState(false);
 
   const sortCandList = (isDesc: boolean, list: ICand[]) => {
     const sorted = list.slice();
@@ -55,16 +47,6 @@ export const CandsListsContainer = observer(() => {
   useEffect(() => {
     setCandsFolderList(candsStore.folderCandsList);
   }, [candsStore.folderCandsList]);
-
-  // const themeRtl = createTheme({
-  //   direction: "rtl", // Both here and <body dir="rtl">
-  // });
-
-  // // Create rtl cache
-  // const cacheRtl = createCache({
-  //   key: "muirtl",
-  //   stylisPlugins: [rtlPlugin],
-  // });
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -238,62 +220,27 @@ export const CandsListsContainer = observer(() => {
       </Box>
 
       <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AllCands}>
-        <Box mt={1} mr={1} ml={1}>
-          <SearchControl
-            onSearch={handleAllCandsSearch}
-            onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
-            shoeAdvancedIcon={true}
-            records={candsStore.allCandsList && candsStore.allCandsList.length}
-            showSort={true}
-            onSort={(isDesc: boolean) => {
-              handleSort(isDesc, TabsCandsEnum.AllCands);
-            }}
-            showRefreshList={true}
-            extSearch={candsStore.extSearch}
-          />
-        </Box>
-        <CandsList
-          candsListData={allCandsList}
-          candsSource={CandsSourceEnum.AllCands}
-          advancedOpen={candsAdvancedOpen}
+        <AllCandsList
+          allCandsList={allCandsList}
+          onSearch={handleAllCandsSearch}
+          onSort={(isDesc: boolean) => {
+            handleSort(isDesc, TabsCandsEnum.AllCands);
+          }}
         />
       </div>
 
       <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AI}>
-        <Box mt={1} mr={1} ml={1}>
-          <SearchControl
-            onSearch={handleAiSearch}
-            // records={candsStore.allCandsList && candsStore.allCandsList.length}
-          />
-        </Box>
-        <AiList
-          candsListData={candsStore.aiCandsResults}
-          candsSource={CandsSourceEnum.AI}
-          // advancedOpen={candsAdvancedOpen}
-        />
+        <AiCandsList onSearch={handleAiSearch} />
       </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
       >
-        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden" }}>
-          <SearchControl
-            onSearch={handlePositionCandsSearch}
-            onShowAdvanced={() =>
-              setPositionsAdvancedOpen(!positionsAdvancedOpen)
-            }
-            shoeAdvancedIcon={true}
-            records={candsStore.posCandsList && candsStore.posCandsList.length}
-            showSort={true}
-            onSort={(isDesc: boolean) => {
-              handleSort(isDesc, TabsCandsEnum.PositionCands);
-            }}
-            showRefreshList={true}
-          />
-        </Box>
-        <CandsList
-          candsListData={candsPosList}
-          candsSource={CandsSourceEnum.Position}
-          advancedOpen={positionsAdvancedOpen}
+        <PositionCandsList
+          candsPosList={candsPosList}
+          onSearch={handlePositionCandsSearch}
+          onSort={(isDesc: boolean) => {
+            handleSort(isDesc, TabsCandsEnum.PositionCands);
+          }}
         />
       </div>
       <div
@@ -301,50 +248,23 @@ export const CandsListsContainer = observer(() => {
           candsStore.currentTabCandsLists !== TabsCandsEnum.PositionTypeCands
         }
       >
-        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden" }}>
-          <SearchControl
-            onSearch={handlePositionTypeCandsSearch}
-            onShowAdvanced={() =>
-              setPositionsTypesAdvancedOpen(!positionsTypesAdvancedOpen)
-            }
-            shoeAdvancedIcon={true}
-            records={
-              candsStore.posTypeCandsList && candsStore.posTypeCandsList.length
-            }
-            showSort={true}
-            onSort={(isDesc: boolean) => {
-              handleSort(isDesc, TabsCandsEnum.PositionTypeCands);
-            }}
-            showRefreshList={true}
-          />
-        </Box>
-        <CandsList
-          candsListData={candsPosTypeList}
-          candsSource={CandsSourceEnum.PositionType}
-          advancedOpen={positionsTypesAdvancedOpen}
+        <PositionGroupCandsList
+          candsPosTypeList={candsPosTypeList}
+          onSearch={handlePositionTypeCandsSearch}
+          onSort={(isDesc: boolean) => {
+            handleSort(isDesc, TabsCandsEnum.PositionTypeCands);
+          }}
         />
       </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.FolderCands}
       >
-        <Box mt={1} mr={1} ml={1}>
-          <SearchControl
-            onSearch={handleFolderCandsSearch}
-            onShowAdvanced={() => setFoldersAdvancedOpen(!foldersAdvancedOpen)}
-            shoeAdvancedIcon={true}
-            records={
-              candsStore.folderCandsList && candsStore.folderCandsList.length
-            }
-            showSort={true}
-            onSort={(isDesc: boolean) => {
-              handleSort(isDesc, TabsCandsEnum.FolderCands);
-            }}
-          />
-        </Box>
-        <CandsList
-          candsListData={candsFolderList}
-          candsSource={CandsSourceEnum.Folder}
-          advancedOpen={foldersAdvancedOpen}
+        <FolderCandsList
+          candsFolderList={candsFolderList}
+          onSearch={handleFolderCandsSearch}
+          onSort={(isDesc: boolean) => {
+            handleSort(isDesc, TabsCandsEnum.FolderCands);
+          }}
         />
       </div>
     </Paper>

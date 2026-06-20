@@ -2,7 +2,7 @@ import { Box, Drawer, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { observer } from "mobx-react";
-import { CandsListsContainer } from "../components/containers/CandsListsContainer";
+import { CandsListsTabs } from "../candsLists/CandsListsTabs";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";
 import logo from "../assets/images/CvUpLogo2.png";
 
@@ -48,7 +48,7 @@ export const BrowserAuthLayout = observer(() => {
           </Grid>
         </Grid>
         <Grid item xs={7} sx={{ direction: "rtl" }}>
-          <CandsListsContainer />
+          <CandsListsTabs />
         </Grid>
       </Grid>
     </Box>

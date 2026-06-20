@@ -1,4 +1,4 @@
-﻿namespace CvAnalyzeEmbedOpenAiLibrary
+﻿namespace AnalyzeEmbedOpenAiLibrary
 {
     public interface ISearchCvsOpenAi
     {

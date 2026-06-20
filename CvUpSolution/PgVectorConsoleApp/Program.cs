@@ -1,4 +1,4 @@
-﻿using CvAnalyzeEmbedOpenAiLibrary;
+﻿using AnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Queries;
 using QueueLibrary;
 using DotNetEnv.Configuration;

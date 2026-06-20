@@ -1,4 +1,4 @@
-﻿using CvAnalyzeEmbedOpenAiLibrary;
+﻿using AnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 

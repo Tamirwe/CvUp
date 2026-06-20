@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
 
-namespace CvAnalyzeEmbedOpenAiLibrary
+namespace AnalyzeEmbedOpenAiLibrary
 {
     public class SearchCvsOpenAi : ISearchCvsOpenAi
     {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using OpenAI.Embeddings;
 
-namespace CvAnalyzeEmbedOpenAiLibrary
+namespace AnalyzeEmbedOpenAiLibrary
 {
     public record CvEmbeddings(float[]? Titles, float[]? Skills, float[]? Summary, float[]? Companies);
 

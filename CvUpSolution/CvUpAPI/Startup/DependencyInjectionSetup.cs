@@ -1,7 +1,7 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
 using CustomersContactsLibrary;
-using CvAnalyzeEmbedOpenAiLibrary;
+using AnalyzeEmbedOpenAiLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;

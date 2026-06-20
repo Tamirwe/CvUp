@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerWorkerService", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgVectorLibrary", "PgVectorLibrary\PgVectorLibrary.csproj", "{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CvAnalyzeEmbedOpenAiLibrary", "CvAnalyzeEmbedOpenAiLibrary\CvAnalyzeEmbedOpenAiLibrary.csproj", "{9ED758F0-156E-806D-6482-1AECE71773C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzeEmbedOpenAiLibrary", "AnalyzeEmbedOpenAiLibrary\AnalyzeEmbedOpenAiLibrary.csproj", "{9ED758F0-156E-806D-6482-1AECE71773C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgVectorConsoleApp", "PgVectorConsoleApp\PgVectorConsoleApp.csproj", "{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}"
 EndProject

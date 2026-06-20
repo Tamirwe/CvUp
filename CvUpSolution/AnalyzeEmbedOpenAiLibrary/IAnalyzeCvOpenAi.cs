@@ -2,7 +2,7 @@
 
 using DataModelsLibrary.Models;
 
-namespace CvAnalyzeEmbedOpenAiLibrary
+namespace AnalyzeEmbedOpenAiLibrary
 {
     public interface IAnalyzeCvOpenAi
     {

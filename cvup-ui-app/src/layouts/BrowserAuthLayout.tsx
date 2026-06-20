@@ -2,7 +2,7 @@ import { Box, Drawer, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { observer } from "mobx-react";
-import { CandsListsTabs } from "../candsLists/CandsListsTabs";
+import { CandsListsTabs } from "../candsLists/tabs/CandsListsTabs";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";
 import logo from "../assets/images/CvUpLogo2.png";
 

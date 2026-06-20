@@ -61,4 +61,12 @@ export default class PositionsApi extends BaseApi {
       return await this.http.get("Positions/PositionsTypesCvsCount");
     });
   }
+
+  async findPositionMatchCvs(posId: number) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.get(
+        `Positions/FindPositionMatchCvs?posId=${posId}`,
+      );
+    });
+  }
 }

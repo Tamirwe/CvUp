@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
-import { CandsListsTabs } from "../candsLists/CandsListsTabs";
+import { CandsListsTabs } from "../candsLists/tabs/CandsListsTabs";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";
 import { useEffect } from "react";
 import { isMobile } from "react-device-detect";

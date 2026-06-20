@@ -1,15 +1,15 @@
 import { Box, Paper, Stack, Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useStore } from "../Hooks/useStore";
+import { useStore } from "../../Hooks/useStore";
 import { observer } from "mobx-react";
-import { SortByEnum, TabsCandsEnum } from "../models/GeneralEnums";
-import { ICand, ISearchModel } from "../models/GeneralModels";
+import { SortByEnum, TabsCandsEnum } from "../../models/GeneralEnums";
+import { ICand, ISearchModel } from "../../models/GeneralModels";
 import { isMobile } from "react-device-detect";
-import { PositionCandsList } from "./PositionCandsList";
-import { PositionGroupCandsList } from "./PositionGroupCandsList";
-import { FolderCandsList } from "./FolderCandsList";
-import { AllCandsList } from "./AllCandsList";
-import { AiCandsList } from "./AiCandsList";
+import { PositionCandsList } from "../PositionCandsList";
+import { PositionGroupCandsList } from "../PositionGroupCandsList";
+import { FolderCandsList } from "../FolderCandsList";
+import { AllCandsList } from "../AllCandsList";
+import { AiCandsList } from "../AiCandsList";
 
 export const CandsListsTabs = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();

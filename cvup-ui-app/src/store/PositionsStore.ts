@@ -146,6 +146,10 @@ export class PositionsStore {
     this.candDisplayPosition = undefined;
   }
 
+  async findPositionMatchCvs(posId: number) {
+    await this.positionApi.findPositionMatchCvs(posId);
+  }
+
   async positionClick(posId: number, isPositionOnTop: boolean = false) {
     this.updateSelectedPosition(posId);
 

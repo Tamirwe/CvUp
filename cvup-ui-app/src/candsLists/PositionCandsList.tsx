@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
@@ -15,12 +15,12 @@ interface IProps {
 
 export const PositionCandsList = observer(
   ({ candsPosList, onSearch, onSort }: IProps) => {
-    const { candsStore } = useStore();
+    const { candsStore, positionsStore } = useStore();
     const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
 
     return (
       <>
-        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden" }}>
+        <Box mt={1} mr={1} ml={1} sx={{ overflow: "hidden", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <SearchControl
             onSearch={onSearch}
             onShowAdvanced={() =>
@@ -32,6 +32,20 @@ export const PositionCandsList = observer(
             onSort={onSort}
             showRefreshList={true}
           />
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ whiteSpace: "nowrap", px: 2 }}
+            onClick={() => {
+              if (positionsStore.selectedPosition?.id) {
+                positionsStore.findPositionMatchCvs(
+                  positionsStore.selectedPosition.id,
+                );
+              }
+            }}
+          >
+            Find Matches
+          </Button>
         </Box>
         <CandsList
           candsListData={candsPosList}

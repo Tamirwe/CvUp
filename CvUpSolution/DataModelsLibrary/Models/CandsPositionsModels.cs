@@ -141,13 +141,35 @@ namespace DataModelsLibrary.Models
         public string[] ProfessionWordsAI { get; set; } = [];
         //public List<string> ProfessionSkillsAI { get; set; } = [];
         //public string? SeniorityAI { get; set; }
-        public string? EducationAI { get; set; }
+        public string? SeniorityHeAI { get; set; }
+        public EducationItemModel[]? EducationAI { get; set; }
+        public WorkExperienceItemModel[]? WorkExperienceAI { get; set; }
         public string[] CompaniesAI { get; set; } = [];
         //public string? MilitaryServiceAI { get; set; }
         //public List<string> SkillsAI { get; set; } = [];
         public string? SummaryAI { get; set; }
     }
 
+
+    public class EducationItemModel
+    {
+        public string? degree { get; set; }
+        public string? field_he { get; set; }
+        public string? field_en { get; set; }
+    }
+
+    public class WorkExperienceItemModel
+    {
+        public string? company { get; set; }
+        public string? title_he { get; set; }
+        public string? title_en { get; set; }
+        public string? title_raw { get; set; }
+        public string? seniority_he { get; set; }
+        public string? seniority_en { get; set; }
+        public int? start_year { get; set; }
+        public int? end_year { get; set; }
+        public bool is_current { get; set; }
+    }
 
     public class CandPosHistoryModel
     {

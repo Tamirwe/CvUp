@@ -84,7 +84,7 @@ export const AiList = observer(({ candsListData, candsSource }: IProps) => {
                         {`${cand.nameAI ? ` - ${cand.nameAI}` : ` - ${cand.firstName} ${cand.lastName}`}`}
                       </span>
                       <span style={{ color: "#9b9b9b" }}>
-                        {cand.estimateAgeAI > 0 && ` - ${cand.estimateAgeAI}`}
+                        {cand.estimateAgeAI != null && cand.estimateAgeAI > 0 && ` - ${cand.estimateAgeAI}`}
                       </span>
                       <span style={{ color: "#9b9b9b" }}>
                         {cand.locationAI && ` - ${cand.locationAI}`}

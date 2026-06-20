@@ -4,6 +4,7 @@ using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using LuceneLibrary;
+using Newtonsoft.Json;
 using QueueLibrary;
 
 namespace CandsPositionsLibrary
@@ -490,7 +491,7 @@ namespace CandsPositionsLibrary
                 cand.LocationAI = aiItem.city;
                 cand.JobsTitlesAI = aiItem.jobsTitlesHe.ToArray();
                 cand.EstimateAgeAI = aiItem.age;
-                cand.EducationAI = aiItem.education;
+                cand.EducationAI = aiItem.education == null ? null : JsonConvert.DeserializeObject<EducationItemModel[]>(aiItem.education);
                 cand.CompaniesAI = aiItem.companies.ToArray();
                 cand.SummaryAI = aiItem.summary;
                 cand.score = aiItem.score;

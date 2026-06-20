@@ -17,6 +17,8 @@ namespace DataModelsLibrary.Queries
             {
                 var dbQuery = from cand in dbContext.candidates
                               join cvs in dbContext.cvs on cand.last_cv_id equals cvs.id
+                              join acvJoin in dbContext.analyzed_cvs on cand.id equals acvJoin.candidate_id into acvGroup
+                              from acv in acvGroup.DefaultIfEmpty()
                               where cand.company_id == companyId
                               orderby cand.last_cv_sent descending
                               select new
@@ -39,7 +41,12 @@ namespace DataModelsLibrary.Queries
                                   cand.pos_ids,
                                   cand.pos_stages,
                                   cvs.is_seen,
-                                  cand.is_black_list
+                                  cand.is_black_list,
+                                  EstimateAge = acv != null ? acv.estimate_age : null,
+                                  SeniorityHe = acv != null ? acv.seniority_he : null,
+                                  WorkExperience = acv != null ? acv.work_experience : null,
+                                  SummaryHe = acv != null ? acv.summary_he : null,
+                                  Education = acv != null ? acv.education : null
                               };
 
                 if (candsIds != null)
@@ -69,7 +76,12 @@ namespace DataModelsLibrary.Queries
                     candPosIds = cand.pos_ids == null ? new int[] { } : JsonConvert.DeserializeObject<int[]>(cand.pos_ids),
                     posStages = cand.pos_stages == null ? null : JsonConvert.DeserializeObject<CandPosStageModel[]>(cand.pos_stages),
                     isSeen = Convert.ToBoolean(cand.is_seen),
-                    isBlackList = Convert.ToBoolean(cand.is_black_list)
+                    isBlackList = Convert.ToBoolean(cand.is_black_list),
+                    EstimateAgeAI = (int?)cand.EstimateAge,
+                    SeniorityHeAI = cand.SeniorityHe,
+                    WorkExperienceAI = cand.WorkExperience == null ? null : JsonConvert.DeserializeObject<WorkExperienceItemModel[]>(cand.WorkExperience),
+                    SummaryAI = cand.SummaryHe,
+                    EducationAI = cand.Education == null ? null : JsonConvert.DeserializeObject<EducationItemModel[]>(cand.Education)
                 }).ToList();
 
                 return finalCandidates;

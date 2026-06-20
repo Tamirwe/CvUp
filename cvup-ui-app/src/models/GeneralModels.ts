@@ -35,39 +35,52 @@ export interface ICand {
   customerReview?: string;
   candidateId: number;
   keyId: string;
-  encriptedId: string;
   phone?: string;
   city?: string;
   email?: string;
   emailSubject: string;
   firstName?: string;
   lastName?: string;
-  reviewTct: string;
   fileType: string;
   cvSent: Date;
   candFoldersIds: number[];
   candPosIds: number[];
-  cvPosIds: number[];
   hasDuplicates: boolean;
   posStages?: ICandPosStage[];
   isSeen: boolean;
   reviewDate?: Date;
-  score: number;
+  score: number | null;
   allCustomersReviews?: ICustomersReviews[];
   candPosHistory?: ICandPosHistory;
   isBlackList: boolean;
   nameAI?: string;
-  estimateAgeAI: number;
+  estimateAgeAI: number | null;
   locationAI?: string;
   jobsTitlesAI: string[];
   professionWordsAI: string[];
-  // professionSkillsAI: string[];
-  // seniorityAI: string;
-  educationAI: string;
+  seniorityHeAI?: string;
+  educationAI: IEducationAI[];
+  workExperienceAI: IWorkExperienceAI[];
   companiesAI?: string[];
-  // militaryServiceAI: string;
-  // skillsAI?: string[];
   summaryAI?: string;
+}
+
+export interface IEducationAI {
+  degree: string;
+  field_he: string;
+  field_en: string;
+}
+
+export interface IWorkExperienceAI {
+  company: string;
+  title_he: string;
+  title_en: string;
+  title_raw: string;
+  seniority_he: string;
+  seniority_en: string;
+  start_year: number;
+  end_year: number | null;
+  is_current: boolean;
 }
 
 export interface ICandPosHistory {

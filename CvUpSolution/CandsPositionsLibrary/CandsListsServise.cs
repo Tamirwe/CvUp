@@ -7,10 +7,10 @@ namespace CandsPositionsLibrary
     public class CandsListsServise : ICandsListsServise
     {
         private ICandsListsQueries _candsListsQueries;
-        private ICandsPositionsQueries _cvsPositionsQueries;
+        private IPositionsQueries _cvsPositionsQueries;
         private IAnalyzePositionOpenAi _analyzePositionOpenAi;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, ICandsPositionsQueries cvsPositionsQueries, IAnalyzePositionOpenAi analyzePositionOpenAi)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, IAnalyzePositionOpenAi analyzePositionOpenAi)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;

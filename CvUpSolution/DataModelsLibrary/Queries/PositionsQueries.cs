@@ -4,24 +4,14 @@ using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DataModelsLibrary.Queries
 {
-    public partial class CandsPositionsQueries : ICandsPositionsQueries
+    public partial class PositionsQueries : IPositionsQueries
     {
 
-        public CandsPositionsQueries()
+        public PositionsQueries()
         {
         }
 

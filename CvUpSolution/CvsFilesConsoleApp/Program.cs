@@ -14,7 +14,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((_, services) =>
     {
-        services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
+        services.AddTransient<IPositionsQueries, PositionsQueries>();
         services.AddTransient<ICvsFilesService, CvsFilesService>();
     })
     .Build();

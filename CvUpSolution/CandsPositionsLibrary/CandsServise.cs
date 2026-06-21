@@ -11,14 +11,14 @@ namespace CandsPositionsLibrary
 {
     public class CandsServise : ICandsServise
     {
-        private ICandsPositionsQueries _cvsPositionsQueries;
+        private IPositionsQueries _cvsPositionsQueries;
         private ILuceneSearchService _luceneSearchService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
         private IDbQueueService _queueService;
 
-        public CandsServise(ICandsPositionsQueries cvsPositionsQueries,
+        public CandsServise(IPositionsQueries cvsPositionsQueries,
             ILuceneSearchService luceneSearchService,
             IEmailService emailService, IEmailQueries emailQueries,
             ICvsFilesService cvsFilesService, IDbQueueService queueService)

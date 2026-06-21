@@ -10,10 +10,10 @@ namespace CvFilesLibrary
 {
     public class CvsFilesService : ICvsFilesService
     {
-        private ICandsPositionsQueries _cvsPositionsQueries;
+        private IPositionsQueries _cvsPositionsQueries;
         string _filesRootFolder;
 
-        public CvsFilesService(IConfiguration configuration, ICandsPositionsQueries cvsPositionsQueries)
+        public CvsFilesService(IConfiguration configuration, IPositionsQueries cvsPositionsQueries)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"];
             _cvsPositionsQueries = cvsPositionsQueries;

@@ -5,7 +5,7 @@ using System.Data;
 
 namespace DataModelsLibrary.Queries
 {
-    public partial class CandsPositionsQueries : ICandsPositionsQueries
+    public partial class PositionsQueries : IPositionsQueries
     {
 
         public async Task<List<SearchModel>> GetSearches(int companyId)

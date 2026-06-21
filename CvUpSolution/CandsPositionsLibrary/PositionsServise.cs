@@ -6,9 +6,9 @@ namespace CandsPositionsLibrary
 {
     public class PositionsServise : IPositionsServise
     {
-        private ICandsPositionsQueries _cvsPositionsQueries;
+        private IPositionsQueries _cvsPositionsQueries;
 
-        public PositionsServise(ICandsPositionsQueries cvsPositionsQueries)
+        public PositionsServise(IPositionsQueries cvsPositionsQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
         }

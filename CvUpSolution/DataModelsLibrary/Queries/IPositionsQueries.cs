@@ -3,7 +3,7 @@ using DataModelsLibrary.Models;
 
 namespace DataModelsLibrary.Queries
 {
-    public interface ICandsPositionsQueries
+    public interface IPositionsQueries
     {
         Task<int> AddCv(ImportCvModel importCv);
         Task<int> AddCandidate(candidate importCv);

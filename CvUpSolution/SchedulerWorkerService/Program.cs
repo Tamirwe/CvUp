@@ -15,6 +15,10 @@ using Newtonsoft.Json;
 using PgVectorLibrary;
 using Quartz;
 using SchedulerWorkerService.Jobs;
+using System.Text;
+
+// Register the code pages provider to support legacy encodings like windows-1255 (Hebrew)
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = Host.CreateApplicationBuilder(args);
 

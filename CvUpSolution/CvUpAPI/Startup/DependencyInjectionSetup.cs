@@ -33,6 +33,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICandsListsServise, CandsListsServise>();
             services.AddTransient<IPositionsServise, PositionsServise>();
             services.AddTransient<IPositionsQueries, PositionsQueries>();
+            services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
             services.AddTransient<ICandsListsQueries, CandsListsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();
             services.AddTransient<IAiQueries, AiQueries>();

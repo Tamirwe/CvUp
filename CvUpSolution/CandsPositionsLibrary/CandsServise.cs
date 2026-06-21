@@ -12,6 +12,7 @@ namespace CandsPositionsLibrary
     public class CandsServise : ICandsServise
     {
         private IPositionsQueries _cvsPositionsQueries;
+        private ICandsCvsQueries _candsCvsQueries;
         private ILuceneSearchService _luceneSearchService;
         private IEmailService _emailService;
         private IEmailQueries _emailQueries;
@@ -19,11 +20,13 @@ namespace CandsPositionsLibrary
         private IDbQueueService _queueService;
 
         public CandsServise(IPositionsQueries cvsPositionsQueries,
+            ICandsCvsQueries candsCvsQueries,
             ILuceneSearchService luceneSearchService,
             IEmailService emailService, IEmailQueries emailQueries,
             ICvsFilesService cvsFilesService, IDbQueueService queueService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
+            _candsCvsQueries = candsCvsQueries;
             _luceneSearchService = luceneSearchService;
             _emailService = emailService;
             _emailQueries = emailQueries;
@@ -33,42 +36,42 @@ namespace CandsPositionsLibrary
 
         public async Task<int> AddCv(ImportCvModel importCv)
         {
-            return await _cvsPositionsQueries.AddCv(importCv);
+            return await _candsCvsQueries.AddCv(importCv);
         }
 
         public async Task DeleteCv(int companyId, int candidateId, int cvId)
         {
-            await _cvsPositionsQueries.DeleteCv(companyId, candidateId, cvId);
+            await _candsCvsQueries.DeleteCv(companyId, candidateId, cvId);
             await _cvsPositionsQueries.UpdateCandPosArrays(companyId, candidateId);
 
-            var tuple = await _cvsPositionsQueries.GetCandLastCv(companyId, candidateId);
+            var tuple = await _candsCvsQueries.GetCandLastCv(companyId, candidateId);
             cv? lastCv = tuple.Item1;
             bool isDuplicate = tuple.Item2;
 
             if (lastCv != null)
             {
-                await _cvsPositionsQueries.UpdateCandLastCv(companyId, candidateId, lastCv.id, isDuplicate, lastCv.date_created);
+                await _candsCvsQueries.UpdateCandLastCv(companyId, candidateId, lastCv.id, isDuplicate, lastCv.date_created);
             }
         }
 
         public async Task DeleteCandidate(int companyId, int candidateId)
         {
-            await _cvsPositionsQueries.DeleteCandidate(companyId, candidateId);
+            await _candsCvsQueries.DeleteCandidate(companyId, candidateId);
         }
 
         public async Task UpdateCvKeyId(ImportCvModel importCv)
         {
-            await _cvsPositionsQueries.UpdateCvKeyId(importCv);
+            await _candsCvsQueries.UpdateCvKeyId(importCv);
         }
 
         public async Task<candidate?> GetCandidateByEmail(string email)
         {
-            return await _cvsPositionsQueries.GetCandidateByEmail(email);
+            return await _candsCvsQueries.GetCandidateByEmail(email);
         }
 
         public async Task<candidate?> GetCandidateByPhone(string phone)
         {
-            return await _cvsPositionsQueries.GetCandidateByPhone(phone);
+            return await _candsCvsQueries.GetCandidateByPhone(phone);
         }
 
         public async Task AddUpdateCandidateFromCvImport(ImportCvModel importCv)
@@ -110,7 +113,7 @@ namespace CandsPositionsLibrary
 
                 if (isUpdate)
                 {
-                    await _cvsPositionsQueries.UpdateCandidate(cand);
+                    await _candsCvsQueries.UpdateCandidate(cand);
                 }
             }
 
@@ -129,18 +132,18 @@ namespace CandsPositionsLibrary
                 };
 
                 importCv.isNewCandidate = true;
-                importCv.candidateId = await _cvsPositionsQueries.AddCandidate(newCand);
+                importCv.candidateId = await _candsCvsQueries.AddCandidate(newCand);
             }
         }
 
         public async Task<CandModel?> GetCandidate(int companyId, int candId)
         {
-            return await _cvsPositionsQueries.GetCandidate(companyId, candId);
+            return await _candsCvsQueries.GetCandidate(companyId, candId);
         }
 
         public async Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId)
         {
-            return await _cvsPositionsQueries.GetCandCvsList(companyId, candidateId);
+            return await _candsCvsQueries.GetCandCvsList(companyId, candidateId);
         }
 
         public async Task<CvModel?> GetCv(int cvId, int companyId)
@@ -155,12 +158,12 @@ namespace CandsPositionsLibrary
 
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
         {
-            await _cvsPositionsQueries.UpdateCandLastCv(companyId, candidateId, cvId, isDuplicate, lastCvSent);
+            await _candsCvsQueries.UpdateCandLastCv(companyId, candidateId, cvId, isDuplicate, lastCvSent);
         }
 
         public async Task UpdateCvDate(int cvId)
         {
-            await _cvsPositionsQueries.UpdateCvDate(cvId);
+            await _candsCvsQueries.UpdateCvDate(cvId);
         }
 
         public async Task AttachPosCandCv(AttachePosCandCvModel posCv)
@@ -205,7 +208,7 @@ namespace CandsPositionsLibrary
 
         public async Task UpdateCvsAsciiSum(int companyId)
         {
-            await _cvsPositionsQueries.UpdateCvsAsciiSum(companyId);
+            await _candsCvsQueries.UpdateCvsAsciiSum(companyId);
         }
 
         public async Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId)

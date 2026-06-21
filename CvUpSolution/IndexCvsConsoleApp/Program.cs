@@ -26,6 +26,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IEmailQueries, EmailQueries>();
         services.AddTransient<ICvsFilesService, CvsFilesService>();
         services.AddTransient<IPositionsQueries, PositionsQueries>();
+        services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
         services.AddTransient<IQueueQueries, QueueQueries>();
         services.AddTransient<IDbQueueService, DbQueueService>();
         services.AddTransient<ICandsServise, CandsServise>();

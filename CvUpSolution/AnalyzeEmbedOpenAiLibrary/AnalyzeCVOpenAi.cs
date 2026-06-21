@@ -41,9 +41,9 @@ namespace AnalyzeEmbedOpenAiLibrary
                     return null;
                 }
 
-                var cvLanguage = CleanString.DetectStringLanguage(cvText);
+                var cvLanguage = StringMethods.DetectStringLanguage(cvText);
 
-                string textCv = CleanString.RemovePunctuationAndNormelizeHebrew(cvText, cvLanguage);
+                string textCv = StringMethods.RemovePunctuationAndNormelizeHebrew(cvText, cvLanguage);
 
                 var messages = new List<ChatMessage>
                     {

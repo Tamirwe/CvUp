@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GeneralLibrary
 {
-    public static class CleanString
+    public static class StringMethods
     {
+       
         public static string ExtractPlainText(string text)
         {
             string textLanguage = DetectStringLanguage(text);
@@ -66,11 +63,24 @@ namespace GeneralLibrary
             {
                 if (IsLikelyReversedHebrew(cleanText))
                 {
-                    cleanText = Reverse(cleanText);
+                    cleanText = ReverseHebrewText(cleanText);
                 }
             }
 
             return cleanText;
+        }
+
+        public static string RemovePdfUnicodeBidirectionalChars(string cvTxt)
+        {
+            // Remove null bytes and other control characters PostgreSQL can't handle
+            string txt = Regex.Replace(cvTxt, @"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]", "");
+
+            // Remove Unicode bidirectional control characters
+            txt = Regex.Replace(txt, @"[\u200E\u200F\u202A\u202B\u202C\u202D\u202E\u2066\u2067\u2068\u2069]", "");
+
+            txt = Regex.Replace(txt, @"\s+", " ");
+            txt = txt.Length > 7999 ? txt.Substring(0, 7999) : txt;
+            return txt;
         }
 
         public static bool IsLikelyReversedHebrew(string text)
@@ -117,90 +127,33 @@ namespace GeneralLibrary
             return reversedCount > normalCount;
         }
 
-        public static string Reverse(string input)
+        public static string ReverseHebrewText(string text)
         {
-            if (string.IsNullOrEmpty(input)) return input;
-
-            // Split into tokens preserving whitespace
-            var tokens = Regex.Split(input, @"(\s+)");
-
-            // Reverse only the non-whitespace tokens, keep whitespace in place
-            var words = tokens.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
-            var spaces = tokens.Where(t => string.IsNullOrWhiteSpace(t)).ToArray();
-
-            Array.Reverse(words);
-
-            // Interleave words and spaces back together
+            var lines = text.Split('\n');
             var sb = new StringBuilder();
-            for (int i = 0; i < words.Length; i++)
+
+            foreach (var line in lines)
             {
-                sb.Append(words[i]);
-                if (i < spaces.Length)
-                    sb.Append(spaces[i]);
+                var words = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var fixedWords = words.Select(w => IsNumeric(w) || w.Contains('@') ? w : ReverseString(w));
+                sb.AppendLine(string.Join(" ", fixedWords));
             }
 
             return sb.ToString();
         }
 
-        //public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
-        //{
-        //    // Remove invisible bidirectional marks
-        //    string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
+        private static bool IsNumeric(string s)
+        {
+            return s.All(c => char.IsDigit(c) || c == '.' || c == '-' || c == ',' || c == '+' || c == '%');
+        }
 
-        //    // Keep letters, digits, spaces, and characters needed for emails/tech terms
-        //    var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+@]", " ");
+        private static string ReverseString(string s)
+        {
+            var chars = s.ToCharArray();
+            Array.Reverse(chars);
+            return new string(chars);
+        }
 
-        //    // Collapse spaces
-        //    var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
-
-        //    if (cvLanguage == "Hebrew")
-        //    {
-        //        if (IsLikelyReversedHebrew(cleanText))
-        //        {
-        //            cleanText = Reverse(cleanText);
-        //        }
-        //    }
-
-        //    return cleanText;
-        //}
-
-        //public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
-        //{
-        //    // Matches invisible" bidirectional marks U+200E (LRM), U+200F (RLM), and other BiDi control chars
-        //    string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
-
-        //    // Remove special characters, without C#,.NET,C++.
-        //    var onlyLettersDigitsSpaces = Regex.Replace(visibleText, @"[^\p{L}\p{N}\s#\.\+]", " ");
-
-        //    // Collapse spaces
-        //    var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
-
-        //    if (cvLanguage == "Hebrew")
-        //    {
-        //        if (IsLikelyReversedHebrew(cleanText))
-        //        {
-        //            cleanText = Reverse(cleanText);
-        //        }
-        //    }
-
-        //    return cleanText;
-        //}
-
-
-
-
-        //public static string Reverse(string input)
-        //{
-        //    if (string.IsNullOrEmpty(input)) return input;
-
-        //    //return Regex.Replace(input, @"\S+", m =>
-        //    //    new string(m.Value.Reverse().ToArray()));
-
-        //    return string.Create(input.Length, input, (chars, state) =>
-        //    {
-        //        state.AsSpan().CopyTo(chars);
-        //        chars.Reverse();
-        //    });
-        //}
+     
     }
 }

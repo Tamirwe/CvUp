@@ -111,6 +111,7 @@ namespace ImportCvsLibrary
                     {
                         var message = client.Inbox.GetMessage(uid);
 
+                        //************** SUBJECT: **************
                         Console.WriteLine("Subject: {0}", message.Subject);
 
                         // no need because app is only for bella
@@ -299,7 +300,9 @@ namespace ImportCvsLibrary
         {
             if (_importCv.fileExtension == PDF_EXTENSION)
             {
-                _importCv.cvTxt = CvParser.ExtractPdfText(_importCv.tempFilePath);
+                //_importCv.cvTxt = CvParser.ExtractPdfTextBySpire(_importCv.tempFilePath);
+                _importCv.cvTxt = CvParser.ExtractPdfTextByDocnetCore(_importCv.tempFilePath);
+
             }
             else
             {
@@ -561,14 +564,14 @@ namespace ImportCvsLibrary
 
             doc.Close();
             string cvTxt = cvTxtSB.ToString();
-            return RemoveCvExtraSpaces(cvTxt);
+            return StringMethods.RemovePdfUnicodeBidirectionalChars(cvTxt);
         }
 
         //private string GetCvTxtWord(string fileNamePath)
         //{
         //    Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
         //    string cvTxt = document.GetText();
-        //    return RemoveCvExtraSpaces(cvTxt);
+        //    return RemovePdfUnicodeBidirectionalChars(cvTxt);
         //}
 
 
@@ -641,13 +644,6 @@ namespace ImportCvsLibrary
 
 
 
-
-        private string RemoveCvExtraSpaces(string cvTxt)
-        {
-            string txt = Regex.Replace(cvTxt, @"\s+", " ");
-            txt = txt.Length > 7999 ? txt.Substring(0, 7999) : txt;
-            return txt;
-        }
 
         private void GetCvAsciiSum()
         {

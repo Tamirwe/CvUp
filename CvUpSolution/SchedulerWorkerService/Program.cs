@@ -50,6 +50,7 @@ builder.Services.AddTransient<IEmailQueries, EmailQueries>();
 builder.Services.AddTransient<ICvsFilesService, CvsFilesService>();
 builder.Services.AddTransient<ICandsPositionsQueries, CandsPositionsQueries>();
 builder.Services.AddTransient<ICandsListsQueries, CandsListsQueries>();
+builder.Services.AddTransient<IAnalyzePositionOpenAi, AnalyzePositionOpenAi>();
 builder.Services.AddTransient<ICandsServise, CandsServise>();
 builder.Services.AddTransient<ICandsListsServise, CandsListsServise>();
 builder.Services.AddTransient<IPositionsServise, PositionsServise>();
@@ -81,40 +82,40 @@ if (isDebugMode)
             .ForJob(importGmailCvsJobKey)
             .WithIdentity("ImportGmailCvs").StartNow());
 
-        //// --- Job 4: AI Analyze New Cvs    ---
-        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+        ////// --- Job 4: AI Analyze New Cvs    ---
+        //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
 
-        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
-           .WithIdentity(aiAnalyzeNewCvs)
-           .WithDescription("AI Analyze New Cvs"));
+        //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+        //   .WithIdentity(aiAnalyzeNewCvs)
+        //   .WithDescription("AI Analyze New Cvs"));
 
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
-        q.AddTrigger(opts => opts
-            .ForJob(aiAnalyzeNewCvs)
-            .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
+        //// every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        //q.AddTrigger(opts => opts
+        //    .ForJob(aiAnalyzeNewCvs)
+        //    .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
 
-        //// --- Job 5: Lucene Index Cvs    ---
-        var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
+        ////// --- Job 5: Lucene Index Cvs    ---
+        //var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
 
-        q.AddJob<LuceneIndexCvsJob>(opts => opts
-           .WithIdentity(luceneIndexCvs)
-           .WithDescription("Lucene Index Cvs"));
+        //q.AddJob<LuceneIndexCvsJob>(opts => opts
+        //   .WithIdentity(luceneIndexCvs)
+        //   .WithDescription("Lucene Index Cvs"));
 
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
-        q.AddTrigger(opts => opts
-            .ForJob(luceneIndexCvs)
-            .WithIdentity("LuceneIndexCvsJob").StartNow());
+        //// every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        //q.AddTrigger(opts => opts
+        //    .ForJob(luceneIndexCvs)
+        //    .WithIdentity("LuceneIndexCvsJob").StartNow());
 
-        //// --- Job 6: Queue Cleanup ---
-        var queueCleanup = new JobKey("QueueCleanupJob");
+        ////// --- Job 6: Queue Cleanup ---
+        //var queueCleanup = new JobKey("QueueCleanupJob");
 
-        q.AddJob<QueueCleanupJob>(opts => opts
-           .WithIdentity(queueCleanup)
-           .WithDescription("Queue Cleanup"));
+        //q.AddJob<QueueCleanupJob>(opts => opts
+        //   .WithIdentity(queueCleanup)
+        //   .WithDescription("Queue Cleanup"));
 
-        q.AddTrigger(opts => opts
-            .ForJob(queueCleanup)
-            .WithIdentity("QueueCleanupJob").StartNow());
+        //q.AddTrigger(opts => opts
+        //    .ForJob(queueCleanup)
+        //    .WithIdentity("QueueCleanupJob").StartNow());
 
         //var dataBaseBackup = new JobKey("CvsDataBaseBackup");
 

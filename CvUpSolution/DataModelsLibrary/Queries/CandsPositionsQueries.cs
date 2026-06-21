@@ -288,7 +288,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<PositionModel> GetPosition(int companyId, int positionId)
+        public async Task<PositionModel> GetPosition( int positionId, int companyId = 154)
         {
             using (var dbContext = new cvupdbContext())
             {

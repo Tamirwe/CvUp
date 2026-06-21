@@ -109,7 +109,7 @@ namespace LuceneLibrary
         {
             var name = $"{cvCand.firstName} {cvCand.lastName}".ToLowerInvariant();
             var meta = $"{cvCand.candidateId} {cvCand.email} {cvCand.phone}".ToLowerInvariant();
-            var plainText = CleanString.ExtractPlainText(cvCand.cvTxt ?? "").ToLowerInvariant();
+            var plainText = StringMethods.ExtractPlainText(cvCand.cvTxt ?? "").ToLowerInvariant();
             var reviewText = (cvCand.reviewText ?? "").ToLowerInvariant();
 
             return new Document

@@ -63,9 +63,9 @@ namespace OpenAiLibrary.AnalyzeCvsAI
                         continue;
                     }
 
-                    var cvLanguage = CleanString.DetectStringLanguage(candCv.cvTxt);
+                    var cvLanguage = StringMethods.DetectStringLanguage(candCv.cvTxt);
 
-                    string textCv = CleanString.RemovePunctuationAndNormelizeHebrew(candCv.cvTxt , cvLanguage);
+                    string textCv = StringMethods.RemovePunctuationAndNormelizeHebrew(candCv.cvTxt , cvLanguage);
 
                     var messages = new List<ChatMessage>
                     {

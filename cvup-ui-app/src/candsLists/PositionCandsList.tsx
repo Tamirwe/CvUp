@@ -35,7 +35,7 @@ export const PositionCandsList = observer(
           <Button
             variant="outlined"
             size="small"
-            sx={{ whiteSpace: "nowrap", px: 2 }}
+            sx={{ whiteSpace: "nowrap", px: 2, display: "none" }}
             onClick={() => {
               if (positionsStore.selectedPosition?.id) {
                 candsStore.findPositionMatchCvs(

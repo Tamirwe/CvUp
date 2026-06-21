@@ -17,6 +17,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
 
+    public virtual DbSet<analyzed_position> analyzed_positions { get; set; }
+
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
 
     public virtual DbSet<black_cand> black_cands { get; set; }
@@ -75,6 +77,7 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
@@ -107,6 +110,38 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.cv_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("analyzed_cvs_cv_id_fkey");
+        });
+
+        modelBuilder.Entity<analyzed_position>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("analyzed_positions_pkey");
+
+            entity.HasIndex(e => e.industries, "ix_analyzed_positions_industries").HasMethod("gin");
+
+            entity.HasIndex(e => e.seniority, "ix_analyzed_positions_seniority");
+
+            entity.HasIndex(e => e.skills_required, "ix_analyzed_positions_skills_required").HasMethod("gin");
+
+            entity.HasIndex(e => e.position_id, "uix_analyzed_positions_position_id").IsUnique();
+
+            entity.Property(e => e.analyzed_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.degree_required).HasMaxLength(200);
+            entity.Property(e => e.hard_requirements).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.industries).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.languages)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.lucene_keywords)
+                .HasDefaultValueSql("'{\"en\": [], \"he\": []}'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.seniority).HasMaxLength(50);
+            entity.Property(e => e.skills_preferred).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.skills_required).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.title).HasMaxLength(200);
+
+            entity.HasOne(d => d.position).WithOne(p => p.analyzed_position)
+                .HasForeignKey<analyzed_position>(d => d.position_id)
+                .HasConstraintName("analyzed_positions_position_id_fkey");
         });
 
         modelBuilder.Entity<auth_out_email>(entity =>

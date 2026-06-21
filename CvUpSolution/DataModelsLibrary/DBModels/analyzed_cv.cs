@@ -47,11 +47,11 @@ public partial class analyzed_cv
 
     public string? military_service_he { get; set; }
 
+    public bool is_embedded { get; set; }
+
     public DateTime? created_at { get; set; }
 
     public DateTime? updated_at { get; set; }
-
-    public bool is_embedded { get; set; }
 
     public virtual candidate candidate { get; set; } = null!;
 

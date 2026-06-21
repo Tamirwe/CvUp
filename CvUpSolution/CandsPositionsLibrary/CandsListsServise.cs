@@ -9,12 +9,14 @@ namespace CandsPositionsLibrary
         private ICandsListsQueries _candsListsQueries;
         private IPositionsQueries _cvsPositionsQueries;
         private IAnalyzePositionOpenAi _analyzePositionOpenAi;
+        private IEmbeddingOpenAi _embeddingOpenAi;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, IAnalyzePositionOpenAi analyzePositionOpenAi)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, IAnalyzePositionOpenAi analyzePositionOpenAi, IEmbeddingOpenAi embeddingOpenAi)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
             _analyzePositionOpenAi = analyzePositionOpenAi;
+            _embeddingOpenAi = embeddingOpenAi;
         }
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
@@ -48,6 +50,26 @@ namespace CandsPositionsLibrary
             var positionText = string.Join(" ", new[] { position.name, position.descr, position.requirements }
                 .Where(s => !string.IsNullOrWhiteSpace(s)));
             var analyzedPosition = await _analyzePositionOpenAi.AiAnalyzePosition(positionText);
+
+            if (analyzedPosition != null)
+            {
+                var embeddingParts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(analyzedPosition.Title))
+                    embeddingParts.Add(analyzedPosition.Title);
+                if (analyzedPosition.SkillsRequired.Count > 0)
+                    embeddingParts.Add($"Skills: {string.Join(", ", analyzedPosition.SkillsRequired)}");
+                if (analyzedPosition.SkillsPreferred.Count > 0)
+                    embeddingParts.Add($"Preferred: {string.Join(", ", analyzedPosition.SkillsPreferred)}");
+                if (analyzedPosition.Industries.Count > 0)
+                    embeddingParts.Add($"Industries: {string.Join(", ", analyzedPosition.Industries)}");
+                analyzedPosition.EmbeddingText = string.Join("\n", embeddingParts);
+            }
+
+            var positionEmbedding = await _embeddingOpenAi.EmbedText(analyzedPosition?.EmbeddingText);
+
+            if (analyzedPosition != null)
+                await _cvsPositionsQueries.SaveAnalyzedPosition(positionId, analyzedPosition, positionEmbedding);
+
             return await _candsListsQueries.FindPositionMatchCvs(companyId, positionId);
         }
     }

@@ -63,7 +63,8 @@ builder.Services.AddTransient<IDbQueueService, DbQueueService>();
 builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
-builder.Services.AddTransient<IEmbedCvOpenAi, EmbedCvOpenAi>();
+builder.Services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
+builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
 builder.Services.AddTransient<IEmbedService, EmbedService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");

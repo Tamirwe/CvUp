@@ -2,9 +2,8 @@
 
 namespace AnalyzeEmbedOpenAiLibrary
 {
-    public interface IEmbedCvOpenAi
+    public interface IGenerateAnalyzedCvTextForEmbedding
     {
         Task<CvEmbeddings> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv);
-        Task<float[]?> EmbedText(string? text);
     }
 }

@@ -4,6 +4,7 @@ using DataModelsLibrary.Models;
 using GeneralLibrary;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Pgvector;
 using System.Data;
 
 namespace DataModelsLibrary.Queries
@@ -999,6 +1000,39 @@ namespace DataModelsLibrary.Queries
         }
 
 
+        public async Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding)
+        {
+            using var dbContext = new cvupdbContext();
+
+            var existing = await dbContext.analyzed_positions.FirstOrDefaultAsync(p => p.position_id == positionId);
+
+            if (existing == null)
+            {
+                existing = new analyzed_position { position_id = positionId };
+                dbContext.analyzed_positions.Add(existing);
+            }
+
+            existing.title = analyzedPosition.Title;
+            existing.seniority = analyzedPosition.Seniority;
+            existing.min_years_experience = (short?)analyzedPosition.MinYearsExperience;
+            existing.degree_required = analyzedPosition.DegreeRequired;
+            existing.embedding_text = analyzedPosition.EmbeddingText;
+            existing.hard_requirements = analyzedPosition.HardRequirements;
+            existing.skills_required = analyzedPosition.SkillsRequired;
+            existing.skills_preferred = analyzedPosition.SkillsPreferred;
+            existing.industries = analyzedPosition.Industries;
+            existing.languages = JsonConvert.SerializeObject(analyzedPosition.Languages);
+            existing.lucene_keywords = JsonConvert.SerializeObject(analyzedPosition.LuceneKeywords);
+            existing.analyzed_at = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+
+            if (positionEmbedding != null)
+            {
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    $"UPDATE analyzed_positions SET embedding = '{new Vector(positionEmbedding)}' WHERE position_id = {positionId}");
+            }
+        }
     }
 }
 

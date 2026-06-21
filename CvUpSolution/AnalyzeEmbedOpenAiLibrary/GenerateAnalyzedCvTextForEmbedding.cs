@@ -1,21 +1,17 @@
 using DataModelsLibrary.Models;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using OpenAI.Embeddings;
 
 namespace AnalyzeEmbedOpenAiLibrary
 {
     public record CvEmbeddings(float[]? Titles, float[]? Skills, float[]? Summary, float[]? Companies);
 
-    public class EmbedCvOpenAi : IEmbedCvOpenAi
+    public class GenerateAnalyzedCvTextForEmbedding : IGenerateAnalyzedCvTextForEmbedding
     {
-        private readonly EmbeddingClient _client;
-        public const string _embeddingModel = "text-embedding-3-small";
+        private readonly IEmbeddingOpenAi _embeddingOpenAi;
 
-        public EmbedCvOpenAi(IConfiguration configuration)
+        public GenerateAnalyzedCvTextForEmbedding(IEmbeddingOpenAi embeddingOpenAi)
         {
-            var apiKey = configuration["API_KEY"];
-            _client = new EmbeddingClient(_embeddingModel, apiKey);
+            _embeddingOpenAi = embeddingOpenAi;
         }
 
         public async Task<CvEmbeddings> EmbedCv(AnalyzedCvsForEmbeedingModel analyzeCv)
@@ -29,18 +25,11 @@ namespace AnalyzeEmbedOpenAiLibrary
             var companiesText = Join(analyzeCv.Companies);
 
             return new CvEmbeddings(
-                Titles:    await EmbedText(titlesText),
-                Skills:    await EmbedText(skillsText),
-                Summary:   await EmbedText(summaryText),
-                Companies: await EmbedText(companiesText)
+                Titles:    await _embeddingOpenAi.EmbedText(titlesText),
+                Skills:    await _embeddingOpenAi.EmbedText(skillsText),
+                Summary:   await _embeddingOpenAi.EmbedText(summaryText),
+                Companies: await _embeddingOpenAi.EmbedText(companiesText)
             );
-        }
-
-        public async Task<float[]?> EmbedText(string? text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return null;
-            var result = await _client.GenerateEmbeddingAsync(text);
-            return result.Value.ToFloats().ToArray();
         }
 
         private static void ParseWorkExperience(AnalyzedCvsForEmbeedingModel analyzeCv)

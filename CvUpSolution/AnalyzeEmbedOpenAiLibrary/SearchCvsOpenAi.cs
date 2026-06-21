@@ -10,7 +10,7 @@ namespace AnalyzeEmbedOpenAiLibrary
         public SearchCvsOpenAi(IConfiguration configuration)
         {
             var apiKey = configuration["API_KEY"];
-            _client = new EmbeddingClient(EmbedCvOpenAi._embeddingModel, apiKey);
+            _client = new EmbeddingClient(EmbeddingOpenAi.EmbeddingModel, apiKey);
         }
 
         public async Task<float[]> EmbedSearchQuery(string query)

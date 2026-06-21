@@ -250,5 +250,27 @@ namespace DataModelsLibrary.Queries
                 return result;
             }
         }
+
+        public async Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var query = from pcv in dbContext.position_candidates
+                            join cvs in dbContext.cvs on pcv.cv_id equals cvs.id
+                            where pcv.company_id == companyId
+                               && pcv.position_id == positionId
+                            orderby cvs.date_created descending
+                            select new CandCvModel
+                            {
+                                candidateId = pcv.candidate_id,
+                                cvId = cvs.id,
+                                cvSent = cvs.date_created,
+                                keyId = cvs.key_id,
+                                emailSubject = cvs.subject,
+                            };
+
+                return await query.ToListAsync();
+            }
+        }
     }
 }

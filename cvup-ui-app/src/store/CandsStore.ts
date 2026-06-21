@@ -1016,4 +1016,8 @@ export class CandsStore {
     this.searchesList = res.data;
     this.sortedSearchesList = [...res.data];
   }
+
+  async findPositionMatchCvs(posId: number) {
+    await this.cvsApi.findPositionMatchCvs(posId);
+  }
 }

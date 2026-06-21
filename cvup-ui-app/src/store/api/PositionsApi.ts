@@ -21,7 +21,7 @@ export default class PositionsApi extends BaseApi {
   async getPositionContactsIds(positionId: number) {
     return await this.apiWrapper2<number[]>(async () => {
       return await this.http.get(
-        `Positions/getPositionContactsIds?posId=${positionId}`
+        `Positions/getPositionContactsIds?posId=${positionId}`,
       );
     });
   }
@@ -62,11 +62,4 @@ export default class PositionsApi extends BaseApi {
     });
   }
 
-  async findPositionMatchCvs(posId: number) {
-    return await this.apiWrapper2(async () => {
-      return await this.http.get(
-        `Positions/FindPositionMatchCvs?posId=${posId}`,
-      );
-    });
-  }
 }

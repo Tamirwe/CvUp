@@ -36,5 +36,10 @@ namespace CandsPositionsLibrary
         {
             return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
         }
+
+        public async Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId)
+        {
+            return await _candsListsQueries.FindPositionMatchCvs(companyId, positionId);
+        }
     }
 }

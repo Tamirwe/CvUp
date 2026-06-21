@@ -29,6 +29,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<IQueueQueries, QueueQueries>();
             services.AddTransient<IDbQueueService, DbQueueService>();
             services.AddTransient<IAnalyzePositionOpenAi, AnalyzePositionOpenAi>();
+            services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
             services.AddTransient<ICandsServise, CandsServise>();
             services.AddTransient<ICandsListsServise, CandsListsServise>();
             services.AddTransient<IPositionsServise, PositionsServise>();

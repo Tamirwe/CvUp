@@ -15,7 +15,7 @@ namespace CandsPositionsLibrary
 
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
         {
-            return await _cvsPositionsQueries.GetPosition(companyId, positionId);
+            return await _cvsPositionsQueries.GetPosition(positionId ,companyId );
         }
 
         public async Task<int> AddPosition(PositionModel data, int companyId, int userId)

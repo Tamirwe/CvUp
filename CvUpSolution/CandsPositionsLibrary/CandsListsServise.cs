@@ -46,7 +46,7 @@ namespace CandsPositionsLibrary
 
         public async Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId)
         {
-            var position = await _cvsPositionsQueries.GetPosition(companyId, positionId);
+            var position = await _cvsPositionsQueries.GetPosition(positionId, companyId );
             var positionText = string.Join(" ", new[] { position.name, position.descr, position.requirements }
                 .Where(s => !string.IsNullOrWhiteSpace(s)));
             var analyzedPosition = await _analyzePositionOpenAi.AiAnalyzePosition(positionText);

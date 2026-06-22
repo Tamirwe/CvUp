@@ -11,7 +11,7 @@ namespace DataModelsLibrary.Queries
         Task<List<PositionModel>> GetPositionsList(int companyId);
         Task DeletePosition(int companyId, int id);
         Task<List<int>> getPositionContactsIds(int companyId, int positionId);
-        Task<PositionModel> GetPosition(int companyId, int positionId);
+        Task<PositionModel> GetPosition(int positionId, int companyId);
         Task<List<ParserRulesModel>> GetParsersRules();
         Task<List<int>> GetCompaniesIds();
         Task<List<string?>> GetCompanyCvsIds(int companyId);

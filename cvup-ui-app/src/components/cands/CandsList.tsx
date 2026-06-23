@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   Slide,
 } from "@mui/material";
-import { format } from "date-fns";
+import { format, isToday } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -226,7 +226,7 @@ export const CandsList = observer(
                               )} - ${candsStore.findStageName(posStage._tp)} `}
                             </div>
                           ) : (
-                            format(new Date(cand.cvSent), "MMM d, yy")
+                            format(new Date(cand.cvSent), isToday(new Date(cand.cvSent)) ? "HH:mm" : "MMM d, yy")
                           )}
                         </div>
                         {candsSource === CandsSourceEnum.Position ? (

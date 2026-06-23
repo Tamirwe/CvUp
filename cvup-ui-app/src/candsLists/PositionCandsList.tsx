@@ -82,7 +82,7 @@ export const PositionCandsList = observer(
                   }
                 }}
               >
-                Search Again
+                Search Matches CV's
               </Button>
               <span style={{ fontSize: "0.85rem", color: "#888" }}>
                 {`found ${candsStore.matchCandsPosList.length} matches cv's`}

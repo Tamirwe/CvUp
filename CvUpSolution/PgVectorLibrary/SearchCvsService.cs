@@ -15,10 +15,15 @@ namespace PgVectorLibrary
             _aiQueries = aiQueries;
         }
 
-        public async Task<List<AiCandidateSearchModel>> SearchCvs(string query, int limit = 20 )
+        public async Task<List<AiCandidateSearchModel>> SearchCvs(string query, int limit = 20)
         {
             float[] queryVector = await _searchCvsOpenAi.EmbedSearchQuery(query);
-            return await _aiQueries.SearchCvsByEmbedding(queryVector,  limit);
+            return await _aiQueries.SearchCvsByEmbedding(queryVector, limit);
+        }
+
+        public async Task<List<AiCandidateSearchModel>> SearchCvsByPositionFiltered(int positionId, List<int> candidateIds, int limit)
+        {
+            return await _aiQueries.SearchCvsByPositionFiltered(positionId, candidateIds, limit);
         }
     }
 }

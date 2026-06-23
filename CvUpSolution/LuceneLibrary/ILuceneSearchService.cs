@@ -5,6 +5,7 @@ namespace LuceneLibrary
     public interface ILuceneSearchService
     {
         Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals);
+        Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500);
     }
 
     public class SearchEntry

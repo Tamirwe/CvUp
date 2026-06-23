@@ -40,6 +40,7 @@ export const PositionGroupCandsList = observer(
           candsListData={candsPosTypeList}
           candsSource={CandsSourceEnum.PositionType}
           advancedOpen={positionsTypesAdvancedOpen}
+          showAiDetails={true}
         />
       </>
     );

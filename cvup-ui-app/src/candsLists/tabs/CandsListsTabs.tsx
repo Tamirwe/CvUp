@@ -213,6 +213,7 @@ export const CandsListsTabs = observer(() => {
               value={TabsCandsEnum.AI}
               sx={{
                 alignSelf: "flex-start",
+                display: "none",
               }}
             />
           </Tabs>

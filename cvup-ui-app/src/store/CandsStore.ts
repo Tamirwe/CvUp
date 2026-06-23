@@ -21,6 +21,7 @@ export class CandsStore {
   private externalSearch?: ISearchModel;
   private isShoePosStages?: boolean = false;
   private lastReviewCandId: number = 0;
+  private lastMatchPosId: number = 0;
   private syncCandReview: string = "";
   searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
@@ -29,6 +30,7 @@ export class CandsStore {
   aiCandsResults: ICand[] = [];
   candDupCvsList: ICandCv[] = [];
   posCandsList: ICand[] = [];
+  matchCandsPosList: ICand[] = [];
   posTypeCandsList: ICand[] = [];
   folderCandsList: ICand[] = [];
   pdfUrl: string = "";
@@ -1018,6 +1020,11 @@ export class CandsStore {
   }
 
   async findPositionMatchCvs(posId: number) {
-    await this.cvsApi.findPositionMatchCvs(posId);
+    if (posId === this.lastMatchPosId && this.matchCandsPosList.length > 0) {
+      return;
+    }
+    this.lastMatchPosId = posId;
+    const res = await this.cvsApi.findPositionMatchCvs(posId);
+    this.matchCandsPosList = res.data;
   }
 }

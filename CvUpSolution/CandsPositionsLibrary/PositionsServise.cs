@@ -1,16 +1,24 @@
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using PgVectorLibrary;
+using QueueLibrary;
 
 namespace CandsPositionsLibrary
 {
     public class PositionsServise : IPositionsServise
     {
         private IPositionsQueries _cvsPositionsQueries;
+        private ICandsListsQueries _candsListsQueries;
+        private IDbQueueService _queueService;
+        private IAnalyzePositionsService _analyzePositionsService;
 
-        public PositionsServise(IPositionsQueries cvsPositionsQueries)
+        public PositionsServise(IPositionsQueries cvsPositionsQueries, ICandsListsQueries candsListsQueries, IDbQueueService queueService, IAnalyzePositionsService analyzePositionsService)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
+            _candsListsQueries = candsListsQueries;
+            _queueService = queueService;
+            _analyzePositionsService = analyzePositionsService;
         }
 
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
@@ -23,6 +31,7 @@ namespace CandsPositionsLibrary
             position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
             await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
             await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, newRec.id, data.contactsIds);
+            await _queueService.EnqueueAsync("analyze position", newRec.id.ToString());
             return newRec.id;
         }
 
@@ -30,6 +39,7 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
             await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, data.id, data.contactsIds);
+            await _queueService.EnqueueAsync("analyze position", data.id.ToString());
             return data.id;
         }
 

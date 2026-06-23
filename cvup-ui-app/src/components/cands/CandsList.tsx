@@ -320,19 +320,29 @@ export const CandsList = observer(
                       </ListItemIcon> */}
                       </div>
                     </div>
-                    {cand.city && (
-                      <div
-                        className={classNames({
-                          [styles.listItemCity]: true,
-                          [styles.isMobile]: isMobile,
-                        })}
-                      >
-                        {cand.city}
-                      </div>
-                    )}
-                    {showAiDetails && (
-                      <>
-                        {((cand.estimateAgeAI != null &&
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      {cand.city && (
+                        <div
+                          className={classNames({
+                            [styles.listItemCity]: true,
+                            [styles.isMobile]: isMobile,
+                          })}
+                        >
+                          {cand.city}
+                        </div>
+                      )}
+                      {!cand.city && cand.locationAI && (
+                        <div
+                          className={classNames({
+                            [styles.listItemCity]: true,
+                            [styles.isMobile]: isMobile,
+                          })}
+                        >
+                          {cand.locationAI}
+                        </div>
+                      )}
+                      {showAiDetails &&
+                        ((cand.estimateAgeAI != null &&
                           cand.estimateAgeAI > 0) ||
                           cand.seniorityHeAI) && (
                           <div
@@ -353,6 +363,25 @@ export const CandsList = observer(
                               .join(", ")})`}
                           </div>
                         )}
+                    </div>
+                    {showAiDetails && (
+                      <>
+                        {cand.summaryAI && (
+                          <div
+                            style={{
+                              fontSize: "0.9rem",
+                              fontWeight: "normal",
+                              color: "#2b5a7d",
+                              whiteSpace: "normal",
+                              wordBreak: "break-word",
+                              textAlign: "right",
+                              paddingLeft: "3.0rem",
+                            }}
+                            title={cand.summaryAI}
+                          >
+                            {cand.summaryAI}
+                          </div>
+                        )}
                         {cand.workExperienceAI?.length > 0 && (
                           <table
                             style={{
@@ -361,6 +390,7 @@ export const CandsList = observer(
                               fontWeight: "normal",
                               color: "#444444",
                               borderCollapse: "collapse",
+                              marginTop: "0.3rem",
                             }}
                           >
                             <tbody>
@@ -389,22 +419,6 @@ export const CandsList = observer(
                               ))}
                             </tbody>
                           </table>
-                        )}
-                        {cand.summaryAI && (
-                          <div
-                            style={{
-                              fontSize: "0.9rem",
-                              fontWeight: "normal",
-                              color: "#9b9b9b",
-                              whiteSpace: "normal",
-                              wordBreak: "break-word",
-                              textAlign: "right",
-                              paddingLeft: "3.0rem",
-                            }}
-                            title={cand.summaryAI}
-                          >
-                            {cand.summaryAI}
-                          </div>
                         )}
                       </>
                     )}

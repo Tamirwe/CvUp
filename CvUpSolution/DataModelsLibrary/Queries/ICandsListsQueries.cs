@@ -9,6 +9,6 @@ namespace DataModelsLibrary.Queries
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
-        Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId);
+        Task<List<CandCvModel>> AnalyzePositionRequirements(int companyId, int positionId);
     }
 }

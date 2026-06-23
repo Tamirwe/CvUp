@@ -36,6 +36,7 @@ export const AllCandsList = observer(
           candsListData={allCandsList}
           candsSource={CandsSourceEnum.AllCands}
           advancedOpen={candsAdvancedOpen}
+          showAiDetails={true}
         />
       </>
     );

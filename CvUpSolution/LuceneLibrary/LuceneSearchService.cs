@@ -25,6 +25,52 @@ namespace LuceneLibrary
             _analyzer = new WhitespaceAnalyzer(LuceneVersion.LUCENE_48);
         }
 
+        public async Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500)
+        {
+            var keywords = analyzed.LuceneKeywords.En
+                .Concat(analyzed.LuceneKeywords.He)
+                .Where(k => !string.IsNullOrWhiteSpace(k))
+                .Distinct()
+                .ToList();
+
+            if (keywords.Count == 0)
+                return [];
+
+            using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
+            using var indexReader = DirectoryReader.Open(indexDirectory);
+            var indexSearcher = new IndexSearcher(indexReader);
+
+            var tokens = keywords.Select(k => k.Trim().ToLowerInvariant()).ToArray();
+
+            var cvQuery = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+            foreach (var token in tokens)
+            {
+                cvQuery.Add(new FuzzyQuery(new Term("CV", token), 1), Occur.SHOULD);
+                cvQuery.Add(new WildcardQuery(new Term("CV", token + "*")), Occur.SHOULD);
+                cvQuery.Add(new FuzzyQuery(new Term("Review", token), 1), Occur.SHOULD);
+            }
+
+            var topDocs = await Task.Run(() => indexSearcher.Search(cvQuery, null, maxResults));
+            var maxScore = topDocs.MaxScore;
+
+            return topDocs.ScoreDocs
+                .Select(hit =>
+                {
+                    var doc = indexSearcher.Doc(hit.Doc);
+                    var normalised = maxScore > 0 ? hit.Score / maxScore : 1f;
+                    return new SearchEntry
+                    {
+                        Id        = Convert.ToInt32(doc.Get("Id")),
+                        UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
+                        CV        = doc.Get("CV"),
+                        Score     = (int)Math.Round(normalised * 100),
+                    };
+                })
+                .OrderByDescending(x => x.Score)
+                .ThenByDescending(x => x.UpdatedTs)
+                .ToList();
+        }
+
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
             if (!searchVals.exact)

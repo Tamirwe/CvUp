@@ -1,6 +1,7 @@
-using AnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using LuceneLibrary;
+using PgVectorLibrary;
 
 namespace CandsPositionsLibrary
 {
@@ -8,15 +9,15 @@ namespace CandsPositionsLibrary
     {
         private ICandsListsQueries _candsListsQueries;
         private IPositionsQueries _cvsPositionsQueries;
-        private IAnalyzePositionOpenAi _analyzePositionOpenAi;
-        private IEmbeddingOpenAi _embeddingOpenAi;
+        private ILuceneSearchService _luceneSearchService;
+        private ISearchCvsService _searchCvsService;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, IAnalyzePositionOpenAi analyzePositionOpenAi, IEmbeddingOpenAi embeddingOpenAi)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
-            _analyzePositionOpenAi = analyzePositionOpenAi;
-            _embeddingOpenAi = embeddingOpenAi;
+            _luceneSearchService = luceneSearchService;
+            _searchCvsService = searchCvsService;
         }
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
@@ -44,33 +45,20 @@ namespace CandsPositionsLibrary
             return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
         }
 
-        public async Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId)
+        public async Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId)
         {
-            var position = await _cvsPositionsQueries.GetPosition(positionId, companyId );
-            var positionText = string.Join(" ", new[] { position.name, position.descr, position.requirements }
-                .Where(s => !string.IsNullOrWhiteSpace(s)));
-            var analyzedPosition = await _analyzePositionOpenAi.AiAnalyzePosition(positionText);
+            var luceneResults = await GetLuceneCandidatesForPosition(positionId);
+            var luceneCandidateIds = luceneResults.Select(r => r.Id).ToList();
 
-            if (analyzedPosition != null)
-            {
-                var embeddingParts = new List<string>();
-                if (!string.IsNullOrWhiteSpace(analyzedPosition.Title))
-                    embeddingParts.Add(analyzedPosition.Title);
-                if (analyzedPosition.SkillsRequired.Count > 0)
-                    embeddingParts.Add($"Skills: {string.Join(", ", analyzedPosition.SkillsRequired)}");
-                if (analyzedPosition.SkillsPreferred.Count > 0)
-                    embeddingParts.Add($"Preferred: {string.Join(", ", analyzedPosition.SkillsPreferred)}");
-                if (analyzedPosition.Industries.Count > 0)
-                    embeddingParts.Add($"Industries: {string.Join(", ", analyzedPosition.Industries)}");
-                analyzedPosition.EmbeddingText = string.Join("\n", embeddingParts);
-            }
+            return await _searchCvsService.SearchCvsByPositionFiltered(positionId, luceneCandidateIds, limit: 100);
+        }
 
-            var positionEmbedding = await _embeddingOpenAi.EmbedText(analyzedPosition?.EmbeddingText);
+        public async Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId)
+        {
+            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+            if (analyzed == null) return [];
 
-            if (analyzedPosition != null)
-                await _cvsPositionsQueries.SaveAnalyzedPosition(positionId, analyzedPosition, positionEmbedding);
-
-            return await _candsListsQueries.FindPositionMatchCvs(companyId, positionId);
+            return await _luceneSearchService.SearchCandidatesByPosition(analyzed, maxResults: 500);
         }
     }
 }

@@ -63,5 +63,7 @@ namespace DataModelsLibrary.Queries
         Task<List<blackCandModel>> GetBlackCandidatesList();
         Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
         Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding);
+        Task<int> GetPositionCompanyId(int positionId);
+        Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
     }
 }

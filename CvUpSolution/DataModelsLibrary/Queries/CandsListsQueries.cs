@@ -251,7 +251,7 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<CandCvModel>> FindPositionMatchCvs(int companyId, int positionId)
+        public async Task<List<CandCvModel>> AnalyzePositionRequirements(int companyId, int positionId)
         {
             using (var dbContext = new cvupdbContext())
             {

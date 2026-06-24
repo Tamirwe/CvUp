@@ -19,15 +19,15 @@ namespace PgVectorLibrary
                 var embeddingParts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(analyzedPosition.Title))
                     embeddingParts.Add(analyzedPosition.Title);
-                if (analyzedPosition.SkillsRequired.Count > 0)
-                    embeddingParts.Add($"Skills: {string.Join(", ", analyzedPosition.SkillsRequired)}");
-                if (analyzedPosition.SkillsPreferred.Count > 0)
-                    embeddingParts.Add($"Preferred: {string.Join(", ", analyzedPosition.SkillsPreferred)}");
+                //if (analyzedPosition.SkillsRequired.Count > 0)
+                //    embeddingParts.Add($"Skills: {string.Join(", ", analyzedPosition.SkillsRequired)}");
                 if (analyzedPosition.Industries.Count > 0)
                     embeddingParts.Add($"Industries: {string.Join(", ", analyzedPosition.Industries)}");
+                if (analyzedPosition.LuceneKeywords.En.Count > 0)
+                    embeddingParts.Add(string.Join(", ", analyzedPosition.LuceneKeywords.En));
                 if (analyzedPosition.LuceneKeywords.He.Count > 0)
-                    embeddingParts.Add(string.Join(" ", analyzedPosition.LuceneKeywords.He));
-                analyzedPosition.EmbeddingText = string.Join("\n", embeddingParts);
+                    embeddingParts.Add(string.Join(", ", analyzedPosition.LuceneKeywords.He));
+                analyzedPosition.EmbeddingText = string.Join(", ", embeddingParts);
             }
 
             var positionEmbedding = await embeddingOpenAi.EmbedText(analyzedPosition?.EmbeddingText);

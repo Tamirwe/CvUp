@@ -1,44 +1,54 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
-import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
+import { CandsSourceEnum } from "../models/GeneralEnums";
 import { ICand, ISearchModel } from "../models/GeneralModels";
+import { sortCandList } from "../utils/GeneralUtils";
 import { SearchControl } from "../components/header/SearchControl";
 import { CandsList } from "../components/cands/CandsList";
 
-interface IProps {
-  allCandsList: ICand[];
-  onSearch: (searchVals: ISearchModel) => void;
-  onSort: (isDesc: boolean) => void;
-}
+export const AllCandsList = observer(() => {
+  const { candsStore } = useStore();
+  const [list, setList] = useState<ICand[]>([]);
+  const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
 
-export const AllCandsList = observer(
-  ({ allCandsList, onSearch, onSort }: IProps) => {
-    const { candsStore } = useStore();
-    const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
+  useEffect(() => {
+    setList(candsStore.allCandsList);
+  }, [candsStore.allCandsList]);
 
-    return (
-      <>
-        <Box mt={1} mr={1} ml={1}>
-          <SearchControl
-            onSearch={onSearch}
-            onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
-            shoeAdvancedIcon={true}
-            records={candsStore.allCandsList && candsStore.allCandsList.length}
-            showSort={true}
-            onSort={onSort}
-            showRefreshList={true}
-            extSearch={candsStore.extSearch}
-          />
-        </Box>
-        <CandsList
-          candsListData={allCandsList}
-          candsSource={CandsSourceEnum.AllCands}
-          advancedOpen={candsAdvancedOpen}
-          showAiDetails={true}
+  const sortList = (isDesc: boolean) => {
+    setList(sortCandList(isDesc, candsStore.allCandsList));
+  };
+
+  const handleSearch = (searchVals: ISearchModel) => {
+    if (searchVals.value) {
+      candsStore.searchAllCands(searchVals);
+    } else {
+      candsStore.getCandsList();
+    }
+  };
+
+  return (
+    <>
+      <Box mt={1} mr={1} ml={1}>
+        <SearchControl
+          onSearch={handleSearch}
+          onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
+          shoeAdvancedIcon={true}
+          records={candsStore.allCandsList && candsStore.allCandsList.length}
+          showSort={true}
+          onSort={sortList}
+          showRefreshList={true}
+          extSearch={candsStore.extSearch}
         />
-      </>
-    );
-  },
-);
+      </Box>
+      <CandsList
+        candsListData={list}
+        candsSource={CandsSourceEnum.AllCands}
+        advancedOpen={candsAdvancedOpen}
+        showAiDetails={true}
+      />
+    </>
+  );
+});

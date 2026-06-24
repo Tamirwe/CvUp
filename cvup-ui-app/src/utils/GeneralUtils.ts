@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IIdName } from "../models/AuthModels";
+import { ICand } from "../models/GeneralModels";
 
 type EnumType = { [s: number]: string };
 
@@ -30,6 +31,13 @@ export const copyToClipBoard = async (copyMe: string) => {
   } catch (err) {
     return false;
   }
+};
+
+export const sortCandList = (isDesc: boolean, list: ICand[]) => {
+  const sorted = list.slice();
+  return isDesc
+    ? sorted.sort((a, b) => (a.cvSent > b.cvSent ? 1 : b.cvSent > a.cvSent ? -1 : 0))
+    : sorted.sort((a, b) => (a.cvSent < b.cvSent ? 1 : b.cvSent < a.cvSent ? -1 : 0));
 };
 
 export const numArrRemoveItem = (id: number, numArr?: number[]) => {

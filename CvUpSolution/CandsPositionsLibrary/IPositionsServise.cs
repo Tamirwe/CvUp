@@ -19,5 +19,6 @@ namespace CandsPositionsLibrary
         Task CalculatePositionTypesCount(int companyId);
         Task<List<PositionTypeCountModel>> PositionsTypesCvsCount(int companyId);
         Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount);
+        Task<AnalyzedPositionModel?> GetPositionAnalyzedData(int positionId);
     }
 }

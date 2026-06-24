@@ -37,6 +37,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetPositionAnalyzedData")]
+        public async Task<AnalyzedPositionModel?> GetPositionAnalyzedData(int positionId)
+        {
+            return await _positionsService.GetPositionAnalyzedData(positionId);
+        }
+
+        [HttpGet]
         [Route("GetPositionsList")]
         public async Task<IActionResult> GetPositionsList()
         {

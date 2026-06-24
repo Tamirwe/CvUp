@@ -35,7 +35,6 @@ interface IProps {
 export const PositionForm = observer(({ onClose }: IProps) => {
   const { positionsStore, authStore, generalStore, customersContactsStore } =
     useStore();
-  const [isRtlDirection, setIsRtlDirection] = useState(false);
   const [crudType, setCrudType] = useState<CrudTypesEnum>(CrudTypesEnum.Insert);
 
   const [submitError, setSubmitError] = useState("");
@@ -246,7 +245,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} lg={3} mt={2} sx={{ direction: "ltr" }}>
+                <Grid item xs={12} lg={3} mt={1} sx={{ direction: "ltr" }}>
                   <Stack direction="row">
                     <Autocomplete
                       value={
@@ -325,7 +324,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     </IconButton>
                   </Stack>
                 </Grid>
-                <Grid item xs={12} lg={6} mt={2} sx={{ direction: "ltr" }}>
+                <Grid item xs={12} lg={6} mt={1} sx={{ direction: "ltr" }}>
                   <ContactsAutoCompleteMulty
                     options={contactsList}
                     valueIds={formModel.contactsIds}
@@ -341,7 +340,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </Grid>
 
                 <Grid item xs={12} lg={3}>
-                  <FormControl fullWidth sx={{ mt: 2 }}>
+                  <FormControl fullWidth sx={{ mt: 1 }}>
                     <InputLabel id="permissionlabel">status</InputLabel>
                     <Select
                       sx={{ direction: "ltr" }}
@@ -371,7 +370,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12} lg={4}>
+                <Grid item xs={12} lg={4} >
                   <TextField
                     sx={{
                       direction: "rtl",

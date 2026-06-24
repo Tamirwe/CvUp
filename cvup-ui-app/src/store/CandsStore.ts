@@ -1023,8 +1023,12 @@ export class CandsStore {
     if (posId === this.lastMatchPosId && this.matchCandsPosList.length > 0) {
       return;
     }
+    this.rootStore.generalStore.backdrop = true;
     this.lastMatchPosId = posId;
     const res = await this.cvsApi.findPositionMatchCvs(posId);
-    this.matchCandsPosList = res.data;
+    runInAction(() => {
+      this.matchCandsPosList = res.data;
+      this.rootStore.generalStore.backdrop = false;
+    });
   }
 }

@@ -230,7 +230,7 @@ namespace DataModelsLibrary.Queries
                     a.estimate_age     AS age,
                     a.education,
                     a.summary_he       AS summary,
-                    (
+                    COALESCE((
                         CASE WHEN a.titles_embedding    IS NOT NULL THEN (a.titles_embedding    <=> '{v}') * 0.70 ELSE 0 END +
                         CASE WHEN a.skills_embedding    IS NOT NULL THEN (a.skills_embedding    <=> '{v}') * 0.12 ELSE 0 END +
                         CASE WHEN a.summary_embedding   IS NOT NULL THEN (a.summary_embedding   <=> '{v}') * 0.13 ELSE 0 END +
@@ -240,7 +240,7 @@ namespace DataModelsLibrary.Queries
                         CASE WHEN a.skills_embedding    IS NOT NULL THEN 0.12 ELSE 0 END +
                         CASE WHEN a.summary_embedding   IS NOT NULL THEN 0.13 ELSE 0 END +
                         CASE WHEN a.companies_embedding IS NOT NULL THEN 0.05 ELSE 0 END
-                    , 0) AS distance
+                    , 0), 1) AS distance
                 FROM analyzed_cvs a
                 WHERE a.is_embedded = true
                   AND a.candidate_id = ANY(ARRAY[{ids}])

@@ -1,5 +1,6 @@
 import {
   IPosition,
+  IPositionAnalyzedData,
   IPositionType,
   IPositionTypeCount,
 } from "../../models/GeneralModels";
@@ -59,6 +60,14 @@ export default class PositionsApi extends BaseApi {
   async getPosTypesCounts() {
     return await this.apiWrapper2<IPositionTypeCount[]>(async () => {
       return await this.http.get("Positions/PositionsTypesCvsCount");
+    });
+  }
+
+  async getPositionAnalyzedData(positionId: number) {
+    return await this.apiWrapper2<IPositionAnalyzedData>(async () => {
+      return await this.http.get(
+        `Positions/GetPositionAnalyzedData?positionId=${positionId}`
+      );
     });
   }
 

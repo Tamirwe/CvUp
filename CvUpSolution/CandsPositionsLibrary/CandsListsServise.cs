@@ -11,13 +11,15 @@ namespace CandsPositionsLibrary
         private IPositionsQueries _cvsPositionsQueries;
         private ILuceneSearchService _luceneSearchService;
         private ISearchCvsService _searchCvsService;
+        private IAnalyzePositionsService _analyzePositionsService;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService, IAnalyzePositionsService analyzePositionsService)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
             _searchCvsService = searchCvsService;
+            _analyzePositionsService = analyzePositionsService;
         }
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
@@ -47,7 +49,18 @@ namespace CandsPositionsLibrary
 
         public async Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId)
         {
-            var luceneResults = await GetLuceneCandidatesForPosition(positionId);
+            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+
+            if (analyzed == null)
+            {
+                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
+                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
+                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+            }
+
+            if (analyzed == null) return [];
+
+            var luceneResults = await _luceneSearchService.SearchCandidatesByPosition(analyzed, maxResults: 500);
             var luceneCandidateIds = luceneResults.Select(r => r.Id).ToList();
 
             return await _searchCvsService.SearchCvsByPositionFiltered(positionId, luceneCandidateIds, limit: 100);

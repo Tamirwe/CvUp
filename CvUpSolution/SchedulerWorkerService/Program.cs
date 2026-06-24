@@ -88,17 +88,6 @@ if (isDebugMode)
             .ForJob(importGmailCvsJobKey)
             .WithIdentity("ImportGmailCvs").StartNow());
 
-        // --- Ai Analyze Position ---
-        var aiAnalyzePosition = new JobKey("AiAnalyzePositionJob");
-
-        q.AddJob<AiAnalyzePositionJob>(opts => opts
-            .WithIdentity(aiAnalyzePosition)
-            .WithDescription("AI Analyze Position"));
-
-        q.AddTrigger(opts => opts
-            .ForJob(aiAnalyzePosition)
-            .WithIdentity("AiAnalyzePositionJob").StartNow());
-
         ////// --- Job 4: AI Analyze New Cvs    ---
         //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
 
@@ -170,19 +159,6 @@ else
             .WithIdentity("ImportGmailCvs-SaturdayTrigger")
             .StartNow()
             .WithCronSchedule("0 0/2 7-22 ? * SAT"));
-
-        // --- Ai Analyze Position ---
-        var aiAnalyzePosition = new JobKey("AiAnalyzePositionJob");
-
-        q.AddJob<AiAnalyzePositionJob>(opts => opts
-            .WithIdentity(aiAnalyzePosition)
-            .WithDescription("AI Analyze Position"));
-
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
-        q.AddTrigger(opts => opts
-            .ForJob(aiAnalyzePosition)
-            .WithIdentity("Ai-Analyze-Position-Trigger")
-            .WithCronSchedule("0 0/2 8-21 ? * *"));
 
         // --- Job 2: Count Cvs send to position for report  ---
         var countCvsSendToPositionJobKey = new JobKey("countCvsSendToPosition");

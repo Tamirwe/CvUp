@@ -97,5 +97,19 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId, isUpdateCount);
         }
+
+        public async Task<AnalyzedPositionModel?> GetPositionAnalyzedData(int positionId)
+        {
+            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+
+            if (analyzed == null)
+            {
+                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
+                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
+                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+            }
+
+            return analyzed;
+        }
     }
 }

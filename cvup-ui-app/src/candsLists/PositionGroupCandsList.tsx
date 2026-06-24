@@ -48,7 +48,7 @@ export const PositionGroupCandsList = observer(() => {
         candsListData={list}
         candsSource={CandsSourceEnum.PositionType}
         advancedOpen={positionsTypesAdvancedOpen}
-        showAiDetails={true}
+
       />
     </>
   );

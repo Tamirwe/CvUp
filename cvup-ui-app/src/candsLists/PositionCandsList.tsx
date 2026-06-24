@@ -71,7 +71,7 @@ export const PositionCandsList = observer(() => {
             candsListData={list}
             candsSource={CandsSourceEnum.Position}
             advancedOpen={positionsAdvancedOpen}
-            showAiDetails={true}
+
           />
         </>
       )}
@@ -108,7 +108,7 @@ export const PositionCandsList = observer(() => {
             candsListData={candsStore.matchCandsPosList}
             candsSource={CandsSourceEnum.AllCands}
             advancedOpen={positionsAdvancedOpen}
-            showAiDetails={true}
+
           />
         </>
       )}

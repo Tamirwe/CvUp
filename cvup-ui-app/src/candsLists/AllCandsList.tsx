@@ -12,6 +12,7 @@ export const AllCandsList = observer(() => {
   const { candsStore } = useStore();
   const [list, setList] = useState<ICand[]>([]);
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
+  const [isAISelected, setIsAISelected] = useState(false);
 
   useEffect(() => {
     setList(candsStore.allCandsList);
@@ -21,8 +22,17 @@ export const AllCandsList = observer(() => {
     setList(sortCandList(isDesc, candsStore.allCandsList));
   };
 
+  const handleAI = (selected: boolean, searchValue: string) => {
+    setIsAISelected(selected);
+    if (selected) {
+      candsStore.AiSearchCands(searchValue);
+    }
+  };
+
   const handleSearch = (searchVals: ISearchModel) => {
-    if (searchVals.value) {
+    if (isAISelected) {
+      candsStore.AiSearchCands(searchVals.value || "");
+    } else if (searchVals.value) {
       candsStore.searchAllCands(searchVals);
     } else {
       candsStore.getCandsList();
@@ -41,13 +51,15 @@ export const AllCandsList = observer(() => {
           onSort={sortList}
           showRefreshList={true}
           extSearch={candsStore.extSearch}
+          showAI={true}
+          onAI={handleAI}
         />
       </Box>
       <CandsList
-        candsListData={list}
+        candsListData={isAISelected ? candsStore.aiCandsResults : list}
         candsSource={CandsSourceEnum.AllCands}
         advancedOpen={candsAdvancedOpen}
-        showAiDetails={true}
+
       />
     </>
   );

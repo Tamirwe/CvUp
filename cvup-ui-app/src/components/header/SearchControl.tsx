@@ -88,6 +88,8 @@ interface IProps {
   showRefreshList?: boolean;
   onRefreshLists?: () => void;
   extSearch?: ISearchModel;
+  showAI?: boolean;
+  onAI?: (selected: boolean, searchValue: string) => void;
 }
 
 export const SearchControl = ({
@@ -100,6 +102,8 @@ export const SearchControl = ({
   showRefreshList = false,
   onRefreshLists,
   extSearch,
+  showAI = false,
+  onAI,
 }: IProps) => {
   const { generalStore } = useStore();
 
@@ -110,6 +114,7 @@ export const SearchControl = ({
     advancedValue: "",
   });
   const [sortAsc, setSortAsc] = useState(false);
+  const [selectedAI, setSelectedAI] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isExecSearch, setIsExecSearch] = useState<boolean>(false);
 
@@ -309,6 +314,37 @@ export const SearchControl = ({
         >
           <MdOutlineTranslate />
         </ToggleButton> */}
+         {showAI && (
+          <ToggleButton
+            sx={{
+              direction: "ltr",
+              "&.MuiButtonBase-root": {
+                padding: "2px 10px",
+                fontSize: "0.8rem",
+                fontWeight: "bold",
+                border: "1px solid #64a3fb",
+                margin: "0 4px",
+              },
+              "&.Mui-selected": {
+                color: "white",
+                backgroundColor: "#64a3fb",
+                "&:hover": { backgroundColor: "#5090e0" },
+              },
+            }}
+            value="check"
+            color="primary"
+            selected={selectedAI}
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              const next = !selectedAI;
+              setSelectedAI(next);
+              onAI && onAI(next, searchVals.value || "");
+            }}
+          >
+            AI
+          </ToggleButton>
+        )}
         {shoeAdvancedIcon && (
           <ToggleButton
             sx={{
@@ -357,6 +393,7 @@ export const SearchControl = ({
             <MdSort />
           </ToggleButton>
         )}
+       
         {((searchVals.value && records !== undefined) ||
           (!shoeAdvancedIcon && records !== undefined)) && (
           <div

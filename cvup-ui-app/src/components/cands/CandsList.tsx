@@ -30,11 +30,10 @@ interface IProps {
   candsListData: ICand[];
   candsSource: CandsSourceEnum;
   advancedOpen?: boolean;
-  showAiDetails?: boolean;
 }
 
 export const CandsList = observer(
-  ({ candsListData, candsSource, advancedOpen, showAiDetails }: IProps) => {
+  ({ candsListData, candsSource, advancedOpen }: IProps) => {
     const { candsStore, generalStore, positionsStore } = useStore();
     let location = useLocation();
     const navigate = useNavigate();
@@ -341,8 +340,7 @@ export const CandsList = observer(
                           {cand.locationAI}
                         </div>
                       )}
-                      {showAiDetails &&
-                        ((cand.estimateAgeAI != null &&
+                      {((cand.estimateAgeAI != null &&
                           cand.estimateAgeAI > 0) ||
                           cand.seniorityHeAI) && (
                           <div
@@ -364,9 +362,8 @@ export const CandsList = observer(
                           </div>
                         )}
                     </div>
-                    {showAiDetails && (
-                      <>
-                        {cand.summaryAI && (
+                    <>
+                      {cand.summaryAI && (
                           <div
                             style={{
                               fontSize: "0.9rem",
@@ -420,8 +417,7 @@ export const CandsList = observer(
                             </tbody>
                           </table>
                         )}
-                      </>
-                    )}
+                    </>
                     {candsStore.shoePosStages && (
                       <CandsPosStagesList
                         cand={cand}

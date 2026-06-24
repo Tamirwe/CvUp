@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useStore } from "../Hooks/useStore";
 import { CandsSourceEnum } from "../models/GeneralEnums";
@@ -18,6 +18,10 @@ export const PositionCandsList = observer(
     const { candsStore, positionsStore } = useStore();
     const [positionsAdvancedOpen, setPositionsAdvancedOpen] = useState(false);
     const [showMatchMode, setShowMatchMode] = useState(false);
+
+    useEffect(() => {
+      setShowMatchMode(false);
+    }, [positionsStore.selectedPosition?.id]);
 
     return (
       <>

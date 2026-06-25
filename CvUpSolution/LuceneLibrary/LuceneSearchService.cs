@@ -12,6 +12,29 @@ namespace LuceneLibrary
 {
     public class LuceneSearchService : ILuceneSearchService, IDisposable
     {
+        private const LuceneVersion LUCENE_VERSION = LuceneVersion.LUCENE_48;
+
+        // Must match field constants in LuceneIndexService
+        private const string F_CANDIDATE_ID = "Id";
+        private const string F_FULL_NAME = "Name";
+        private const string F_CV_TEXT = "CV";
+        private const string F_REVIEW = "Review";
+        private const string F_AI_SUMMARY = "AiSummary";
+        private const string F_AI_WORK = "AiWork";
+        private const string F_AI_EDUCATION = "AiEducation";
+        private const string F_AI_SKILLS = "AiSkills";
+
+        // All content fields searched in CV/keyword queries
+        private static readonly (string Field, float Boost)[] ContentFields =
+        [
+            (F_REVIEW,       3.0f),
+            (F_AI_SUMMARY,   1.5f),
+            (F_AI_WORK,      1.5f),
+            (F_AI_SKILLS,    1.2f),
+            (F_AI_EDUCATION, 1.0f),
+            (F_CV_TEXT,      1.0f),
+        ];
+
         private readonly string _indexFolder;
         private readonly Analyzer _analyzer;
 
@@ -22,8 +45,12 @@ namespace LuceneLibrary
         {
             var root = configuration["APP_LOCAL_ROOT_FOLDER"];
             _indexFolder = $"{root}\\_{companyId}\\luceneIndex";
-            _analyzer = new WhitespaceAnalyzer(LuceneVersion.LUCENE_48);
+            _analyzer = new WhitespaceAnalyzer(LUCENE_VERSION);
         }
+
+        // ─────────────────────────────────────────────
+        // Position-based search (keywords from AI analysis)
+        // ─────────────────────────────────────────────
 
         public async Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500)
         {
@@ -42,15 +69,18 @@ namespace LuceneLibrary
 
             var tokens = keywords.Select(k => k.Trim().ToLowerInvariant()).ToArray();
 
-            var cvQuery = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+            var query = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+
             foreach (var token in tokens)
             {
-                cvQuery.Add(new FuzzyQuery(new Term("CV", token), 1), Occur.SHOULD);
-                cvQuery.Add(new WildcardQuery(new Term("CV", token + "*")), Occur.SHOULD);
-                cvQuery.Add(new FuzzyQuery(new Term("Review", token), 1), Occur.SHOULD);
+                foreach (var (field, boost) in ContentFields)
+                {
+                    query.Add(new FuzzyQuery(new Term(field, token), 1) { Boost = boost }, Occur.SHOULD);
+                    query.Add(new WildcardQuery(new Term(field, token + "*")) { Boost = boost * 0.8f }, Occur.SHOULD);
+                }
             }
 
-            var topDocs = await Task.Run(() => indexSearcher.Search(cvQuery, null, maxResults));
+            var topDocs = await Task.Run(() => indexSearcher.Search(query, null, maxResults));
             var maxScore = topDocs.MaxScore;
 
             return topDocs.ScoreDocs
@@ -60,31 +90,36 @@ namespace LuceneLibrary
                     var normalised = maxScore > 0 ? hit.Score / maxScore : 1f;
                     return new SearchEntry
                     {
-                        Id        = Convert.ToInt32(doc.Get("Id")),
-                        UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                        CV        = doc.Get("CV"),
-                        Score     = (int)Math.Round(normalised * 100),
+                        Id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID)),
+                        Score = (int)Math.Round(normalised * 100),
                     };
                 })
                 .OrderByDescending(x => x.Score)
-                .ThenByDescending(x => x.UpdatedTs)
                 .ToList();
         }
+
+        // ─────────────────────────────────────────────
+        // General search (exact or fuzzy)
+        // ─────────────────────────────────────────────
 
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
             if (!searchVals.exact)
-                return await FuzzySearch(companyId, searchVals);
+                return await FuzzySearch(searchVals);
 
-            var results = await ExactSearch(companyId, searchVals);
+            var results = await ExactSearch(searchVals);
 
             if (results.Count == 0)
-                results = await FuzzySearch(companyId, searchVals);
+                results = await FuzzySearch(searchVals);
 
             return results;
         }
 
-        private async Task<List<SearchEntry>> FuzzySearch(int companyId, searchCandCvModel searchVals, int maxEdits = 2)
+        // ─────────────────────────────────────────────
+        // Fuzzy search
+        // ─────────────────────────────────────────────
+
+        private async Task<List<SearchEntry>> FuzzySearch(searchCandCvModel searchVals, int maxEdits = 2)
         {
             using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             using var indexReader = DirectoryReader.Open(indexDirectory);
@@ -95,23 +130,22 @@ namespace LuceneLibrary
                 .Distinct()
                 .ToArray();
 
-            // Pass 1: name-only query
             Query BuildNameQuery(string token)
             {
                 var q = new BooleanQuery();
-                q.Add(new FuzzyQuery(new Term("Name", token), maxEdits), Occur.SHOULD);
-                q.Add(new WildcardQuery(new Term("Name", token + "*")), Occur.SHOULD);
+                q.Add(new FuzzyQuery(new Term(F_FULL_NAME, token), maxEdits), Occur.SHOULD);
+                q.Add(new WildcardQuery(new Term(F_FULL_NAME, token + "*")), Occur.SHOULD);
                 return q;
             }
 
-            // Pass 2: CV + Review query
-            Query BuildCvQuery(string token)
+            Query BuildContentQuery(string token)
             {
                 var q = new BooleanQuery();
-                q.Add(new FuzzyQuery(new Term("CV", token), maxEdits), Occur.SHOULD);
-                q.Add(new WildcardQuery(new Term("CV", token + "*")), Occur.SHOULD);
-                q.Add(new FuzzyQuery(new Term("Review", token), maxEdits), Occur.SHOULD);
-                q.Add(new WildcardQuery(new Term("Review", token + "*")), Occur.SHOULD);
+                foreach (var (field, boost) in ContentFields)
+                {
+                    q.Add(new FuzzyQuery(new Term(field, token), maxEdits) { Boost = boost }, Occur.SHOULD);
+                    q.Add(new WildcardQuery(new Term(field, token + "*")) { Boost = boost * 0.8f }, Occur.SHOULD);
+                }
                 return q;
             }
 
@@ -125,54 +159,53 @@ namespace LuceneLibrary
             }
 
             var nameTopDocs = await Task.Run(() => indexSearcher.Search(BuildMultiToken(BuildNameQuery), null, 100));
-            var cvTopDocs   = await Task.Run(() => indexSearcher.Search(BuildMultiToken(BuildCvQuery),   null, 100));
+            var contentTopDocs = await Task.Run(() => indexSearcher.Search(BuildMultiToken(BuildContentQuery), null, 100));
 
             var nameMaxScore = nameTopDocs.MaxScore;
-            var cvMaxScore   = cvTopDocs.MaxScore;
+            var contentMaxScore = contentTopDocs.MaxScore;
 
-            // Name matches → score 51–90, CV-only matches → score 1–50
+            // Name matches → 51–90, content-only matches → 1–50
             var results = new Dictionary<int, SearchEntry>();
 
             foreach (var hit in nameTopDocs.ScoreDocs)
             {
                 var doc = indexSearcher.Doc(hit.Doc);
-                var id  = Convert.ToInt32(doc.Get("Id"));
+                var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
                 var normalised = nameMaxScore > 0 ? hit.Score / nameMaxScore : 1f;
                 results[id] = new SearchEntry
                 {
-                    Id        = id,
-                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                    CV        = doc.Get("CV"),
-                    Score     = 51 + (int)Math.Round(normalised * 39) // 51–90
+                    Id = id,
+                    Score = 51 + (int)Math.Round(normalised * 39) // 51–90
                 };
             }
 
-            foreach (var hit in cvTopDocs.ScoreDocs)
+            foreach (var hit in contentTopDocs.ScoreDocs)
             {
                 var doc = indexSearcher.Doc(hit.Doc);
-                var id  = Convert.ToInt32(doc.Get("Id"));
-                if (results.ContainsKey(id)) continue; // already ranked by name
+                var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
+                if (results.ContainsKey(id)) continue;
 
-                var normalised = cvMaxScore > 0 ? hit.Score / cvMaxScore : 1f;
+                var normalised = contentMaxScore > 0 ? hit.Score / contentMaxScore : 1f;
                 results[id] = new SearchEntry
                 {
-                    Id        = id,
-                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                    CV        = doc.Get("CV"),
-                    Score     = 1 + (int)Math.Round(normalised * 49) // 1–50
+                    Id = id,
+                    Score = 1 + (int)Math.Round(normalised * 49) // 1–50
                 };
             }
 
             return results.Values
                 .OrderByDescending(x => x.Score)
-                .ThenByDescending(x => x.UpdatedTs)
                 .ToList();
         }
 
-        private async Task<List<SearchEntry>> ExactSearch(int companyId, searchCandCvModel searchVals)
+        // ─────────────────────────────────────────────
+        // Exact search
+        // ─────────────────────────────────────────────
+
+        private async Task<List<SearchEntry>> ExactSearch(searchCandCvModel searchVals)
         {
             mIndexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
-            mIndexReader    = DirectoryReader.Open(mIndexDirectory);
+            mIndexReader = DirectoryReader.Open(mIndexDirectory);
             var indexSearcher = new IndexSearcher(mIndexReader);
 
             var tokens = searchVals.value.Trim().ToLowerInvariant()
@@ -180,94 +213,79 @@ namespace LuceneLibrary
                 .Distinct()
                 .ToArray();
 
-            // Pass 1: name-only exact (fuzzy-1 to tolerate small inaccuracies)
+            // Name: fuzzy-1 to tolerate small typos
             Query nameQuery;
             if (tokens.Length == 1)
             {
-                nameQuery = new FuzzyQuery(new Term("Name", tokens[0]), 1);
+                nameQuery = new FuzzyQuery(new Term(F_FULL_NAME, tokens[0]), 1);
             }
             else
             {
                 var nq = new BooleanQuery();
                 foreach (var t in tokens)
-                    nq.Add(new FuzzyQuery(new Term("Name", t), 1), Occur.MUST);
+                    nq.Add(new FuzzyQuery(new Term(F_FULL_NAME, t), 1), Occur.MUST);
                 nameQuery = nq;
             }
 
-            // Pass 2: CV + Review exact
-            Query cvQuery;
+            // Content: span proximity on each field + plain MUST across all fields
+            Query contentQuery;
             if (tokens.Length == 1)
             {
                 var bq = new BooleanQuery { MinimumNumberShouldMatch = 1 };
-                bq.Add(new TermQuery(new Term("CV",     tokens[0])), Occur.SHOULD);
-                bq.Add(new TermQuery(new Term("Review", tokens[0])), Occur.SHOULD);
-                cvQuery = bq;
+                foreach (var (field, boost) in ContentFields)
+                    bq.Add(new TermQuery(new Term(field, tokens[0])) { Boost = boost }, Occur.SHOULD);
+                contentQuery = bq;
             }
             else
             {
-                var spanTerms = tokens
-                    .Select(t => new SpanTermQuery(new Term("CV", t)))
-                    .ToArray<SpanQuery>();
-
-                // words adjacent → highest score
-                var cvAdjacent = new SpanNearQuery(spanTerms, slop: 0, inOrder: false) { Boost = 3.0f };
-                // words within 5 tokens → medium score
-                var cvNear     = new SpanNearQuery(spanTerms, slop: 5, inOrder: false) { Boost = 2.0f };
-                // all words present anywhere → base score
-                var cvAny = new BooleanQuery { Boost = 1.0f };
-                foreach (var t in tokens)
-                    cvAny.Add(new TermQuery(new Term("CV", t)), Occur.MUST);
-
-                var reviewQ = new BooleanQuery();
-                foreach (var t in tokens)
-                    reviewQ.Add(new TermQuery(new Term("Review", t)), Occur.MUST);
-
                 var combined = new BooleanQuery { MinimumNumberShouldMatch = 1 };
-                combined.Add(cvAdjacent, Occur.SHOULD);
-                combined.Add(cvNear,     Occur.SHOULD);
-                combined.Add(cvAny,      Occur.SHOULD);
-                combined.Add(reviewQ,    Occur.SHOULD);
-                cvQuery = combined;
+
+                foreach (var (field, boost) in ContentFields)
+                {
+                    var spanTerms = tokens
+                        .Select(t => new SpanTermQuery(new Term(field, t)))
+                        .ToArray<SpanQuery>();
+
+                    combined.Add(new SpanNearQuery(spanTerms, slop: 0, inOrder: false) { Boost = boost * 3f }, Occur.SHOULD);
+                    combined.Add(new SpanNearQuery(spanTerms, slop: 5, inOrder: false) { Boost = boost * 2f }, Occur.SHOULD);
+
+                    var allPresent = new BooleanQuery { Boost = boost };
+                    foreach (var t in tokens)
+                        allPresent.Add(new TermQuery(new Term(field, t)), Occur.MUST);
+                    combined.Add(allPresent, Occur.SHOULD);
+                }
+
+                contentQuery = combined;
             }
 
             var nameTopDocs = await Task.Run(() => indexSearcher.Search(nameQuery, null, 100));
-            var cvTopDocs   = await Task.Run(() => indexSearcher.Search(cvQuery,   null, 100));
+            var contentTopDocs = await Task.Run(() => indexSearcher.Search(contentQuery, null, 100));
 
             var results = new Dictionary<int, SearchEntry>();
 
             foreach (var hit in nameTopDocs.ScoreDocs)
             {
                 var doc = indexSearcher.Doc(hit.Doc);
-                var id  = Convert.ToInt32(doc.Get("Id"));
-                results[id] = new SearchEntry
-                {
-                    Id        = id,
-                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                    CV        = doc.Get("CV"),
-                    Score     = 90
-                };
+                var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
+                results[id] = new SearchEntry { Id = id, Score = 90 };
             }
 
-            foreach (var hit in cvTopDocs.ScoreDocs)
+            foreach (var hit in contentTopDocs.ScoreDocs)
             {
                 var doc = indexSearcher.Doc(hit.Doc);
-                var id  = Convert.ToInt32(doc.Get("Id"));
+                var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
                 if (results.ContainsKey(id)) continue;
-
-                results[id] = new SearchEntry
-                {
-                    Id        = id,
-                    UpdatedTs = Convert.ToInt64(doc.Get("Updated")),
-                    CV        = doc.Get("CV"),
-                    Score     = 50
-                };
+                results[id] = new SearchEntry { Id = id, Score = 50 };
             }
 
             return results.Values
                 .OrderByDescending(x => x.Score)
-                .ThenByDescending(x => x.UpdatedTs)
                 .ToList();
         }
+
+        // ─────────────────────────────────────────────
+        // Dispose
+        // ─────────────────────────────────────────────
 
         public void Dispose()
         {

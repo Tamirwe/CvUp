@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModelsLibrary.Models
 {
@@ -62,6 +63,15 @@ namespace DataModelsLibrary.Models
         public string? email { get; set; } = "";
         public string? phone { get; set; } = "";
         public string? cvTxt { get; set; } = "";
+        public string[]? skills { get; set; }
+        public string? education { get; set; }
+        public string? workExperience { get; set; }
+        public string? professionWords { get; set; }
+        public string? summaryHe { get; set; }
+        public string? summaryEn { get; set; }
+        [NotMapped] public EducationItemModel[]? educationItems { get; set; }
+        [NotMapped] public WorkExperienceItemModel[]? workExperienceItems { get; set; }
+        [NotMapped] public ProfessionWordModel[]? professionWordsItems { get; set; }
     }
 
     public class CandCvTxtModel
@@ -151,6 +161,12 @@ namespace DataModelsLibrary.Models
     }
 
 
+    public class ProfessionWordModel
+    {
+        public string? hebrew { get; set; }
+        public string? english { get; set; }
+    }
+
     public class EducationItemModel
     {
         public string? degree { get; set; }
@@ -168,7 +184,7 @@ namespace DataModelsLibrary.Models
         public string? seniority_en { get; set; }
         public int? start_year { get; set; }
         public int? end_year { get; set; }
-        public bool is_current { get; set; }
+        public bool? is_current { get; set; }
     }
 
     public class CandPosHistoryModel

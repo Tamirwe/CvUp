@@ -34,7 +34,7 @@ var host = builder.Build();
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
 var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
 
-int candidateId = 394884;
+int candidateId = 0;
 
 if (candidateId == 0)
 {

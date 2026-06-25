@@ -140,6 +140,7 @@ export const CandsList = observer(
             return (
               <ListItem
                 key={`${cand.candidateId}${i}`}
+                data-candid={cand.candidateId}
                 dense
                 disablePadding
                 component="nav"

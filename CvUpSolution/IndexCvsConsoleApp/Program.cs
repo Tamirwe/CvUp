@@ -7,6 +7,7 @@ using EmailsLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PgVectorLibrary;
 using QueueLibrary;
 
 Console.WriteLine("Hello, World!");
@@ -37,7 +38,18 @@ var cvsPositionsServise = host.Services.GetRequiredService<ICandsServise>();
 var luceneIndexService = host.Services.GetRequiredService<ILuceneIndexService>();
 //await cvsPositionsServise.UpdateCvsAsciiSum(154);
 
-await luceneIndexService.IndexAllCandidates();
+int candidateId = 0;
+
+if (candidateId == 0)
+{
+    await luceneIndexService.IndexAllCandidates();
+}
+else
+{
+    await luceneIndexService.IndexCandidate(candidateId);
+}
+
+
 
 //await cvsPositionsServise.IndexCompanyCvs(154);
 

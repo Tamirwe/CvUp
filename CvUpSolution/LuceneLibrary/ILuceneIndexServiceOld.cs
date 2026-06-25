@@ -1,9 +1,8 @@
 namespace LuceneLibrary
 {
-    public interface ILuceneIndexService
+    public interface ILuceneIndexServiceOld
     {
         Task IndexAllCandidates();
-        Task IndexCandidate(int candidateId);
         Task<bool> IndexNewCvFromQueue();
     }
 }

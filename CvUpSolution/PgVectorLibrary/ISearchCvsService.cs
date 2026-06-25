@@ -4,7 +4,7 @@ namespace PgVectorLibrary
 {
     public interface ISearchCvsService
     {
-        Task<List<AiCandidateSearchModel>> SearchCvs(string query, int limit = 20);
+        Task<List<AiCandidateSearchModel>> SearchCvs(searchCandCvModel searchVals, List<int>? candidateIds = null, int limit = 20);
         Task<List<AiCandidateSearchModel>> SearchCvsByPositionFiltered(int positionId, List<int> candidateIds, int limit);
     }
 }

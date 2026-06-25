@@ -349,11 +349,11 @@ export class CandsStore {
     this.lastSearchVals = searchKeywords;
   }
 
-  async AiSearchCands(searchQuery: string) {
-    if (searchQuery) {
+  async AiSearchCands(searchVals: ISearchModel) {
+    if (searchVals.value) {
       this.rootStore.generalStore.backdrop = true;
 
-      const res = await this.cvsApi.AiSearchCands(searchQuery);
+      const res = await this.cvsApi.AiSearchCands(searchVals);
       runInAction(() => {
         this.aiCandsResults = res.data;
       });

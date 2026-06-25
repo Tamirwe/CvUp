@@ -158,10 +158,13 @@ namespace DataModelsLibrary.Queries
 
        
 
-        public async Task<List<AiCandidateSearchModel>> SearchCvsByEmbedding(float[] queryVector, int limit = 20)
+        public async Task<List<AiCandidateSearchModel>> SearchCvsByEmbedding(float[] queryVector, List<int>? candidateIds = null, int limit = 20)
         {
             using var dbContext = new cvupdbContext();
             var v = new Vector(queryVector).ToString();
+            var candidateFilter = candidateIds != null && candidateIds.Count > 0
+                ? $"AND a.candidate_id = ANY(ARRAY[{string.Join(",", candidateIds)}])"
+                : "";
             var sql = $@"
                 SELECT
                     a.candidate_id     AS candidateId,
@@ -184,7 +187,7 @@ namespace DataModelsLibrary.Queries
                         CASE WHEN a.companies_embedding IS NOT NULL THEN 0.5 ELSE 0 END
                     , 0) AS distance
                 FROM analyzed_cvs a
-                WHERE a.is_embedded = true
+                WHERE a.is_embedded = true {candidateFilter}
                 ORDER BY distance
                 LIMIT {limit}";
 

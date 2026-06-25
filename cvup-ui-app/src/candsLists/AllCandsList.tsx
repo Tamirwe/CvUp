@@ -25,13 +25,13 @@ export const AllCandsList = observer(() => {
   const handleAI = (selected: boolean, searchValue: string) => {
     setIsAISelected(selected);
     if (selected) {
-      candsStore.AiSearchCands(searchValue);
+      candsStore.AiSearchCands({ value: searchValue, exact: false });
     }
   };
 
   const handleSearch = (searchVals: ISearchModel) => {
     if (isAISelected) {
-      candsStore.AiSearchCands(searchVals.value || "");
+      candsStore.AiSearchCands(searchVals);
     } else if (searchVals.value) {
       candsStore.searchAllCands(searchVals);
     } else {

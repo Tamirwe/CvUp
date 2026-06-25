@@ -5,6 +5,7 @@ using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PgVectorLibrary;
+using System.Buffers;
 
 namespace CvUpAPI.Controllers
 {
@@ -103,11 +104,13 @@ namespace CvUpAPI.Controllers
             return sortedCands;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("AiSearchCands")]
-        public async Task<List<CandModel>> AiSearchCands(string searchQuery)
+        public async Task<List<CandModel>> AiSearchCands(searchCandCvModel searchVals)
         {
-            var aiResults = await _aiSearchCvsService.SearchCvs(query: searchQuery, limit: 10);
+            var luceneResults = await _candsService.SearchCands(Globals.CompanyId, searchVals);
+            var candidateIds = luceneResults.Select(e => e.Id).ToList();
+            var aiResults = await _aiSearchCvsService.SearchCvs(searchVals, candidateIds, limit: 10);
             var candsIds = aiResults.Select(e => e.candidateId).ToList();
             var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIds);
             List<CandModel> results = _candsService.MergeAiResultsWithCandsList(candsList, aiResults);

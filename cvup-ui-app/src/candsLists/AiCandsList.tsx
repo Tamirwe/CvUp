@@ -4,14 +4,14 @@ import { useStore } from "../Hooks/useStore";
 import { CandsSourceEnum } from "../models/GeneralEnums";
 import { ISearchModel } from "../models/GeneralModels";
 import { SearchControl } from "../components/header/SearchControl";
-import { AiList } from "../components/cands/AiSearch/AiList";
+import { CandsList } from "../components/cands/CandsList";
 
 export const AiCandsList = observer(() => {
   const { candsStore } = useStore();
 
   const handleSearch = (searchVals: ISearchModel) => {
     if (searchVals.value) {
-      candsStore.AiSearchCands(searchVals.value);
+      candsStore.AiSearchCands(searchVals);
     }
   };
 
@@ -20,7 +20,7 @@ export const AiCandsList = observer(() => {
       <Box mt={1} mr={1} ml={1}>
         <SearchControl onSearch={handleSearch} />
       </Box>
-      <AiList
+      <CandsList
         candsListData={candsStore.aiCandsResults}
         candsSource={CandsSourceEnum.AI}
       />

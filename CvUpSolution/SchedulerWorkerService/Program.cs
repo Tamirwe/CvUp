@@ -67,6 +67,8 @@ builder.Services.AddTransient<IAnalyzePositionsService, AnalyzePositionsService>
 builder.Services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
 builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
 builder.Services.AddTransient<IEmbedService, EmbedService>();
+builder.Services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
+builder.Services.AddTransient<ISearchCvsService, SearchCvsService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 
@@ -77,28 +79,28 @@ if (isDebugMode)
     // ****** Debug: jobs fire immediately on startup
     builder.Services.AddQuartz(q =>
     {
-        //// --- Job 1: Import Gmail Cvs  ---
-        var importGmailCvsJobKey = new JobKey("importGmailCvs");
+        ////// --- Job 1: Import Gmail Cvs  ---
+        //var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
-        q.AddJob<ImportGmailCvsJob>(opts => opts
-            .WithIdentity(importGmailCvsJobKey)
-            .WithDescription("Import Cvs from Gmail"));
+        //q.AddJob<ImportGmailCvsJob>(opts => opts
+        //    .WithIdentity(importGmailCvsJobKey)
+        //    .WithDescription("Import Cvs from Gmail"));
 
-        q.AddTrigger(opts => opts
-            .ForJob(importGmailCvsJobKey)
-            .WithIdentity("ImportGmailCvs").StartNow());
-
-        ////// --- Job 4: AI Analyze New Cvs    ---
-        //var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
-
-        //q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
-        //   .WithIdentity(aiAnalyzeNewCvs)
-        //   .WithDescription("AI Analyze New Cvs"));
-
-        //// every 2 minutes, between 8:00 AM and 9:50 PM, every day.
         //q.AddTrigger(opts => opts
-        //    .ForJob(aiAnalyzeNewCvs)
-        //    .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
+        //    .ForJob(importGmailCvsJobKey)
+        //    .WithIdentity("ImportGmailCvs").StartNow());
+
+        //// --- Job 4: AI Analyze New Cvs    ---
+        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+
+        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+           .WithIdentity(aiAnalyzeNewCvs)
+           .WithDescription("AI Analyze New Cvs"));
+
+        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(aiAnalyzeNewCvs)
+            .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
 
         ////// --- Job 5: Lucene Index Cvs    ---
         //var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");

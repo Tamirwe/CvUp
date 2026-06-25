@@ -36,14 +36,20 @@ namespace DataModelsLibrary.Queries
                         WHERE cv_txt IS NOT NULL AND TRIM(cv_txt) <> ''
                         GROUP BY candidate_id
                     )
-                    SELECT ctx.candidate_id AS candidateId,
-                           ctx.cv_id        AS cvId,
-                           cnd.first_name   AS firstName,
-                           cnd.last_name    AS lastName,
-                           cnd.review  AS reviewText,
+                    SELECT ctx.candidate_id      AS candidateId,
+                           ctx.cv_id             AS cvId,
+                           cnd.first_name        AS firstName,
+                           cnd.last_name         AS lastName,
+                           cnd.review            AS reviewText,
                            cnd.email,
                            cnd.phone,
-                           ctx.cv_txt       AS cvTxt
+                           ctx.cv_txt            AS cvTxt,
+                           NULL::text[]          AS skills,
+                           NULL::text            AS education,
+                           NULL::text            AS workExperience,
+                           NULL::text            AS professionWords,
+                           NULL::text            AS summaryHe,
+                           NULL::text            AS summaryEn
                     FROM public.cvs_txt ctx
                     INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
                     INNER JOIN valid_cvs v ON v.candidate_id = ctx.candidate_id AND v.max_cv_id = ctx.cv_id
@@ -61,14 +67,20 @@ namespace DataModelsLibrary.Queries
             dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             string sql = $@"
-                   SELECT ctx.candidate_id AS candidateId,
-                   ctx.cv_id        AS cvId,
-                   cnd.first_name   AS firstName,
-                   cnd.last_name    AS lastName,
-                   cnd.review       AS reviewText,
-                   cnd.email,
-                   cnd.phone,
-                   ctx.cv_txt       AS cvTxt
+                   SELECT ctx.candidate_id      AS candidateId,
+                          ctx.cv_id             AS cvId,
+                          cnd.first_name        AS firstName,
+                          cnd.last_name         AS lastName,
+                          cnd.review            AS reviewText,
+                          cnd.email,
+                          cnd.phone,
+                          ctx.cv_txt            AS cvTxt,
+                          NULL::text[]          AS skills,
+                          NULL::text            AS education,
+                          NULL::text            AS workExperience,
+                          NULL::text            AS professionWords,
+                          NULL::text            AS summaryHe,
+                          NULL::text            AS summaryEn
                         FROM public.cvs_txt ctx
                         INNER JOIN candidates cnd ON cnd.id = ctx.candidate_id
                         WHERE ctx.candidate_id = {candidateId}

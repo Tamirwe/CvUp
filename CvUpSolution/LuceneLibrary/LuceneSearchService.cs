@@ -98,11 +98,41 @@ namespace LuceneLibrary
                 .ToList();
         }
 
+        public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
+        {
+            var segments = searchVals.value
+                .Split("||", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToList();
+
+            // No || operator — normal single search
+            if (segments.Count <= 1)
+                return await RunSingleSearch(searchVals);
+
+            // First segment — normal search
+            var currentSearch = new searchCandCvModel { value = segments[0], exact = searchVals.exact };
+            var results = await RunSingleSearch(currentSearch);
+
+            if (results.Count == 0)
+                return [];
+
+            // Each subsequent segment — search within previous results
+            foreach (var segment in segments.Skip(1))
+            {
+                var segmentSearch = new searchCandCvModel { value = segment, exact = searchVals.exact };
+                results = await SearchWithin(results.Select(r => r.Id), segmentSearch);
+
+                if (results.Count == 0)
+                    return [];
+            }
+
+            return results;
+        }
+
         // ─────────────────────────────────────────────
         // General search (exact or fuzzy)
         // ─────────────────────────────────────────────
-
-        public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
+        private async Task<List<SearchEntry>> RunSingleSearch(searchCandCvModel searchVals)
         {
             if (!searchVals.exact)
                 return await FuzzySearch(searchVals);

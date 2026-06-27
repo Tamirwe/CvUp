@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthLibrary", "AuthLibrary\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImportCvsLibrary", "ImportCvsLibrary\ImportCvsLibrary.csproj", "{1EA89F9B-6138-4F53-8A8A-004AC9783E3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndexCvsConsoleApp", "IndexCvsConsoleApp\IndexCvsConsoleApp.csproj", "{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneConsoleApp", "LuceneConsoleApp\LuceneConsoleApp.csproj", "{E10FAB07-1B9F-4E1C-AFDC-AC8AB922B07E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralLibrary", "GeneralLibrary\GeneralLibrary.csproj", "{2C0A33CC-C03B-47FE-8098-E3A9C51CC05C}"
 EndProject

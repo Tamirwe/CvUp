@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PgVectorLibrary;
 using QueueLibrary;
+using System.Buffers;
 
 Console.WriteLine("Hello, World!");
 
@@ -49,6 +50,14 @@ else
     await luceneIndexService.IndexCandidate(candidateId);
 }
 
+//// First search (normal)
+//var firstResults = await _luceneSearch.Search(companyId, searchVals);
+
+//// User refines — search within those results
+//var refinedResults = await _luceneSearch.SearchWithin(
+//    firstResults.Select(r => r.Id),
+//    newSearchVals
+//);
 
 
 //await cvsPositionsServise.IndexCompanyCvs(154);

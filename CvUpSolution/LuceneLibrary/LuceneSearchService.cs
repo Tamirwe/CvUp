@@ -283,6 +283,152 @@ namespace LuceneLibrary
                 .ToList();
         }
 
+        #region Search Within Search
+        // ─────────────────────────────────────────────
+        // Search Within Search
+        // ─────────────────────────────────────────────
+
+        public async Task<List<SearchEntry>> SearchWithin(
+            IEnumerable<int> previousResultIds,
+            searchCandCvModel searchVals)
+        {
+            var idSet = previousResultIds.ToHashSet();
+            if (idSet.Count == 0) return [];
+
+            using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
+            using var indexReader = DirectoryReader.Open(indexDirectory);
+            var indexSearcher = new IndexSearcher(indexReader);
+
+            // ── Build ID filter from previous results ──────────────────────────────
+            // Collect internal Lucene doc numbers that match the previous result IDs
+            var bits = new OpenBitSet(indexReader.MaxDoc);
+            foreach (var leafCtx in indexReader.Leaves)
+            {
+                var leafReader = leafCtx.AtomicReader;
+                var liveDocs = leafReader.LiveDocs; // null means all docs are live
+                for (int i = 0; i < leafReader.MaxDoc; i++)
+                {
+                    if (liveDocs != null && !liveDocs.Get(i)) continue; // skip deleted
+                    var doc = leafReader.Document(i);
+                    var rawId = doc.Get(F_CANDIDATE_ID);
+                    if (rawId != null && idSet.Contains(Convert.ToInt32(rawId)))
+                        bits.Set(leafCtx.DocBase + i); // global doc number
+                }
+            }
+
+            var idFilter = new BitSetFilter(bits);
+
+            // ── Build the new search query (reuse your existing logic) ────────────
+            bool isExact = searchVals.exact;
+            var tokens = searchVals.value.Trim().ToLowerInvariant()
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToArray();
+
+            if (tokens.Length == 0) return [];
+
+            Query contentQuery = isExact
+                ? BuildExactContentQuery(tokens)
+                : BuildFuzzyContentQuery(tokens);
+
+            // ── Execute search restricted to previous IDs ─────────────────────────
+            var topDocs = await Task.Run(() =>
+                indexSearcher.Search(contentQuery, idFilter, idSet.Count));
+
+            var maxScore = topDocs.MaxScore;
+
+            return topDocs.ScoreDocs
+                .Select(hit =>
+                {
+                    var doc = indexSearcher.Doc(hit.Doc);
+                    var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
+                    var normalised = maxScore > 0 ? hit.Score / maxScore : 1f;
+                    return new SearchEntry
+                    {
+                        Id = id,
+                        Score = 1 + (int)Math.Round(normalised * 99)
+                    };
+                })
+                .OrderByDescending(x => x.Score)
+                .ToList();
+        }
+
+        // ─────────────────────────────────────────────
+        // Shared query builders (extracted from existing methods)
+        // ─────────────────────────────────────────────
+
+        private Query BuildFuzzyContentQuery(string[] tokens, int maxEdits = 2)
+        {
+            Query BuildToken(string token)
+            {
+                var q = new BooleanQuery();
+                foreach (var (field, boost) in ContentFields)
+                {
+                    q.Add(new FuzzyQuery(new Term(field, token), maxEdits) { Boost = boost }, Occur.SHOULD);
+                    q.Add(new WildcardQuery(new Term(field, token + "*")) { Boost = boost * 0.8f }, Occur.SHOULD);
+                }
+                return q;
+            }
+
+            if (tokens.Length == 1) return BuildToken(tokens[0]);
+
+            var bq = new BooleanQuery();
+            foreach (var t in tokens)
+                bq.Add(BuildToken(t), Occur.MUST);
+            return bq;
+        }
+
+        private Query BuildExactContentQuery(string[] tokens)
+        {
+            if (tokens.Length == 1)
+            {
+                var bq = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+                foreach (var (field, boost) in ContentFields)
+                    bq.Add(new TermQuery(new Term(field, tokens[0])) { Boost = boost }, Occur.SHOULD);
+                return bq;
+            }
+
+            var combined = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+            foreach (var (field, boost) in ContentFields)
+            {
+                var spanTerms = tokens
+                    .Select(t => new SpanTermQuery(new Term(field, t)))
+                    .ToArray<SpanQuery>();
+
+                combined.Add(new SpanNearQuery(spanTerms, slop: 0, inOrder: false) { Boost = boost * 3f }, Occur.SHOULD);
+                combined.Add(new SpanNearQuery(spanTerms, slop: 5, inOrder: false) { Boost = boost * 2f }, Occur.SHOULD);
+
+                var allPresent = new BooleanQuery { Boost = boost };
+                foreach (var t in tokens)
+                    allPresent.Add(new TermQuery(new Term(field, t)), Occur.MUST);
+                combined.Add(allPresent, Occur.SHOULD);
+            }
+            return combined;
+        }
+
+        // ─────────────────────────────────────────────
+        // BitSetFilter — restricts search to a set of Lucene doc numbers
+        // ─────────────────────────────────────────────
+
+        private sealed class BitSetFilter : Filter
+        {
+            private readonly OpenBitSet _bits;
+            public BitSetFilter(OpenBitSet bits) => _bits = bits;
+
+            public override DocIdSet GetDocIdSet(AtomicReaderContext context, IBits acceptDocs)
+            {
+                // Offset bits into the segment's docBase
+                var segmentBits = new OpenBitSet(context.Reader.MaxDoc);
+                int docBase = context.DocBase;
+                for (int i = 0; i < context.Reader.MaxDoc; i++)
+                {
+                    if (_bits.Get(docBase + i))
+                        segmentBits.Set(i);
+                }
+                return segmentBits;
+            }
+        }
+        #endregion
         // ─────────────────────────────────────────────
         // Dispose
         // ─────────────────────────────────────────────

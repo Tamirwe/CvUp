@@ -27,7 +27,7 @@ namespace PgVectorLibrary
             {
                 CvEmbeddings embeddings = await _generateEmbeddingText.EmbedCv(analyzeCv);
                 await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, embeddings.Titles, embeddings.Skills, embeddings.Summary, embeddings.Companies);
-                Console.WriteLine($"Embedded candidate {analyzeCv.CandidateId} ({++counter}/{total})");
+                //Console.WriteLine($"Embedded candidate {analyzeCv.CandidateId} ({++counter}/{total})");
             }
         }
     }

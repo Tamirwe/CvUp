@@ -2,7 +2,6 @@
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using QueueLibrary;
 using GL = GeneralLibrary;
 
 namespace PgVectorLibrary
@@ -12,15 +11,13 @@ namespace PgVectorLibrary
 
         private readonly IAiQueries _aiQueries;
         private readonly IAnalyzeCvOpenAi _analyzeCvOpenAi;
-        private readonly IDbQueueService _queueService;
         private readonly IEmbedService _embedService;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, IDbQueueService queueService, IEmbedService embedService, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, IEmbedService embedService, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
-            _queueService = queueService;
             _embedService = embedService;
             _companyId = companyId;
         }
@@ -52,28 +49,7 @@ namespace PgVectorLibrary
             }
         }
 
-        public async Task<bool> AnalyzeCvFromQueue()
-        {
-            var job = await _queueService.DequeueAsync("analyze new cv", "AnalyzeCvsService");
 
-            if (job == null) return false;
-
-            try
-            {
-                int candidateId = int.Parse(job.payload);
-                await AnalyzeCandidates(candidateId);
-
-                await _queueService.CompleteAsync(job.id);
-                Console.WriteLine($"Queue analyzed candidate {candidateId}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Queue analyze failed: {ex.Message}");
-                await _queueService.FailAsync(job.id);
-                return true;
-            }
-        }
 
 private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
         {

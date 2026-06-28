@@ -132,7 +132,8 @@ namespace LuceneLibrary
             doc.Add(new TextField(F_CV_ID, cand.cvId.ToString(), Field.Store.YES));
 
             // Full name
-            var fullName = $"{cand.firstName} {cand.lastName}".Trim();
+            var fullName = System.Text.RegularExpressions.Regex.Replace(
+                $"{cand.firstName} {cand.lastName}".Trim(), @"[-\p{P}]", " ").Trim();
             if (!string.IsNullOrWhiteSpace(fullName))
                 doc.Add(new TextField(F_FULL_NAME, fullName.ToLowerInvariant(), Field.Store.YES));
 

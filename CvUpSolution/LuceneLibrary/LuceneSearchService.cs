@@ -52,7 +52,7 @@ namespace LuceneLibrary
         // Position-based search (keywords from AI analysis)
         // ─────────────────────────────────────────────
 
-        public async Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500)
+        public async Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 1000)
         {
             var keywords = analyzed.LuceneKeywords.En
                 .Concat(analyzed.LuceneKeywords.He)
@@ -459,6 +459,9 @@ namespace LuceneLibrary
             }
         }
         #endregion
+
+
+
         // ─────────────────────────────────────────────
         // Dispose
         // ─────────────────────────────────────────────

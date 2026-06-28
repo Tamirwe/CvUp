@@ -20,7 +20,7 @@ namespace SchedulerWorkerService.Jobs
 
                 while (hasMore)
                 {
-                    var job = await queueService.DequeueAsync("analyze and index new cv", "AnalyzeCvsService");
+                    var job = await queueService.DequeueAsync("analyze and index new cv", "AnalyzeAndIndexNewCvsJob");
 
                     if (job == null) { hasMore = false; break; }
 
@@ -31,11 +31,11 @@ namespace SchedulerWorkerService.Jobs
                         await luceneIndexService.IndexCandidate(candidateId);
 
                         await queueService.CompleteAsync(job.id);
-                        Console.WriteLine($"Queue analyzed candidate {candidateId}");
+                        Console.WriteLine($"Queue analyzed and indexed candidate {candidateId}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Queue analyze failed: {ex.Message}");
+                        Console.WriteLine($"Queue analyze and index failed: {ex.Message}");
                         await queueService.FailAsync(job.id);
                     }
                 }

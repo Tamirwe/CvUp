@@ -222,7 +222,7 @@ namespace ImportCvsLibrary
                     await AddCandToMatchPosition();
                     
                     await _queueService.EnqueueAsync("index cv", _importCv.candidateId.ToString());
-                    await _queueService.EnqueueAsync("analyze new cv", _importCv.candidateId.ToString());
+                    await _queueService.EnqueueAsync("analyze and index new cv", _importCv.candidateId.ToString());
 
                 }
             }

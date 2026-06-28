@@ -103,32 +103,6 @@ namespace LuceneLibrary
         }
 
         // ─────────────────────────────────────────────
-        // Public: index single CV from queue
-        // ─────────────────────────────────────────────
-
-        public async Task<bool> IndexNewCvFromQueue()
-        {
-            var job = await _queueService.DequeueAsync("index cv", "LuceneIndexService");
-
-            if (job == null) return false;
-
-            try
-            {
-                int candidateId = int.Parse(job.payload);
-                await AddUpdateCandidateToIndex(candidateId);
-                await _queueService.CompleteAsync(job.id);
-                Console.WriteLine($"Queue indexed candidate {candidateId}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Queue index failed: {ex.Message}");
-                await _queueService.FailAsync(job.id);
-                return true;
-            }
-        }
-
-        // ─────────────────────────────────────────────
         // Private: upsert single candidate
         // ─────────────────────────────────────────────
 

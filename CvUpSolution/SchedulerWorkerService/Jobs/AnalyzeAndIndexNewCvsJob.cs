@@ -8,11 +8,11 @@ namespace SchedulerWorkerService.Jobs
 {
 
     [DisallowConcurrentExecution] // Prevents overlapping runs
-    public class AiAnalyzeNewCvsJob(IAnalyzeCvsService analyzeCvsService, IDbQueueService queueService, ILuceneIndexService luceneIndexService, ILogger<AiAnalyzeNewCvsJob> logger) : IJob
+    public class AnalyzeAndIndexNewCvsJob(IAnalyzeCvsService analyzeCvsService, IDbQueueService queueService, ILuceneIndexService luceneIndexService, ILogger<AnalyzeAndIndexNewCvsJob> logger) : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            logger.LogInformation("AiAnalyzeNewCvsJob executing at: {time}", DateTimeOffset.Now);
+            logger.LogInformation("AnalyzeAndIndexNewCvsJob executing at: {time}", DateTimeOffset.Now);
 
             try
             {
@@ -20,7 +20,7 @@ namespace SchedulerWorkerService.Jobs
 
                 while (hasMore)
                 {
-                    var job = await queueService.DequeueAsync("analyze new cv", "AnalyzeCvsService");
+                    var job = await queueService.DequeueAsync("analyze and index new cv", "AnalyzeCvsService");
 
                     if (job == null) { hasMore = false; break; }
 
@@ -42,13 +42,13 @@ namespace SchedulerWorkerService.Jobs
             }
             catch (OperationCanceledException)
             {
-                EventViewerWriter.ErrorMessage("AiAnalyzeNewCvsJob was cancelled.");
-                logger.LogWarning("AiAnalyzeNewCvsJob was cancelled.");
+                EventViewerWriter.ErrorMessage("AnalyzeAndIndexNewCvsJob was cancelled.");
+                logger.LogWarning("AnalyzeAndIndexNewCvsJob was cancelled.");
             }
             catch (Exception ex)
             {
-                EventViewerWriter.ErrorMessage("AiAnalyzeNewCvsJob failed." + ex.ToString());
-                logger.LogError(ex, "AiAnalyzeNewCvsJob failed.");
+                EventViewerWriter.ErrorMessage("AnalyzeAndIndexNewCvsJob failed." + ex.ToString());
+                logger.LogError(ex, "AnalyzeAndIndexNewCvsJob failed.");
                 throw new JobExecutionException(ex, refireImmediately: false);
             }
         }

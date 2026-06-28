@@ -90,16 +90,16 @@ if (isDebugMode)
         //    .WithIdentity("ImportGmailCvs").StartNow());
 
         //// --- Job 4: AI Analyze New Cvs    ---
-        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+        var aiAnalyzeNewCvs = new JobKey("AnalyzeAndIndexNewCvsJob");
 
-        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+        q.AddJob<AnalyzeAndIndexNewCvsJob>(opts => opts
            .WithIdentity(aiAnalyzeNewCvs)
            .WithDescription("AI Analyze New Cvs"));
 
         // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
         q.AddTrigger(opts => opts
             .ForJob(aiAnalyzeNewCvs)
-            .WithIdentity("AiAnalyzeNewCvsJob").StartNow());
+            .WithIdentity("AnalyzeAndIndexNewCvsJob").StartNow());
 
         ////// --- Job 5: Lucene Index Cvs    ---
         //var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
@@ -188,9 +188,9 @@ else
             .WithCronSchedule("0 0 1-4 ? * *"));
 
         //// --- Job 4: AI Analyze New Cvs    ---
-        var aiAnalyzeNewCvs = new JobKey("AiAnalyzeNewCvsJob");
+        var aiAnalyzeNewCvs = new JobKey("AnalyzeAndIndexNewCvsJob");
 
-        q.AddJob<AiAnalyzeNewCvsJob>(opts => opts
+        q.AddJob<AnalyzeAndIndexNewCvsJob>(opts => opts
            .WithIdentity(aiAnalyzeNewCvs)
            .WithDescription("AI Analyze New Cvs"));
 
@@ -200,20 +200,7 @@ else
             .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
             .WithCronSchedule("0 0/2 8-21 ? * *"));
 
-        //// --- Job 5: Lucene Index Cvs    ---
-        var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
-
-        q.AddJob<LuceneIndexCvsJob>(opts => opts
-           .WithIdentity(luceneIndexCvs)
-           .WithDescription("Lucene Index Cvs"));
-
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
-        q.AddTrigger(opts => opts
-            .ForJob(luceneIndexCvs)
-            .WithIdentity("Lucene-Index-Cvs-SaturdayTrigger")
-            .WithCronSchedule("0 0/2 8-21 ? * *"));
-
-        // --- Job 6: Queue Cleanup ---
+// --- Job 6: Queue Cleanup ---
         var queueCleanup = new JobKey("QueueCleanupJob");
 
         q.AddJob<QueueCleanupJob>(opts => opts

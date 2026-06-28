@@ -4,6 +4,5 @@ namespace LuceneLibrary
     {
         Task IndexAllCandidates();
         Task IndexCandidate(int candidateId);
-        Task<bool> IndexNewCvFromQueue();
     }
 }

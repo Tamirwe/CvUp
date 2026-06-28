@@ -66,7 +66,6 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 builder.Services.AddTransient<IAnalyzePositionsService, AnalyzePositionsService>();
 builder.Services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
 builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
-builder.Services.AddTransient<IEmbedService, EmbedService>();
 builder.Services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
 builder.Services.AddTransient<ISearchCvsService, SearchCvsService>();
 

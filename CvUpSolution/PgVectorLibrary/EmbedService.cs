@@ -17,9 +17,9 @@ namespace PgVectorLibrary
             _companyId = companyId;
         }
 
-        public async Task EmbedAnalyzeCvs()
+        public async Task EmbedAnalyzeCvs(int candidateId = 0)
         {
-            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding();
+            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding(candidateId);
 
             int total = analyzedCvsForEmbeedingList.Count, counter = 0;
 

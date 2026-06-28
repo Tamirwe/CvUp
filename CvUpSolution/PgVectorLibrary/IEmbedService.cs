@@ -2,6 +2,6 @@
 {
     public interface IEmbedService
     {
-        Task EmbedAnalyzeCvs();
+        Task EmbedAnalyzeCvs(int candidateId = 0);
     }
 }

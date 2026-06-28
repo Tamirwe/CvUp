@@ -7,7 +7,7 @@ namespace DataModelsLibrary.Queries
     {
         Task<List<CandLastCvModel>> AllCandidatesLastCvNotAnalysed();
         Task<CandLastCvModel?> CandidateLastCvNotAnalysed(int candidateId);
-        Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding();
+        Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding(int candidateId = 0);
         Task AddCandidateAnalyzeCv(analyzed_cv analyzeCv);
         Task DeleteCandidateAnalyzeCv(int candidateId);
         Task UpdateCandIsAnalyzed(int candidateId, bool isAnalyzed);

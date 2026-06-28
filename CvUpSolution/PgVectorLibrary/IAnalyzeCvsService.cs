@@ -2,8 +2,7 @@
 {
     public interface IAnalyzeCvsService
     {
-        Task AnalyzeCvsBatch();
+        Task AnalyzeCandidates(int candidateId = 0);
         Task<bool> AnalyzeCvFromQueue();
-        Task AnalyzeCandidate(int candidateId);
     }
 }

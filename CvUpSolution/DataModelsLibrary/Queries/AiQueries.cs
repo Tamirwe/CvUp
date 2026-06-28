@@ -135,37 +135,41 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding()
+        public async Task<List<AnalyzedCvsForEmbeedingModel>> GetAnalyzedCvsForEmbeeding(int candidateId = 0)
         {
             using var dbContext = new cvupdbContext();
 
-            var query = from ai in dbContext.analyzed_cvs
-                        where ai.is_embedded == false
-                        select new AnalyzedCvsForEmbeedingModel
-                        {
-                            CandidateId     = ai.candidate_id,
-                            CvId            = ai.cv_id,
-                            Name            = ai.name,
-                            Email           = ai.email,
-                            EstimateAge     = ai.estimate_age,
-                            Phone           = ai.phone,
-                            Location        = ai.city_he,
-                            Region          = ai.region,
-                            Area            = ai.area,
-                            Languages       = ai.languages,
-                            Skills          = ai.skills,
-                            SeniorityHe     = ai.seniority_he,
-                            SeniorityEn     = ai.seniority_en,
-                            Education       = ai.education,
-                            MilitaryService = ai.military_service_he,
-                            WorkExperience  = ai.work_experience,
-                            ProfessionWords = ai.profession_words,
-                            SummaryEn       = ai.summary_en,
-                            SummaryHe       = ai.summary_he,
-                            YearsExperience = ai.years_experience,
-                        };
+            var query = dbContext.analyzed_cvs
+                        .Where(ai => ai.is_embedded == false);
 
-            return await query.ToListAsync();
+            if (candidateId > 0)
+            {
+                query = query.Where(ai => ai.candidate_id == candidateId);
+            }
+
+            return await query.Select(ai => new AnalyzedCvsForEmbeedingModel
+            {
+                CandidateId     = ai.candidate_id,
+                CvId            = ai.cv_id,
+                Name            = ai.name,
+                Email           = ai.email,
+                EstimateAge     = ai.estimate_age,
+                Phone           = ai.phone,
+                Location        = ai.city_he,
+                Region          = ai.region,
+                Area            = ai.area,
+                Languages       = ai.languages,
+                Skills          = ai.skills,
+                SeniorityHe     = ai.seniority_he,
+                SeniorityEn     = ai.seniority_en,
+                Education       = ai.education,
+                MilitaryService = ai.military_service_he,
+                WorkExperience  = ai.work_experience,
+                ProfessionWords = ai.profession_words,
+                SummaryEn       = ai.summary_en,
+                SummaryHe       = ai.summary_he,
+                YearsExperience = ai.years_experience,
+            }).ToListAsync();
         }
 
        

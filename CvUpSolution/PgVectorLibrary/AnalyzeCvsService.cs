@@ -13,19 +13,23 @@ namespace PgVectorLibrary
         private readonly IAiQueries _aiQueries;
         private readonly IAnalyzeCvOpenAi _analyzeCvOpenAi;
         private readonly IDbQueueService _queueService;
+        private readonly IEmbedService _embedService;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, IDbQueueService queueService, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IAnalyzeCvOpenAi analyzeCvOpenAi, IDbQueueService queueService, IEmbedService embedService, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
             _queueService = queueService;
+            _embedService = embedService;
             _companyId = companyId;
         }
 
-        public async Task AnalyzeCvsBatch()
+        public async Task AnalyzeCandidates(int candidateId = 0)
         {
-            List<CandLastCvModel> candsLastCvList = await _aiQueries.AllCandidatesLastCvNotAnalysed();
+            List<CandLastCvModel> candsLastCvList = candidateId > 0
+                ? new List<CandLastCvModel>(new[] { await _aiQueries.CandidateLastCvNotAnalysed(candidateId) }.Where(x => x != null)!)
+                : await _aiQueries.AllCandidatesLastCvNotAnalysed();
 
             int counter = 0, total = candsLastCvList.Count;
 
@@ -35,6 +39,7 @@ namespace PgVectorLibrary
                 {
                     AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
                     await SaveAnalyzedCv(analyzedCv);
+                    await _embedService.EmbedAnalyzeCvs(candCv.candidateId);
 
                     Console.WriteLine($"Analyzed candidate {candCv.candidateId}  ({++counter}/{total})");
 
@@ -80,30 +85,7 @@ namespace PgVectorLibrary
             }
         }
 
-        /// <summary>
-        /// Analyze Candidate - For Debug
-        /// </summary>
-        /// <param name="candidateId"></param>
-        /// <returns></returns>
-        public async Task AnalyzeCandidate(int candidateId)
-        {
-            try
-            {
-                CandLastCvModel? candCv = await _aiQueries.CandidateLastCvNotAnalysed(candidateId);
-
-                if (candCv == null) return;
-
-                AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
-                await SaveAnalyzedCv(analyzedCv);
-              
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Queue analyze failed: {ex.Message}");
-            }
-        }
-
-        private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
+private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
         {
             if (analyzedCv == null)
             {

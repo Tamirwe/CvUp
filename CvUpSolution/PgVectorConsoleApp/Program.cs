@@ -36,14 +36,6 @@ var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
 
 int candidateId = 0;
 
-if (candidateId == 0)
-{
-    await analyzeCvsService.AnalyzeCvsBatch();
-}
-else
-{
-    await analyzeCvsService.AnalyzeCandidate(candidateId);
-}
+await analyzeCvsService.AnalyzeCandidates(candidateId);
 
-await embedSaveService.EmbedAnalyzeCvs();
 

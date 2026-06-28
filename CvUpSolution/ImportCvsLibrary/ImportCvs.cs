@@ -220,10 +220,7 @@ namespace ImportCvsLibrary
                     await _candsServise.UpdateCvKeyId(_importCv);
                     await _candsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
                     await AddCandToMatchPosition();
-                    
-                    await _queueService.EnqueueAsync("index cv", _importCv.candidateId.ToString());
                     await _queueService.EnqueueAsync("analyze and index new cv", _importCv.candidateId.ToString());
-
                 }
             }
         }

@@ -200,6 +200,19 @@ else
             .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
             .WithCronSchedule("0 0/1 7-22 ? * *"));
 
+        // --- Job 5: Lucene Index Cvs ---
+        var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");
+
+        q.AddJob<LuceneIndexCvsJob>(opts => opts
+           .WithIdentity(luceneIndexCvs)
+           .WithDescription("Lucene Index Cvs"));
+
+        // every 1 minute, between 7:00 AM and 10:59 PM, every day.
+        q.AddTrigger(opts => opts
+            .ForJob(luceneIndexCvs)
+            .WithIdentity("Lucene-Index-Cvs-Trigger")
+            .WithCronSchedule("0 0/1 7-22 ? * *"));
+
 // --- Job 6: Queue Cleanup ---
         var queueCleanup = new JobKey("QueueCleanupJob");
 

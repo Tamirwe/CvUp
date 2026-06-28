@@ -61,17 +61,7 @@ namespace PgVectorLibrary
             try
             {
                 int candidateId = int.Parse(job.payload);
-                CandLastCvModel? cv = await _aiQueries.CandidateLastCvNotAnalysed( candidateId);
-
-                if (cv == null)
-                {
-                    await _queueService.CompleteAsync(job.id);
-                    return true;
-                }
-
-                var candCv = cv;
-                AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
-                await SaveAnalyzedCv(analyzedCv);
+                await AnalyzeCandidates(candidateId);
 
                 await _queueService.CompleteAsync(job.id);
                 Console.WriteLine($"Queue analyzed candidate {candidateId}");

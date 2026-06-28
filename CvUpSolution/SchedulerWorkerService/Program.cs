@@ -187,18 +187,18 @@ else
             .WithIdentity("dataBase-backup")
             .WithCronSchedule("0 0 1-4 ? * *"));
 
-        //// --- Job 4: AI Analyze New Cvs    ---
+        //// --- Job 4: Analyze and Index New Cvs    ---
         var aiAnalyzeNewCvs = new JobKey("AnalyzeAndIndexNewCvsJob");
 
         q.AddJob<AnalyzeAndIndexNewCvsJob>(opts => opts
            .WithIdentity(aiAnalyzeNewCvs)
-           .WithDescription("AI Analyze New Cvs"));
+           .WithDescription("AI Analyze and Index New Cvs"));
 
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        // every 1 minute, between 7:00 AM and 10:59 PM, every day.
         q.AddTrigger(opts => opts
             .ForJob(aiAnalyzeNewCvs)
             .WithIdentity("Ai-Analyze-New-Cvs-SaturdayTrigger")
-            .WithCronSchedule("0 0/2 8-21 ? * *"));
+            .WithCronSchedule("0 0/1 7-22 ? * *"));
 
 // --- Job 6: Queue Cleanup ---
         var queueCleanup = new JobKey("QueueCleanupJob");

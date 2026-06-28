@@ -36,6 +36,7 @@ var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
 
 int candidateId = 0;
 
+// after method complete you have to call indexing method (await luceneIndexService.IndexAllCandidates();) to index the analyzed CVs for search and retrieval.
 await analyzeCvsService.AnalyzeCandidates(candidateId);
 
 

@@ -22,6 +22,7 @@ namespace PgVectorLibrary
             _companyId = companyId;
         }
 
+        // this method analyzes candidates' CVs. If a candidateId is provided, it analyzes only that candidate's CV; otherwise, it analyzes all candidates' CVs that have not been analyzed yet.
         public async Task AnalyzeCandidates(int candidateId = 0)
         {
             List<CandLastCvModel> candsLastCvList = candidateId > 0

@@ -50,16 +50,3 @@ else
     await luceneIndexService.IndexCandidate(candidateId);
 }
 
-//// First search (normal)
-//var firstResults = await _luceneSearch.Search(companyId, searchVals);
-
-//// User refines — search within those results
-//var refinedResults = await _luceneSearch.SearchWithin(
-//    firstResults.Select(r => r.Id),
-//    newSearchVals
-//);
-
-
-//await cvsPositionsServise.IndexCompanyCvs(154);
-
-//var candsPositionsServise = host.Services.GetRequiredService<ICandsPositionsServise>();

@@ -99,15 +99,6 @@ namespace LuceneLibrary
 
         public async Task IndexCandidate(int candidateId)
         {
-            await AddUpdateCandidateToIndex(candidateId);
-        }
-
-        // ─────────────────────────────────────────────
-        // Private: upsert single candidate
-        // ─────────────────────────────────────────────
-
-        private async Task AddUpdateCandidateToIndex(int candidateId)
-        {
             CandLastCvModel? cand = await _luceneQueries.CandidateLastCv(candidateId);
 
             if (cand == null) return;

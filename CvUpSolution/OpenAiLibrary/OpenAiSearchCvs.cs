@@ -3,14 +3,14 @@ using OpenAI.Embeddings;
 
 namespace OpenAiLibrary
 {
-    public class SearchCvsOpenAi : ISearchCvsOpenAi
+    public class OpenAiSearchCvs : IOpenAiSearchCvs
     {
         private readonly EmbeddingClient _client;
 
-        public SearchCvsOpenAi(IConfiguration configuration)
+        public OpenAiSearchCvs(IConfiguration configuration)
         {
             var apiKey = configuration["API_KEY"];
-            _client = new EmbeddingClient(EmbeddingOpenAi.EmbeddingModel, apiKey);
+            _client = new EmbeddingClient(OpenAiEmbedding.EmbeddingModel, apiKey);
         }
 
         public async Task<float[]> EmbedSearchQuery(string query)

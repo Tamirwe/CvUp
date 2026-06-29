@@ -10,7 +10,7 @@ using OpenAI.Chat;
 
 namespace OpenAiLibrary
 {
-    public class AnalyzeCvOpenAi : IAnalyzeCvOpenAi
+    public class OpenAiAnalyzeCv : IOpenAiAnalyzeCv
     {
 
         private ChatClient? _chatClient;
@@ -18,7 +18,7 @@ namespace OpenAiLibrary
         private readonly List<IsraeliCitiesModel> _citiesRegionList;
         private string? _prompt;
 
-        public AnalyzeCvOpenAi(IConfiguration configuration, List<IsraeliCitiesModel> citiesRegionList)
+        public OpenAiAnalyzeCv(IConfiguration configuration, List<IsraeliCitiesModel> citiesRegionList)
         {
             _apiKey = configuration["API_KEY"];
             _citiesRegionList = citiesRegionList;

@@ -43,7 +43,7 @@ List<IsraeliCitiesModel> citiesRegionList = JsonConvert.DeserializeObject<List<I
 
 builder.Services.AddSingleton(citiesRegionList);
 builder.Services.AddTransient<IAiQueries, AiQueries>();
-builder.Services.AddTransient<IAnalyzeCvOpenAi, AnalyzeCvOpenAi>();
+builder.Services.AddTransient<IOpenAiAnalyzeCv, OpenAiAnalyzeCv>();
 builder.Services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
 builder.Services.AddTransient<ILuceneSearchService, LuceneSearchService>();
 builder.Services.AddTransient<ILuceneQueries, LuceneQueries>();
@@ -53,7 +53,7 @@ builder.Services.AddTransient<IEmailQueries, EmailQueries>();
 builder.Services.AddTransient<ICvsFilesService, CvsFilesService>();
 builder.Services.AddTransient<IPositionsQueries, PositionsQueries>();
 builder.Services.AddTransient<ICandsListsQueries, CandsListsQueries>();
-builder.Services.AddTransient<IAnalyzePositionOpenAi, AnalyzePositionOpenAi>();
+builder.Services.AddTransient<IOpenAiAnalyzePosition, OpenAiAnalyzePosition>();
 builder.Services.AddTransient<ICandsServise, CandsServise>();
 builder.Services.AddTransient<ICandsListsServise, CandsListsServise>();
 builder.Services.AddTransient<IPositionsServise, PositionsServise>();
@@ -63,10 +63,10 @@ builder.Services.AddTransient<IImportCvs, ImportCvs>();
 builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 builder.Services.AddTransient<IAnalyzePositionsService, AnalyzePositionsService>();
-builder.Services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
+builder.Services.AddTransient<IOpenAiEmbedding, OpenAiEmbedding>();
 builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
 builder.Services.AddTransient<IEmbedService, EmbedService>();
-builder.Services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
+builder.Services.AddTransient<IOpenAiSearchCvs, OpenAiSearchCvs>();
 builder.Services.AddTransient<ISearchCvsService, SearchCvsService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");

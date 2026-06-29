@@ -7,13 +7,13 @@ using OpenAI.Chat;
 
 namespace OpenAiLibrary
 {
-    public class AnalyzePositionOpenAi : IAnalyzePositionOpenAi
+    public class OpenAiAnalyzePosition : IOpenAiAnalyzePosition
     {
         private ChatClient? _chatClient;
         private readonly string? _apiKey;
         private string? _prompt;
 
-        public AnalyzePositionOpenAi(IConfiguration configuration)
+        public OpenAiAnalyzePosition(IConfiguration configuration)
         {
             _apiKey = configuration["API_KEY"];
         }

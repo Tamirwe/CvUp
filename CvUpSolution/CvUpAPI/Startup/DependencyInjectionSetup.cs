@@ -28,8 +28,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICustomersContactsService, CustomersContactsService>();
             services.AddTransient<IQueueQueries, QueueQueries>();
             services.AddTransient<IDbQueueService, DbQueueService>();
-            services.AddTransient<IAnalyzePositionOpenAi, AnalyzePositionOpenAi>();
-            services.AddTransient<IEmbeddingOpenAi, EmbeddingOpenAi>();
+            services.AddTransient<IOpenAiAnalyzePosition, OpenAiAnalyzePosition>();
+            services.AddTransient<IOpenAiEmbedding, OpenAiEmbedding>();
             services.AddTransient<IAnalyzePositionsService, AnalyzePositionsService>();
             services.AddTransient<ICandsServise, CandsServise>();
             services.AddTransient<ICandsListsServise, CandsListsServise>();
@@ -39,7 +39,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<ICandsListsQueries, CandsListsQueries>();
             services.AddTransient<ITranslateService, TranslateService>();
             services.AddTransient<IAiQueries, AiQueries>();
-            services.AddTransient<ISearchCvsOpenAi, SearchCvsOpenAi>();
+            services.AddTransient<IOpenAiSearchCvs, OpenAiSearchCvs>();
             services.AddTransient<ISearchCvsService, SearchCvsService>();
 
             return services;

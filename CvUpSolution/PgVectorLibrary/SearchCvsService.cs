@@ -6,10 +6,10 @@ namespace PgVectorLibrary
 {
     public class SearchCvsService : ISearchCvsService
     {
-        private readonly ISearchCvsOpenAi _searchCvsOpenAi;
+        private readonly IOpenAiSearchCvs _searchCvsOpenAi;
         private readonly IAiQueries _aiQueries;
 
-        public SearchCvsService(ISearchCvsOpenAi searchCvsOpenAi, IAiQueries aiQueries)
+        public SearchCvsService(IOpenAiSearchCvs searchCvsOpenAi, IAiQueries aiQueries)
         {
             _searchCvsOpenAi = searchCvsOpenAi;
             _aiQueries = aiQueries;

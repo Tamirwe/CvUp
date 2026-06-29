@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using OpenAI.Embeddings;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.Embedding
 {
     public class OpenAiEmbedding : IOpenAiEmbedding
     {

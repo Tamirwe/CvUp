@@ -1,4 +1,4 @@
-namespace OpenAiLibrary
+namespace OpenAiLibrary.SearchCvs
 {
     public interface IOpenAiSearchCvs
     {

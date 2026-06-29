@@ -1,6 +1,6 @@
 using DataModelsLibrary.Models;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzePosition
 {
     public interface IOpenAiAnalyzePosition
     {

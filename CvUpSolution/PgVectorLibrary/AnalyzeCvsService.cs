@@ -2,6 +2,7 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using OpenAiLibrary;
+using OpenAiLibrary.AnalyzeCv;
 using GL = GeneralLibrary;
 
 namespace PgVectorLibrary

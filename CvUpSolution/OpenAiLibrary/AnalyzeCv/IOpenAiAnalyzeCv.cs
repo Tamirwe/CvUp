@@ -1,8 +1,6 @@
-
-
 using DataModelsLibrary.Models;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzeCv
 {
     public interface IOpenAiAnalyzeCv
     {

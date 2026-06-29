@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using OpenAI;
 using OpenAI.Chat;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzeCv
 {
     public class OpenAiAnalyzeCv : IOpenAiAnalyzeCv
     {

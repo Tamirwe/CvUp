@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using PgVectorLibrary;
 using OpenAiLibrary;
+using OpenAiLibrary.Embedding;
+using OpenAiLibrary.AnalyzeCv;
 
 var builder = Host.CreateApplicationBuilder(args);
 

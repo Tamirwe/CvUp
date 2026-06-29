@@ -1,6 +1,7 @@
 ﻿using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using OpenAiLibrary;
+using OpenAiLibrary.SearchCvs;
 
 namespace PgVectorLibrary
 {

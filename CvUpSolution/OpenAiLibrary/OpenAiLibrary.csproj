@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="cv_prompt.txt">
+    <None Update="AnalyzeCv\cv_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="position_prompt.txt">
+    <None Update="AnalyzePosition\position_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="PositionRequirements\position_description_prompt.txt">

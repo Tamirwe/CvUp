@@ -7,6 +7,9 @@ using EmailsLibrary;
 using FoldersLibrary;
 using LuceneLibrary;
 using OpenAiLibrary;
+using OpenAiLibrary.Embedding;
+using OpenAiLibrary.SearchCvs;
+using OpenAiLibrary.AnalyzePosition;
 using PgVectorLibrary;
 using QueueLibrary;
 

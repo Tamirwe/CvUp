@@ -1,4 +1,4 @@
-namespace OpenAiLibrary
+namespace OpenAiLibrary.Embedding
 {
     public interface IOpenAiEmbedding
     {

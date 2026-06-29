@@ -1,4 +1,5 @@
 using DataModelsLibrary.Models;
+using OpenAiLibrary.Embedding;
 using Newtonsoft.Json.Linq;
 
 namespace OpenAiLibrary

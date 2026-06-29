@@ -1,5 +1,7 @@
 using DataModelsLibrary.Queries;
 using OpenAiLibrary;
+using OpenAiLibrary.Embedding;
+using OpenAiLibrary.AnalyzePosition;
 using QueueLibrary;
 
 namespace PgVectorLibrary

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using OpenAI;
 using OpenAI.Chat;
 
-namespace OpenAiLibrary
+namespace OpenAiLibrary.AnalyzePosition
 {
     public class OpenAiAnalyzePosition : IOpenAiAnalyzePosition
     {

@@ -113,4 +113,11 @@ namespace DataModelsLibrary.Models
         public List<string> ProfessionWordsHe { get; set; } = [];
         public List<string> ProfessionWordsEn { get; set; } = [];
     }
+
+    public class PositionContentModel
+    {
+        public string? Requirements { get; set; }
+        public string? Description { get; set; }
+        public string? JobAd { get; set; }
+    }
 }

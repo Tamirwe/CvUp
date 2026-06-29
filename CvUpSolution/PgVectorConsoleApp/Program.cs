@@ -23,8 +23,8 @@ List<IsraeliCitiesModel> citiesRegionList = JsonConvert.DeserializeObject<List<I
 
 builder.Services.AddSingleton(citiesRegionList);
 builder.Services.AddTransient<IAiQueries, AiQueries>();
-builder.Services.AddTransient<IOpenAiAnalyzeCv, OpenAiAnalyzeCv>();
-builder.Services.AddTransient<IOpenAiEmbedding, OpenAiEmbedding>();
+builder.Services.AddTransient<IOpenAiAnalyzeCvService, OpenAiAnalyzeCvService>();
+builder.Services.AddTransient<IOpenAiEmbeddingService, OpenAiEmbeddingService>();
 builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
 builder.Services.AddTransient<IQueueQueries, QueueQueries>();
 builder.Services.AddTransient<IDbQueueService, DbQueueService>();

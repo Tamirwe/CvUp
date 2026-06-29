@@ -2,7 +2,7 @@ using DataModelsLibrary.Models;
 
 namespace OpenAiLibrary.PositionRequirements
 {
-    public interface IPositionWriterOpenAi
+    public interface IPositionWriterOpenAiService
     {
         Task<string?> GenerateRequirementsAsync(string title, string? description);
         Task<string?> GenerateDescriptionAsync(string title, string? requirements);

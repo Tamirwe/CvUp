@@ -11,11 +11,11 @@ namespace PgVectorLibrary
     {
 
         private readonly IAiQueries _aiQueries;
-        private readonly IOpenAiAnalyzeCv _analyzeCvOpenAi;
+        private readonly IOpenAiAnalyzeCvService _analyzeCvOpenAi;
         private readonly IEmbedService _embedService;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCv analyzeCvOpenAi, IEmbedService embedService, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCvService analyzeCvOpenAi, IEmbedService embedService, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;

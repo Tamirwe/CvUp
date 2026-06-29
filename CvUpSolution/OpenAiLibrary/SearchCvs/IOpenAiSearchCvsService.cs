@@ -1,6 +1,6 @@
 namespace OpenAiLibrary.SearchCvs
 {
-    public interface IOpenAiSearchCvs
+    public interface IOpenAiSearchCvsService
     {
         Task<float[]> EmbedSearchQuery(string query);
     }

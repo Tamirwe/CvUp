@@ -1,6 +1,6 @@
 namespace OpenAiLibrary.Embedding
 {
-    public interface IOpenAiEmbedding
+    public interface IOpenAiEmbeddingService
     {
         Task<float[]?> EmbedText(string? text);
     }

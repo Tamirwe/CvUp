@@ -6,7 +6,7 @@ using QueueLibrary;
 
 namespace PgVectorLibrary
 {
-    public class AnalyzePositionsService(IPositionsQueries positionsQueries, IOpenAiAnalyzePosition analyzePositionOpenAi, IOpenAiEmbedding embeddingOpenAi, IDbQueueService queueService) : IAnalyzePositionsService
+    public class AnalyzePositionsService(IPositionsQueries positionsQueries, IOpenAiAnalyzePositionService analyzePositionOpenAi, IOpenAiEmbeddingService embeddingOpenAi, IDbQueueService queueService) : IAnalyzePositionsService
     {
         public async Task AnalyzePosition(int positionId, int companyId=154)
         {

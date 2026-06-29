@@ -8,9 +8,9 @@ namespace OpenAiLibrary
 
     public class GenerateAnalyzedCvTextForEmbedding : IGenerateAnalyzedCvTextForEmbedding
     {
-        private readonly IOpenAiEmbedding _embeddingOpenAi;
+        private readonly IOpenAiEmbeddingService _embeddingOpenAi;
 
-        public GenerateAnalyzedCvTextForEmbedding(IOpenAiEmbedding embeddingOpenAi)
+        public GenerateAnalyzedCvTextForEmbedding(IOpenAiEmbeddingService embeddingOpenAi)
         {
             _embeddingOpenAi = embeddingOpenAi;
         }

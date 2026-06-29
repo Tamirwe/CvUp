@@ -3,12 +3,12 @@ using OpenAI.Embeddings;
 
 namespace OpenAiLibrary.Embedding
 {
-    public class OpenAiEmbedding : IOpenAiEmbedding
+    public class OpenAiEmbeddingService : IOpenAiEmbeddingService
     {
         private readonly EmbeddingClient _client;
         public const string EmbeddingModel = "text-embedding-3-small";
 
-        public OpenAiEmbedding(IConfiguration configuration)
+        public OpenAiEmbeddingService(IConfiguration configuration)
         {
             var apiKey = configuration["API_KEY"];
             _client = new EmbeddingClient(EmbeddingModel, apiKey);

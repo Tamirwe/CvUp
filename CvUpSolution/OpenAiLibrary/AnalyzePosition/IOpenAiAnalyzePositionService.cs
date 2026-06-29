@@ -2,7 +2,7 @@ using DataModelsLibrary.Models;
 
 namespace OpenAiLibrary.AnalyzePosition
 {
-    public interface IOpenAiAnalyzePosition
+    public interface IOpenAiAnalyzePositionService
     {
         Task<AnalyzedPositionModel?> AiAnalyzePosition(string positionText);
     }

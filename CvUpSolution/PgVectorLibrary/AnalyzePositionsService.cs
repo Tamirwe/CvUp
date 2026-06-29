@@ -1,5 +1,5 @@
-using AnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Queries;
+using OpenAiLibrary;
 using QueueLibrary;
 
 namespace PgVectorLibrary

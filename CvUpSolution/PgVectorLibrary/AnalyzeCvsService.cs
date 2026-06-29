@@ -1,7 +1,7 @@
-﻿using AnalyzeEmbedOpenAiLibrary;
-using Database.models;
+﻿using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using OpenAiLibrary;
 using GL = GeneralLibrary;
 
 namespace PgVectorLibrary

@@ -1,5 +1,4 @@
-﻿using AnalyzeEmbedOpenAiLibrary;
-using DataModelsLibrary.Queries;
+﻿using DataModelsLibrary.Queries;
 using QueueLibrary;
 using DotNetEnv.Configuration;
 using GeneralLibrary.IsraelCities;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using PgVectorLibrary;
+using OpenAiLibrary;
 
 var builder = Host.CreateApplicationBuilder(args);
 

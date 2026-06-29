@@ -1,19 +1,18 @@
 
 using CandsPositionsLibrary;
-using AnalyzeEmbedOpenAiLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using DotNetEnv.Configuration;
 using EmailsLibrary;
 using GeneralLibrary;
 using GeneralLibrary.IsraelCities;
-using Google.Api;
 using ImportCvsLibrary;
 using LuceneLibrary;
-using QueueLibrary;
 using Newtonsoft.Json;
+using OpenAiLibrary;
 using PgVectorLibrary;
 using Quartz;
+using QueueLibrary;
 using SchedulerWorkerService.Jobs;
 using System.Text;
 

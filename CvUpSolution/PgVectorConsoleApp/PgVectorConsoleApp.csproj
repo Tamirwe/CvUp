@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnalyzeEmbedOpenAiLibrary\AnalyzeEmbedOpenAiLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
+    <ProjectReference Include="..\OpenAiLibrary\OpenAiLibrary.csproj" />
     <ProjectReference Include="..\PgVectorLibrary\PgVectorLibrary.csproj" />
   </ItemGroup>
 

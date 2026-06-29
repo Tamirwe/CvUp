@@ -1,12 +1,12 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
 using CustomersContactsLibrary;
-using AnalyzeEmbedOpenAiLibrary;
 using CvFilesLibrary;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using FoldersLibrary;
 using LuceneLibrary;
+using OpenAiLibrary;
 using PgVectorLibrary;
 using QueueLibrary;
 

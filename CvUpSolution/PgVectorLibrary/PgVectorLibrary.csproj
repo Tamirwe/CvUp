@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnalyzeEmbedOpenAiLibrary\AnalyzeEmbedOpenAiLibrary.csproj" />
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
+    <ProjectReference Include="..\OpenAiLibrary\OpenAiLibrary.csproj" />
     <ProjectReference Include="..\QueueLibrary\QueueLibrary.csproj" />
   </ItemGroup>
 

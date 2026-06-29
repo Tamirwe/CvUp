@@ -1,6 +1,6 @@
-using AnalyzeEmbedOpenAiLibrary;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using OpenAiLibrary;
 
 namespace PgVectorLibrary
 {

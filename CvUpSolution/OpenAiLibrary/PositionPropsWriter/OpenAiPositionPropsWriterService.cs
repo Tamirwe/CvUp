@@ -36,16 +36,23 @@ namespace OpenAiLibrary.PositionPropsWriter
 
         // ── public methods ────────────────────────────────────────────────
 
-        public async Task<string?> OpenAiRewritePositionProps(string title, string? requirements, string? description, PositionPropsRewriteType rewriteType)
+        public async Task<PositionContentModel?> OpenAiRewritePositionProps(string title, string? requirements, string? description)
         {
-            return rewriteType switch
+            var userContent = BuildUserContent(title, requirements, description);
+            var reqTask  = CallAsync(RequirementsPrompt, userContent);
+            var descTask = CallAsync(DescriptionPrompt,  userContent);
+
+            await Task.WhenAll(reqTask, descTask);
+
+            return new PositionContentModel
             {
-                PositionPropsRewriteType.Description  => await CallAsync(DescriptionPrompt,  BuildUserContent(title, requirements, description)),
-                PositionPropsRewriteType.Requirements => await CallAsync(RequirementsPrompt, BuildUserContent(title, requirements, description)),
-                PositionPropsRewriteType.Ad           => await CallAsync(JobAdPrompt,        BuildUserContent(title, requirements, description)),
-                _ => null
+                Requirements = reqTask.Result,
+                Description  = descTask.Result,
             };
         }
+
+        public Task<string?> OpenAiPositionAdWriter(string title, string? requirements, string? description) =>
+            CallAsync(JobAdPrompt, BuildUserContent(title, requirements, description));
 
         // ── private helpers ───────────────────────────────────────────────
 

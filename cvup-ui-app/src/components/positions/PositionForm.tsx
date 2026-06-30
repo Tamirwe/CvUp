@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  Box,
   Button,
   FormControl,
   FormHelperText,
@@ -159,29 +158,9 @@ export const PositionForm = observer(({ onClose }: IProps) => {
     }
   };
 
-  const onAiRewrite = async () => {
+  const onAiRewriteDescrRequirements = async () => {
     if (formModel.id) {
-      await positionsStore.positionAiRewrite(formModel);
-    }
-  };
-
-  const onDescrAiRewrite = async () => {
-    if (formModel.id) {
-      const result = await positionsStore.positionDescrAiRewrite(formModel);
-      if (result) {
-        setFormModel((prev) => ({ ...prev, descr: result }));
-        setIsDirty(true);
-      }
-    }
-  };
-
-  const onRequirementsAiRewrite = async () => {
-    if (formModel.id) {
-      const result = await positionsStore.positionRequirementsAiRewrite(formModel);
-      if (result) {
-        setFormModel((prev) => ({ ...prev, requirements: result }));
-        setIsDirty(true);
-      }
+      await positionsStore.positionAiRewriteDescrRequirements(formModel);
     }
   };
 
@@ -465,72 +444,46 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <Box position="relative">
-                    <TextField
-                      sx={{ direction: "rtl" }}
-                      fullWidth
-                      multiline
-                      rows={isMobile ? 18 : 20}
-                      margin="normal"
-                      type="text"
-                      id="description"
-                      label="Description"
-                      variant="outlined"
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          descr: e.target.value,
-                        }));
-                        setIsDirty(true);
-                      }}
-                      value={formModel.descr}
-                    />
-                    {crudType === CrudTypesEnum.Update && onDescrAiRewrite && (
-                      <Button
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                        sx={{ position: "absolute", bottom: 24, left: 8 }}
-                        onClick={onDescrAiRewrite}
-                      >
-                        AI Rewrite
-                      </Button>
-                    )}
-                  </Box>
+                  <TextField
+                    sx={{ direction: "rtl" }}
+                    fullWidth
+                    multiline
+                    rows={isMobile ? 18 : 20}
+                    margin="normal"
+                    type="text"
+                    id="description"
+                    label="Description"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        descr: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.descr}
+                  />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <Box position="relative">
-                    <TextField
-                      sx={{ direction: "rtl" }}
-                      fullWidth
-                      multiline
-                      rows={isMobile ? 18 : 20}
-                      margin="normal"
-                      type="text"
-                      id="requirements"
-                      label="Requirements"
-                      variant="outlined"
-                      onChange={(e) => {
-                        setFormModel((currentProps) => ({
-                          ...currentProps,
-                          requirements: e.target.value,
-                        }));
-                        setIsDirty(true);
-                      }}
-                      value={formModel.requirements}
-                    />
-                    {crudType === CrudTypesEnum.Update && onRequirementsAiRewrite && (
-                      <Button
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                        sx={{ position: "absolute", bottom: 24, left: 8 }}
-                        onClick={onRequirementsAiRewrite}
-                      >
-                        AI Rewrite
-                      </Button>
-                    )}
-                  </Box>
+                  <TextField
+                    sx={{ direction: "rtl" }}
+                    fullWidth
+                    multiline
+                    rows={isMobile ? 18 : 20}
+                    margin="normal"
+                    type="text"
+                    id="requirements"
+                    label="Requirements"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setFormModel((currentProps) => ({
+                        ...currentProps,
+                        requirements: e.target.value,
+                      }));
+                      setIsDirty(true);
+                    }}
+                    value={formModel.requirements}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -567,7 +520,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                       <Button
                         color="primary"
                         variant="outlined"
-                        onClick={onAiRewrite}
+                        onClick={onAiRewriteDescrRequirements}
                         sx={{ whiteSpace: "nowrap", px: 5 }}
                       >
                         AI Rewrite

@@ -12,8 +12,11 @@ namespace AiLibrary.PositionPropsWriter
             _positionWriterOpenAi = positionWriterOpenAi;
         }
 
-        public Task<string?> PositionPropsRewriteAsync(PositionModel position, PositionPropsRewriteType rewriteType) =>
-            _positionWriterOpenAi.OpenAiRewritePositionProps(position.name, position.requirements, position.descr, rewriteType);
+        public Task<PositionContentModel?> PositionPropsRewriteAsync(PositionModel position) =>
+            _positionWriterOpenAi.OpenAiRewritePositionProps(position.name, position.requirements, position.descr);
+
+        public Task<string?> PositionAdWriterAsync(PositionModel position) =>
+            _positionWriterOpenAi.OpenAiPositionAdWriter(position.name, position.requirements, position.descr);
 
     }
 }

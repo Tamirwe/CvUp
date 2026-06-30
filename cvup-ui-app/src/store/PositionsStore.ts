@@ -318,26 +318,13 @@ export class PositionsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async positionAiRewrite(position: IPosition) {
+  async positionAiRewriteDescrRequirements(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.positionAiRewrite(position);
+    const res = await this.positionApi.positionAiRewriteDescrRequirements(position);
     this.rootStore.generalStore.backdrop = false;
     return res.data;
   }
 
-  async positionDescrAiRewrite(position: IPosition) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.positionDescrAiRewrite(position);
-    this.rootStore.generalStore.backdrop = false;
-    return res.data;
-  }
-
-  async positionRequirementsAiRewrite(position: IPosition) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.positionRequirementsAiRewrite(position);
-    this.rootStore.generalStore.backdrop = false;
-    return res.data;
-  }
 
   async positionAdAiRewrite(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;

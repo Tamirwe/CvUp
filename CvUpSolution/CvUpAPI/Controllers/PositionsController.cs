@@ -47,16 +47,16 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPut]
-        [Route("PositionAiRewrite")]
-        public async Task<IActionResult> PositionAiRewrite(PositionModel data)
+        [Route("PositionAiRewriteDescrRequirements")]
+        public async Task<IActionResult> PositionAiRewriteDescrRequirements(PositionModel data)
         {
-            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data);
+            var result = await _positionPropsWriterService.PositionRewriteDescrRequirements(data);
             return Ok(result);
         }
 
         [HttpPut]
-        [Route("PositionAdAiRewrite")]
-        public async Task<IActionResult> PositionAdAiRewrite(PositionModel data)
+        [Route("PositionAdAiWriter")]
+        public async Task<IActionResult> PositionAdAiWriter(PositionModel data)
         {
             var result = await _positionPropsWriterService.PositionAdWriterAsync(data);
             return Ok(result);

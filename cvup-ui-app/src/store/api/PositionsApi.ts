@@ -78,9 +78,9 @@ export default class PositionsApi extends BaseApi {
   }
 
 
-  async positionAdAiRewrite(position: IPosition) {
+  async positionAdAiWriter(position: IPosition) {
     return await this.apiWrapper2<string>(async () => {
-      return await this.http.put<string>("Positions/PositionAdAiRewrite", position);
+      return await this.http.put<string>("Positions/PositionAdAiWriter", position);
     });
   }
 

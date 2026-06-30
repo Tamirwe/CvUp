@@ -36,7 +36,7 @@ namespace OpenAiLibrary.PositionPropsWriter
 
         // ── public methods ────────────────────────────────────────────────
 
-        public async Task<PositionContentModel?> OpenAiRewritePositionProps(string title, string? requirements, string? description)
+        public async Task<PositionContentModel?> OpenAiRewritePositionDescrRequirements(string title, string? requirements, string? description)
         {
             var userContent = BuildUserContent(title, requirements, description);
             var reqTask  = CallAsync(RequirementsPrompt, userContent);

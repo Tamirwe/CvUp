@@ -12,8 +12,8 @@ namespace AiLibrary.PositionPropsWriter
             _positionWriterOpenAi = positionWriterOpenAi;
         }
 
-        public Task<PositionContentModel?> PositionPropsRewriteAsync(PositionModel position) =>
-            _positionWriterOpenAi.OpenAiRewritePositionProps(position.name, position.requirements, position.descr);
+        public Task<PositionContentModel?> PositionRewriteDescrRequirements(PositionModel position) =>
+            _positionWriterOpenAi.OpenAiRewritePositionDescrRequirements(position.name, position.requirements, position.descr);
 
         public Task<string?> PositionAdWriterAsync(PositionModel position) =>
             _positionWriterOpenAi.OpenAiPositionAdWriter(position.name, position.requirements, position.descr);

@@ -326,9 +326,9 @@ export class PositionsStore {
   }
 
 
-  async positionAdAiRewrite(position: IPosition) {
+  async positionAdAiWriter(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.positionAdAiRewrite(position);
+    const res = await this.positionApi.positionAdAiWriter(position);
     this.rootStore.generalStore.backdrop = false;
     return res.data;
   }

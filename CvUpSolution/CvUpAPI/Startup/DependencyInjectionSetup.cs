@@ -11,6 +11,8 @@ using OpenAiLibrary.Embedding;
 using OpenAiLibrary.SearchCvs;
 using OpenAiLibrary.AnalyzePosition;
 using PgVectorLibrary;
+using PgVectorLibrary.AnalyzePositions;
+using PgVectorLibrary.SearchCvs;
 using QueueLibrary;
 
 namespace CvUpAPI.Startup

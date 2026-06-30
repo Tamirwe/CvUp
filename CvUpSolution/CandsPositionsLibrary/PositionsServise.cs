@@ -2,6 +2,7 @@ using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using PgVectorLibrary;
+using PgVectorLibrary.AnalyzePositions;
 using QueueLibrary;
 
 namespace CandsPositionsLibrary

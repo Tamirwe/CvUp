@@ -1,4 +1,4 @@
-namespace PgVectorLibrary
+namespace PgVectorLibrary.AnalyzePositions
 {
     public interface IAnalyzePositionsService
     {

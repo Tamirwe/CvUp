@@ -1,6 +1,6 @@
-﻿using DataModelsLibrary.Models;
+using DataModelsLibrary.Models;
 
-namespace PgVectorLibrary
+namespace PgVectorLibrary.SearchCvs
 {
     public interface ISearchCvsService
     {

@@ -1,9 +1,9 @@
-﻿using DataModelsLibrary.Models;
+using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using OpenAiLibrary;
 using OpenAiLibrary.SearchCvs;
 
-namespace PgVectorLibrary
+namespace PgVectorLibrary.SearchCvs
 {
     public class SearchCvsService : ISearchCvsService
     {

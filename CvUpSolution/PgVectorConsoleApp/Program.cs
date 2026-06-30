@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using PgVectorLibrary;
+using PgVectorLibrary.AnalyzeCvs;
 using OpenAiLibrary;
 using OpenAiLibrary.Embedding;
 using OpenAiLibrary.AnalyzeCv;

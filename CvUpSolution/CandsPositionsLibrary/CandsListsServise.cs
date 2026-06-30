@@ -2,6 +2,8 @@ using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using LuceneLibrary;
 using PgVectorLibrary;
+using PgVectorLibrary.AnalyzePositions;
+using PgVectorLibrary.SearchCvs;
 
 namespace CandsPositionsLibrary
 {

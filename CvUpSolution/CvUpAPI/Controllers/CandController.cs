@@ -4,8 +4,8 @@ using CvFilesLibrary;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PgVectorLibrary;
-using PgVectorLibrary.SearchCvs;
+using AiLibrary;
+using AiLibrary.SearchCvs;
 using System.Buffers;
 
 namespace CvUpAPI.Controllers

@@ -1,4 +1,4 @@
-namespace PgVectorLibrary.AnalyzeCvs
+namespace AiLibrary.AnalyzeCvs
 {
     public interface IAnalyzeCvsService
     {

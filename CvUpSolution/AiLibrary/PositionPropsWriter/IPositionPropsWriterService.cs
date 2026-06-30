@@ -1,6 +1,6 @@
 using DataModelsLibrary.Models;
 
-namespace PgVectorLibrary.PositionPropsWriter
+namespace AiLibrary.PositionPropsWriter
 {
     public interface IPositionPropsWriterService
     {

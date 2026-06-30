@@ -6,7 +6,7 @@ using OpenAiLibrary.AnalyzeCv;
 using OpenAiLibrary.Embedding;
 using GL = GeneralLibrary;
 
-namespace PgVectorLibrary.AnalyzeCvs
+namespace AiLibrary.AnalyzeCvs
 {
     public class AnalyzeCvsService: IAnalyzeCvsService
     {

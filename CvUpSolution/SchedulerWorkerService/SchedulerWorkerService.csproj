@@ -24,7 +24,7 @@
     <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
     <ProjectReference Include="..\ImportCvsLibrary\ImportCvsLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
-    <ProjectReference Include="..\PgVectorLibrary\PgVectorLibrary.csproj" />
+    <ProjectReference Include="..\AiLibrary\AiLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

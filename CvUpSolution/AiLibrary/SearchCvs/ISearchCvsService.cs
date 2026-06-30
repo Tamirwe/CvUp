@@ -1,6 +1,6 @@
 using DataModelsLibrary.Models;
 
-namespace PgVectorLibrary.SearchCvs
+namespace AiLibrary.SearchCvs
 {
     public interface ISearchCvsService
     {

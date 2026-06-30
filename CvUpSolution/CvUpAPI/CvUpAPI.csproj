@@ -36,7 +36,7 @@
     <ProjectReference Include="..\FoldersLibrary\FoldersLibrary.csproj" />
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
-    <ProjectReference Include="..\PgVectorLibrary\PgVectorLibrary.csproj" />
+    <ProjectReference Include="..\AiLibrary\AiLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

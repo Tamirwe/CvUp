@@ -1,7 +1,7 @@
 ﻿using GeneralLibrary;
 using LuceneLibrary;
-using PgVectorLibrary;
-using PgVectorLibrary.AnalyzeCvs;
+using AiLibrary;
+using AiLibrary.AnalyzeCvs;
 using Quartz;
 using QueueLibrary;
 

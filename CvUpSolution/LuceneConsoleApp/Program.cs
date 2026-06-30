@@ -7,7 +7,7 @@ using EmailsLibrary;
 using LuceneLibrary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PgVectorLibrary;
+using AiLibrary;
 using QueueLibrary;
 using System.Buffers;
 

@@ -3,7 +3,7 @@ using DataModelsLibrary.Queries;
 using OpenAiLibrary;
 using OpenAiLibrary.SearchCvs;
 
-namespace PgVectorLibrary.SearchCvs
+namespace AiLibrary.SearchCvs
 {
     public class SearchCvsService : ISearchCvsService
     {

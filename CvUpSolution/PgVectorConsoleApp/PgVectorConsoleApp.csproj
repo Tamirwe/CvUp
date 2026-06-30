@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GeneralLibrary\GeneralLibrary.csproj" />
     <ProjectReference Include="..\OpenAiLibrary\OpenAiLibrary.csproj" />
-    <ProjectReference Include="..\PgVectorLibrary\PgVectorLibrary.csproj" />
+    <ProjectReference Include="..\AiLibrary\AiLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

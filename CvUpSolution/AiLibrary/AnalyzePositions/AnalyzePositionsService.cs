@@ -4,7 +4,7 @@ using OpenAiLibrary.Embedding;
 using OpenAiLibrary.AnalyzePosition;
 using QueueLibrary;
 
-namespace PgVectorLibrary.AnalyzePositions
+namespace AiLibrary.AnalyzePositions
 {
     public class AnalyzePositionsService(IPositionsQueries positionsQueries, IOpenAiAnalyzePositionService analyzePositionOpenAi, IOpenAiEmbeddingService embeddingOpenAi, IDbQueueService queueService) : IAnalyzePositionsService
     {

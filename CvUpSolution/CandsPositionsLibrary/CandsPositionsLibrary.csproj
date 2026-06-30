@@ -17,7 +17,7 @@
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
     <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
 	  <ProjectReference Include="..\LuceneLibrary\LuceneLibrary.csproj" />
-	  <ProjectReference Include="..\PgVectorLibrary\PgVectorLibrary.csproj" />
+	  <ProjectReference Include="..\AiLibrary\AiLibrary.csproj" />
 	  <ProjectReference Include="..\QueueLibrary\QueueLibrary.csproj" />
   </ItemGroup>
 

@@ -2,7 +2,7 @@ using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using OpenAiLibrary.PositionPropsWriter;
 
-namespace PgVectorLibrary.PositionPropsWriter
+namespace AiLibrary.PositionPropsWriter
 {
     public class PositionPropsWriterService : IPositionPropsWriterService
     {

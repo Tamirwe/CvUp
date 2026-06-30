@@ -1,4 +1,4 @@
-namespace PgVectorLibrary.AnalyzePositions
+namespace AiLibrary.AnalyzePositions
 {
     public interface IAnalyzePositionsService
     {

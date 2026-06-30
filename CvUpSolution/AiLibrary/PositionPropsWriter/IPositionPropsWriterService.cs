@@ -4,7 +4,7 @@ namespace AiLibrary.PositionPropsWriter
 {
     public interface IPositionPropsWriterService
     {
-        Task<PositionContentModel?> PositionPropsRewriteAsync(string title, string? requirements = null, string? description = null);
+        Task<PositionContentModel?> PositionPropsRewriteAsync(PositionModel position);
         Task<PositionContentModel?> PositionPropsRewriteByIdAsync(int positionId, int companyId = 154);
     }
 }

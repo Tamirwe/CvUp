@@ -1,4 +1,5 @@
-﻿using CandsPositionsLibrary;
+﻿using AiLibrary.PositionPropsWriter;
+using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace CvUpAPI.Controllers
     public class PositionsController : ControllerBase
     {
         private IPositionsServise _positionsService;
+        private IPositionPropsWriterService _positionPropsWriterService;
 
-        public PositionsController(IPositionsServise positionsService)
+        public PositionsController(IPositionsServise positionsService, IPositionPropsWriterService positionPropsWriterService)
         {
             _positionsService = positionsService;
+            _positionPropsWriterService = positionPropsWriterService;
         }
 
         [HttpGet]
@@ -41,6 +44,14 @@ namespace CvUpAPI.Controllers
         public async Task<AnalyzedPositionModel?> GetPositionAnalyzedData(int positionId)
         {
             return await _positionsService.GetPositionAnalyzedData(positionId);
+        }
+
+        [HttpPut]
+        [Route("PositionPropsAiRewrite")]
+        public async Task<IActionResult> PositionPropsAiRewrite(PositionModel data)
+        {
+            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data);
+            return Ok(result);
         }
 
         [HttpGet]

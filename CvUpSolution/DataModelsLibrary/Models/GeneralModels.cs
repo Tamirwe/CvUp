@@ -21,6 +21,7 @@ namespace DataModelsLibrary.Models
         public string customerName { get; set; } = string.Empty;
         public string? descr { get; set; } = string.Empty;
         public string? requirements { get; set; } = string.Empty;
+        public string? positionAd { get; set; } = string.Empty;
         public PositionStatusEnum status { get; set; } = PositionStatusEnum.Active;
         public DateTime? updated { get; set; }
         public DateTime? created { get; set; }

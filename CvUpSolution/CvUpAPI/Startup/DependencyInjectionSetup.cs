@@ -12,7 +12,9 @@ using OpenAiLibrary.SearchCvs;
 using OpenAiLibrary.AnalyzePosition;
 using AiLibrary;
 using AiLibrary.AnalyzePositions;
+using AiLibrary.PositionPropsWriter;
 using AiLibrary.SearchCvs;
+using OpenAiLibrary.PositionPropsWriter;
 using QueueLibrary;
 
 namespace CvUpAPI.Startup
@@ -46,6 +48,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IAiQueries, AiQueries>();
             services.AddTransient<IOpenAiSearchCvsService, OpenAiSearchCvsService>();
             services.AddTransient<ISearchCvsService, SearchCvsService>();
+            services.AddTransient<IOpenAiPositionPropsWriterService, OpenAiPositionPropsWriterService>();
+            services.AddTransient<IPositionPropsWriterService, PositionPropsWriterService>();
 
             return services;
         }

@@ -15,15 +15,15 @@ namespace AiLibrary.PositionPropsWriter
             _positionsQueries = positionsQueries;
         }
 
-        public async Task<PositionContentModel?> PositionPropsRewriteAsync(string title, string? requirements = null, string? description = null)
+        public async Task<PositionContentModel?> PositionPropsRewriteAsync(PositionModel position)
         {
-            return await _positionWriterOpenAi.GenerateAllAsync(title, requirements, description);
+            return await _positionWriterOpenAi.GenerateAllAsync(position.name, position.requirements, position.descr);
         }
 
         public async Task<PositionContentModel?> PositionPropsRewriteByIdAsync(int positionId, int companyId = 154)
         {
             var position = await _positionsQueries.GetPosition(positionId, companyId);
-            return await PositionPropsRewriteAsync(position.name, position.requirements, position.descr);
+            return await PositionPropsRewriteAsync(position);
         }
     }
 }

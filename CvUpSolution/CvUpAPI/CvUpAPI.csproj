@@ -40,6 +40,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\OpenAiLibrary\PositionPropsWriter\position_description_prompt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>position_description_prompt.txt</Link>
+    </None>
+    <None Include="..\OpenAiLibrary\PositionPropsWriter\position_requirements_prompt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>position_requirements_prompt.txt</Link>
+    </None>
+    <None Include="..\OpenAiLibrary\PositionPropsWriter\position_job_ad_prompt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>position_job_ad_prompt.txt</Link>
+    </None>
     <None Update=".env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

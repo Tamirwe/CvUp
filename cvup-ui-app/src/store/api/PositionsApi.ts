@@ -71,11 +71,27 @@ export default class PositionsApi extends BaseApi {
     });
   }
 
-  async getPositionPropsAiRewrite(positionId: number) {
+  async positionAiRewrite(position: IPosition) {
     return await this.apiWrapper2<string>(async () => {
-      return await this.http.get(
-        `Positions/PositionPropsAiRewrite?positionId=${positionId}`
-      );
+      return await this.http.put<string>("Positions/PositionAiRewrite", position);
+    });
+  }
+
+  async positionDescrAiRewrite(position: IPosition) {
+    return await this.apiWrapper2<string>(async () => {
+      return await this.http.put<string>("Positions/PositionDescrAiRewrite", position);
+    });
+  }
+
+  async positionRequirementsAiRewrite(position: IPosition) {
+    return await this.apiWrapper2<string>(async () => {
+      return await this.http.put<string>("Positions/PositionRequirementsAiRewrite", position);
+    });
+  }
+
+  async positionAdAiRewrite(position: IPosition) {
+    return await this.apiWrapper2<string>(async () => {
+      return await this.http.put<string>("Positions/PositionAdAiRewrite", position);
     });
   }
 

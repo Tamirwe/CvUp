@@ -159,15 +159,29 @@ export const PositionForm = observer(({ onClose }: IProps) => {
     }
   };
 
-  const onDescrAiRewrite = () => {
+  const onAiRewrite = async () => {
     if (formModel.id) {
-      positionsStore.getPositionPropsAiRewrite(formModel.id);
+      await positionsStore.positionAiRewrite(formModel);
     }
   };
 
-  const onRequirementsAiRewrite = () => {
+  const onDescrAiRewrite = async () => {
     if (formModel.id) {
-      positionsStore.getPositionPropsAiRewrite(formModel.id);
+      const result = await positionsStore.positionDescrAiRewrite(formModel);
+      if (result) {
+        setFormModel((prev) => ({ ...prev, descr: result }));
+        setIsDirty(true);
+      }
+    }
+  };
+
+  const onRequirementsAiRewrite = async () => {
+    if (formModel.id) {
+      const result = await positionsStore.positionRequirementsAiRewrite(formModel);
+      if (result) {
+        setFormModel((prev) => ({ ...prev, requirements: result }));
+        setIsDirty(true);
+      }
     }
   };
 
@@ -549,6 +563,17 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                 </Grid>
                 <Grid item>
                   <Stack direction="row" alignItems="center" gap={1}>
+                    {crudType === CrudTypesEnum.Update && (
+                      <Button
+                        color="primary"
+                        variant="outlined"
+                        onClick={onAiRewrite}
+                        sx={{ whiteSpace: "nowrap", px: 5 }}
+                      >
+                        AI Rewrite
+                      </Button>
+                    )}
+
                     <Button
                       fullWidth
                       color="secondary"

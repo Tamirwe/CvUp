@@ -318,12 +318,31 @@ export class PositionsStore {
     this.rootStore.generalStore.backdrop = false;
   }
 
-  async getPositionPropsAiRewrite(positionId: number) {
+  async positionAiRewrite(position: IPosition) {
     this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.getPositionPropsAiRewrite(positionId);
-    runInAction(() => {
-      this.positionAiRewriteData = res.data;
-    });
+    const res = await this.positionApi.positionAiRewrite(position);
     this.rootStore.generalStore.backdrop = false;
+    return res.data;
+  }
+
+  async positionDescrAiRewrite(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.positionDescrAiRewrite(position);
+    this.rootStore.generalStore.backdrop = false;
+    return res.data;
+  }
+
+  async positionRequirementsAiRewrite(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.positionRequirementsAiRewrite(position);
+    this.rootStore.generalStore.backdrop = false;
+    return res.data;
+  }
+
+  async positionAdAiRewrite(position: IPosition) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.positionAdAiRewrite(position);
+    this.rootStore.generalStore.backdrop = false;
+    return res.data;
   }
 }

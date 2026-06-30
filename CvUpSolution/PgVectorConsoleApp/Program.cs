@@ -29,13 +29,10 @@ builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnaly
 builder.Services.AddTransient<IQueueQueries, QueueQueries>();
 builder.Services.AddTransient<IDbQueueService, DbQueueService>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
-builder.Services.AddTransient<IEmbedService, EmbedService>();
 
 var host = builder.Build();
 
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
-var embedSaveService = host.Services.GetRequiredService<IEmbedService>();
-
 int candidateId = 0;
 
 // after method complete you have to call indexing method (await luceneIndexService.IndexAllCandidates();) to index the analyzed CVs for search and retrieval.

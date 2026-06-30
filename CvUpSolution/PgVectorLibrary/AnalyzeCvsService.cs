@@ -12,14 +12,14 @@ namespace PgVectorLibrary
 
         private readonly IAiQueries _aiQueries;
         private readonly IOpenAiAnalyzeCvService _analyzeCvOpenAi;
-        private readonly IEmbedService _embedService;
+        private readonly IGenerateAnalyzedCvTextForEmbedding _generateEmbeddingText;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCvService analyzeCvOpenAi, IEmbedService embedService, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCvService analyzeCvOpenAi, IGenerateAnalyzedCvTextForEmbedding generateEmbeddingText, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
-            _embedService = embedService;
+            _generateEmbeddingText = generateEmbeddingText;
             _companyId = companyId;
         }
 
@@ -38,7 +38,7 @@ namespace PgVectorLibrary
                 {
                     AnalyzedCvModel? analyzedCv = await _analyzeCvOpenAi.AiAnalyzeCv(candCv.candidateId, candCv.cvId, candCv.cvTxt);
                     await SaveAnalyzedCv(analyzedCv);
-                    await _embedService.EmbedAnalyzeCvs(candCv.candidateId);
+                    await EmbedAnalyzeCvs(candCv.candidateId);
 
                     Console.WriteLine($"Analyzed candidate {candCv.candidateId}  ({++counter}/{total})");
 
@@ -53,7 +53,18 @@ namespace PgVectorLibrary
 
 
 
-private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
+        public async Task EmbedAnalyzeCvs(int candidateId = 0)
+        {
+            List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding(candidateId);
+
+            foreach (var analyzeCv in analyzedCvsForEmbeedingList)
+            {
+                CvEmbeddings embeddings = await _generateEmbeddingText.EmbedCv(analyzeCv);
+                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, embeddings.Titles, embeddings.Skills, embeddings.Summary, embeddings.Companies);
+            }
+        }
+
+        private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
         {
             if (analyzedCv == null)
             {

@@ -160,7 +160,15 @@ export const PositionForm = observer(({ onClose }: IProps) => {
 
   const onAiRewriteDescrRequirements = async () => {
     if (formModel.id) {
-      await positionsStore.positionAiRewriteDescrRequirements(formModel);
+      const result = await positionsStore.positionAiRewriteDescrRequirements(formModel);
+      if (result) {
+        setFormModel((prev) => ({
+          ...prev,
+          descr: result.description ?? prev.descr,
+          requirements: result.requirements ?? prev.requirements,
+        }));
+        setIsDirty(true);
+      }
     }
   };
 

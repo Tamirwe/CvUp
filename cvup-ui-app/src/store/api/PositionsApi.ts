@@ -1,5 +1,6 @@
 import {
   IPosition,
+  IPositionAiRewriteResult,
   IPositionAnalyzedData,
   IPositionType,
   IPositionTypeCount,
@@ -72,8 +73,8 @@ export default class PositionsApi extends BaseApi {
   }
 
   async positionAiRewriteDescrRequirements(position: IPosition) {
-    return await this.apiWrapper2<string>(async () => {
-      return await this.http.put<string>("Positions/PositionAiRewriteDescrRequirements", position);
+    return await this.apiWrapper2<IPositionAiRewriteResult>(async () => {
+      return await this.http.put<IPositionAiRewriteResult>("Positions/PositionAiRewriteDescrRequirements", position);
     });
   }
 

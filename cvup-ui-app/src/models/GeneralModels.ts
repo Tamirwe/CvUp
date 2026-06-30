@@ -282,6 +282,11 @@ export interface IPositionLuceneKeywords {
   should?: string[];
 }
 
+export interface IPositionAiRewriteResult {
+  requirements?: string;
+  description?: string;
+}
+
 export interface IPositionAnalyzedData {
   positionId: number;
   title?: string;

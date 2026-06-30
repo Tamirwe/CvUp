@@ -1,10 +1,10 @@
 using DataModelsLibrary.Models;
+using OpenAiLibrary.PositionPropsWriter;
 
 namespace AiLibrary.PositionPropsWriter
 {
     public interface IPositionPropsWriterService
     {
-        Task<PositionContentModel?> PositionPropsRewriteAsync(PositionModel position);
-        Task<PositionContentModel?> PositionPropsRewriteByIdAsync(int positionId, int companyId = 154);
+        Task<string?> PositionPropsRewriteAsync(PositionModel position, PositionPropsRewriteType rewriteType);
     }
 }

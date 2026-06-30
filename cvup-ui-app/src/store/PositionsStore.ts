@@ -26,6 +26,7 @@ export class PositionsStore {
   sortedPosTypesList: IPositionType[] = [];
   posTypescountList: IPositionTypeCount[] = [];
   positionAnalyzedData: IPositionAnalyzedData | undefined;
+  positionAiRewriteData: string | undefined;
 
   constructor(
     private rootStore: RootStore,
@@ -313,6 +314,15 @@ export class PositionsStore {
     const res = await this.positionApi.getPositionAnalyzedData(positionId);
     runInAction(() => {
       this.positionAnalyzedData = { ...res.data, positionId };
+    });
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async getPositionPropsAiRewrite(positionId: number) {
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.positionApi.getPositionPropsAiRewrite(positionId);
+    runInAction(() => {
+      this.positionAiRewriteData = res.data;
     });
     this.rootStore.generalStore.backdrop = false;
   }

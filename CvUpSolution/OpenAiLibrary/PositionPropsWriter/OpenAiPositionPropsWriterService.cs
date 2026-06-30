@@ -36,39 +36,14 @@ namespace OpenAiLibrary.PositionPropsWriter
 
         // ── public methods ────────────────────────────────────────────────
 
-        public async Task<string?> GenerateRequirementsAsync(string title, string? description)
+        public async Task<string?> OpenAiRewritePositionProps(string title, string? requirements, string? description, PositionPropsRewriteType rewriteType)
         {
-            var userContent = BuildUserContent(title, description: description);
-            return await CallAsync(RequirementsPrompt, userContent);
-        }
-
-        public async Task<string?> GenerateDescriptionAsync(string title, string? requirements)
-        {
-            var userContent = BuildUserContent(title, requirements: requirements);
-            return await CallAsync(DescriptionPrompt, userContent);
-        }
-
-        public async Task<string?> GenerateJobAdAsync(string title, string? requirements, string? description)
-        {
-            var userContent = BuildUserContent(title, requirements, description);
-            return await CallAsync(JobAdPrompt, userContent);
-        }
-
-        public async Task<PositionContentModel?> GenerateAllAsync(
-            string title, string? requirements, string? description)
-        {
-            // Run all three in parallel
-            var reqTask = GenerateRequirementsAsync(title, description);
-            var descTask = GenerateDescriptionAsync(title, requirements);
-            var adTask = GenerateJobAdAsync(title, requirements, description);
-
-            await Task.WhenAll(reqTask, descTask, adTask);
-
-            return new PositionContentModel
+            return rewriteType switch
             {
-                Requirements = reqTask.Result,
-                Description = descTask.Result,
-                JobAd = adTask.Result,
+                PositionPropsRewriteType.Description  => await CallAsync(DescriptionPrompt,  BuildUserContent(title, requirements, description)),
+                PositionPropsRewriteType.Requirements => await CallAsync(RequirementsPrompt, BuildUserContent(title, requirements, description)),
+                PositionPropsRewriteType.Ad           => await CallAsync(JobAdPrompt,        BuildUserContent(title, requirements, description)),
+                _ => null
             };
         }
 

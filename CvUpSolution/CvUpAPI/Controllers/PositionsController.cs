@@ -1,4 +1,5 @@
 ﻿using AiLibrary.PositionPropsWriter;
+using OpenAiLibrary.PositionPropsWriter;
 using CandsPositionsLibrary;
 using Database.models;
 using DataModelsLibrary.Models;
@@ -47,10 +48,26 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPut]
-        [Route("PositionPropsAiRewrite")]
-        public async Task<IActionResult> PositionPropsAiRewrite(PositionModel data)
+        [Route("PositionDescrAiRewrite")]
+        public async Task<IActionResult> PositionDescrAiRewrite(PositionModel data)
         {
-            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data);
+            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data, PositionPropsRewriteType.Description);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("PositionRequirementsAiRewrite")]
+        public async Task<IActionResult> PositionRequirementsAiRewrite(PositionModel data)
+        {
+            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data, PositionPropsRewriteType.Requirements);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("PositionAdAiRewrite")]
+        public async Task<IActionResult> PositionAdAiRewrite(PositionModel data)
+        {
+            var result = await _positionPropsWriterService.PositionPropsRewriteAsync(data, PositionPropsRewriteType.Ad);
             return Ok(result);
         }
 

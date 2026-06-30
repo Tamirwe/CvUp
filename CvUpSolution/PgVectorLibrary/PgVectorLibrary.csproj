@@ -13,4 +13,8 @@
     <ProjectReference Include="..\QueueLibrary\QueueLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PositionPropsWriter\" />
+  </ItemGroup>
+
 </Project>

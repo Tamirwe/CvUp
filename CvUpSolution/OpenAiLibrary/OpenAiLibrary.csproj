@@ -23,13 +23,13 @@
     <None Update="AnalyzePosition\position_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PositionRequirements\position_description_prompt.txt">
+    <None Update="PositionPropsWriter\position_description_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PositionRequirements\position_job_ad_prompt.txt">
+    <None Update="PositionPropsWriter\position_job_ad_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PositionRequirements\position_requirements_prompt.txt">
+    <None Update="PositionPropsWriter\position_requirements_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

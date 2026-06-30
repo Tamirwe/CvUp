@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using OpenAI;
 using OpenAI.Chat;
 
-namespace OpenAiLibrary.PositionRequirements
+namespace OpenAiLibrary.PositionPropsWriter
 {
-    public class PositionWriterOpenAiService : IPositionWriterOpenAiService
+    public class OpenAiPositionPropsWriterService : IOpenAiPositionPropsWriterService
     {
         private ChatClient? _chatClient;
         private readonly string? _apiKey;
@@ -14,7 +14,7 @@ namespace OpenAiLibrary.PositionRequirements
         private string? _descriptionPrompt;
         private string? _jobAdPrompt;
 
-        public PositionWriterOpenAiService(IConfiguration configuration)
+        public OpenAiPositionPropsWriterService(IConfiguration configuration)
         {
             _apiKey = configuration["API_KEY"];
         }
@@ -111,7 +111,7 @@ namespace OpenAiLibrary.PositionRequirements
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PositionWriterOpenAiService] Error: {ex.Message}");
+                Console.WriteLine($"[OpenAiPositionPropsWriterService] Error: {ex.Message}");
                 return null;
             }
         }

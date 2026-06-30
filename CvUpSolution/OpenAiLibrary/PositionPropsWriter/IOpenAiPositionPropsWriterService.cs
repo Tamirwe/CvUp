@@ -1,8 +1,8 @@
 using DataModelsLibrary.Models;
 
-namespace OpenAiLibrary.PositionRequirements
+namespace OpenAiLibrary.PositionPropsWriter
 {
-    public interface IPositionWriterOpenAiService
+    public interface IOpenAiPositionPropsWriterService
     {
         Task<string?> GenerateRequirementsAsync(string title, string? description);
         Task<string?> GenerateDescriptionAsync(string title, string? requirements);

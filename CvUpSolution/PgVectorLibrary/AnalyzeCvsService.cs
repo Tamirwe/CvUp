@@ -1,8 +1,9 @@
-﻿using Database.models;
+using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
-using OpenAiLibrary;
+using Newtonsoft.Json.Linq;
 using OpenAiLibrary.AnalyzeCv;
+using OpenAiLibrary.Embedding;
 using GL = GeneralLibrary;
 
 namespace PgVectorLibrary
@@ -12,14 +13,14 @@ namespace PgVectorLibrary
 
         private readonly IAiQueries _aiQueries;
         private readonly IOpenAiAnalyzeCvService _analyzeCvOpenAi;
-        private readonly IGenerateAnalyzedCvTextForEmbedding _generateEmbeddingText;
+        private readonly IOpenAiEmbeddingService _embeddingOpenAi;
         private readonly int _companyId;
 
-        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCvService analyzeCvOpenAi, IGenerateAnalyzedCvTextForEmbedding generateEmbeddingText, int companyId = 154)
+        public AnalyzeCvsService(IAiQueries aiQueries, IOpenAiAnalyzeCvService analyzeCvOpenAi, IOpenAiEmbeddingService embeddingOpenAi, int companyId = 154)
         {
             _aiQueries = aiQueries;
             _analyzeCvOpenAi = analyzeCvOpenAi;
-            _generateEmbeddingText = generateEmbeddingText;
+            _embeddingOpenAi = embeddingOpenAi;
             _companyId = companyId;
         }
 
@@ -51,17 +52,74 @@ namespace PgVectorLibrary
             }
         }
 
-
-
         public async Task EmbedAnalyzeCvs(int candidateId = 0)
         {
             List<AnalyzedCvsForEmbeedingModel> analyzedCvsForEmbeedingList = await _aiQueries.GetAnalyzedCvsForEmbeeding(candidateId);
 
             foreach (var analyzeCv in analyzedCvsForEmbeedingList)
             {
-                CvEmbeddings embeddings = await _generateEmbeddingText.EmbedCv(analyzeCv);
-                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, embeddings.Titles, embeddings.Skills, embeddings.Summary, embeddings.Companies);
+                ParseWorkExperience(analyzeCv);
+                ParseProfessionWords(analyzeCv);
+
+                var titlesText    = Join(analyzeCv.JobsTitlesHe, analyzeCv.JobsTitlesEn, analyzeCv.ProfessionWordsHe, analyzeCv.ProfessionWordsEn);
+                var skillsText    = Join(analyzeCv.Skills);
+                var summaryText   = Join(analyzeCv.SummaryHe, analyzeCv.SummaryEn);
+                var companiesText = Join(analyzeCv.Companies);
+
+                var titles    = await _embeddingOpenAi.EmbedText(titlesText);
+                var skills    = await _embeddingOpenAi.EmbedText(skillsText);
+                var summary   = await _embeddingOpenAi.EmbedText(summaryText);
+                var companies = await _embeddingOpenAi.EmbedText(companiesText);
+
+                await _aiQueries.UpdateCvEmbedding(analyzeCv.CandidateId, titles, skills, summary, companies);
             }
+        }
+
+        private static void ParseWorkExperience(AnalyzedCvsForEmbeedingModel analyzeCv)
+        {
+            if (string.IsNullOrWhiteSpace(analyzeCv.WorkExperience)) return;
+
+            var arr = JArray.Parse(analyzeCv.WorkExperience);
+            foreach (var item in arr)
+            {
+                var company = item.Value<string>("company");
+                var titleHe = item.Value<string>("title_he");
+                var titleEn = item.Value<string>("title_en");
+
+                if (!string.IsNullOrWhiteSpace(company)) analyzeCv.Companies.Add(company);
+                if (!string.IsNullOrWhiteSpace(titleHe)) analyzeCv.JobsTitlesHe.Add(titleHe);
+                if (!string.IsNullOrWhiteSpace(titleEn)) analyzeCv.JobsTitlesEn.Add(titleEn);
+            }
+        }
+
+        private static void ParseProfessionWords(AnalyzedCvsForEmbeedingModel analyzeCv)
+        {
+            if (string.IsNullOrWhiteSpace(analyzeCv.ProfessionWords)) return;
+
+            var arr = JArray.Parse(analyzeCv.ProfessionWords);
+            foreach (var item in arr)
+            {
+                var he = item.Value<string>("hebrew");
+                var en = item.Value<string>("english");
+
+                if (!string.IsNullOrWhiteSpace(he)) analyzeCv.ProfessionWordsHe.Add(he);
+                if (!string.IsNullOrWhiteSpace(en)) analyzeCv.ProfessionWordsEn.Add(en);
+            }
+        }
+
+        private static string? Join(params IEnumerable<string?>?[] parts)
+        {
+            var text = string.Join(" ", parts
+                .Where(p => p != null)
+                .SelectMany(p => p!)
+                .Where(s => !string.IsNullOrWhiteSpace(s)));
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
+
+        private static string? Join(params string?[] parts)
+        {
+            var text = string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+            return string.IsNullOrWhiteSpace(text) ? null : text;
         }
 
         private async Task SaveAnalyzedCv(AnalyzedCvModel? analyzedCv)
@@ -96,6 +154,6 @@ namespace PgVectorLibrary
             await _aiQueries.AddCandidateAnalyzeCv(analyzeCv);
         }
 
-      
+
     }
 }

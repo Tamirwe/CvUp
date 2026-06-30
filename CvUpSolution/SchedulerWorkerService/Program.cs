@@ -68,7 +68,6 @@ builder.Services.AddTransient<IDataBaseBackup, DataBaseBackup>();
 builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 builder.Services.AddTransient<IAnalyzePositionsService, AnalyzePositionsService>();
 builder.Services.AddTransient<IOpenAiEmbeddingService, OpenAiEmbeddingService>();
-builder.Services.AddTransient<IGenerateAnalyzedCvTextForEmbedding, GenerateAnalyzedCvTextForEmbedding>();
 builder.Services.AddTransient<IOpenAiSearchCvsService, OpenAiSearchCvsService>();
 builder.Services.AddTransient<ISearchCvsService, SearchCvsService>();
 

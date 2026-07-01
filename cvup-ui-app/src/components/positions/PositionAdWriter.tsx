@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { useStore } from "../../Hooks/useStore";
 
-export const PositionAiRewrite = observer(() => {
+export const PositionAdWriter = observer(() => {
   const { positionsStore } = useStore();
 
   if (!positionsStore.positionAiRewriteData) {

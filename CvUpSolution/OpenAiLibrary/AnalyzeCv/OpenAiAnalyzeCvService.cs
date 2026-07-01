@@ -28,7 +28,7 @@ namespace OpenAiLibrary.AnalyzeCv
             _chatClient ??= new OpenAIClient(_apiKey).GetChatClient("gpt-4o-mini");
 
         private string Prompt =>
-            _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "cv_prompt.txt"));
+            _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "AnalyzeCv\\cv_prompt.txt"));
 
         public async Task<AnalyzedCvModel?> AiAnalyzeCv(int candId, int cvId, string? cvText)
         {

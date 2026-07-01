@@ -24,15 +24,15 @@ namespace OpenAiLibrary.PositionPropsWriter
 
         private string RequirementsPrompt =>
             _requirementsPrompt ??= File.ReadAllText(
-                Path.Combine(AppContext.BaseDirectory, "position_requirements_prompt.txt"));
+                Path.Combine(AppContext.BaseDirectory, "PositionPropsWriter//position_requirements_prompt.txt"));
 
         private string DescriptionPrompt =>
             _descriptionPrompt ??= File.ReadAllText(
-                Path.Combine(AppContext.BaseDirectory, "position_description_prompt.txt"));
+                Path.Combine(AppContext.BaseDirectory, "PositionPropsWriter//position_description_prompt.txt"));
 
         private string JobAdPrompt =>
             _jobAdPrompt ??= File.ReadAllText(
-                Path.Combine(AppContext.BaseDirectory, "position_job_ad_prompt.txt"));
+                Path.Combine(AppContext.BaseDirectory, "PositionPropsWriter//position_job_ad_prompt.txt"));
 
         // ── public methods ────────────────────────────────────────────────
 

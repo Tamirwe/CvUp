@@ -22,7 +22,7 @@ namespace OpenAiLibrary.AnalyzePosition
             _chatClient ??= new OpenAIClient(_apiKey).GetChatClient("gpt-4o-mini");
 
         private string Prompt =>
-            _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "position_prompt.txt"));
+            _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "AnalyzePosition//position_prompt.txt"));
 
         public async Task<AnalyzedPositionModel?> AiAnalyzePosition(string positionText)
         {

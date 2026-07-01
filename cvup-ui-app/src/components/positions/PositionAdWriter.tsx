@@ -1,16 +1,42 @@
+import { Button, TextField } from "@mui/material";
 import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 
 export const PositionAdWriter = observer(() => {
   const { positionsStore } = useStore();
+  const position = positionsStore.editPosition;
+  const [positionAd, setPositionAd] = useState(position?.positionAd ?? "");
 
-  if (!positionsStore.positionAiRewriteData) {
-    return null;
-  }
+  useEffect(() => {
+    fetchAd();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchAd = async () => {
+    if (position) {
+      const result = await positionsStore.positionAdAiWriter(position);
+      if (result) {
+        setPositionAd(result);
+      }
+    }
+  };
 
   return (
-    <pre style={{ margin: 0, fontSize: 13, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-      {positionsStore.positionAiRewriteData}
-    </pre>
+    <>
+      <TextField
+        sx={{ direction: "rtl" }}
+        fullWidth
+        multiline
+        rows={20}
+        margin="normal"
+        label="Position Ad"
+        variant="outlined"
+        value={positionAd}
+        onChange={(e) => setPositionAd(e.target.value)}
+      />
+      <Button variant="outlined" color="primary" onClick={fetchAd}>
+        Update Ad
+      </Button>
+    </>
   );
 });

@@ -147,6 +147,7 @@ export interface IPosition {
   remarks?: string;
   matchEmailsubject?: string;
   candsCount?: number;
+  positionAd?: string;
 }
 
 export interface IPositionTypeCount {

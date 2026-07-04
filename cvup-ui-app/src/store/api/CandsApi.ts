@@ -6,6 +6,7 @@ import {
   ISearchModel,
   ICandsReport,
   ICandPosStageTypeUpdate,
+  IComplexSearchTerm,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -279,6 +280,18 @@ export default class CandsApi extends BaseApi {
       return await this.http.get(
         `Cand/FindPositionMatchCvs?positionId=${posId}`,
       );
+    });
+  }
+
+  async complexSearchCands(
+    firstSearch: IComplexSearchTerm[],
+    searchWithin?: IComplexSearchTerm[],
+  ) {
+    return await this.apiWrapper2<ICand[]>(async () => {
+      return await this.http.post(`Cand/ComplexSearchCands`, {
+        firstSearch,
+        searchWithin,
+      });
     });
   }
 }

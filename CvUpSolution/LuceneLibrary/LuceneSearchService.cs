@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 
 namespace LuceneLibrary
 {
+  
+
     public class LuceneSearchService : ILuceneSearchService, IDisposable
     {
         private const LuceneVersion LUCENE_VERSION = LuceneVersion.LUCENE_48;
@@ -460,6 +462,138 @@ namespace LuceneLibrary
         }
         #endregion
 
+        #region Complex Search
+
+        // ─────────────────────────────────────────────
+        // Complex search: multiple groups AND'd via search-within
+        // ─────────────────────────────────────────────
+
+        public async Task<List<SearchEntry>> ComplexSearch(
+     List<ComplexSearchTerm> firstSearch,
+     List<ComplexSearchTerm>? searchWithin = null)
+        {
+            if (firstSearch.Count == 0) return [];
+
+            var results = await RunGroupSearch(firstSearch, restrictToIds: null);
+            if (results.Count == 0 || searchWithin is not { Count: > 0 })
+                return results;
+
+            return await RunGroupSearch(searchWithin, results.Select(r => r.Id).ToHashSet());
+        }
+
+        private async Task<List<SearchEntry>> RunGroupSearch(List<ComplexSearchTerm> terms, HashSet<int>? restrictToIds)
+        {
+            using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
+            using var indexReader = DirectoryReader.Open(indexDirectory);
+            var indexSearcher = new IndexSearcher(indexReader);
+
+            var groupQuery = BuildComplexGroupQuery(terms);
+
+            Filter? filter = null;
+            if (restrictToIds is { Count: > 0 })
+            {
+                var bits = new OpenBitSet(indexReader.MaxDoc);
+                foreach (var leafCtx in indexReader.Leaves)
+                {
+                    var leafReader = leafCtx.AtomicReader;
+                    var liveDocs = leafReader.LiveDocs;
+                    for (int i = 0; i < leafReader.MaxDoc; i++)
+                    {
+                        if (liveDocs != null && !liveDocs.Get(i)) continue;
+                        var rawId = leafReader.Document(i).Get(F_CANDIDATE_ID);
+                        if (rawId != null && restrictToIds.Contains(Convert.ToInt32(rawId)))
+                            bits.Set(leafCtx.DocBase + i);
+                    }
+                }
+                filter = new BitSetFilter(bits);
+            }
+
+            int limit = restrictToIds?.Count ?? 1000;
+            var topDocs = await Task.Run(() => indexSearcher.Search(groupQuery, filter, limit));
+            var maxScore = topDocs.MaxScore;
+
+            return topDocs.ScoreDocs
+                .Select(hit =>
+                {
+                    var doc = indexSearcher.Doc(hit.Doc);
+                    var id = Convert.ToInt32(doc.Get(F_CANDIDATE_ID));
+                    var normalised = maxScore > 0 ? hit.Score / maxScore : 1f;
+                    return new SearchEntry
+                    {
+                        Id = id,
+                        Score = 1 + (int)Math.Round(normalised * 99)
+                    };
+                })
+                .OrderByDescending(x => x.Score)
+                .ToList();
+        }
+
+        // ─────────────────────────────────────────────
+        // Group query builder
+        // ─────────────────────────────────────────────
+
+        private Query BuildComplexGroupQuery(List<ComplexSearchTerm> terms)
+        {
+            var bq = new BooleanQuery();
+
+            foreach (var term in terms)
+            {
+                var occur = term.Occur == TermOccur.Must ? Occur.MUST : Occur.SHOULD;
+                var query = term.MatchType == TermMatchType.ExactPhrase
+                    ? BuildExactPhraseQuery(term.Value)
+                    : BuildFuzzyTermQuery(term.Value);
+                bq.Add(query, occur);
+            }
+
+            return bq;
+        }
+
+        // ─────────────────────────────────────────────
+        // Exact phrase: SpanNear slop=0 across all content fields
+        // ─────────────────────────────────────────────
+
+        private Query BuildExactPhraseQuery(string phrase)
+        {
+            var tokens = phrase.Trim().ToLowerInvariant()
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .ToArray();
+
+            var bq = new BooleanQuery { MinimumNumberShouldMatch = 1 };
+
+            foreach (var (field, boost) in ContentFields)
+            {
+                if (tokens.Length == 1)
+                {
+                    bq.Add(new TermQuery(new Term(field, tokens[0])) { Boost = boost }, Occur.SHOULD);
+                }
+                else
+                {
+                    var spanTerms = tokens
+                        .Select(t => new SpanTermQuery(new Term(field, t)))
+                        .ToArray<SpanQuery>();
+
+                    // slop=0, inOrder=true → true exact phrase
+                    bq.Add(new SpanNearQuery(spanTerms, slop: 0, inOrder: true) { Boost = boost * 3f }, Occur.SHOULD);
+                }
+            }
+
+            return bq;
+        }
+
+        // ─────────────────────────────────────────────
+        // Keyword (fuzzy): reuses existing BuildFuzzyContentQuery
+        // ─────────────────────────────────────────────
+
+        private Query BuildFuzzyTermQuery(string keyword)
+        {
+            var tokens = keyword.Trim().ToLowerInvariant()
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToArray();
+
+            return BuildFuzzyContentQuery(tokens); // already exists in your class
+        }
+        #endregion
 
 
         // ─────────────────────────────────────────────

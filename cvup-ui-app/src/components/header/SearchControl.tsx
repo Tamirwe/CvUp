@@ -15,6 +15,7 @@ import { ISearchModel } from "../../models/GeneralModels";
 import { SortByEnum } from "../../models/GeneralEnums";
 import { translate } from "../../utils/GeneralUtils";
 import { useStore } from "../../Hooks/useStore";
+import { LuceneSearchFormDialog } from "../complexSearchForm/LuceneSearchFormDialog";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -90,6 +91,7 @@ interface IProps {
   extSearch?: ISearchModel;
   showAI?: boolean;
   onAI?: (selected: boolean, searchValue: string) => void;
+  showSE?: boolean;
 }
 
 export const SearchControl = ({
@@ -104,6 +106,7 @@ export const SearchControl = ({
   extSearch,
   showAI = false,
   onAI,
+  showSE = true,
 }: IProps) => {
   const { generalStore } = useStore();
 
@@ -115,6 +118,7 @@ export const SearchControl = ({
   });
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedAI, setSelectedAI] = useState(false);
+  const [seDialogOpen, setSeDialogOpen] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isExecSearch, setIsExecSearch] = useState<boolean>(false);
 
@@ -169,6 +173,7 @@ export const SearchControl = ({
   };
 
   return (
+    <>
     <Stack
       onClick={(event) => {
         event.stopPropagation();
@@ -345,6 +350,35 @@ export const SearchControl = ({
             AI
           </ToggleButton>
         )}
+        {showSE && (
+          <ToggleButton
+            sx={{
+              direction: "ltr",
+              "&.MuiButtonBase-root": {
+                padding: "2px 10px",
+                fontSize: "0.8rem",
+                fontWeight: "bold",
+                border: "1px solid #64a3fb",
+                margin: "0 4px",
+              },
+              "&.Mui-selected": {
+                color: "white",
+                backgroundColor: "#64a3fb",
+                "&:hover": { backgroundColor: "#5090e0" },
+              },
+            }}
+            value="check"
+            color="primary"
+            selected={seDialogOpen}
+            onChange={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              setSeDialogOpen(true);
+            }}
+          >
+            SE
+          </ToggleButton>
+        )}
         {shoeAdvancedIcon && (
           <ToggleButton
             sx={{
@@ -440,5 +474,7 @@ export const SearchControl = ({
         </Stack>
       )}*/}
     </Stack>
+    <LuceneSearchFormDialog isOpen={seDialogOpen} onClose={() => setSeDialogOpen(false)} />
+    </>
   );
 };

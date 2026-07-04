@@ -106,6 +106,29 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
+        [Route("ComplexSearchCands")]
+        public async Task<IEnumerable<CandModel?>> ComplexSearchCands([FromBody] ComplexSearchRequest request)
+        {
+            var results = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request.FirstSearch, request.SearchWithin);
+
+            if (results.Count == 0)
+                return [];
+
+            var candsIds = results.Select(e => e.Id).ToList();
+            var firstRows = candsIds.GetRange(0, candsIds.Count > 300 ? 300 : candsIds.Count);
+            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, firstRows);
+
+            foreach (var res in results)
+            {
+                var itemToChange = candsList.FirstOrDefault(x => x != null && x.candidateId == res.Id);
+                if (itemToChange != null)
+                    itemToChange.score = res.Score;
+            }
+
+            return candsList.OrderByDescending(x => x?.score).ToList();
+        }
+
+        [HttpPost]
         [Route("AiSearchCands")]
         public async Task<List<CandModel>> AiSearchCands(searchCandCvModel searchVals)
         {

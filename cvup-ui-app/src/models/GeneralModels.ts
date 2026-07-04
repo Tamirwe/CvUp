@@ -302,3 +302,11 @@ export interface IPositionAnalyzedData {
   lucene_keywords: IPositionLuceneKeywords;
   embedding_text?: string;
 }
+
+export type TermOccur = "Must" | "Should";
+
+export interface IComplexSearchTerm {
+  value: string;
+  occur: TermOccur;
+  matchType: "Keyword" | "ExactPhrase";
+}

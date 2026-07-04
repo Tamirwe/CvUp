@@ -10,8 +10,9 @@ namespace CandsPositionsLibrary
         Task<List<CandModel?>> GetPosCandsList(int companyId, int positionId);
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
-       
+
         Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId);
         Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId);
+        Task<List<SearchEntry>> ComplexSearchCands(int companyId, List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin);
     }
 }

@@ -6,6 +6,8 @@ namespace LuceneLibrary
     {
         Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals);
         Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500);
+        Task<List<SearchEntry>> SearchWithin(IEnumerable<int> previousResultIds, searchCandCvModel searchVals);
+        Task<List<SearchEntry>> ComplexSearch(List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin = null);
     }
 
     public class SearchEntry
@@ -16,4 +18,6 @@ namespace LuceneLibrary
         public DateTime Updated { get; set; }
         public int Score { get; set; }
     }
+
+    
 }

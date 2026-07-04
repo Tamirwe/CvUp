@@ -10,6 +10,7 @@ import {
   ISendEmail,
   ISearchModel,
   ICandsReport,
+  IComplexSearchTerm,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -1030,5 +1031,22 @@ export class CandsStore {
       this.matchCandsPosList = res.data;
       this.rootStore.generalStore.backdrop = false;
     });
+  }
+
+  async complexSearchCands(
+    firstSearch: IComplexSearchTerm[],
+    searchWithin?: IComplexSearchTerm[],
+  ) {
+    if (firstSearch.length === 0) return;
+
+    this.rootStore.generalStore.backdrop = true;
+
+    const res = await this.cvsApi.complexSearchCands(firstSearch, searchWithin);
+
+    runInAction(() => {
+      this.allCandsList = res.data;
+    });
+
+    this.rootStore.generalStore.backdrop = false;
   }
 }

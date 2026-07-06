@@ -46,20 +46,63 @@ namespace OpenAiLibrary.AnalyzeCv
                 string textCv = StringMethods.RemovePunctuationAndNormelizeHebrew(cvText, cvLanguage);
 
                 var messages = new List<ChatMessage>
-                    {
-                        new SystemChatMessage(Prompt),
-                        new UserChatMessage(textCv)
-                    };
+        {
+            new SystemChatMessage(Prompt),
+            new UserChatMessage(textCv)
+        };
 
                 var chatOptions = new ChatCompletionOptions
                 {
                     Temperature = 0.2f,
-                    ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
+                    ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat(),
+                    MaxOutputTokenCount = 2000
                 };
 
-                var completion = await ChatClient.CompleteChatAsync(messages, chatOptions);
+                ChatCompletion? completion = null;
 
-                json = completion.Value.Content[0].Text;
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60)))
+                {
+                    try
+                    {
+                        completion = await ChatClient.CompleteChatAsync(messages, chatOptions, cts.Token);
+                    }
+                    catch (OperationCanceledException) when (cts.IsCancellationRequested)
+                    {
+                        Console.WriteLine($"CV {cvId}: generation timed out (possible repetition loop) — retrying once with higher temperature");
+
+                        // Retry once with a different temperature to break a possible repetition loop.
+                        var retryOptions = new ChatCompletionOptions
+                        {
+                            Temperature = 0.5f,
+                            ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat(),
+                            MaxOutputTokenCount = 2000
+                        };
+
+                        using var retryCts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                        try
+                        {
+                            completion = await ChatClient.CompleteChatAsync(messages, retryOptions, retryCts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Console.WriteLine($"CV {cvId}: retry also timed out — giving up on this CV");
+                            return null;
+                        }
+                    }
+                }
+
+                if (completion == null)
+                {
+                    return null;
+                }
+
+                if (completion.FinishReason == ChatFinishReason.Length)
+                {
+                    Console.WriteLine($"CV {cvId}: completion truncated at max tokens — discarding result");
+                    return null;
+                }
+
+                json = completion.Content[0].Text;
 
                 AnalyzedCvModel AnalyzedCv = ParseResult(json);
 
@@ -85,17 +128,21 @@ namespace OpenAiLibrary.AnalyzeCv
                 }
 
                 return AnalyzedCv;
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  problem: {ex.Message}");
-                Console.WriteLine($" json {json[..Math.Min(200, json.Length)]}");
-                //throw ex;
+                Console.WriteLine($"CV {cvId} problem: {ex.Message}");
+                if (!string.IsNullOrEmpty(json))
+                {
+                    Console.WriteLine($"json: {json[..Math.Min(200, json.Length)]}");
+                }
+                else
+                {
+                    Console.WriteLine("json: (no response received)");
+                }
             }
 
             return null;
-
         }
 
         #region Parse AI Result methods

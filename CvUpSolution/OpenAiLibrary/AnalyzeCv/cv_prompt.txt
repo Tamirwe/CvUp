@@ -24,7 +24,7 @@ If a field is unknown, use null. If a list is empty, use [].
     "work_experience": [
         {
             "company": string | null,
-            "title_raw": string,             // exactly as written in CV, do not modify
+            "title_raw": string,             // "title_raw": string,   // ONLY the job title itself, max ~8 words. Do NOT copy duties, dates, or descriptions that follow it in the CV.
             "title_he": string | null,       // normalized Hebrew, no seniority words
             "title_en": string | null,       // normalized English, no seniority words
             "seniority_he": "סטודנט" | "ג'וניור" | "מיד" | "בכיר" | "מוביל" | "מנהל" | "דירקטור" | "מנהל בכיר" | null,
@@ -55,7 +55,9 @@ Rules:
 6. skills = only hard technical tools and languages (React, C++, SQL, Docker)
 7. summary_he and summary_en are written naturally in each language — not translations of each other
 8. education is an array — a candidate may have multiple degrees
-9. title_raw = copy exactly as it appears in the CV, no changes
+9. title_raw = copy the job title only, exactly as written in the CV (e.g. "מנהל פעילות ופרויקטים").
+   Never include job descriptions, responsibilities, dates, or any text beyond the title itself.
+   If the title is unclear or embedded in a paragraph, extract just the title phrase, not the surrounding text.
 10. male form (זכר) for all Hebrew profession_words and profession_skills
 11. estimate_age Rules:
     1. If a date of birth is explicitly mentioned, calculate the exact age.

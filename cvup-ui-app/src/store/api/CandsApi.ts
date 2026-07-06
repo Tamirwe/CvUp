@@ -34,10 +34,10 @@ export default class CandsApi extends BaseApi {
   }
 
   async AiSearchCands(searchVals: ISearchModel) {
-    return await this.apiWrapper2<ICand[]>(async () => {
-      return await this.http.post(`Cand/AiSearchCands`, searchVals);
-    });
-  }
+  return await this.apiWrapper2<ICand[]>(async () => {
+    return await this.http.post(`Cand/AiSearchCands`, searchVals);
+  });
+}
 
   async getCandsList() {
     return await this.apiWrapper2<ICand[]>(async () => {

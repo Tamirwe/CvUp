@@ -318,6 +318,7 @@ namespace DataModelsLibrary.Models
         public int folderId { get; set; }
         public int positionId { get; set; }
         public int positionTypeId { get; set; }
+        public string? luceneFilter { get; set; } = "";
     }
 
     public class AttachePosCandCvModel

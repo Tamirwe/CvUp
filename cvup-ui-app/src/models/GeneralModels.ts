@@ -252,6 +252,7 @@ export interface ISearchModel {
   star?: boolean;
   advancedValue?: string;
   updated?: Date;
+  luceneFilter?: string;
 }
 
 export interface ICandsReport {

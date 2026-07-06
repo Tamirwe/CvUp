@@ -6,42 +6,46 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { runInAction } from "mobx";
+import { observer } from "mobx-react";
 import { IComplexSearchTerm, TermOccur } from "../../models/GeneralModels";
 import { useStore } from "../../Hooks/useStore";
 
-export const LuceneSearchForm = () => {
-   const { candsStore } = useStore();
-  const [firstMust, setFirstMust] = useState("");
-  const [firstShould, setFirstShould] = useState("");
-  const [withinMust, setWithinMust] = useState("");
-  const [withinShould, setWithinShould] = useState("");
+interface IProps {
+  onClose: () => void;
+}
+
+export const LuceneSearchForm = observer(({ onClose }: IProps) => {
+  const { candsStore } = useStore();
 
   const handleClear = () => {
-    setFirstMust("");
-    setFirstShould("");
-    setWithinMust("");
-    setWithinShould("");
+    runInAction(() => {
+      candsStore.luceneFirstMust = "";
+      candsStore.luceneFirstShould = "";
+      candsStore.luceneWithinMust = "";
+      candsStore.luceneWithinShould = "";
+    });
   };
 
   const handleSearch = () => {
     const firstSearch: IComplexSearchTerm[] = [
-      ...parseTerms(firstMust, "Must"),
-      ...parseTerms(firstShould, "Should"),
+      ...parseTerms(candsStore.luceneFirstMust, "Must"),
+      ...parseTerms(candsStore.luceneFirstShould, "Should"),
     ];
 
     const withinTerms: IComplexSearchTerm[] = [
-      ...parseTerms(withinMust, "Must"),
-      ...parseTerms(withinShould, "Should"),
+      ...parseTerms(candsStore.luceneWithinMust, "Must"),
+      ...parseTerms(candsStore.luceneWithinShould, "Should"),
     ];
 
     const searchWithin = withinTerms.length > 0 ? withinTerms : undefined;
 
     candsStore.complexSearchCands(firstSearch, searchWithin);
+    onClose();
   };
 
   return (
-    <Box>
+    <Box sx={{ direction: "rtl" }}>
       <SectionLabel label="Search" />
       <Stack spacing={1.5} sx={{ mb: 3 }}>
         <TextField
@@ -49,16 +53,18 @@ export const LuceneSearchForm = () => {
           size="small"
           label="Must have — separate by comma"
           placeholder="e.g. React, TypeScript, Node"
-          value={firstMust}
-          onChange={(e) => setFirstMust(e.target.value)}
+          value={candsStore.luceneFirstMust}
+          onChange={(e) => runInAction(() => { candsStore.luceneFirstMust = e.target.value; })}
+          sx={{ direction: "rtl" }}
         />
         <TextField
           fullWidth
           size="small"
           label="Should have — separate by comma"
           placeholder="e.g. AWS, Docker"
-          value={firstShould}
-          onChange={(e) => setFirstShould(e.target.value)}
+          value={candsStore.luceneFirstShould}
+          onChange={(e) => runInAction(() => { candsStore.luceneFirstShould = e.target.value; })}
+          sx={{ direction: "rtl" }}
         />
       </Stack>
 
@@ -69,16 +75,18 @@ export const LuceneSearchForm = () => {
           size="small"
           label="Must have — separate by comma"
           placeholder="e.g. clean rooms, automation"
-          value={withinMust}
-          onChange={(e) => setWithinMust(e.target.value)}
+          value={candsStore.luceneWithinMust}
+          onChange={(e) => runInAction(() => { candsStore.luceneWithinMust = e.target.value; })}
+          sx={{ direction: "rtl" }}
         />
         <TextField
           fullWidth
           size="small"
           label="Should have — separate by comma"
           placeholder="e.g. electronics"
-          value={withinShould}
-          onChange={(e) => setWithinShould(e.target.value)}
+          value={candsStore.luceneWithinShould}
+          onChange={(e) => runInAction(() => { candsStore.luceneWithinShould = e.target.value; })}
+          sx={{ direction: "rtl" }}
         />
       </Stack>
 
@@ -91,14 +99,14 @@ export const LuceneSearchForm = () => {
           color="primary"
           onClick={handleSearch}
           sx={{ px: 4 }}
-          disabled={!firstMust.trim() && !firstShould.trim()}
+          disabled={!candsStore.luceneFirstMust.trim() && !candsStore.luceneFirstShould.trim()}
         >
           Search
         </Button>
       </Stack>
     </Box>
   );
-};
+});
 
 // ─────────────────────────────────────────────
 // Helpers

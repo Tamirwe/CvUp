@@ -50,6 +50,13 @@ export class CandsStore {
   candsReportData?: ICandsReport[];
   lastSearchVals: string = "";
 
+  luceneFirstMust: string = "";
+  luceneFirstShould: string = "";
+  luceneWithinMust: string = "";
+  luceneWithinShould: string = "";
+  aiSearchText: string = "";
+  aiLuceneFilter: string = "";
+
   constructor(
     private rootStore: RootStore,
     private appSettings: IAppSettings,
@@ -351,16 +358,17 @@ export class CandsStore {
   }
 
   async AiSearchCands(searchVals: ISearchModel) {
-    if (searchVals.value) {
-      this.rootStore.generalStore.backdrop = true;
+  if (searchVals.value) {
+    this.rootStore.generalStore.backdrop = true;
 
-      const res = await this.cvsApi.AiSearchCands(searchVals);
-      runInAction(() => {
-        this.aiCandsResults = res.data;
-      });
-      this.rootStore.generalStore.backdrop = false;
-    }
+    const res = await this.cvsApi.AiSearchCands(searchVals);
+    runInAction(() => {
+      this.allCandsList = res.data;
+    });
+
+    this.rootStore.generalStore.backdrop = false;
   }
+}
 
   async searchPositionCands(searchVals: ISearchModel) {
     const searchKeywords = searchVals.value.trim();

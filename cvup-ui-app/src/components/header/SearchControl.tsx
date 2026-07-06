@@ -15,7 +15,7 @@ import { ISearchModel } from "../../models/GeneralModels";
 import { SortByEnum } from "../../models/GeneralEnums";
 import { translate } from "../../utils/GeneralUtils";
 import { useStore } from "../../Hooks/useStore";
-import { LuceneSearchFormDialog } from "../complexSearchForm/LuceneSearchFormDialog";
+import { ComplexSearchFormDialog } from "../complexSearchForm/ComplexSearchFormDialog";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -246,79 +246,11 @@ export const SearchControl = ({
               />
             </IconWrapper>
           )}
-          {/* {shoeAdvancedIcon && (
-            <IconWrapper sx={{ padding: "0 4px" }}>
-              {showAdvancedSearch ? (
-                <MdKeyboardArrowUp
-                  onClick={() => {
-                    setShowAdvancedSearch(false);
-                    onShowAdvanced && onShowAdvanced(false);
-
-                    if (searchVals.advancedValue) {
-                      setSearchVals((prevState) => ({
-                        ...prevState,
-                        advancedValue: "",
-                        exact: false,
-                      }));
-                    }
-                  }}
-                />
-              ) : (
-                <MdKeyboardArrowDown
-                  onClick={() => {
-                    setShowAdvancedSearch(true);
-                    onShowAdvanced && onShowAdvanced(false);
-                  }}
-                />
-              )}
-            </IconWrapper>
-          )} */}
+       
+       
         </Search>
-        {/* <ToggleButton
-          sx={{
-            direction: "ltr",
-            "&.MuiButtonBase-root": {
-              padding: "7px 5px",
-              fontSize: "0.8rem",
-            },
-          }}
-          value="check"
-          color="primary"
-          selected={false}
-          onChange={async (event) => {
-            const transList: string[] = [];
-
-            let advEn = "";
-
-            if (searchVals.value) {
-              transList.push(searchVals.value);
-
-              //const valEn = await translate(searchVals.value);
-
-              if (searchVals.advancedValue) {
-                transList.push(searchVals.advancedValue);
-
-                //advEn = await translate(searchVals.advancedValue);
-              }
-
-              const res = await generalStore.translateMultiLines(
-                transList,
-                "en"
-              );
-
-              if (res.length) {
-                setSearchVals((prevState) => ({
-                  ...prevState,
-                  value: res[0],
-                  advancedValue: res.length === 2 ? res[1] : "",
-                }));
-              }
-              
-            }
-          }}
-        >
-          <MdOutlineTranslate />
-        </ToggleButton> */}
+     
+     
          {showAI && (
           <ToggleButton
             sx={{
@@ -474,7 +406,7 @@ export const SearchControl = ({
         </Stack>
       )}*/}
     </Stack>
-    <LuceneSearchFormDialog isOpen={seDialogOpen} onClose={() => setSeDialogOpen(false)} />
+    <ComplexSearchFormDialog isOpen={seDialogOpen} onClose={() => setSeDialogOpen(false)} />
     </>
   );
 };

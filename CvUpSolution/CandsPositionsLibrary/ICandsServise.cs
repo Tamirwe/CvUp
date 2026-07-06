@@ -26,6 +26,7 @@ namespace CandsPositionsLibrary
         Task RemovePosStage(CandPosStageTypeUpdateModel posStatus);
         Task<List<company_cvs_email>> GetCompaniesEmails();
         Task<List<SearchEntry>> SearchCands(int companyId, searchCandCvModel searchVals);
+        Task<List<SearchEntry>> SearchForAiFilter( searchCandCvModel searchVals);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId);
         Task SendEmail(SendEmailModel emailData, UserModel? user);

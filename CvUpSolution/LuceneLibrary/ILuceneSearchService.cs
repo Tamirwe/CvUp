@@ -5,6 +5,7 @@ namespace LuceneLibrary
     public interface ILuceneSearchService
     {
         Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals);
+        Task<List<SearchEntry>> SearchForAiFilter(searchCandCvModel searchVals);
         Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500);
         Task<List<SearchEntry>> SearchWithin(IEnumerable<int> previousResultIds, searchCandCvModel searchVals);
         Task<List<SearchEntry>> ComplexSearch(List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin = null);

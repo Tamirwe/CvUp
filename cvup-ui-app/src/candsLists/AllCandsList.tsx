@@ -45,13 +45,13 @@ export const AllCandsList = observer(() => {
         <SearchControl
           onSearch={handleSearch}
           onShowAdvanced={() => setCandsAdvancedOpen(!candsAdvancedOpen)}
-          shoeAdvancedIcon={true}
+          shoeAdvancedIcon={false}
           records={candsStore.allCandsList && candsStore.allCandsList.length}
           showSort={true}
           onSort={sortList}
           showRefreshList={true}
           extSearch={candsStore.extSearch}
-          showAI={true}
+          showAI={false}
           onAI={handleAI}
         />
       </Box>

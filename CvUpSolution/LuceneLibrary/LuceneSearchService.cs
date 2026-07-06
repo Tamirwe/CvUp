@@ -131,6 +131,46 @@ namespace LuceneLibrary
             return results;
         }
 
+        public async Task<List<SearchEntry>> SearchForAiFilter(searchCandCvModel searchVals)
+        {
+            // luceneFilter terms are MUST
+            var mustTerms = (searchVals.luceneFilter ?? "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => new ComplexSearchTerm
+                {
+                    Value = s,
+                    Occur = TermOccur.Must,
+                    MatchType = s.Contains(' ') ? TermMatchType.ExactPhrase : TermMatchType.Keyword,
+                })
+                .ToList();
+
+            // value terms are SHOULD
+            var shouldTerms = (searchVals.value ?? "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => new ComplexSearchTerm
+                {
+                    Value = s,
+                    Occur = TermOccur.Should,
+                    MatchType = TermMatchType.Keyword,
+                })
+                .ToList();
+
+            // If no must terms — run should-only as first search with no filter
+            if (mustTerms.Count == 0)
+                return shouldTerms.Count > 0
+                    ? await RunGroupSearch(shouldTerms, restrictToIds: null)
+                    : [];
+
+            // Must terms first, then narrow with should terms if any
+            var results = await RunGroupSearch(mustTerms, restrictToIds: null);
+
+            if (results.Count == 0 || shouldTerms.Count == 0)
+                return results;
+
+            return await RunGroupSearch(shouldTerms, results.Select(r => r.Id).ToHashSet());
+        }
         // ─────────────────────────────────────────────
         // General search (exact or fuzzy)
         // ─────────────────────────────────────────────

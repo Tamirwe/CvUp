@@ -132,7 +132,7 @@ namespace CvUpAPI.Controllers
         [Route("AiSearchCands")]
         public async Task<List<CandModel>> AiSearchCands(searchCandCvModel searchVals)
         {
-            var luceneResults = await _candsService.SearchCands(Globals.CompanyId, searchVals);
+            var luceneResults = await _candsService.SearchForAiFilter(searchVals);
             var candidateIds = luceneResults.Select(e => e.Id).ToList();
             var aiResults = await _aiSearchCvsService.SearchCvs(searchVals, candidateIds, limit: 10);
             var candsIds = aiResults.Select(e => e.candidateId).ToList();

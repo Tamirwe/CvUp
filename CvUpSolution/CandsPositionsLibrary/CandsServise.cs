@@ -206,6 +206,11 @@ namespace CandsPositionsLibrary
             return await _luceneSearchService.Search(companyId, searchVals);
         }
 
+        public async Task<List<SearchEntry>> SearchForAiFilter( searchCandCvModel searchVals)
+        {
+            return await _luceneSearchService.SearchForAiFilter( searchVals);
+        }
+
         public async Task UpdateCvsAsciiSum(int companyId)
         {
             await _candsCvsQueries.UpdateCvsAsciiSum(companyId);

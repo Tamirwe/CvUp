@@ -56,7 +56,7 @@ namespace DataModelsLibrary.Queries
                     WHERE cnd.is_cv_analyzed = false
                     AND cnd.is_black_list = false
                     ORDER BY ctx.candidate_id DESC
-                    LIMIT 500";
+                    LIMIT 1000";
 
             return await dbContext.candLastCv.FromSqlRaw(sql).ToListAsync();
         }

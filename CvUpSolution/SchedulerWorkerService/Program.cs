@@ -84,27 +84,27 @@ if (isDebugMode)
     builder.Services.AddQuartz(q =>
     {
         ////// --- Job 1: Import Gmail Cvs  ---
-        //var importGmailCvsJobKey = new JobKey("importGmailCvs");
+        var importGmailCvsJobKey = new JobKey("importGmailCvs");
 
-        //q.AddJob<ImportGmailCvsJob>(opts => opts
-        //    .WithIdentity(importGmailCvsJobKey)
-        //    .WithDescription("Import Cvs from Gmail"));
+        q.AddJob<ImportGmailCvsJob>(opts => opts
+            .WithIdentity(importGmailCvsJobKey)
+            .WithDescription("Import Cvs from Gmail"));
 
-        //q.AddTrigger(opts => opts
-        //    .ForJob(importGmailCvsJobKey)
-        //    .WithIdentity("ImportGmailCvs").StartNow());
+        q.AddTrigger(opts => opts
+            .ForJob(importGmailCvsJobKey)
+            .WithIdentity("ImportGmailCvs").StartNow());
 
         //// --- Job 4: AI Analyze New Cvs    ---
-        var aiAnalyzeNewCvs = new JobKey("AnalyzeAndIndexNewCvsJob");
+        //var aiAnalyzeNewCvs = new JobKey("AnalyzeAndIndexNewCvsJob");
 
-        q.AddJob<AnalyzeAndIndexNewCvsJob>(opts => opts
-           .WithIdentity(aiAnalyzeNewCvs)
-           .WithDescription("AI Analyze New Cvs"));
+        //q.AddJob<AnalyzeAndIndexNewCvsJob>(opts => opts
+        //   .WithIdentity(aiAnalyzeNewCvs)
+        //   .WithDescription("AI Analyze New Cvs"));
 
-        // every 2 minutes, between 8:00 AM and 9:50 PM, every day.
-        q.AddTrigger(opts => opts
-            .ForJob(aiAnalyzeNewCvs)
-            .WithIdentity("AnalyzeAndIndexNewCvsJob").StartNow());
+        //// every 2 minutes, between 8:00 AM and 9:50 PM, every day.
+        //q.AddTrigger(opts => opts
+        //    .ForJob(aiAnalyzeNewCvs)
+        //    .WithIdentity("AnalyzeAndIndexNewCvsJob").StartNow());
 
         ////// --- Job 5: Lucene Index Cvs    ---
         //var luceneIndexCvs = new JobKey("LuceneIndexCvsJob");

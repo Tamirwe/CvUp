@@ -33,7 +33,7 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 var host = builder.Build();
 
 var analyzeCvsService = host.Services.GetRequiredService<IAnalyzeCvsService>();
-int candidateId = 386541;
+int candidateId = 0;
 
 // after method complete you have to call indexing method (await luceneIndexService.IndexAllCandidates();) to index the analyzed CVs for search and retrieval.
 await analyzeCvsService.AnalyzeCandidates(candidateId);

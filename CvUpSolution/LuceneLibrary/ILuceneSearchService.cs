@@ -11,14 +11,4 @@ namespace LuceneLibrary
         Task<List<SearchEntry>> ComplexSearch(List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin = null);
     }
 
-    public class SearchEntry
-    {
-        public int Id { get; set; }
-        public string CV { get; set; } = string.Empty;
-        public long UpdatedTs { get; set; }
-        public DateTime Updated { get; set; }
-        public int Score { get; set; }
-    }
-
-    
 }

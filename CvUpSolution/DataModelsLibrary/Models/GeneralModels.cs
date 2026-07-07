@@ -118,4 +118,13 @@ namespace DataModelsLibrary.Models
         public int? MinYearsExperience { get; set; }
         public int? MaxYearsExperience { get; set; }
     }
+
+    public class SearchEntry
+    {
+        public int Id { get; set; }
+        public string CV { get; set; } = string.Empty;
+        public long UpdatedTs { get; set; }
+        public DateTime Updated { get; set; }
+        public int Score { get; set; }
+    }
 }

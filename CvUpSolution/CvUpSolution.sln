@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerWorkerService", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiLibrary", "AiLibrary\AiLibrary.csproj", "{560AB8CD-40F2-4FC0-AE12-F1029FD748DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgVectorConsoleApp", "PgVectorConsoleApp\PgVectorConsoleApp.csproj", "{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiConsoleApp", "AiConsoleApp\AiConsoleApp.csproj", "{80CBE411-1FEA-4DB7-A9B5-3C43EE7541FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueLibrary", "QueueLibrary\QueueLibrary.csproj", "{BBC4E1E3-CD19-499B-B95B-8CB831049191}"
 EndProject

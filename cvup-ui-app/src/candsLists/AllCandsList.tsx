@@ -53,6 +53,7 @@ export const AllCandsList = observer(() => {
           extSearch={candsStore.extSearch}
           showAI={false}
           onAI={handleAI}
+          showSE={true}
         />
       </Box>
       <CandsList

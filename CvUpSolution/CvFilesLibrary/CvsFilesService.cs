@@ -32,22 +32,14 @@ namespace CvFilesLibrary
             return new CvFileDetailsModel { cvFilePath = path, cvFileType = fileType, fileName= fileName };
         }
 
-        public  MemoryStream AddPdfLogo(int companyId, string cvKey )
+        public MemoryStream AddPdfLogo(int companyId, string cvKey)
         {
             CvFileDetailsModel cvFileDetails = GetCvFileDetails(cvKey);
 
-            //using (MemoryStream memoryStream = new MemoryStream())
-            //{
-            //    await emailRequest.Attachment.CopyToAsync(memoryStream);
-            //    builder.Attachments.Add(emailRequest.Attachment.FileName, memoryStream.ToArray());
-            //}
-
-            //Create a PdfDocument instance
             PdfDocument pdf;
 
             if (cvFileDetails.cvFileType == ".pdf")
             {
-                //pdf.LoadFromStream(stream);
                 pdf = new PdfDocument();
                 pdf.LoadFromFile(cvFileDetails.cvFilePath);
             }
@@ -58,44 +50,30 @@ namespace CvFilesLibrary
                 document.SaveToFile(stream, Spire.Doc.FileFormat.PDF);
                 stream.Seek(0, SeekOrigin.Begin);
                 pdf = new PdfDocument(stream);
+
+                // Remove Spire's evaluation notice page (appended as the last page)
+                const int evalPageIndex = 3; // 0-based -> "page 4"
+                if (pdf.Pages.Count > evalPageIndex)
+                {
+                    pdf.Pages.RemoveAt(evalPageIndex);
+                }
             }
 
-            //Get the first page in the PDF document
             PdfPageBase page = pdf.Pages[0];
 
-            //Load an image
             PdfImage image = PdfImage.FromFile($"{_filesRootFolder}\\_{companyId}\\logos\\logoForCv.png");
 
-            //Specify the width and height of the image area on the page
             float width = image.Width * 0.50f;
             float height = image.Height * 0.50f;
-
-            //Specify the X and Y coordinates to start drawing the image
             float x = 5f;
             float y = 5f;
 
-            //Draw the image at a specified location on the page
             page.Canvas.DrawImage(image, x, y, width, height);
 
             var pdfStream = pdf.SaveToStream(FileFormat.PDF);
             var memoryPdfStream = pdfStream.Cast<MemoryStream>().First();
             memoryPdfStream.Seek(0, SeekOrigin.Begin);
             return memoryPdfStream;
-
-
-
-            /*** FFU  (for future use)****/
-            //Save the result document
-            //pdf.SaveToFile("C:\\GitHub\\CvUp\\CvUpSolution\\CvUpAPI\\Images\\AddImage.pdf", FileFormat.PDF);
-
-            /***  Delete images ****/
-            //var pageImages = page.ExtractImages();
-
-            //foreach (var item in pageImages)
-            //{
-            //    page.DeleteImage(item);
-            //}
-            /********************/
         }
 
         public async Task ImportNewCvsExternalDisk(int companyId, string sourceFolder)

@@ -106,7 +106,7 @@ export const SearchControl = ({
   extSearch,
   showAI = false,
   onAI,
-  showSE = true,
+  showSE = false,
 }: IProps) => {
   const { generalStore } = useStore();
 

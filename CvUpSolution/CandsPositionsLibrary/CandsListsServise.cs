@@ -49,6 +49,20 @@ namespace CandsPositionsLibrary
             return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
         }
 
+        public async Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId)
+        {
+            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+
+            if (analyzed == null)
+            {
+                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
+                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
+                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
+            }
+
+            return analyzed;
+        }
+
         public async Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId)
         {
             var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);

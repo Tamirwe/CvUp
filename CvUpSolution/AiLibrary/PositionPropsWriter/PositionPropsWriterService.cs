@@ -6,10 +6,12 @@ namespace AiLibrary.PositionPropsWriter
     public class PositionPropsWriterService : IPositionPropsWriterService
     {
         private readonly IOpenAiPositionPropsWriterService _positionWriterOpenAi;
+        private readonly IOpenAiGetPositionSearchTermsService _positionSearchTermsOpenAi;
 
-        public PositionPropsWriterService(IOpenAiPositionPropsWriterService positionWriterOpenAi)
+        public PositionPropsWriterService(IOpenAiPositionPropsWriterService positionWriterOpenAi, IOpenAiGetPositionSearchTermsService positionSearchTermsOpenAi)
         {
             _positionWriterOpenAi = positionWriterOpenAi;
+            _positionSearchTermsOpenAi = positionSearchTermsOpenAi;
         }
 
         public Task<PositionContentModel?> PositionRewriteDescrRequirements(PositionModel position) =>
@@ -17,6 +19,9 @@ namespace AiLibrary.PositionPropsWriter
 
         public Task<string?> PositionAdWriterAsync(PositionModel position) =>
             _positionWriterOpenAi.OpenAiPositionAdWriter(position.name, position.requirements, position.descr);
+
+        public Task<PositionSearchTermsModel?> GetPositionSearchTerms(string title, string descr, string requirements) =>
+            _positionSearchTermsOpenAi.GetPositionSearchTerms(title, descr, requirements);
 
     }
 }

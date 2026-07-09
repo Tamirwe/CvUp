@@ -38,6 +38,9 @@
     <None Update="PositionPropsWriter\position_requirements_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="PositionPropsWriter\position_search_terms_prompt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -49,6 +49,7 @@ namespace CvUpAPI.Startup
             services.AddTransient<IOpenAiSearchCvsService, OpenAiSearchCvsService>();
             services.AddTransient<ISearchCvsService, SearchCvsService>();
             services.AddTransient<IOpenAiPositionPropsWriterService, OpenAiPositionPropsWriterService>();
+            services.AddTransient<IOpenAiGetPositionSearchTermsService, OpenAiGetPositionSearchTermsService>();
             services.AddTransient<IPositionPropsWriterService, PositionPropsWriterService>();
 
             return services;

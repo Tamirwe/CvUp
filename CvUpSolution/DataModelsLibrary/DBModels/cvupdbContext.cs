@@ -71,6 +71,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<search> searches { get; set; }
 
+    public virtual DbSet<search_term> search_terms { get; set; }
+
     public virtual DbSet<sent_email> sent_emails { get; set; }
 
     public virtual DbSet<user> users { get; set; }
@@ -606,6 +608,25 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.company_id)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("searches_company_id_companies_id");
+        });
+
+        modelBuilder.Entity<search_term>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("search_terms_pkey");
+
+            entity.HasIndex(e => e.position_id, "uq_search_terms_position").IsUnique();
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.must_have).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.must_have_in_result).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.should_have).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.should_have_in_result).HasDefaultValueSql("'{}'::text[]");
+            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
+
+            entity.HasOne(d => d.position).WithOne(p => p.search_term)
+                .HasForeignKey<search_term>(d => d.position_id)
+                .HasConstraintName("fk_search_terms_position");
         });
 
         modelBuilder.Entity<sent_email>(entity =>

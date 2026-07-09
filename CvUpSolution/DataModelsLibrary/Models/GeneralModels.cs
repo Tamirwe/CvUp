@@ -84,7 +84,7 @@ namespace DataModelsLibrary.Models
         public int? cvs_count { get; set; }
     }
 
-   
+
 
     public class AiSearchResultModel
     {
@@ -127,4 +127,11 @@ namespace DataModelsLibrary.Models
         public DateTime Updated { get; set; }
         public int Score { get; set; }
     }
+
+    public class PositionSearchTermsModel
+    {
+        public PositionLuceneKeywordsModel LuceneKeywords { get; set; } = new();
+        public string? SearchPhrase { get; set; }
+    }
+
 }

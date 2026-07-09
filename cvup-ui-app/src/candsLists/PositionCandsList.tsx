@@ -50,6 +50,8 @@ export const PositionCandsList = observer(() => {
               showSort={true}
               onSort={sortList}
               showRefreshList={true}
+              showSE={true}
+              positionId={positionsStore.selectedPosition?.id || 0} 
             />
             <Button
               variant="outlined"

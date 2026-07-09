@@ -92,6 +92,7 @@ interface IProps {
   showAI?: boolean;
   onAI?: (selected: boolean, searchValue: string) => void;
   showSE?: boolean;
+  positionId?: number;
 }
 
 export const SearchControl = ({
@@ -107,8 +108,8 @@ export const SearchControl = ({
   showAI = false,
   onAI,
   showSE = false,
+  positionId=0
 }: IProps) => {
-  const { generalStore } = useStore();
 
   // const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [searchVals, setSearchVals] = useState<ISearchModel>({
@@ -406,7 +407,7 @@ export const SearchControl = ({
         </Stack>
       )}*/}
     </Stack>
-    <ComplexSearchFormDialog isOpen={seDialogOpen} onClose={() => setSeDialogOpen(false)} />
+    <ComplexSearchFormDialog isOpen={seDialogOpen} positionId={positionId} onClose={() => setSeDialogOpen(false)} />
     </>
   );
 };

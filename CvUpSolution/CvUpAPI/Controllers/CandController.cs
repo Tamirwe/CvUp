@@ -156,6 +156,16 @@ namespace CvUpAPI.Controllers
             return await _candsListsService.GetAnalyzedPosition(positionId);
         }
 
+        [HttpPost]
+        [Route("FindMatchCvsByTerms")]
+        public async Task<List<CandModel?>> FindMatchCvsByTerms([FromBody] List<string> terms)
+        {
+            var luceneResults = await _candsListsService.LuceneFindMatchCvsByTerms(terms);
+            var candsIds = luceneResults.Select(e => e.Id).ToList();
+            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIds);
+            return candsList;
+        }
+
         [HttpGet]
         [Route("FindPositionMatchCvs")]
         public async Task<List<CandModel>> FindPositionMatchCvs(int positionId)

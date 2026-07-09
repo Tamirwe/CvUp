@@ -57,6 +57,19 @@ export class CandsStore {
   aiSearchText: string = "";
   aiLuceneFilter: string = "";
 
+    // New observables (add to store's field declarations)
+analyzedTitle = "";
+analyzedSeniority = "";
+analyzedMinYearsExperience: number | null = null;
+analyzedDegreeRequired = "";
+extendHardRequirements: string[] = [];
+extendSkillsRequired: string[] = [];
+extendSkillsPreferred: string[] = [];
+extendIndustries: string[] = [];
+extendLanguages: string[] = [];
+extendKeywordsEn: string[] = [];
+extendKeywordsHe: string[] = [];
+
   constructor(
     private rootStore: RootStore,
     private appSettings: IAppSettings,
@@ -1057,4 +1070,55 @@ export class CandsStore {
 
     this.rootStore.generalStore.backdrop = false;
   }
+
+
+
+async loadAnalyzedPosition(positionId: number) {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.getAnalyzedPosition(positionId);
+  const data = res.data;
+
+  runInAction(() => {
+    this.analyzedTitle = data?.title ?? "";
+    this.analyzedSeniority = data?.seniority ?? "";
+    this.analyzedMinYearsExperience = data?.minYearsExperience ?? null;
+    this.analyzedDegreeRequired = data?.degreeRequired ?? "";
+    this.extendHardRequirements = data?.hardRequirements ?? [];
+    this.extendSkillsRequired = data?.skillsRequired ?? [];
+    this.extendSkillsPreferred = data?.skillsPreferred ?? [];
+    this.extendIndustries = data?.industries ?? [];
+    this.extendLanguages = (data?.languages ?? [])
+      .map((l: { language?: string }) => l.language)
+      .filter((x: string | undefined): x is string => !!x);
+    this.extendKeywordsEn = data?.luceneKeywords?.en ?? [];
+    this.extendKeywordsHe = data?.luceneKeywords?.he ?? [];
+  });
+
+  this.rootStore.generalStore.backdrop = false;
+}
+
+async extendSearchCands() {
+  const terms = [
+    ...this.extendHardRequirements,
+    ...this.extendSkillsRequired,
+    ...this.extendSkillsPreferred,
+    ...this.extendIndustries,
+    ...this.extendLanguages,
+    ...this.extendKeywordsEn,
+    ...this.extendKeywordsHe,
+  ].filter(Boolean);
+
+  if (terms.length === 0) return;
+
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.findMatchCvsByTerms(terms);
+
+  runInAction(() => {
+    this.allCandsList = res.data;
+  });
+
+  this.rootStore.generalStore.backdrop = false;
+}
 }

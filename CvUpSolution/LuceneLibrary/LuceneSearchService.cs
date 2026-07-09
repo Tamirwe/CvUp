@@ -50,26 +50,21 @@ namespace LuceneLibrary
             _analyzer = new WhitespaceAnalyzer(LUCENE_VERSION);
         }
 
-        // ─────────────────────────────────────────────
-        // Position-based search (keywords from AI analysis)
-        // ─────────────────────────────────────────────
 
-        public async Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 1000)
+        public async Task<List<SearchEntry>> SearchCandidatesByTerms(List<string> terms, int maxResults = 1000)
         {
-            var keywords = analyzed.LuceneKeywords.En
-                .Concat(analyzed.LuceneKeywords.He)
+            var tokens = terms
                 .Where(k => !string.IsNullOrWhiteSpace(k))
+                .Select(k => k.Trim().ToLowerInvariant())
                 .Distinct()
-                .ToList();
+                .ToArray();
 
-            if (keywords.Count == 0)
+            if (tokens.Length == 0)
                 return [];
 
             using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             using var indexReader = DirectoryReader.Open(indexDirectory);
             var indexSearcher = new IndexSearcher(indexReader);
-
-            var tokens = keywords.Select(k => k.Trim().ToLowerInvariant()).ToArray();
 
             var query = new BooleanQuery { MinimumNumberShouldMatch = 1 };
 
@@ -98,6 +93,19 @@ namespace LuceneLibrary
                 })
                 .OrderByDescending(x => x.Score)
                 .ToList();
+        }
+
+        // ─────────────────────────────────────────────
+        // Position-based search (keywords from AI analysis)
+        // ─────────────────────────────────────────────
+
+        public Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 1000)
+        {
+            var keywords = analyzed.LuceneKeywords.En
+                .Concat(analyzed.LuceneKeywords.He)
+                .ToList();
+
+            return SearchCandidatesByTerms(keywords, maxResults);
         }
 
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)

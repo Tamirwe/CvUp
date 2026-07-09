@@ -7,6 +7,7 @@ import {
   ICandsReport,
   ICandPosStageTypeUpdate,
   IComplexSearchTerm,
+  AnalyzedPositionModel,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -294,4 +295,18 @@ export default class CandsApi extends BaseApi {
       });
     });
   }
+
+  async getAnalyzedPosition(positionId: number) {
+  return await this.apiWrapper2<AnalyzedPositionModel | null>(async () => {
+    return await this.http.get(`Cand/GetAnalyzedPosition`, {
+      params: { positionId },
+    });
+  });
+}
+
+async findMatchCvsByTerms(terms: string[]) {
+  return await this.apiWrapper2<ICand[]>(async () => {
+    return await this.http.post(`Cand/FindMatchCvsByTerms`, terms);
+  });
+}
 }

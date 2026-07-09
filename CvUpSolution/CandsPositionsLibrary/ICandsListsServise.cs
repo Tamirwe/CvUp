@@ -13,6 +13,7 @@ namespace CandsPositionsLibrary
 
         Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId);
         Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
+        Task<List<SearchEntry>> LuceneFindMatchCvsByTerms(List<string> terms);
         Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId);
         Task<List<SearchEntry>> ComplexSearchCands(int companyId, List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin);
     }

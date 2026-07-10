@@ -13,10 +13,17 @@ import { useStore } from "../../Hooks/useStore";
 
 interface IProps {
   onClose: () => void;
+  positionId?: number;
 }
 
-export const LuceneSearchForm = observer(({ onClose }: IProps) => {
+export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
   const { candsStore } = useStore();
+
+  const handleGetKeywords = () => {
+    if (positionId && positionId > 0) {
+      candsStore.getPositionSearchTerms(positionId, true);
+    }
+  };
 
   const handleClear = () => {
     runInAction(() => {
@@ -60,6 +67,8 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
         <TextField
           fullWidth
           size="small"
+          multiline
+          rows={3}
           label="Should have — separate by comma"
           placeholder="e.g. AWS, Docker"
           value={candsStore.searchTermsShouldHave}
@@ -107,6 +116,11 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
         <Button variant="text" color="secondary" onClick={handleClear}>
           Clear
         </Button>
+        {positionId !== undefined && positionId > 0 && (
+          <Button variant="outlined" color="primary" onClick={handleGetKeywords} sx={{ mx: 1.5 }}>
+            Get keywords
+          </Button>
+        )}
         <Button
           variant="contained"
           color="primary"

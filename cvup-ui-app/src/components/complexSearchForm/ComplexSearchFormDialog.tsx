@@ -32,7 +32,7 @@ export const ComplexSearchFormDialog = ({ isOpen, onClose, positionId }: IProps)
         </Tabs>
       </Box>
       <DialogContent sx={{ pt: 1 }}>
-        {tabValue === 0 && <LuceneSearchForm onClose={onClose} />}
+        {tabValue === 0 && <LuceneSearchForm onClose={onClose} positionId={positionId} />}
         {tabValue === 1 && <AiSearchForm onClose={onClose} />}
         {tabValue === 2 && positionId && <ExtendSearchForm positionId={positionId} onClose={onClose} />}
       </DialogContent>

@@ -311,10 +311,10 @@ async findMatchCvsByTerms(terms: string[]) {
   });
 }
 
-async getPositionSearchTerms(positionId: number) {
+async getPositionSearchTerms(positionId: number, isReAnalyze: boolean = false) {
   return await this.apiWrapper2<SearchTermsModel | null>(async () => {
     return await this.http.get(`Cand/GetPositionSearchTerms`, {
-      params: { positionId },
+      params: { positionId, isReAnalyze },
     });
   });
 }

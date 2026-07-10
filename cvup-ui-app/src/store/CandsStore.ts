@@ -1101,10 +1101,21 @@ async loadAnalyzedPosition(positionId: number) {
   this.rootStore.generalStore.backdrop = false;
 }
 
-async getPositionSearchTerms(positionId: number) {
+async getPositionSearchTerms(positionId: number, isReAnalyze: boolean = false) {
+  if (this.searchTerms?.positionId !== positionId) {
+    runInAction(() => {
+      this.searchTerms = null;
+      this.searchTermsMustHave = "";
+      this.searchTermsShouldHave = "";
+      this.searchTermsMustHaveInResult = "";
+      this.searchTermsShouldHaveInResult = "";
+      this.searchTermsAiSearchPhrase = "";
+    });
+  }
+
   this.rootStore.generalStore.backdrop = true;
 
-  const res = await this.cvsApi.getPositionSearchTerms(positionId);
+  const res = await this.cvsApi.getPositionSearchTerms(positionId, isReAnalyze);
   const data = res.data;
 
   runInAction(() => {

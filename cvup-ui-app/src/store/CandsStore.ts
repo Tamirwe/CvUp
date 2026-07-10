@@ -51,10 +51,6 @@ export class CandsStore {
   candsReportData?: ICandsReport[];
   lastSearchVals: string = "";
 
-  luceneFirstMust: string = "";
-  luceneFirstShould: string = "";
-  luceneWithinMust: string = "";
-  luceneWithinShould: string = "";
   aiSearchText: string = "";
   aiLuceneFilter: string = "";
 
@@ -71,6 +67,11 @@ extendLanguages: string[] = [];
 extendKeywordsEn: string[] = [];
 extendKeywordsHe: string[] = [];
 searchTerms: SearchTermsModel | null = null;
+searchTermsMustHave = "";
+searchTermsShouldHave = "";
+searchTermsMustHaveInResult = "";
+searchTermsShouldHaveInResult = "";
+searchTermsAiSearchPhrase = "";
 
   constructor(
     private rootStore: RootStore,
@@ -1104,9 +1105,15 @@ async getPositionSearchTerms(positionId: number) {
   this.rootStore.generalStore.backdrop = true;
 
   const res = await this.cvsApi.getPositionSearchTerms(positionId);
+  const data = res.data;
 
   runInAction(() => {
-    this.searchTerms = res.data ?? null;
+    this.searchTerms = data ?? null;
+    this.searchTermsMustHave = (data?.mustHave ?? []).join(", ");
+    this.searchTermsShouldHave = (data?.shouldHave ?? []).join(", ");
+    this.searchTermsMustHaveInResult = (data?.mustHaveInResult ?? []).join(", ");
+    this.searchTermsShouldHaveInResult = (data?.shouldHaveInResult ?? []).join(", ");
+    this.searchTermsAiSearchPhrase = data?.aiSearchPhrase ?? "";
   });
 
   this.rootStore.generalStore.backdrop = false;

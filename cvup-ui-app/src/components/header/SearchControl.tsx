@@ -2,20 +2,14 @@ import { InputBase, Stack, ToggleButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
   MdOutlineClose,
   MdOutlineSearch,
-  MdOutlineTranslate,
   MdRefresh,
   MdSort,
 } from "react-icons/md";
-import useDebounce from "../../Hooks/useDebounce";
 import { ISearchModel } from "../../models/GeneralModels";
-import { SortByEnum } from "../../models/GeneralEnums";
-import { translate } from "../../utils/GeneralUtils";
-import { useStore } from "../../Hooks/useStore";
 import { ComplexSearchFormDialog } from "../complexSearchForm/ComplexSearchFormDialog";
+import { useStore } from "../../Hooks/useStore";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -97,7 +91,6 @@ interface IProps {
 
 export const SearchControl = ({
   onSearch,
-  onShowAdvanced,
   shoeAdvancedIcon = false,
   records,
   onSort,
@@ -110,6 +103,7 @@ export const SearchControl = ({
   showSE = false,
   positionId=0
 }: IProps) => {
+  const { candsStore } = useStore();
 
   // const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [searchVals, setSearchVals] = useState<ISearchModel>({
@@ -122,16 +116,6 @@ export const SearchControl = ({
   const [seDialogOpen, setSeDialogOpen] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isExecSearch, setIsExecSearch] = useState<boolean>(false);
-
-  // const debouncedValue = useDebounce<ISearchModel>(searchVals, 1000);
-
-  // useEffect(() => {
-  //   if (isLoaded) {
-  //     onSearch(searchVals);
-  //   } else {
-  //     setIsLoaded(true);
-  //   }
-  // }, [debouncedValue]);
 
   useEffect(() => {
     if (isExecSearch) {
@@ -151,16 +135,6 @@ export const SearchControl = ({
       ...currentProps,
       value: event.target.value,
     }));
-    //setValue(event.target.value);
-  };
-
-  const handleAdvancedValueChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setSearchVals((currentProps) => ({
-      ...currentProps,
-      advancedValue: event.target.value,
-    }));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -171,6 +145,12 @@ export const SearchControl = ({
 
   const search = () => {
     onSearch(searchVals);
+  };
+
+  const handleGetPositionSearchTerms = () => {
+    if (positionId > 0) {
+      candsStore.getPositionSearchTerms(positionId);
+    }
   };
 
   return (
@@ -209,8 +189,6 @@ export const SearchControl = ({
                 advancedValue: "",
               }));
               setIsExecSearch((current) => !current);
-
-              // onRefreshLists && onRefreshLists();
             }}
           >
             <MdRefresh />
@@ -247,11 +225,7 @@ export const SearchControl = ({
               />
             </IconWrapper>
           )}
-       
-       
         </Search>
-     
-     
          {showAI && (
           <ToggleButton
             sx={{
@@ -307,9 +281,10 @@ export const SearchControl = ({
               event.stopPropagation();
               event.preventDefault();
               setSeDialogOpen(true);
+              handleGetPositionSearchTerms();
             }}
           >
-            SE
+            {positionId > 0 ? "Find matches" : "SE"}
           </ToggleButton>
         )}
         {shoeAdvancedIcon && (
@@ -378,34 +353,7 @@ export const SearchControl = ({
           </div>
         )}
       </Stack>
-      {/*{showAdvancedSearch && (
-        <Stack direction="row" pt={1} alignItems={"center"}>
-          <Search sx={{ direction: "rtl" }}>
-            <SearchIconWrapper>
-              <MdOutlineSearch onClick={search} />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search in results…"
-              value={searchVals.advancedValue}
-              onChange={handleAdvancedValueChange}
-              onKeyDown={handleKeyDown}
-            />
-
-            {searchVals.advancedValue && (
-              <IconWrapper sx={{ padding: "0 4px" }}>
-                <MdOutlineClose
-                  onClick={() => {
-                    setSearchVals((currentProps) => ({
-                      ...currentProps,
-                      advancedValue: "",
-                    }));
-                  }}
-                />
-              </IconWrapper>
-            )}
-          </Search>
-        </Stack>
-      )}*/}
+     
     </Stack>
     <ComplexSearchFormDialog isOpen={seDialogOpen} positionId={positionId} onClose={() => setSeDialogOpen(false)} />
     </>

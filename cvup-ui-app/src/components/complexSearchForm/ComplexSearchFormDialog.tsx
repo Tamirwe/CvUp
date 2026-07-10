@@ -22,7 +22,7 @@ export const ComplexSearchFormDialog = ({ isOpen, onClose, positionId }: IProps)
   return (
     <Dialog open={open} onClose={onClose} keepMounted PaperProps={{ sx: { minHeight: "60vh", width: "50vw" } }}>
       <BootstrapDialogTitle id="dialog-title" onClose={onClose}>
-        CV Search
+        CV's Search
       </BootstrapDialogTitle>
       <Box sx={{ borderBottom: 1, borderColor: "divider", px: 3 }}>
         <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>

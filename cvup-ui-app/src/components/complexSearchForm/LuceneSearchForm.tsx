@@ -20,22 +20,22 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
 
   const handleClear = () => {
     runInAction(() => {
-      candsStore.luceneFirstMust = "";
-      candsStore.luceneFirstShould = "";
-      candsStore.luceneWithinMust = "";
-      candsStore.luceneWithinShould = "";
+      candsStore.searchTermsMustHave = "";
+      candsStore.searchTermsShouldHave = "";
+      candsStore.searchTermsMustHaveInResult = "";
+      candsStore.searchTermsShouldHaveInResult = "";
     });
   };
 
   const handleSearch = () => {
     const firstSearch: IComplexSearchTerm[] = [
-      ...parseTerms(candsStore.luceneFirstMust, "Must"),
-      ...parseTerms(candsStore.luceneFirstShould, "Should"),
+      ...parseTerms(candsStore.searchTermsMustHave, "Must"),
+      ...parseTerms(candsStore.searchTermsShouldHave, "Should"),
     ];
 
     const withinTerms: IComplexSearchTerm[] = [
-      ...parseTerms(candsStore.luceneWithinMust, "Must"),
-      ...parseTerms(candsStore.luceneWithinShould, "Should"),
+      ...parseTerms(candsStore.searchTermsMustHaveInResult, "Must"),
+      ...parseTerms(candsStore.searchTermsShouldHaveInResult, "Should"),
     ];
 
     const searchWithin = withinTerms.length > 0 ? withinTerms : undefined;
@@ -53,8 +53,8 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
           size="small"
           label="Must have — separate by comma"
           placeholder="e.g. React, TypeScript, Node"
-          value={candsStore.luceneFirstMust}
-          onChange={(e) => runInAction(() => { candsStore.luceneFirstMust = e.target.value; })}
+          value={candsStore.searchTermsMustHave}
+          onChange={(e) => runInAction(() => { candsStore.searchTermsMustHave = e.target.value; })}
           sx={{ direction: "rtl" }}
         />
         <TextField
@@ -62,8 +62,8 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
           size="small"
           label="Should have — separate by comma"
           placeholder="e.g. AWS, Docker"
-          value={candsStore.luceneFirstShould}
-          onChange={(e) => runInAction(() => { candsStore.luceneFirstShould = e.target.value; })}
+          value={candsStore.searchTermsShouldHave}
+          onChange={(e) => runInAction(() => { candsStore.searchTermsShouldHave = e.target.value; })}
           sx={{ direction: "rtl" }}
         />
       </Stack>
@@ -75,8 +75,8 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
           size="small"
           label="Must have — separate by comma"
           placeholder="e.g. clean rooms, automation"
-          value={candsStore.luceneWithinMust}
-          onChange={(e) => runInAction(() => { candsStore.luceneWithinMust = e.target.value; })}
+          value={candsStore.searchTermsMustHaveInResult}
+          onChange={(e) => runInAction(() => { candsStore.searchTermsMustHaveInResult = e.target.value; })}
           sx={{ direction: "rtl" }}
         />
         <TextField
@@ -84,11 +84,24 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
           size="small"
           label="Should have — separate by comma"
           placeholder="e.g. electronics"
-          value={candsStore.luceneWithinShould}
-          onChange={(e) => runInAction(() => { candsStore.luceneWithinShould = e.target.value; })}
+          value={candsStore.searchTermsShouldHaveInResult}
+          onChange={(e) => runInAction(() => { candsStore.searchTermsShouldHaveInResult = e.target.value; })}
           sx={{ direction: "rtl" }}
         />
       </Stack>
+
+      <SectionLabel label="AI search within results" />
+      <TextField
+        fullWidth
+        multiline
+        rows={4}
+        label="Describe the candidate you are looking for"
+        placeholder="e.g. Senior C# developer with fintech experience and strong SQL skills..."
+        value={candsStore.searchTermsAiSearchPhrase}
+        onChange={(e) => runInAction(() => { candsStore.searchTermsAiSearchPhrase = e.target.value; })}
+        sx={{ mb: 2.5, direction: "rtl" }}
+        autoFocus
+      />
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Button variant="text" color="secondary" onClick={handleClear}>
@@ -99,7 +112,7 @@ export const LuceneSearchForm = observer(({ onClose }: IProps) => {
           color="primary"
           onClick={handleSearch}
           sx={{ px: 4 }}
-          disabled={!candsStore.luceneFirstMust.trim() && !candsStore.luceneFirstShould.trim()}
+          disabled={!candsStore.searchTermsMustHave.trim() && !candsStore.searchTermsShouldHave.trim()}
         >
           Search
         </Button>

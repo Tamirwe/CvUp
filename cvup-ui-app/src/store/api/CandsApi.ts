@@ -8,6 +8,7 @@ import {
   ICandPosStageTypeUpdate,
   IComplexSearchTerm,
   AnalyzedPositionModel,
+  SearchTermsModel,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
@@ -307,6 +308,14 @@ export default class CandsApi extends BaseApi {
 async findMatchCvsByTerms(terms: string[]) {
   return await this.apiWrapper2<ICand[]>(async () => {
     return await this.http.post(`Cand/FindMatchCvsByTerms`, terms);
+  });
+}
+
+async getPositionSearchTerms(positionId: number) {
+  return await this.apiWrapper2<SearchTermsModel | null>(async () => {
+    return await this.http.get(`Cand/GetPositionSearchTerms`, {
+      params: { positionId },
+    });
   });
 }
 }

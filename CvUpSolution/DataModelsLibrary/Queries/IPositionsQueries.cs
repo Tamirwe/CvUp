@@ -65,5 +65,6 @@ namespace DataModelsLibrary.Queries
         Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding);
         Task<int> GetPositionCompanyId(int positionId);
         Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
+        Task<SearchTermsModel?> GetExistPositionSearchTerms(int positionId, int id);
     }
 }

@@ -335,3 +335,13 @@ export interface AnalyzedPositionModel {
   luceneKeywords: IPositionLuceneKeywordsModel;
   embeddingText?: string;
 }
+
+export interface SearchTermsModel {
+  id: number;
+  positionId: number;
+  mustHave: string[];
+  shouldHave: string[];
+  mustHaveInResult: string[];
+  shouldHaveInResult: string[];
+  aiSearchPhrase?: string;
+}

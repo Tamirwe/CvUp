@@ -11,6 +11,7 @@ import {
   ISearchModel,
   ICandsReport,
   IComplexSearchTerm,
+  SearchTermsModel,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -69,6 +70,7 @@ extendIndustries: string[] = [];
 extendLanguages: string[] = [];
 extendKeywordsEn: string[] = [];
 extendKeywordsHe: string[] = [];
+searchTerms: SearchTermsModel | null = null;
 
   constructor(
     private rootStore: RootStore,
@@ -1093,6 +1095,18 @@ async loadAnalyzedPosition(positionId: number) {
       .filter((x: string | undefined): x is string => !!x);
     this.extendKeywordsEn = data?.luceneKeywords?.en ?? [];
     this.extendKeywordsHe = data?.luceneKeywords?.he ?? [];
+  });
+
+  this.rootStore.generalStore.backdrop = false;
+}
+
+async getPositionSearchTerms(positionId: number) {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.getPositionSearchTerms(positionId);
+
+  runInAction(() => {
+    this.searchTerms = res.data ?? null;
   });
 
   this.rootStore.generalStore.backdrop = false;

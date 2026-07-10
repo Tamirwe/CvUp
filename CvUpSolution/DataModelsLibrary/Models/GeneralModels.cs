@@ -134,4 +134,15 @@ namespace DataModelsLibrary.Models
         public string? SearchPhrase { get; set; }
     }
 
+    public class SearchTermsModel
+    {
+        public int Id { get; set; }
+        public int PositionId { get; set; }
+        public List<string> MustHave { get; set; } = [];
+        public List<string> ShouldHave { get; set; } = [];
+        public List<string> MustHaveInResult { get; set; } = [];
+        public List<string> ShouldHaveInResult { get; set; } = [];
+        public string? AiSearchPhrase { get; set; }
+    }
+
 }

@@ -99,5 +99,10 @@ namespace CandsPositionsLibrary
         {
             return await _luceneSearchService.ComplexSearch(firstSearch, searchWithin);
         }
+
+        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId)
+        {
+            return await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+        }
     }
 }

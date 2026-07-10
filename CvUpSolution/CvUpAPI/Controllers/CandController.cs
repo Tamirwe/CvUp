@@ -156,6 +156,13 @@ namespace CvUpAPI.Controllers
             return await _candsListsService.GetAnalyzedPosition(positionId);
         }
 
+        [HttpGet]
+        [Route("GetPositionSearchTerms")]
+        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId)
+        {
+            return await _candsListsService.GetPositionSearchTerms(positionId);
+        }
+
         [HttpPost]
         [Route("FindMatchCvsByTerms")]
         public async Task<List<CandModel?>> FindMatchCvsByTerms([FromBody] List<string> terms)

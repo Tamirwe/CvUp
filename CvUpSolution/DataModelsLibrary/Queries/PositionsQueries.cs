@@ -1031,6 +1031,26 @@ namespace DataModelsLibrary.Queries
             };
         }
 
+        public async Task<SearchTermsModel?> GetExistPositionSearchTerms(int positionId, int id)
+        {
+            using var dbContext = new cvupdbContext();
+            var row = id != 0
+                ? await dbContext.search_terms.FirstOrDefaultAsync(t => t.id == id)
+                : await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == positionId);
+            if (row == null) return null;
+
+            return new SearchTermsModel
+            {
+                Id = row.id,
+                PositionId = row.position_id,
+                MustHave = row.must_have ?? [],
+                ShouldHave = row.should_have ?? [],
+                MustHaveInResult = row.must_have_in_result ?? [],
+                ShouldHaveInResult = row.should_have_in_result ?? [],
+                AiSearchPhrase = row.ai_search_phrase,
+            };
+        }
+
         public async Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding)
         {
             using var dbContext = new cvupdbContext();

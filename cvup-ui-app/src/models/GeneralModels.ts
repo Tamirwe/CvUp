@@ -312,29 +312,6 @@ export interface IComplexSearchTerm {
   matchType: "Keyword" | "ExactPhrase";
 }
 
-export interface IPositionLanguageModel {
-  language?: string;
-  level?: string;
-}
-
-export interface IPositionLuceneKeywordsModel {
-  en: string[];
-  he: string[];
-}
-
-export interface AnalyzedPositionModel {
-  title?: string;
-  seniority?: string;
-  minYearsExperience?: number;
-  degreeRequired?: string;
-  hardRequirements: string[];
-  skillsRequired: string[];
-  skillsPreferred: string[];
-  industries: string[];
-  languages: IPositionLanguageModel[];
-  luceneKeywords: IPositionLuceneKeywordsModel;
-  embeddingText?: string;
-}
 
 export interface SearchTermsModel {
   id: number;

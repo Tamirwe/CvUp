@@ -67,11 +67,6 @@ namespace CandsPositionsLibrary
             return analyzed;
         }
 
-        public async Task<List<SearchEntry>> LuceneFindMatchCvsByTerms(List<string> terms)
-        {
-            return await _luceneSearchService.SearchCandidatesByTerms(terms, maxResults: 500);
-        }
-
         public async Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId)
         {
             var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);

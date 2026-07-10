@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { LuceneSearchForm } from "./LuceneSearchForm";
 import { AiSearchForm } from "./AiSearchForm";
-import { ExtendSearchForm } from "./ExtendSearchForm";
 
 interface IProps {
   isOpen: boolean;
@@ -28,13 +27,11 @@ export const ComplexSearchFormDialog = ({ isOpen, onClose, positionId }: IProps)
         <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
           <Tab label="Search" />
           <Tab label="AI Search" />
-          {positionId && <Tab label="Extend Search" />}
         </Tabs>
       </Box>
       <DialogContent sx={{ pt: 1 }}>
         {tabValue === 0 && <LuceneSearchForm onClose={onClose} positionId={positionId} />}
         {tabValue === 1 && <AiSearchForm onClose={onClose} />}
-        {tabValue === 2 && positionId && <ExtendSearchForm positionId={positionId} onClose={onClose} />}
       </DialogContent>
     </Dialog>
   );

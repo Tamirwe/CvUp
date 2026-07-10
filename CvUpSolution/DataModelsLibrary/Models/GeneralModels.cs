@@ -130,7 +130,7 @@ namespace DataModelsLibrary.Models
 
     public class PositionSearchTermsModel
     {
-        public PositionLuceneKeywordsModel LuceneKeywords { get; set; } = new();
+        public List<string> LuceneKeywords { get; set; } = [];
         public string? SearchPhrase { get; set; }
     }
 

@@ -1051,6 +1051,31 @@ namespace DataModelsLibrary.Queries
             };
         }
 
+        public async Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms)
+        {
+            using var dbContext = new cvupdbContext();
+
+            var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == positionId);
+
+            if (existing == null)
+            {
+                existing = new search_term
+                {
+                    position_id = positionId,
+                    must_have = [],
+                    must_have_in_result = [],
+                    should_have_in_result = [],
+                };
+                dbContext.search_terms.Add(existing);
+            }
+
+            existing.should_have = searchTerms.LuceneKeywords;
+            existing.ai_search_phrase = searchTerms.SearchPhrase;
+            existing.updated_at = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding)
         {
             using var dbContext = new cvupdbContext();

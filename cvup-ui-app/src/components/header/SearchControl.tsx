@@ -284,7 +284,7 @@ export const SearchControl = ({
               handleGetPositionSearchTerms();
             }}
           >
-            {positionId > 0 ? "Find matches" : "SE"}
+            {positionId > 0 ? "Find Matches" : "SE"}
           </ToggleButton>
         )}
         {shoeAdvancedIcon && (

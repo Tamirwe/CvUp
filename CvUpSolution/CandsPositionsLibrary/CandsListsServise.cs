@@ -1,9 +1,11 @@
+using AiLibrary;
+using AiLibrary.AnalyzePositions;
+using AiLibrary.PositionPropsWriter;
+using AiLibrary.SearchCvs;
+using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using LuceneLibrary;
-using AiLibrary;
-using AiLibrary.AnalyzePositions;
-using AiLibrary.SearchCvs;
 
 namespace CandsPositionsLibrary
 {
@@ -14,14 +16,16 @@ namespace CandsPositionsLibrary
         private ILuceneSearchService _luceneSearchService;
         private ISearchCvsService _searchCvsService;
         private IAnalyzePositionsService _analyzePositionsService;
+        private IPositionPropsWriterService _positionPropsWriterService;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService, IAnalyzePositionsService analyzePositionsService)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService, IAnalyzePositionsService analyzePositionsService, IPositionPropsWriterService positionPropsWriterService)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
             _searchCvsService = searchCvsService;
             _analyzePositionsService = analyzePositionsService;
+            _positionPropsWriterService = positionPropsWriterService;
         }
 
         public async Task<CandModel?> GetPositionCandidate(int companyId, int candId, int positionId)
@@ -100,9 +104,23 @@ namespace CandsPositionsLibrary
             return await _luceneSearchService.ComplexSearch(firstSearch, searchWithin);
         }
 
-        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId)
+        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId ,int companyId = 154)
         {
-            return await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+            var searchTerms = await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+
+            if (searchTerms == null)
+            {
+                var position = await _cvsPositionsQueries.GetPosition(positionId, companyId);
+                var generated = await _positionPropsWriterService.GetAnalyzedPositionSearchTerms(position.name, position.descr, position.requirements);
+
+                if (generated != null)
+                {
+                    await _cvsPositionsQueries.SaveSearchTerms(positionId, generated);
+                    searchTerms = await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+                }
+            }
+
+            return searchTerms;
         }
     }
 }

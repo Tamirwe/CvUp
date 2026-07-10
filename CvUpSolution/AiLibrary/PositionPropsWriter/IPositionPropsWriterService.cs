@@ -6,6 +6,6 @@ namespace AiLibrary.PositionPropsWriter
     {
         Task<PositionContentModel?> PositionRewriteDescrRequirements(PositionModel position);
         Task<string?> PositionAdWriterAsync(PositionModel position);
-        Task<PositionSearchTermsModel?> GetPositionSearchTerms(string title, string descr, string requirements);
+        Task<PositionSearchTermsModel?> GetAnalyzedPositionSearchTerms(string title, string descr, string requirements);
     }
 }

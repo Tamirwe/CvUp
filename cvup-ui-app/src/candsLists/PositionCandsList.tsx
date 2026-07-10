@@ -66,7 +66,7 @@ export const PositionCandsList = observer(() => {
                 }
               }}
             >
-              Find Matches
+              XX
             </Button>
           </Box>
           <CandsList

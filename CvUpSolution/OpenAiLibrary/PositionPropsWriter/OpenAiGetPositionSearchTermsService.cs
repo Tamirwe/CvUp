@@ -23,7 +23,7 @@ namespace OpenAiLibrary.PositionPropsWriter
         private string Prompt =>
             _prompt ??= File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "PositionPropsWriter//position_search_terms_prompt.txt"));
 
-        public async Task<PositionSearchTermsModel?> GetPositionSearchTerms(string title, string descr, string requirements)
+        public async Task<PositionSearchTermsModel?> GetAnalyzedPositionSearchTerms(string title, string descr, string requirements)
         {
             string? json = null;
 
@@ -77,10 +77,11 @@ namespace OpenAiLibrary.PositionPropsWriter
                 json = json[start..(end + 1)];
 
             var obj = JObject.Parse(json);
+            var luceneKeywords = obj["lucene_keywords"]?.ToObject<PositionLuceneKeywordsModel>() ?? new();
 
             return new PositionSearchTermsModel
             {
-                LuceneKeywords = obj["lucene_keywords"]?.ToObject<PositionLuceneKeywordsModel>() ?? new(),
+                LuceneKeywords = luceneKeywords.He.Concat(luceneKeywords.En).ToList(),
                 SearchPhrase = obj.Value<string>("search_phrase"),
             };
         }

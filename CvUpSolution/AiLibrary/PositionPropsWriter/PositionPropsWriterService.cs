@@ -20,8 +20,8 @@ namespace AiLibrary.PositionPropsWriter
         public Task<string?> PositionAdWriterAsync(PositionModel position) =>
             _positionWriterOpenAi.OpenAiPositionAdWriter(position.name, position.requirements, position.descr);
 
-        public Task<PositionSearchTermsModel?> GetPositionSearchTerms(string title, string descr, string requirements) =>
-            _positionSearchTermsOpenAi.GetPositionSearchTerms(title, descr, requirements);
+        public Task<PositionSearchTermsModel?> GetAnalyzedPositionSearchTerms(string title, string descr, string requirements) =>
+            _positionSearchTermsOpenAi.GetAnalyzedPositionSearchTerms(title, descr, requirements);
 
     }
 }

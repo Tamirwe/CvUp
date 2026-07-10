@@ -66,6 +66,6 @@ namespace DataModelsLibrary.Queries
         Task<int> GetPositionCompanyId(int positionId);
         Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
         Task<SearchTermsModel?> GetExistPositionSearchTerms(int positionId, int id);
-        Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms);
+        Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms, bool isReAnalyze = false);
     }
 }

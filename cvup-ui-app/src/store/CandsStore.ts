@@ -1102,7 +1102,7 @@ async loadAnalyzedPosition(positionId: number) {
 }
 
 async getPositionSearchTerms(positionId: number, isReAnalyze: boolean = false) {
-  if (this.searchTerms?.positionId !== positionId) {
+  if (this.searchTerms?.positionId !== positionId || isReAnalyze) {
     runInAction(() => {
       this.searchTerms = null;
       this.searchTermsMustHave = "";

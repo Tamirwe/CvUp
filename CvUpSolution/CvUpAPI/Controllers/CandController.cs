@@ -158,9 +158,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetPositionSearchTerms")]
-        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId)
+        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false)
         {
-            return await _candsListsService.GetPositionSearchTerms(positionId);
+            return await _candsListsService.GetPositionSearchTerms(positionId, isReAnalyze);
         }
 
         [HttpPost]

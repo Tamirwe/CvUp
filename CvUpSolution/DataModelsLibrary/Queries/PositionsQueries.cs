@@ -1051,25 +1051,27 @@ namespace DataModelsLibrary.Queries
             };
         }
 
-        public async Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms)
+        public async Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms, bool isReAnalyze = false)
         {
             using var dbContext = new cvupdbContext();
 
             var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == positionId);
+            var isNew = existing == null;
 
-            if (existing == null)
+            if (isNew)
             {
-                existing = new search_term
-                {
-                    position_id = positionId,
-                    must_have = [],
-                    must_have_in_result = [],
-                    should_have_in_result = [],
-                };
+                existing = new search_term { position_id = positionId };
                 dbContext.search_terms.Add(existing);
             }
 
-            existing.should_have = searchTerms.LuceneKeywords;
+            if (isNew || isReAnalyze)
+            {
+                existing!.must_have = [];
+                existing.must_have_in_result = [];
+                existing.should_have_in_result = [];
+            }
+
+            existing!.should_have = searchTerms.LuceneKeywords;
             existing.ai_search_phrase = searchTerms.SearchPhrase;
             existing.updated_at = DateTime.UtcNow;
 

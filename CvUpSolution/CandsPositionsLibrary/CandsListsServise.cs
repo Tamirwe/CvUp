@@ -104,9 +104,9 @@ namespace CandsPositionsLibrary
             return await _luceneSearchService.ComplexSearch(firstSearch, searchWithin);
         }
 
-        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId ,int companyId = 154)
+        public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154)
         {
-            var searchTerms = await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+            var searchTerms = isReAnalyze ? null : await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
 
             if (searchTerms == null)
             {
@@ -115,8 +115,12 @@ namespace CandsPositionsLibrary
 
                 if (generated != null)
                 {
-                    await _cvsPositionsQueries.SaveSearchTerms(positionId, generated);
-                    searchTerms = await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);
+                    searchTerms = new SearchTermsModel
+                    {
+                        PositionId = positionId,
+                        ShouldHave = generated.LuceneKeywords,
+                        AiSearchPhrase = generated.SearchPhrase,
+                    };
                 }
             }
 

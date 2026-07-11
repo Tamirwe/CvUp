@@ -41,7 +41,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      <SectionLabel label="Search" />
+      <SectionLabel label="Index Search" />
       <Stack spacing={1.5} sx={{ mb: 3 }}>
         <TextField
           fullWidth
@@ -65,7 +65,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
         />
       </Stack>
 
-      <SectionLabel label="Search within results" />
+      <SectionLabel label="Index Search within results" />
       <Stack spacing={1.5} sx={{ mb: 3 }}>
         <TextField
           fullWidth

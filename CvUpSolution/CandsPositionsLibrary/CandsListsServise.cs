@@ -78,6 +78,11 @@ namespace CandsPositionsLibrary
             return await _luceneSearchService.ComplexSearch(searchTerms);
         }
 
+        public async Task SaveSearchTerms(SearchTermsModel searchTerms)
+        {
+            await _cvsPositionsQueries.SaveSearchTerms(searchTerms);
+        }
+
         public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154)
         {
             var searchTerms = isReAnalyze ? null : await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);

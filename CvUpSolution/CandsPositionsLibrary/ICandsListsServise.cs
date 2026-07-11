@@ -15,5 +15,6 @@ namespace CandsPositionsLibrary
         Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
         Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154);
         Task<List<SearchEntry>> ComplexSearchCands(int companyId, SearchTermsModel searchTerms);
+        Task SaveSearchTerms(SearchTermsModel searchTerms);
     }
 }

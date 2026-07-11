@@ -142,6 +142,8 @@ namespace CvUpAPI.Controllers
                     itemToChange.score = res.Score;
             }
 
+            await _candsListsService.SaveSearchTerms(request);
+
             return candsList.OrderByDescending(x => x?.score).ToList();
         }
 

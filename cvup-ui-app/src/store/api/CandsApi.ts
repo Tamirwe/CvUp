@@ -283,9 +283,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async complexSearchCands(searchTerms: SearchTermsModel) {
+  async searchCandsByUiSearchForm(searchTerms: SearchTermsModel) {
     return await this.apiWrapper2<ICand[]>(async () => {
-      return await this.http.post(`Cand/ComplexSearchCands`, searchTerms);
+      return await this.http.post(`Cand/SearchCandsByUiSearchForm`, searchTerms);
     });
   }
 

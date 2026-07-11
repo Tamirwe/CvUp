@@ -34,7 +34,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
   };
 
   const handleSearch = () => {
-    candsStore.complexSearchCands();
+    candsStore.searchCandsByUiSearchForm();
     onClose();
   };
 

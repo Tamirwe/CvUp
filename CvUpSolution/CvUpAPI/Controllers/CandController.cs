@@ -106,8 +106,8 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpPost]
-        [Route("ComplexSearchCands")]
-        public async Task<IEnumerable<CandModel?>> ComplexSearchCands([FromBody] SearchTermsModel request)
+        [Route("SearchCandsByUiSearchForm")]
+        public async Task<IEnumerable<CandModel?>> SearchCandsByUiSearchForm([FromBody] SearchTermsModel request)
         {
             var results = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request);
 

@@ -1044,7 +1044,7 @@ searchTermsAiSearchPhrase = "";
     });
   }
 
-  async complexSearchCands() {
+  async searchCandsByUiSearchForm() {
     const splitTerms = (raw: string) =>
       raw
         .split(",")
@@ -1064,7 +1064,7 @@ searchTermsAiSearchPhrase = "";
 
     this.rootStore.generalStore.backdrop = true;
 
-    const res = await this.cvsApi.complexSearchCands(searchTerms);
+    const res = await this.cvsApi.searchCandsByUiSearchForm(searchTerms);
 
     runInAction(() => {
       this.allCandsList = res.data;

@@ -10,7 +10,6 @@ import {
   ISendEmail,
   ISearchModel,
   ICandsReport,
-  IComplexSearchTerm,
   SearchTermsModel,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
@@ -1045,15 +1044,27 @@ searchTermsAiSearchPhrase = "";
     });
   }
 
-  async complexSearchCands(
-    firstSearch: IComplexSearchTerm[],
-    searchWithin?: IComplexSearchTerm[],
-  ) {
-    if (firstSearch.length === 0) return;
+  async complexSearchCands() {
+    const splitTerms = (raw: string) =>
+      raw
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+    const searchTerms: SearchTermsModel = {
+      id: this.searchTerms?.id ?? 0,
+      positionId: this.searchTerms?.positionId ?? 0,
+      mustHave: splitTerms(this.searchTermsMustHave),
+      shouldHave: splitTerms(this.searchTermsShouldHave),
+      mustHaveInResult: splitTerms(this.searchTermsMustHaveInResult),
+      shouldHaveInResult: splitTerms(this.searchTermsShouldHaveInResult),
+    };
+
+    if (searchTerms.mustHave.length === 0 && searchTerms.shouldHave.length === 0) return;
 
     this.rootStore.generalStore.backdrop = true;
 
-    const res = await this.cvsApi.complexSearchCands(firstSearch, searchWithin);
+    const res = await this.cvsApi.complexSearchCands(searchTerms);
 
     runInAction(() => {
       this.allCandsList = res.data;

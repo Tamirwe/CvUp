@@ -94,9 +94,9 @@ namespace CandsPositionsLibrary
             return await _luceneSearchService.SearchCandidatesByPosition(analyzed, maxResults: 500);
         }
 
-        public async Task<List<SearchEntry>> ComplexSearchCands(int companyId, List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin)
+        public async Task<List<SearchEntry>> ComplexSearchCands(int companyId, SearchTermsModel searchTerms)
         {
-            return await _luceneSearchService.ComplexSearch(firstSearch, searchWithin);
+            return await _luceneSearchService.ComplexSearch(searchTerms);
         }
 
         public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154)

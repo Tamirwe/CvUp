@@ -10,6 +10,7 @@ namespace LuceneLibrary
         Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 500);
         Task<List<SearchEntry>> SearchWithin(IEnumerable<int> previousResultIds, searchCandCvModel searchVals);
         Task<List<SearchEntry>> ComplexSearch(List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin = null);
+        Task<List<SearchEntry>> ComplexSearch(SearchTermsModel searchTerms);
     }
 
 }

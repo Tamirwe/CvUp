@@ -6,7 +6,6 @@ import {
   ISearchModel,
   ICandsReport,
   ICandPosStageTypeUpdate,
-  IComplexSearchTerm,
   SearchTermsModel,
 } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
@@ -284,15 +283,9 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async complexSearchCands(
-    firstSearch: IComplexSearchTerm[],
-    searchWithin?: IComplexSearchTerm[],
-  ) {
+  async complexSearchCands(searchTerms: SearchTermsModel) {
     return await this.apiWrapper2<ICand[]>(async () => {
-      return await this.http.post(`Cand/ComplexSearchCands`, {
-        firstSearch,
-        searchWithin,
-      });
+      return await this.http.post(`Cand/ComplexSearchCands`, searchTerms);
     });
   }
 

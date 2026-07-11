@@ -391,9 +391,4 @@ namespace DataModelsLibrary.Models
         public TermOccur Occur { get; set; } = TermOccur.Must;
         public TermMatchType MatchType { get; set; } = TermMatchType.Keyword;
     }
-    public class ComplexSearchRequest
-    {
-        public List<ComplexSearchTerm> FirstSearch { get; set; } = [];
-        public List<ComplexSearchTerm>? SearchWithin { get; set; }
-    }
 }

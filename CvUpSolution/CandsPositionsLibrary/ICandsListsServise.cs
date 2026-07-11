@@ -15,6 +15,6 @@ namespace CandsPositionsLibrary
         Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
         Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154);
         Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId);
-        Task<List<SearchEntry>> ComplexSearchCands(int companyId, List<ComplexSearchTerm> firstSearch, List<ComplexSearchTerm>? searchWithin);
+        Task<List<SearchEntry>> ComplexSearchCands(int companyId, SearchTermsModel searchTerms);
     }
 }

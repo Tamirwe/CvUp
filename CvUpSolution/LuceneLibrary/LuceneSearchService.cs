@@ -529,6 +529,33 @@ namespace LuceneLibrary
             return await RunGroupSearch(searchWithin, results.Select(r => r.Id).ToHashSet());
         }
 
+        public Task<List<SearchEntry>> ComplexSearch(SearchTermsModel searchTerms)
+        {
+            var firstSearch = new List<ComplexSearchTerm>();
+            firstSearch.AddRange(ToComplexSearchTerms(searchTerms.MustHave, TermOccur.Must));
+            firstSearch.AddRange(ToComplexSearchTerms(searchTerms.ShouldHave, TermOccur.Should));
+
+            var withinTerms = new List<ComplexSearchTerm>();
+            withinTerms.AddRange(ToComplexSearchTerms(searchTerms.MustHaveInResult, TermOccur.Must));
+            withinTerms.AddRange(ToComplexSearchTerms(searchTerms.ShouldHaveInResult, TermOccur.Should));
+
+            return ComplexSearch(firstSearch, withinTerms.Count > 0 ? withinTerms : null);
+        }
+
+        private static List<ComplexSearchTerm> ToComplexSearchTerms(List<string> values, TermOccur occur)
+        {
+            return values
+                .Select(v => v.Trim())
+                .Where(v => !string.IsNullOrEmpty(v))
+                .Select(v => new ComplexSearchTerm
+                {
+                    Value = v,
+                    Occur = occur,
+                    MatchType = occur == TermOccur.Must && v.Contains(' ') ? TermMatchType.ExactPhrase : TermMatchType.Keyword,
+                })
+                .ToList();
+        }
+
         private async Task<List<SearchEntry>> RunGroupSearch(List<ComplexSearchTerm> terms, HashSet<int>? restrictToIds)
         {
             using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));

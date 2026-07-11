@@ -304,15 +304,6 @@ export interface IPositionAnalyzedData {
   embedding_text?: string;
 }
 
-export type TermOccur = "Must" | "Should";
-
-export interface IComplexSearchTerm {
-  value: string;
-  occur: TermOccur;
-  matchType: "Keyword" | "ExactPhrase";
-}
-
-
 export interface SearchTermsModel {
   id: number;
   positionId: number;

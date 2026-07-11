@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react";
-import { IComplexSearchTerm, TermOccur } from "../../models/GeneralModels";
 import { useStore } from "../../Hooks/useStore";
 
 interface IProps {
@@ -35,19 +34,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
   };
 
   const handleSearch = () => {
-    const firstSearch: IComplexSearchTerm[] = [
-      ...parseTerms(candsStore.searchTermsMustHave, "Must"),
-      ...parseTerms(candsStore.searchTermsShouldHave, "Should"),
-    ];
-
-    const withinTerms: IComplexSearchTerm[] = [
-      ...parseTerms(candsStore.searchTermsMustHaveInResult, "Must"),
-      ...parseTerms(candsStore.searchTermsShouldHaveInResult, "Should"),
-    ];
-
-    const searchWithin = withinTerms.length > 0 ? withinTerms : undefined;
-
-    candsStore.complexSearchCands(firstSearch, searchWithin);
+    candsStore.complexSearchCands();
     onClose();
   };
 
@@ -134,27 +121,6 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
     </Box>
   );
 });
-
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
-
-
-
-
-function parseTerms(raw: string, occur: TermOccur): IComplexSearchTerm[] {
-  return raw
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .map((value) => ({
-      value,
-      occur,
-      matchType: occur === "Must" && value.includes(" ") 
-        ? "ExactPhrase" 
-        : "Keyword",
-    }));
-}
 
 const SectionLabel = ({ label }: { label: string }) => (
   <Divider sx={{ mb: 1.5 }}>

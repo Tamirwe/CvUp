@@ -1068,6 +1068,7 @@ searchTermsAiSearchPhrase = "";
 
     runInAction(() => {
       this.allCandsList = res.data;
+      this.currentTabCandsLists = TabsCandsEnum.AllCands;
     });
 
     this.rootStore.generalStore.backdrop = false;

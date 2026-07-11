@@ -164,6 +164,7 @@ export const SearchControl = ({
       >
         {showRefreshList && (
           <ToggleButton
+            title="Reset"
             sx={{
               direction: "ltr",
               "&.MuiButtonBase-root": {

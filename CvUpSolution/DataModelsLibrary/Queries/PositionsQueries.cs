@@ -1099,7 +1099,7 @@ namespace DataModelsLibrary.Queries
                             SearchDescr = t.search_descr,
                         };
 
-            return await query.ToListAsync();
+            return await query.Take(50).ToListAsync();
         }
 
         public async Task DeleteSearchTerms(int id)

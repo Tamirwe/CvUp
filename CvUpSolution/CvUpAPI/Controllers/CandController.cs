@@ -119,9 +119,6 @@ namespace CvUpAPI.Controllers
             {
                 indexSearchResult = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request);
 
-                if (indexSearchResult.Count == 0)
-                    return [];
-
                 var candsIds = indexSearchResult.Select(e => e.Id).ToList();
 
                 candsIdsList = candsIds.GetRange(0, candsIds.Count > 300 ? 300 : candsIds.Count);

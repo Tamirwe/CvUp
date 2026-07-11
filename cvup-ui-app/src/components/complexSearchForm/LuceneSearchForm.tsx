@@ -1,18 +1,20 @@
 import {
-  Autocomplete,
   Box,
   Button,
   Divider,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdRefresh, MdRemove } from "react-icons/md";
-import { ISearchTermsListItem } from "../../models/GeneralModels";
 import { useStore } from "../../Hooks/useStore";
 
 interface IProps {
@@ -22,6 +24,7 @@ interface IProps {
 
 export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
   const { candsStore, generalStore } = useStore();
+  const [selectedSearchId, setSelectedSearchId] = useState<number | "">("");
 
   useEffect(() => {
     generalStore.getSearchTermsList();
@@ -34,10 +37,9 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
     }
   };
 
-  const handleSelectSavedSearch = (item: ISearchTermsListItem | null) => {
-    if (item) {
-      candsStore.loadSearchTermsById(item.id);
-    }
+  const handleSelectSavedSearch = (id: number) => {
+    setSelectedSearchId(id);
+    candsStore.loadSearchTermsById(id);
   };
 
   const handleDeleteSavedSearch = (
@@ -46,6 +48,10 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
   ) => {
     event.stopPropagation();
     generalStore.deleteSearchTermsItem(id);
+
+    if (selectedSearchId === id) {
+      setSelectedSearchId("");
+    }
   };
 
   const handleClear = () => {
@@ -65,45 +71,47 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
 
   return (
     <Box sx={{ direction: "rtl" }}>
-      <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-        <Autocomplete
-          fullWidth
-          size="small"
-          options={generalStore.searchTermsList}
-          getOptionLabel={(option) => option.searchDescr || `#${option.id}`}
-          value={null}
-          onChange={(_, value) => handleSelectSavedSearch(value)}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderOption={(props, option) => (
-            <li {...props} key={option.id}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ width: "100%" }}
-              >
-                <span>{option.searchDescr || `#${option.id}`}</span>
-                <IconButton
-                  size="small"
-                  title="Delete"
-                  onClick={(e) => handleDeleteSavedSearch(e, option.id)}
-                >
-                  <MdRemove />
-                </IconButton>
-              </Stack>
-            </li>
-          )}
-          renderInput={(params) => (
-            <TextField {...params} label="Load saved search" sx={{ direction: "rtl" }} />
-          )}
-          sx={{ direction: "rtl" }}
-        />
+      <SectionLabel label="Saved searches" />
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2.5, mb: 2.5 }}>
         <IconButton
           title="Refresh"
           onClick={() => generalStore.getSearchTermsList(true)}
         >
           <MdRefresh />
         </IconButton>
+        <FormControl fullWidth size="small" sx={{ direction: "rtl" }}>
+          <InputLabel id="saved-search-label">Load saved search</InputLabel>
+          <Select
+            labelId="saved-search-label"
+            label="Load saved search"
+            value={selectedSearchId}
+            onChange={(e) => handleSelectSavedSearch(Number(e.target.value))}
+            renderValue={(value) =>
+              generalStore.searchTermsList.find((x) => x.id === value)?.searchDescr ||
+              `#${value}`
+            }
+          >
+            {generalStore.searchTermsList.map((item) => (
+              <MenuItem key={item.id} value={item.id}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ width: "100%" }}
+                >
+                  <span>{item.searchDescr || `#${item.id}`}</span>
+                  <IconButton
+                    size="small"
+                    title="Delete"
+                    onClick={(e) => handleDeleteSavedSearch(e, item.id)}
+                  >
+                    <MdRemove />
+                  </IconButton>
+                </Stack>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Stack>
 
       <SectionLabel label="Index Search" />

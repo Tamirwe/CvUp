@@ -1040,9 +1040,15 @@ searchTermsAiSearchPhrase = "";
       shouldHave: splitTerms(this.searchTermsShouldHave),
       mustHaveInResult: splitTerms(this.searchTermsMustHaveInResult),
       shouldHaveInResult: splitTerms(this.searchTermsShouldHaveInResult),
+      aiSearchPhrase: this.searchTermsAiSearchPhrase.trim() || undefined,
     };
 
-    if (searchTerms.mustHave.length === 0 && searchTerms.shouldHave.length === 0) return;
+    if (
+      searchTerms.mustHave.length === 0 &&
+      searchTerms.shouldHave.length === 0 &&
+      !searchTerms.aiSearchPhrase
+    )
+      return;
 
     this.rootStore.generalStore.backdrop = true;
 

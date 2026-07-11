@@ -176,6 +176,27 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetSearchTermsList")]
+        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList()
+        {
+            return await _candsListsService.GetSearchTermsList(Globals.CompanyId);
+        }
+
+        [HttpGet]
+        [Route("GetSearchTermsById")]
+        public async Task<SearchTermsModel?> GetSearchTermsById(int id)
+        {
+            return await _candsListsService.GetSearchTermsById(id);
+        }
+
+        [HttpDelete]
+        [Route("DeleteSearchTerms")]
+        public async Task DeleteSearchTerms(int id)
+        {
+            await _candsListsService.DeleteSearchTerms(id, Globals.CompanyId);
+        }
+
+        [HttpGet]
         [Route("GetPosCandsList")]
         public async Task<List<CandModel?>> GetPosCandsList(int positionId)
         {

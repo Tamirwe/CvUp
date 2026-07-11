@@ -1055,7 +1055,9 @@ namespace DataModelsLibrary.Queries
         {
             using var dbContext = new cvupdbContext();
 
-            var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == searchTerms.PositionId);
+            var existing = searchTerms.PositionId > 0
+                ? await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == searchTerms.PositionId)
+                : null;
 
             if (existing == null)
             {
@@ -1083,6 +1085,39 @@ namespace DataModelsLibrary.Queries
                 .Concat(string.IsNullOrWhiteSpace(searchTerms.AiSearchPhrase) ? [] : [searchTerms.AiSearchPhrase]));
 
             return combined.Length > 50 ? combined[..50] : combined;
+        }
+
+        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList(int companyId)
+        {
+            using var dbContext = new cvupdbContext();
+
+            var query = from t in dbContext.search_terms
+                        join p in dbContext.positions on t.position_id equals p.id
+                        where p.company_id == companyId
+                        orderby t.updated_at descending
+                        select new SearchTermsListItemModel
+                        {
+                            Id = t.id,
+                            SearchDescr = t.search_descr,
+                        };
+
+            return await query.ToListAsync();
+        }
+
+        public async Task DeleteSearchTerms(int id, int companyId)
+        {
+            using var dbContext = new cvupdbContext();
+
+            var existing = await (from t in dbContext.search_terms
+                                   join p in dbContext.positions on t.position_id equals p.id
+                                   where t.id == id && p.company_id == companyId
+                                   select t).FirstOrDefaultAsync();
+
+            if (existing != null)
+            {
+                dbContext.search_terms.Remove(existing);
+                await dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding)

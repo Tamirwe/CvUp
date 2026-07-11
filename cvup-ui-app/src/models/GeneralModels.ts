@@ -313,3 +313,8 @@ export interface SearchTermsModel {
   shouldHaveInResult: string[];
   aiSearchPhrase?: string;
 }
+
+export interface ISearchTermsListItem {
+  id: number;
+  searchDescr?: string;
+}

@@ -79,9 +79,6 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=cvupdb;Username=postgres;Password=!Shalot5");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -617,8 +614,6 @@ public partial class cvupdbContext : DbContext
         {
             entity.HasKey(e => e.id).HasName("search_terms_pkey");
 
-            entity.HasIndex(e => e.position_id, "uq_search_terms_position").IsUnique();
-
             entity.Property(e => e.id).UseIdentityAlwaysColumn();
             entity.Property(e => e.created_at).HasDefaultValueSql("now()");
             entity.Property(e => e.must_have).HasDefaultValueSql("'{}'::text[]");
@@ -626,10 +621,6 @@ public partial class cvupdbContext : DbContext
             entity.Property(e => e.should_have).HasDefaultValueSql("'{}'::text[]");
             entity.Property(e => e.should_have_in_result).HasDefaultValueSql("'{}'::text[]");
             entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
-
-            entity.HasOne(d => d.position).WithOne(p => p.search_term)
-                .HasForeignKey<search_term>(d => d.position_id)
-                .HasConstraintName("fk_search_terms_position");
         });
 
         modelBuilder.Entity<sent_email>(entity =>

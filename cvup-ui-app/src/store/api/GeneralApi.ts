@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IIdName } from "../../models/AuthModels";
+import { ISearchTermsListItem } from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class GeneralApi extends BaseApi {
@@ -50,6 +51,20 @@ export default class GeneralApi extends BaseApi {
       return await this.http.post(`General/TranslateMultiLines`, {
         txtList,
         lang,
+      });
+    });
+  }
+
+  async getSearchTermsList() {
+    return await this.apiWrapper2<ISearchTermsListItem[]>(async () => {
+      return await this.http.get(`Cand/GetSearchTermsList`);
+    });
+  }
+
+  async deleteSearchTerms(id: number) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.delete(`Cand/DeleteSearchTerms`, {
+        params: { id },
       });
     });
   }

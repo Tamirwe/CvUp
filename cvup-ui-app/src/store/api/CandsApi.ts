@@ -288,4 +288,12 @@ export default class CandsApi extends BaseApi {
     });
   });
 }
+
+async getSearchTermsById(id: number) {
+  return await this.apiWrapper2<SearchTermsModel | null>(async () => {
+    return await this.http.get(`Cand/GetSearchTermsById`, {
+      params: { id },
+    });
+  });
+}
 }

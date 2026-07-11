@@ -56,6 +56,4 @@ public partial class position
     public virtual ICollection<position_contact> position_contacts { get; set; } = new List<position_contact>();
 
     public virtual ICollection<position_interviewer> position_interviewers { get; set; } = new List<position_interviewer>();
-
-    public virtual search_term? search_term { get; set; }
 }

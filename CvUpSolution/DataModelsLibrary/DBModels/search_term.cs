@@ -24,6 +24,4 @@ public partial class search_term
     public DateTime updated_at { get; set; }
 
     public string? search_descr { get; set; }
-
-    public virtual position position { get; set; } = null!;
 }

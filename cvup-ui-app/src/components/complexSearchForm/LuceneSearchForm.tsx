@@ -1,13 +1,18 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Divider,
+  IconButton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react";
+import { useEffect } from "react";
+import { MdRefresh, MdRemove } from "react-icons/md";
+import { ISearchTermsListItem } from "../../models/GeneralModels";
 import { useStore } from "../../Hooks/useStore";
 
 interface IProps {
@@ -16,12 +21,31 @@ interface IProps {
 }
 
 export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
-  const { candsStore } = useStore();
+  const { candsStore, generalStore } = useStore();
+
+  useEffect(() => {
+    generalStore.getSearchTermsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleGetKeywords = () => {
     if (positionId && positionId > 0) {
       candsStore.getPositionSearchTerms(positionId, true);
     }
+  };
+
+  const handleSelectSavedSearch = (item: ISearchTermsListItem | null) => {
+    if (item) {
+      candsStore.loadSearchTermsById(item.id);
+    }
+  };
+
+  const handleDeleteSavedSearch = (
+    event: React.MouseEvent,
+    id: number,
+  ) => {
+    event.stopPropagation();
+    generalStore.deleteSearchTermsItem(id);
   };
 
   const handleClear = () => {
@@ -41,6 +65,47 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
 
   return (
     <Box sx={{ direction: "rtl" }}>
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+        <Autocomplete
+          fullWidth
+          size="small"
+          options={generalStore.searchTermsList}
+          getOptionLabel={(option) => option.searchDescr || `#${option.id}`}
+          value={null}
+          onChange={(_, value) => handleSelectSavedSearch(value)}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderOption={(props, option) => (
+            <li {...props} key={option.id}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ width: "100%" }}
+              >
+                <span>{option.searchDescr || `#${option.id}`}</span>
+                <IconButton
+                  size="small"
+                  title="Delete"
+                  onClick={(e) => handleDeleteSavedSearch(e, option.id)}
+                >
+                  <MdRemove />
+                </IconButton>
+              </Stack>
+            </li>
+          )}
+          renderInput={(params) => (
+            <TextField {...params} label="Load saved search" sx={{ direction: "rtl" }} />
+          )}
+          sx={{ direction: "rtl" }}
+        />
+        <IconButton
+          title="Refresh"
+          onClick={() => generalStore.getSearchTermsList(true)}
+        >
+          <MdRefresh />
+        </IconButton>
+      </Stack>
+
       <SectionLabel label="Index Search" />
       <Stack spacing={1.5} sx={{ mb: 3 }}>
         <TextField

@@ -1058,31 +1058,35 @@ searchTermsAiSearchPhrase = "";
 
 
 
+private applySearchTerms(data: SearchTermsModel | null) {
+  this.searchTerms = data ?? null;
+  this.searchTermsMustHave = (data?.mustHave ?? []).join(", ");
+  this.searchTermsShouldHave = (data?.shouldHave ?? []).join(", ");
+  this.searchTermsMustHaveInResult = (data?.mustHaveInResult ?? []).join(", ");
+  this.searchTermsShouldHaveInResult = (data?.shouldHaveInResult ?? []).join(", ");
+  this.searchTermsAiSearchPhrase = data?.aiSearchPhrase ?? "";
+}
+
 async getPositionSearchTerms(positionId: number, isReAnalyze: boolean = false) {
   if (this.searchTerms?.positionId !== positionId || isReAnalyze) {
-    runInAction(() => {
-      this.searchTerms = null;
-      this.searchTermsMustHave = "";
-      this.searchTermsShouldHave = "";
-      this.searchTermsMustHaveInResult = "";
-      this.searchTermsShouldHaveInResult = "";
-      this.searchTermsAiSearchPhrase = "";
-    });
+    runInAction(() => this.applySearchTerms(null));
   }
 
   this.rootStore.generalStore.backdrop = true;
 
   const res = await this.cvsApi.getPositionSearchTerms(positionId, isReAnalyze);
-  const data = res.data;
 
-  runInAction(() => {
-    this.searchTerms = data ?? null;
-    this.searchTermsMustHave = (data?.mustHave ?? []).join(", ");
-    this.searchTermsShouldHave = (data?.shouldHave ?? []).join(", ");
-    this.searchTermsMustHaveInResult = (data?.mustHaveInResult ?? []).join(", ");
-    this.searchTermsShouldHaveInResult = (data?.shouldHaveInResult ?? []).join(", ");
-    this.searchTermsAiSearchPhrase = data?.aiSearchPhrase ?? "";
-  });
+  runInAction(() => this.applySearchTerms(res.data));
+
+  this.rootStore.generalStore.backdrop = false;
+}
+
+async loadSearchTermsById(id: number) {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.getSearchTermsById(id);
+
+  runInAction(() => this.applySearchTerms(res.data));
 
   this.rootStore.generalStore.backdrop = false;
 }

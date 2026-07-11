@@ -145,4 +145,10 @@ namespace DataModelsLibrary.Models
         public string? AiSearchPhrase { get; set; }
     }
 
+    public class SearchTermsListItemModel
+    {
+        public int Id { get; set; }
+        public string? SearchDescr { get; set; }
+    }
+
 }

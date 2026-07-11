@@ -7,14 +7,16 @@ import {
   EmailTypeEnum,
   TabsGeneralEnum,
 } from "../models/GeneralEnums";
-import { IAppSettings } from "../models/GeneralModels";
+import { IAppSettings, ISearchTermsListItem } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 import { AlertColor } from "@mui/material";
 
 export class GeneralStore {
   private generalApi;
+  private searchTermsListLoaded: boolean = false;
   hrCompaniesList: IIdName[] = [];
+  searchTermsList: ISearchTermsListItem[] = [];
   isShowBackdrop: boolean = false;
   private isCvReviewDialogOpen: boolean = false;
   private showEmailDialogType: EmailTypeEnum = EmailTypeEnum.None;
@@ -358,5 +360,27 @@ export class GeneralStore {
   async translateMultiLines(txtList: string[], lang: string) {
     const response = await this.generalApi.translateMultiLines(txtList, lang);
     return response.data;
+  }
+
+  async getSearchTermsList(loadAgain: boolean = false) {
+    if (this.searchTermsListLoaded && !loadAgain) return;
+
+    this.rootStore.generalStore.backdrop = true;
+    const res = await this.generalApi.getSearchTermsList();
+
+    runInAction(() => {
+      this.searchTermsList = res.data ?? [];
+      this.searchTermsListLoaded = true;
+    });
+
+    this.rootStore.generalStore.backdrop = false;
+  }
+
+  async deleteSearchTermsItem(id: number) {
+    await this.generalApi.deleteSearchTerms(id);
+
+    runInAction(() => {
+      this.searchTermsList = this.searchTermsList.filter((x) => x.id !== id);
+    });
   }
 }

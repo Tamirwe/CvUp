@@ -1,17 +1,24 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GeneralLibrary
 {
     public static class StringMethods
     {
-       
+
         public static string ExtractPlainText(string text)
         {
             string textLanguage = DetectStringLanguage(text);
             string plainText = RemovePunctuationAndNormelizeHebrew(text, textLanguage);
             return plainText;
         }
+
+        // Removes " / ״ (Hebrew gershayim) when they sit directly between two letters, with no
+        // space inserted, so abbreviations like סמנכ"ל / סמנכ״ל collapse into one word: סמנכל.
+        // Quotes elsewhere (e.g. surrounding a quoted phrase or nickname) are left for the
+        // caller's normal punctuation handling.
+        public static string CollapseMidWordQuotes(string text) =>
+            Regex.Replace(text, @"(?<=[\p{L}])[""״](?=[\p{L}])", "");
 
         public static string DetectStringLanguage(string text)
         {
@@ -24,7 +31,7 @@ namespace GeneralLibrary
                 if (char.IsLetter(c))
                 {
                     total++;
-                    if (c >= '\u05D0' && c <= '\u05EA') hebrew++;
+                    if (c >= 'א' && c <= 'ת') hebrew++;
                     else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') english++;
                 }
             }
@@ -42,22 +49,16 @@ namespace GeneralLibrary
         public static string RemovePunctuationAndNormelizeHebrew(string cvTxt, string cvLanguage)
         {
             // Remove invisible bidirectional marks
-            string visibleText = Regex.Replace(cvTxt, @"[\u200E\u200F\u202A-\u202E]", "");
+            string visibleText = Regex.Replace(cvTxt, @"[‎‏‪-‮]", "");
 
-            // Protect Hebrew abbreviations: replace " between Hebrew letters with a placeholder
-            // e.g. צה"ל → צה§ל
-            var protectedAbbrev = Regex.Replace(visibleText,
-                @"([\u05D0-\u05EA])""([\u05D0-\u05EA])",
-                "$1§$2");
+            // Collapse Hebrew abbreviations: צה"ל → צהל, סמנכ״ל → סמנכל
+            var collapsedAbbrev = CollapseMidWordQuotes(visibleText);
 
             // Keep letters, digits, spaces, and characters needed for emails/tech terms + hyphen
-            var onlyLettersDigitsSpaces = Regex.Replace(protectedAbbrev, @"[^\p{L}\p{N}\s#\.\+@\-§]", " ");
+            var onlyLettersDigitsSpaces = Regex.Replace(collapsedAbbrev, @"[^\p{L}\p{N}\s#\.\+@\-]", " ");
 
             // Collapse spaces
             var cleanText = Regex.Replace(onlyLettersDigitsSpaces, @"\s+", " ");
-
-            // Restore Hebrew abbreviation quotes
-            cleanText = cleanText.Replace("§", "\"");
 
             if (cvLanguage == "Hebrew")
             {
@@ -76,7 +77,7 @@ namespace GeneralLibrary
             string txt = Regex.Replace(cvTxt, @"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]", "");
 
             // Remove Unicode bidirectional control characters
-            txt = Regex.Replace(txt, @"[\u200E\u200F\u202A\u202B\u202C\u202D\u202E\u2066\u2067\u2068\u2069]", "");
+            txt = Regex.Replace(txt, "[‎‏‪‫‬‭‮⁦⁧⁨⁩]", "");
 
             txt = Regex.Replace(txt, @"\s+", " ");
             txt = txt.Length > 7999 ? txt.Substring(0, 7999) : txt;
@@ -154,6 +155,6 @@ namespace GeneralLibrary
             return new string(chars);
         }
 
-     
+
     }
 }

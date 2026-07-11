@@ -1,4 +1,5 @@
 using DataModelsLibrary.Models;
+using GeneralLibrary;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Index;
@@ -55,7 +56,7 @@ namespace LuceneLibrary
         {
             var tokens = terms
                 .Where(k => !string.IsNullOrWhiteSpace(k))
-                .Select(k => k.Trim().ToLowerInvariant())
+                .Select(k => StringMethods.CollapseMidWordQuotes(k.Trim().ToLowerInvariant()))
                 .Distinct()
                 .ToArray();
 
@@ -193,7 +194,7 @@ namespace LuceneLibrary
             using var indexReader = DirectoryReader.Open(indexDirectory);
             var indexSearcher = new IndexSearcher(indexReader);
 
-            var tokens = searchVals.value.Trim().ToLowerInvariant()
+            var tokens = StringMethods.CollapseMidWordQuotes(searchVals.value.Trim().ToLowerInvariant())
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .Distinct()
                 .ToArray();
@@ -276,7 +277,7 @@ namespace LuceneLibrary
             mIndexReader = DirectoryReader.Open(mIndexDirectory);
             var indexSearcher = new IndexSearcher(mIndexReader);
 
-            var tokens = searchVals.value.Trim().ToLowerInvariant()
+            var tokens = StringMethods.CollapseMidWordQuotes(searchVals.value.Trim().ToLowerInvariant())
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .Distinct()
                 .ToArray();
@@ -388,7 +389,7 @@ namespace LuceneLibrary
 
             // ── Build the new search query (reuse your existing logic) ────────────
             bool isExact = searchVals.exact;
-            var tokens = searchVals.value.Trim().ToLowerInvariant()
+            var tokens = StringMethods.CollapseMidWordQuotes(searchVals.value.Trim().ToLowerInvariant())
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .Distinct()
                 .ToArray();
@@ -603,7 +604,7 @@ namespace LuceneLibrary
 
         private Query BuildExactPhraseQuery(string phrase)
         {
-            var tokens = phrase.Trim().ToLowerInvariant()
+            var tokens = StringMethods.CollapseMidWordQuotes(phrase.Trim().ToLowerInvariant())
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .ToArray();
 
@@ -635,7 +636,7 @@ namespace LuceneLibrary
 
         private Query BuildFuzzyTermQuery(string keyword)
         {
-            var tokens = keyword.Trim().ToLowerInvariant()
+            var tokens = StringMethods.CollapseMidWordQuotes(keyword.Trim().ToLowerInvariant())
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .Distinct()
                 .ToArray();

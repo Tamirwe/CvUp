@@ -131,9 +131,9 @@ namespace LuceneLibrary
             doc.Add(new TextField(F_CANDIDATE_ID, cand.candidateId.ToString(), Field.Store.YES));
             doc.Add(new TextField(F_CV_ID, cand.cvId.ToString(), Field.Store.YES));
 
-            // Full name
+            // Full name (collapse Hebrew abbreviations first, e.g. סמנכ"ל → סמנכל, then strip the rest of the punctuation)
             var fullName = System.Text.RegularExpressions.Regex.Replace(
-                $"{cand.firstName} {cand.lastName}".Trim(), @"[-\p{P}]", " ").Trim();
+                StringMethods.CollapseMidWordQuotes($"{cand.firstName} {cand.lastName}".Trim()), @"[-\p{P}]", " ").Trim();
             if (!string.IsNullOrWhiteSpace(fullName))
                 doc.Add(new TextField(F_FULL_NAME, fullName.ToLowerInvariant(), Field.Store.YES));
 
@@ -146,24 +146,24 @@ namespace LuceneLibrary
             if (!string.IsNullOrWhiteSpace(cvText))
                 doc.Add(new TextField(F_CV_TEXT, cvText.ToLowerInvariant(), Field.Store.NO));
 
-            // Review
+            // Review (collapse Hebrew abbreviations, e.g. סמנכ"ל → סמנכל, so they index as one token)
             if (!string.IsNullOrWhiteSpace(cand.reviewText))
-                doc.Add(new TextField(F_REVIEW, cand.reviewText.ToLowerInvariant(), Field.Store.YES));
+                doc.Add(new TextField(F_REVIEW, StringMethods.CollapseMidWordQuotes(cand.reviewText.ToLowerInvariant()), Field.Store.YES));
 
             // AI: summary (he + en combined)
             var summary = CombineText(cand.summaryHe, cand.summaryEn);
             if (summary != null)
-                doc.Add(new TextField(F_AI_SUMMARY, summary, Field.Store.NO));
+                doc.Add(new TextField(F_AI_SUMMARY, StringMethods.CollapseMidWordQuotes(summary), Field.Store.NO));
 
             // AI: work experience (company + title_he + title_en)
             var work = FlattenWorkExperience(cand.workExperienceItems);
             if (work != null)
-                doc.Add(new TextField(F_AI_WORK, work, Field.Store.NO));
+                doc.Add(new TextField(F_AI_WORK, StringMethods.CollapseMidWordQuotes(work), Field.Store.NO));
 
             // AI: education (degree + field_he + field_en)
             var education = FlattenEducation(cand.educationItems);
             if (education != null)
-                doc.Add(new TextField(F_AI_EDUCATION, education, Field.Store.NO));
+                doc.Add(new TextField(F_AI_EDUCATION, StringMethods.CollapseMidWordQuotes(education), Field.Store.NO));
 
             // AI: skills + profession words (he + en)
             var skills = CombineText(
@@ -171,7 +171,7 @@ namespace LuceneLibrary
                  FlattenProfessionWords(cand.professionWordsItems)
              );
             if (skills != null)
-                doc.Add(new TextField(F_AI_SKILLS, skills, Field.Store.NO));
+                doc.Add(new TextField(F_AI_SKILLS, StringMethods.CollapseMidWordQuotes(skills), Field.Store.NO));
 
             return doc;
         }

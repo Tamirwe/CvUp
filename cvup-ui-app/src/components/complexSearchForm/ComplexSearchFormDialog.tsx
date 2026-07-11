@@ -1,8 +1,7 @@
-import { Box, Dialog, DialogContent, Tab, Tabs } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { LuceneSearchForm } from "./LuceneSearchForm";
-import { AiSearchForm } from "./AiSearchForm";
 
 interface IProps {
   isOpen: boolean;
@@ -12,7 +11,6 @@ interface IProps {
 
 export const ComplexSearchFormDialog = ({ isOpen, onClose, positionId }: IProps) => {
   const [open, setOpen] = useState(false);
-  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -23,15 +21,8 @@ export const ComplexSearchFormDialog = ({ isOpen, onClose, positionId }: IProps)
       <BootstrapDialogTitle id="dialog-title" onClose={onClose}>
         CV's Search
       </BootstrapDialogTitle>
-      <Box sx={{ borderBottom: 1, borderColor: "divider", px: 3 }}>
-        <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
-          <Tab label="Search" />
-          <Tab label="AI Search" />
-        </Tabs>
-      </Box>
       <DialogContent sx={{ pt: 1 }}>
-        {tabValue === 0 && <LuceneSearchForm onClose={onClose} positionId={positionId} />}
-        {tabValue === 1 && <AiSearchForm onClose={onClose} />}
+        <LuceneSearchForm onClose={onClose} positionId={positionId} />
       </DialogContent>
     </Dialog>
   );

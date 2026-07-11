@@ -48,9 +48,6 @@ export class CandsStore {
   candsReportData?: ICandsReport[];
   lastSearchVals: string = "";
 
-  aiSearchText: string = "";
-  aiLuceneFilter: string = "";
-
 searchTerms: SearchTermsModel | null = null;
 searchTermsMustHave = "";
 searchTermsShouldHave = "";

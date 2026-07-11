@@ -1051,31 +1051,38 @@ namespace DataModelsLibrary.Queries
             };
         }
 
-        public async Task SaveSearchTerms(int positionId, PositionSearchTermsModel searchTerms, bool isReAnalyze = false)
+        public async Task SaveSearchTerms(SearchTermsModel searchTerms)
         {
             using var dbContext = new cvupdbContext();
 
-            var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == positionId);
-            var isNew = existing == null;
+            var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == searchTerms.PositionId);
 
-            if (isNew)
+            if (existing == null)
             {
-                existing = new search_term { position_id = positionId };
+                existing = new search_term { position_id = searchTerms.PositionId };
                 dbContext.search_terms.Add(existing);
             }
 
-            if (isNew || isReAnalyze)
-            {
-                existing!.must_have = [];
-                existing.must_have_in_result = [];
-                existing.should_have_in_result = [];
-            }
-
-            existing!.should_have = searchTerms.LuceneKeywords;
-            existing.ai_search_phrase = searchTerms.SearchPhrase;
+            existing.must_have = searchTerms.MustHave;
+            existing.should_have = searchTerms.ShouldHave;
+            existing.must_have_in_result = searchTerms.MustHaveInResult;
+            existing.should_have_in_result = searchTerms.ShouldHaveInResult;
+            existing.ai_search_phrase = searchTerms.AiSearchPhrase;
+            existing.search_descr = BuildSearchDescr(searchTerms);
             existing.updated_at = DateTime.UtcNow;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static string BuildSearchDescr(SearchTermsModel searchTerms)
+        {
+            var combined = string.Join(", ", searchTerms.MustHave
+                .Concat(searchTerms.ShouldHave)
+                .Concat(searchTerms.MustHaveInResult)
+                .Concat(searchTerms.ShouldHaveInResult)
+                .Concat(string.IsNullOrWhiteSpace(searchTerms.AiSearchPhrase) ? [] : [searchTerms.AiSearchPhrase]));
+
+            return combined.Length > 50 ? combined[..50] : combined;
         }
 
         public async Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding)

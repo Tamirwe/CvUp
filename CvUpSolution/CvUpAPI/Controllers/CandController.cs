@@ -109,16 +109,33 @@ namespace CvUpAPI.Controllers
         [Route("SearchCandsByUiSearchForm")]
         public async Task<IEnumerable<CandModel?>> SearchCandsByUiSearchForm([FromBody] SearchTermsModel request)
         {
-            var results = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request);
+            var hasTerms = request.MustHave.Count > 0 || request.ShouldHave.Count > 0
+              || request.MustHaveInResult.Count > 0 || request.ShouldHaveInResult.Count > 0;
 
-            if (results.Count == 0)
-                return [];
+            List<int> candsIdsList = [];
+            List<SearchEntry> indexSearchResult = [];
 
-            var candsIds = results.Select(e => e.Id).ToList();
-            var firstRows = candsIds.GetRange(0, candsIds.Count > 300 ? 300 : candsIds.Count);
-            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, firstRows);
+            if (hasTerms)
+            {
+                indexSearchResult = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request);
 
-            foreach (var res in results)
+                if (indexSearchResult.Count == 0)
+                    return [];
+
+                var candsIds = indexSearchResult.Select(e => e.Id).ToList();
+
+                candsIdsList = candsIds.GetRange(0, candsIds.Count > 300 ? 300 : candsIds.Count);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.AiSearchPhrase))
+            {
+                var aiResults = await _aiSearchCvsService.SearchCvs(request.AiSearchPhrase, candsIdsList, limit: 100);
+                candsIdsList = aiResults.Select(e => e.candidateId).ToList();
+            }
+
+            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIdsList);
+
+            foreach (var res in indexSearchResult)
             {
                 var itemToChange = candsList.FirstOrDefault(x => x != null && x.candidateId == res.Id);
                 if (itemToChange != null)
@@ -134,7 +151,7 @@ namespace CvUpAPI.Controllers
         {
             var luceneResults = await _candsService.SearchForAiFilter(searchVals);
             var candidateIds = luceneResults.Select(e => e.Id).ToList();
-            var aiResults = await _aiSearchCvsService.SearchCvs(searchVals, candidateIds, limit: 10);
+            var aiResults = await _aiSearchCvsService.SearchCvs(searchVals.value, candidateIds, limit: 10);
             var candsIds = aiResults.Select(e => e.candidateId).ToList();
             var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIds);
             List<CandModel> results = _candsService.MergeAiResultsWithCandsList(candsList, aiResults);

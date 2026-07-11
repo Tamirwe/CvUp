@@ -16,9 +16,9 @@ namespace AiLibrary.SearchCvs
             _aiQueries = aiQueries;
         }
 
-        public async Task<List<AiCandidateSearchModel>> SearchCvs(searchCandCvModel searchVals, List<int>? candidateIds = null, int limit = 20)
+        public async Task<List<AiCandidateSearchModel>> SearchCvs(string AiSearchPhrase, List<int>? candidateIds = null, int limit = 20)
         {
-            float[] queryVector = await _searchCvsOpenAi.EmbedSearchQuery(searchVals.value);
+            float[] queryVector = await _searchCvsOpenAi.EmbedSearchQuery(AiSearchPhrase);
             return await _aiQueries.SearchCvsByEmbedding(queryVector, candidateIds, limit);
         }
 

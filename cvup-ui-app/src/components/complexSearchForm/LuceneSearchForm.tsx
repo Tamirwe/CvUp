@@ -30,6 +30,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
       candsStore.searchTermsShouldHave = "";
       candsStore.searchTermsMustHaveInResult = "";
       candsStore.searchTermsShouldHaveInResult = "";
+      candsStore.searchTermsAiSearchPhrase = "";
     });
   };
 

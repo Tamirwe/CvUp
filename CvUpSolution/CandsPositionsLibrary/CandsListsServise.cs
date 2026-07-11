@@ -14,16 +14,14 @@ namespace CandsPositionsLibrary
         private ICandsListsQueries _candsListsQueries;
         private IPositionsQueries _cvsPositionsQueries;
         private ILuceneSearchService _luceneSearchService;
-        private ISearchCvsService _searchCvsService;
         private IAnalyzePositionsService _analyzePositionsService;
         private IPositionPropsWriterService _positionPropsWriterService;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, ISearchCvsService searchCvsService, IAnalyzePositionsService analyzePositionsService, IPositionPropsWriterService positionPropsWriterService)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, IAnalyzePositionsService analyzePositionsService, IPositionPropsWriterService positionPropsWriterService)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
-            _searchCvsService = searchCvsService;
             _analyzePositionsService = analyzePositionsService;
             _positionPropsWriterService = positionPropsWriterService;
         }
@@ -65,25 +63,6 @@ namespace CandsPositionsLibrary
             }
 
             return analyzed;
-        }
-
-        public async Task<List<AiCandidateSearchModel>> FindPositionMatchCvs(int positionId)
-        {
-            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-
-            if (analyzed == null)
-            {
-                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
-                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
-                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-            }
-
-            if (analyzed == null) return [];
-
-            var luceneResults = await _luceneSearchService.SearchCandidatesByPosition(analyzed, maxResults: 500);
-            var luceneCandidateIds = luceneResults.Select(r => r.Id).ToList();
-
-            return await _searchCvsService.SearchCvsByPositionFiltered(positionId, luceneCandidateIds, limit: 100);
         }
 
         public async Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId)

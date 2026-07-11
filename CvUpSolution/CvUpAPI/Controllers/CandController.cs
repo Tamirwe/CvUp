@@ -174,16 +174,6 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
-        [Route("FindPositionMatchCvs")]
-        public async Task<List<CandModel>> FindPositionMatchCvs(int positionId)
-        {
-            var aiResults = await _candsListsService.FindPositionMatchCvs(positionId);
-            var candsIds = aiResults.Select(e => e.candidateId).ToList();
-            var candsList = await _candsListsService.GetCandsList(Globals.CompanyId, candsIds);
-            return _candsService.MergeAiResultsWithCandsList(candsList, aiResults);
-        }
-
-        [HttpGet]
         [Route("GetPosCandsList")]
         public async Task<List<CandModel?>> GetPosCandsList(int positionId)
         {

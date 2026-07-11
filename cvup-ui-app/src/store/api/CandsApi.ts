@@ -275,14 +275,6 @@ export default class CandsApi extends BaseApi {
     });
   }
 
-  async findPositionMatchCvs(posId: number) {
-    return await this.apiWrapper2<ICand[]>(async () => {
-      return await this.http.get(
-        `Cand/FindPositionMatchCvs?positionId=${posId}`,
-      );
-    });
-  }
-
   async searchCandsByUiSearchForm(searchTerms: SearchTermsModel) {
     return await this.apiWrapper2<ICand[]>(async () => {
       return await this.http.post(`Cand/SearchCandsByUiSearchForm`, searchTerms);

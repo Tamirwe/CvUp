@@ -1087,13 +1087,11 @@ namespace DataModelsLibrary.Queries
             return combined.Length > 50 ? combined[..50] : combined;
         }
 
-        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList(int companyId)
+        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList()
         {
             using var dbContext = new cvupdbContext();
 
             var query = from t in dbContext.search_terms
-                        join p in dbContext.positions on t.position_id equals p.id
-                        where p.company_id == companyId
                         orderby t.updated_at descending
                         select new SearchTermsListItemModel
                         {
@@ -1104,14 +1102,11 @@ namespace DataModelsLibrary.Queries
             return await query.ToListAsync();
         }
 
-        public async Task DeleteSearchTerms(int id, int companyId)
+        public async Task DeleteSearchTerms(int id)
         {
             using var dbContext = new cvupdbContext();
 
-            var existing = await (from t in dbContext.search_terms
-                                   join p in dbContext.positions on t.position_id equals p.id
-                                   where t.id == id && p.company_id == companyId
-                                   select t).FirstOrDefaultAsync();
+            var existing = await dbContext.search_terms.FirstOrDefaultAsync(t => t.id == id);
 
             if (existing != null)
             {

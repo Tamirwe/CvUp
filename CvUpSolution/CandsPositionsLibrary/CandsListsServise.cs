@@ -83,9 +83,9 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.SaveSearchTerms(searchTerms);
         }
 
-        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList(int companyId)
+        public async Task<List<SearchTermsListItemModel>> GetSearchTermsList()
         {
-            return await _cvsPositionsQueries.GetSearchTermsList(companyId);
+            return await _cvsPositionsQueries.GetSearchTermsList();
         }
 
         public async Task<SearchTermsModel?> GetSearchTermsById(int id)
@@ -93,9 +93,9 @@ namespace CandsPositionsLibrary
             return await _cvsPositionsQueries.GetExistPositionSearchTerms(0, id);
         }
 
-        public async Task DeleteSearchTerms(int id, int companyId)
+        public async Task DeleteSearchTerms(int id)
         {
-            await _cvsPositionsQueries.DeleteSearchTerms(id, companyId);
+            await _cvsPositionsQueries.DeleteSearchTerms(id);
         }
 
         public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154)

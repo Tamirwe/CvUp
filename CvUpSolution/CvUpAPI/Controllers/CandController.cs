@@ -179,7 +179,7 @@ namespace CvUpAPI.Controllers
         [Route("GetSearchTermsList")]
         public async Task<List<SearchTermsListItemModel>> GetSearchTermsList()
         {
-            return await _candsListsService.GetSearchTermsList(Globals.CompanyId);
+            return await _candsListsService.GetSearchTermsList();
         }
 
         [HttpGet]
@@ -193,7 +193,7 @@ namespace CvUpAPI.Controllers
         [Route("DeleteSearchTerms")]
         public async Task DeleteSearchTerms(int id)
         {
-            await _candsListsService.DeleteSearchTerms(id, Globals.CompanyId);
+            await _candsListsService.DeleteSearchTerms(id);
         }
 
         [HttpGet]

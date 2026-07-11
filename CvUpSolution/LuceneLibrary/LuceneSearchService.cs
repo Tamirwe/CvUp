@@ -145,39 +145,27 @@ namespace LuceneLibrary
             var mustTerms = (searchVals.luceneFilter ?? "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Where(s => !string.IsNullOrWhiteSpace(s))
-                .Select(s => new ComplexSearchTerm
-                {
-                    Value = s,
-                    Occur = TermOccur.Must,
-                    MatchType = s.Contains(' ') ? TermMatchType.ExactPhrase : TermMatchType.Keyword,
-                })
                 .ToList();
 
             // value terms are SHOULD
             var shouldTerms = (searchVals.value ?? "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Where(s => !string.IsNullOrWhiteSpace(s))
-                .Select(s => new ComplexSearchTerm
-                {
-                    Value = s,
-                    Occur = TermOccur.Should,
-                    MatchType = TermMatchType.Keyword,
-                })
                 .ToList();
 
             // If no must terms — run should-only as first search with no filter
             if (mustTerms.Count == 0)
                 return shouldTerms.Count > 0
-                    ? await RunGroupSearch(shouldTerms, restrictToIds: null)
+                    ? await RunGroupSearch([], shouldTerms, restrictToIds: null)
                     : [];
 
             // Must terms first, then narrow with should terms if any
-            var results = await RunGroupSearch(mustTerms, restrictToIds: null);
+            var results = await RunGroupSearch(mustTerms, [], restrictToIds: null);
 
             if (results.Count == 0 || shouldTerms.Count == 0)
                 return results;
 
-            return await RunGroupSearch(shouldTerms, results.Select(r => r.Id).ToHashSet());
+            return await RunGroupSearch([], shouldTerms, results.Select(r => r.Id).ToHashSet());
         }
         // ─────────────────────────────────────────────
         // General search (exact or fuzzy)
@@ -516,53 +504,39 @@ namespace LuceneLibrary
         // Complex search: multiple groups AND'd via search-within
         // ─────────────────────────────────────────────
 
-        public async Task<List<SearchEntry>> ComplexSearch(
-     List<ComplexSearchTerm> firstSearch,
-     List<ComplexSearchTerm>? searchWithin = null)
+        public async Task<List<SearchEntry>> ComplexSearch(SearchTermsModel searchTerms)
         {
-            if (firstSearch.Count == 0) return [];
+            var mustHave = NormalizeTerms(searchTerms.MustHave);
+            var shouldHave = NormalizeTerms(searchTerms.ShouldHave);
 
-            var results = await RunGroupSearch(firstSearch, restrictToIds: null);
-            if (results.Count == 0 || searchWithin is not { Count: > 0 })
-                return results;
+            if (mustHave.Count == 0 && shouldHave.Count == 0) return [];
 
-            return await RunGroupSearch(searchWithin, results.Select(r => r.Id).ToHashSet());
+            var results = await RunGroupSearch(mustHave, shouldHave, restrictToIds: null);
+            if (results.Count == 0) return results;
+
+            var mustHaveInResult = NormalizeTerms(searchTerms.MustHaveInResult);
+            var shouldHaveInResult = NormalizeTerms(searchTerms.ShouldHaveInResult);
+
+            if (mustHaveInResult.Count == 0 && shouldHaveInResult.Count == 0) return results;
+
+            return await RunGroupSearch(mustHaveInResult, shouldHaveInResult, results.Select(r => r.Id).ToHashSet());
         }
 
-        public Task<List<SearchEntry>> ComplexSearch(SearchTermsModel searchTerms)
-        {
-            var firstSearch = new List<ComplexSearchTerm>();
-            firstSearch.AddRange(ToComplexSearchTerms(searchTerms.MustHave, TermOccur.Must));
-            firstSearch.AddRange(ToComplexSearchTerms(searchTerms.ShouldHave, TermOccur.Should));
-
-            var withinTerms = new List<ComplexSearchTerm>();
-            withinTerms.AddRange(ToComplexSearchTerms(searchTerms.MustHaveInResult, TermOccur.Must));
-            withinTerms.AddRange(ToComplexSearchTerms(searchTerms.ShouldHaveInResult, TermOccur.Should));
-
-            return ComplexSearch(firstSearch, withinTerms.Count > 0 ? withinTerms : null);
-        }
-
-        private static List<ComplexSearchTerm> ToComplexSearchTerms(List<string> values, TermOccur occur)
+        private static List<string> NormalizeTerms(List<string> values)
         {
             return values
                 .Select(v => v.Trim())
                 .Where(v => !string.IsNullOrEmpty(v))
-                .Select(v => new ComplexSearchTerm
-                {
-                    Value = v,
-                    Occur = occur,
-                    MatchType = occur == TermOccur.Must && v.Contains(' ') ? TermMatchType.ExactPhrase : TermMatchType.Keyword,
-                })
                 .ToList();
         }
 
-        private async Task<List<SearchEntry>> RunGroupSearch(List<ComplexSearchTerm> terms, HashSet<int>? restrictToIds)
+        private async Task<List<SearchEntry>> RunGroupSearch(List<string> mustValues, List<string> shouldValues, HashSet<int>? restrictToIds)
         {
             using var indexDirectory = FSDirectory.Open(new DirectoryInfo(_indexFolder));
             using var indexReader = DirectoryReader.Open(indexDirectory);
             var indexSearcher = new IndexSearcher(indexReader);
 
-            var groupQuery = BuildComplexGroupQuery(terms);
+            var groupQuery = BuildGroupQuery(mustValues, shouldValues);
 
             Filter? filter = null;
             if (restrictToIds is { Count: > 0 })
@@ -607,18 +581,18 @@ namespace LuceneLibrary
         // Group query builder
         // ─────────────────────────────────────────────
 
-        private Query BuildComplexGroupQuery(List<ComplexSearchTerm> terms)
+        private Query BuildGroupQuery(List<string> mustValues, List<string> shouldValues)
         {
             var bq = new BooleanQuery();
 
-            foreach (var term in terms)
+            foreach (var value in mustValues)
             {
-                var occur = term.Occur == TermOccur.Must ? Occur.MUST : Occur.SHOULD;
-                var query = term.MatchType == TermMatchType.ExactPhrase
-                    ? BuildExactPhraseQuery(term.Value)
-                    : BuildFuzzyTermQuery(term.Value);
-                bq.Add(query, occur);
+                var query = value.Contains(' ') ? BuildExactPhraseQuery(value) : BuildFuzzyTermQuery(value);
+                bq.Add(query, Occur.MUST);
             }
+
+            foreach (var value in shouldValues)
+                bq.Add(BuildFuzzyTermQuery(value), Occur.SHOULD);
 
             return bq;
         }

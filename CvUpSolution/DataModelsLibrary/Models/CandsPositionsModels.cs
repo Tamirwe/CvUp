@@ -381,14 +381,4 @@ namespace DataModelsLibrary.Models
         public string cvFileType { get; set; } = string.Empty;
         public string fileName { get; set; } = string.Empty;
     }
-
-    public enum TermOccur { Must, Should }
-    public enum TermMatchType { Keyword, ExactPhrase }
-
-    public class ComplexSearchTerm
-    {
-        public string Value { get; set; } = "";
-        public TermOccur Occur { get; set; } = TermOccur.Must;
-        public TermMatchType MatchType { get; set; } = TermMatchType.Keyword;
-    }
 }

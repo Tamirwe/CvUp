@@ -178,12 +178,10 @@ public class LuceneSearchServiceTests : IDisposable
     public async Task ComplexSearch_MustTerms_ReturnsOnlyMatchingBoth()
     {
         // Must: csharp AND fintech → only candidate 1 has both
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "csharp",  Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            new() { Value = "fintech", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["csharp", "fintech"],
+        });
 
         Assert.Single(results);
         Assert.Equal(1, results[0].Id);
@@ -193,12 +191,11 @@ public class LuceneSearchServiceTests : IDisposable
     public async Task ComplexSearch_ShouldTerm_BoostsButDoesNotExclude()
     {
         // Must: csharp | Should: fintech → both 1 and 2 return, but 1 scores higher
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "csharp",  Occur = TermOccur.Must,   MatchType = TermMatchType.Keyword },
-            new() { Value = "fintech", Occur = TermOccur.Should, MatchType = TermMatchType.Keyword },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["csharp"],
+            ShouldHave = ["fintech"],
+        });
 
         Assert.Contains(results, r => r.Id == 1);
         Assert.Contains(results, r => r.Id == 2);
@@ -213,15 +210,11 @@ public class LuceneSearchServiceTests : IDisposable
     {
         // First: csharp → {1, 2}
         // Within: fintech → {1}
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "csharp", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ],
-            searchWithin:
-            [
-                new() { Value = "fintech", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["csharp"],
+            MustHaveInResult = ["fintech"],
+        });
 
         Assert.Single(results);
         Assert.Equal(1, results[0].Id);
@@ -232,15 +225,11 @@ public class LuceneSearchServiceTests : IDisposable
     {
         // First: csharp → {1, 2}
         // Within: java → {} (candidates 1 and 2 have no java)
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "csharp", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ],
-            searchWithin:
-            [
-                new() { Value = "java", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["csharp"],
+            MustHaveInResult = ["java"],
+        });
 
         Assert.Empty(results);
     }
@@ -250,11 +239,10 @@ public class LuceneSearchServiceTests : IDisposable
     {
         // "fintech banking" as exact phrase → only candidate 1 has both words adjacent
         // Candidate 3 has "fintech insurance" — different second word, should not match
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "fintech banking", Occur = TermOccur.Must, MatchType = TermMatchType.ExactPhrase },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["fintech banking"],
+        });
 
         Assert.Single(results);
         Assert.Equal(1, results[0].Id);
@@ -263,7 +251,7 @@ public class LuceneSearchServiceTests : IDisposable
     [Fact]
     public async Task ComplexSearch_ReturnsEmpty_WhenFirstSearchIsEmpty()
     {
-        var results = await _service.ComplexSearch(firstSearch: []);
+        var results = await _service.ComplexSearch(new SearchTermsModel());
         Assert.Empty(results);
     }
 
@@ -271,15 +259,11 @@ public class LuceneSearchServiceTests : IDisposable
     public async Task ComplexSearch_SearchWithin_Ignored_WhenFirstSearchReturnsEmpty()
     {
         // First search matches nothing, searchWithin should never even run
-        var results = await _service.ComplexSearch(
-            firstSearch:
-            [
-                new() { Value = "cobol", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ],
-            searchWithin:
-            [
-                new() { Value = "csharp", Occur = TermOccur.Must, MatchType = TermMatchType.Keyword },
-            ]);
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["cobol"],
+            MustHaveInResult = ["csharp"],
+        });
 
         Assert.Empty(results);
     }

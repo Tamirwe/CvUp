@@ -96,19 +96,6 @@ namespace LuceneLibrary
                 .ToList();
         }
 
-        // ─────────────────────────────────────────────
-        // Position-based search (keywords from AI analysis)
-        // ─────────────────────────────────────────────
-
-        public Task<List<SearchEntry>> SearchCandidatesByPosition(AnalyzedPositionModel analyzed, int maxResults = 1000)
-        {
-            var keywords = analyzed.LuceneKeywords.En
-                .Concat(analyzed.LuceneKeywords.He)
-                .ToList();
-
-            return SearchCandidatesByTerms(keywords, maxResults);
-        }
-
         public async Task<List<SearchEntry>> Search(int companyId, searchCandCvModel searchVals)
         {
             var segments = searchVals.value

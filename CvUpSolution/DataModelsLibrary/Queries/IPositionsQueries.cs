@@ -62,9 +62,6 @@ namespace DataModelsLibrary.Queries
         Task DeleteKeyword(int companyId, int id);
         Task<List<blackCandModel>> GetBlackCandidatesList();
         Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
-        Task SaveAnalyzedPosition(int positionId, AnalyzedPositionModel analyzedPosition, float[]? positionEmbedding);
-        Task<int> GetPositionCompanyId(int positionId);
-        Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
         Task<SearchTermsModel?> GetExistPositionSearchTerms(int positionId, int id);
         Task SaveSearchTerms(SearchTermsModel searchTerms);
         Task<List<SearchTermsListItemModel>> GetSearchTermsList();

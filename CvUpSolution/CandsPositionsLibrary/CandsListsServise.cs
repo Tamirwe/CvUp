@@ -1,5 +1,4 @@
 using AiLibrary;
-using AiLibrary.AnalyzePositions;
 using AiLibrary.PositionPropsWriter;
 using AiLibrary.SearchCvs;
 using Database.models;
@@ -14,15 +13,13 @@ namespace CandsPositionsLibrary
         private ICandsListsQueries _candsListsQueries;
         private IPositionsQueries _cvsPositionsQueries;
         private ILuceneSearchService _luceneSearchService;
-        private IAnalyzePositionsService _analyzePositionsService;
         private IPositionPropsWriterService _positionPropsWriterService;
 
-        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, IAnalyzePositionsService analyzePositionsService, IPositionPropsWriterService positionPropsWriterService)
+        public CandsListsServise(ICandsListsQueries candsListsQueries, IPositionsQueries cvsPositionsQueries, ILuceneSearchService luceneSearchService, IPositionPropsWriterService positionPropsWriterService)
         {
             _candsListsQueries = candsListsQueries;
             _cvsPositionsQueries = cvsPositionsQueries;
             _luceneSearchService = luceneSearchService;
-            _analyzePositionsService = analyzePositionsService;
             _positionPropsWriterService = positionPropsWriterService;
         }
 
@@ -49,28 +46,6 @@ namespace CandsPositionsLibrary
         public async Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId)
         {
             return await _candsListsQueries.GetFolderCandsList(companyId, folderId);
-        }
-
-        public async Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId)
-        {
-            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-
-            if (analyzed == null)
-            {
-                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
-                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
-                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-            }
-
-            return analyzed;
-        }
-
-        public async Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId)
-        {
-            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-            if (analyzed == null) return [];
-
-            return await _luceneSearchService.SearchCandidatesByPosition(analyzed, maxResults: 500);
         }
 
         public async Task<List<SearchEntry>> ComplexSearchCands(int companyId, SearchTermsModel searchTerms)

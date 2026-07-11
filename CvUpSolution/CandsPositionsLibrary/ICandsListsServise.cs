@@ -11,8 +11,6 @@ namespace CandsPositionsLibrary
         Task<List<CandModel?>> GetPosTypeCandsList(int companyId, int positionTypeId);
         Task<List<CandModel?>> GetFolderCandsList(int companyId, int folderId);
 
-        Task<List<SearchEntry>> GetLuceneCandidatesForPosition(int positionId);
-        Task<AnalyzedPositionModel?> GetAnalyzedPosition(int positionId);
         Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154);
         Task<List<SearchEntry>> ComplexSearchCands(int companyId, SearchTermsModel searchTerms);
         Task SaveSearchTerms(SearchTermsModel searchTerms);

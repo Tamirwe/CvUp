@@ -2,8 +2,6 @@ using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using AiLibrary;
-using AiLibrary.AnalyzePositions;
-using QueueLibrary;
 
 namespace CandsPositionsLibrary
 {
@@ -11,15 +9,11 @@ namespace CandsPositionsLibrary
     {
         private IPositionsQueries _cvsPositionsQueries;
         private ICandsListsQueries _candsListsQueries;
-        private IDbQueueService _queueService;
-        private IAnalyzePositionsService _analyzePositionsService;
 
-        public PositionsServise(IPositionsQueries cvsPositionsQueries, ICandsListsQueries candsListsQueries, IDbQueueService queueService, IAnalyzePositionsService analyzePositionsService)
+        public PositionsServise(IPositionsQueries cvsPositionsQueries, ICandsListsQueries candsListsQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
             _candsListsQueries = candsListsQueries;
-            _queueService = queueService;
-            _analyzePositionsService = analyzePositionsService;
         }
 
         public async Task<PositionModel> GetPosition(int companyId, int positionId)
@@ -32,7 +26,6 @@ namespace CandsPositionsLibrary
             position newRec = await _cvsPositionsQueries.AddPosition(data, companyId, userId);
             await _cvsPositionsQueries.AddUpdateInterviewers(companyId, newRec.id, data.interviewersIds);
             await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, newRec.id, data.contactsIds);
-            await _queueService.EnqueueAsync("analyze position", newRec.id.ToString());
             return newRec.id;
         }
 
@@ -40,7 +33,6 @@ namespace CandsPositionsLibrary
         {
             await _cvsPositionsQueries.UpdatePosition(data, companyId, userId);
             await _cvsPositionsQueries.AddUpdatePositionContacts(companyId, data.id, data.contactsIds);
-            await _queueService.EnqueueAsync("analyze position", data.id.ToString());
             return data.id;
         }
 
@@ -97,20 +89,6 @@ namespace CandsPositionsLibrary
         public async Task UpdatePositionDate(int companyId, int positionId, bool isUpdateCount)
         {
             await _cvsPositionsQueries.UpdatePositionDate(companyId, positionId, isUpdateCount);
-        }
-
-        public async Task<AnalyzedPositionModel?> GetPositionAnalyzedData(int positionId)
-        {
-            var analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-
-            if (analyzed == null)
-            {
-                var companyId = await _cvsPositionsQueries.GetPositionCompanyId(positionId);
-                await _analyzePositionsService.AnalyzePosition(positionId, companyId);
-                analyzed = await _cvsPositionsQueries.GetAnalyzedPosition(positionId);
-            }
-
-            return analyzed;
         }
     }
 }

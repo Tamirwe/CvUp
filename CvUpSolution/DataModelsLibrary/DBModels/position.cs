@@ -43,8 +43,6 @@ public partial class position
 
     public int? cands_count { get; set; }
 
-    public virtual analyzed_position? analyzed_position { get; set; }
-
     public virtual company company { get; set; } = null!;
 
     public virtual contact? contact { get; set; }

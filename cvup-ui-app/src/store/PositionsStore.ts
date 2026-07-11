@@ -2,7 +2,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   IAppSettings,
   IPosition,
-  IPositionAnalyzedData,
   IPositionType,
   IPositionTypeCount,
   ISearchModel,
@@ -25,7 +24,6 @@ export class PositionsStore {
   sortedPosList: IPosition[] = [];
   sortedPosTypesList: IPositionType[] = [];
   posTypescountList: IPositionTypeCount[] = [];
-  positionAnalyzedData: IPositionAnalyzedData | undefined;
   positionAiRewriteData: string | undefined;
 
   constructor(
@@ -305,15 +303,6 @@ export class PositionsStore {
     const res = await this.positionApi.getPosTypesCounts();
     runInAction(() => {
       this.posTypescountList = res.data;
-    });
-    this.rootStore.generalStore.backdrop = false;
-  }
-
-  async getPositionAnalyzedData(positionId: number) {
-    this.rootStore.generalStore.backdrop = true;
-    const res = await this.positionApi.getPositionAnalyzedData(positionId);
-    runInAction(() => {
-      this.positionAnalyzedData = { ...res.data, positionId };
     });
     this.rootStore.generalStore.backdrop = false;
   }

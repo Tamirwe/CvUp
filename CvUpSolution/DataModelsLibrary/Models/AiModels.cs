@@ -42,27 +42,6 @@ namespace DataModelsLibrary.Models
 
     }
 
-    public class AnalyzedPositionModel
-    {
-        [JsonProperty("title")] public string? Title { get; set; }
-        [JsonProperty("seniority")] public string? Seniority { get; set; }
-        [JsonProperty("min_years_experience")] public int? MinYearsExperience { get; set; }
-        [JsonProperty("degree_required")] public string? DegreeRequired { get; set; }
-        [JsonProperty("hard_requirements")] public List<string> HardRequirements { get; set; } = [];
-        [JsonProperty("skills_required")] public List<string> SkillsRequired { get; set; } = [];
-        [JsonProperty("skills_preferred")] public List<string> SkillsPreferred { get; set; } = [];
-        [JsonProperty("industries")] public List<string> Industries { get; set; } = [];
-        [JsonProperty("languages")] public List<PositionLanguageModel> Languages { get; set; } = [];
-        [JsonProperty("lucene_keywords")] public PositionLuceneKeywordsModel LuceneKeywords { get; set; } = new();
-        [JsonProperty("embedding_text")] public string? EmbeddingText { get; set; }
-    }
-
-    public class PositionLanguageModel
-    {
-        [JsonProperty("language")] public string? Language { get; set; }
-        [JsonProperty("level")] public string? Level { get; set; }
-    }
-
     public class PositionLuceneKeywordsModel
     {
         [JsonProperty("he")] public List<string> He { get; set; } = [];

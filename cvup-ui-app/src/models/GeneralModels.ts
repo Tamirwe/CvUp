@@ -274,34 +274,9 @@ export interface IRestoreCandDetails {
   positionName?: string;
 }
 
-export interface IPositionLanguage {
-  language: string;
-  level?: string;
-}
-
-export interface IPositionLuceneKeywords {
-  must?: string[];
-  should?: string[];
-}
-
 export interface IPositionAiRewriteResult {
   requirements?: string;
   description?: string;
-}
-
-export interface IPositionAnalyzedData {
-  positionId: number;
-  title?: string;
-  seniority?: string;
-  min_years_experience?: number;
-  degree_required?: string;
-  hard_requirements: string[];
-  skills_required: string[];
-  skills_preferred: string[];
-  industries: string[];
-  languages: IPositionLanguage[];
-  lucene_keywords: IPositionLuceneKeywords;
-  embedding_text?: string;
 }
 
 export interface SearchTermsModel {

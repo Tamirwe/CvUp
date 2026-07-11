@@ -17,16 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AnalyzePosition\OpenAiAnalyzePositionService.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="AnalyzeCv\cv_prompt.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="AnalyzePosition\position_prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="PositionPropsWriter\position_description_prompt.txt">

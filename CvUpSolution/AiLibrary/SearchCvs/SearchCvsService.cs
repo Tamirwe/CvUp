@@ -21,10 +21,5 @@ namespace AiLibrary.SearchCvs
             float[] queryVector = await _searchCvsOpenAi.EmbedSearchQuery(AiSearchPhrase);
             return await _aiQueries.SearchCvsByEmbedding(queryVector, candidateIds, limit);
         }
-
-        public async Task<List<AiCandidateSearchModel>> SearchCvsByPositionFiltered(int positionId, List<int> candidateIds, int limit)
-        {
-            return await _aiQueries.SearchCvsByPositionFiltered(positionId, candidateIds, limit);
-        }
     }
 }

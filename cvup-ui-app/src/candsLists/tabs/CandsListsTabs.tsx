@@ -7,7 +7,6 @@ import { PositionCandsList } from "../PositionCandsList";
 import { PositionGroupCandsList } from "../PositionGroupCandsList";
 import { FolderCandsList } from "../FolderCandsList";
 import { AllCandsList } from "../AllCandsList";
-import { AiCandsList } from "../AiCandsList";
 
 export const CandsListsTabs = observer(() => {
   const { candsStore, positionsStore, foldersStore } = useStore();
@@ -114,9 +113,6 @@ export const CandsListsTabs = observer(() => {
         <AllCandsList />
       </div>
 
-      <div hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.AI}>
-        <AiCandsList />
-      </div>
       <div
         hidden={candsStore.currentTabCandsLists !== TabsCandsEnum.PositionCands}
       >

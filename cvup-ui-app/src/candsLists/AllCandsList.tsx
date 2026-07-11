@@ -12,7 +12,7 @@ export const AllCandsList = observer(() => {
   const { candsStore } = useStore();
   const [list, setList] = useState<ICand[]>([]);
   const [candsAdvancedOpen, setCandsAdvancedOpen] = useState(false);
-  const [isAISelected, setIsAISelected] = useState(false);
+  const isAISelected = false;
 
   useEffect(() => {
     setList(candsStore.allCandsList);
@@ -20,13 +20,6 @@ export const AllCandsList = observer(() => {
 
   const sortList = (isDesc: boolean) => {
     setList(sortCandList(isDesc, candsStore.allCandsList));
-  };
-
-  const handleAI = (selected: boolean, searchValue: string) => {
-    setIsAISelected(selected);
-    if (selected) {
-      candsStore.AiSearchCands({ value: searchValue, exact: false });
-    }
   };
 
   const handleSearch = (searchVals: ISearchModel) => {
@@ -51,8 +44,6 @@ export const AllCandsList = observer(() => {
           onSort={sortList}
           showRefreshList={true}
           extSearch={candsStore.extSearch}
-          showAI={false}
-          onAI={handleAI}
           showSE={true}
         />
       </Box>

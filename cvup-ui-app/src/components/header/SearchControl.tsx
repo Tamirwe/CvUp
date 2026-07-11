@@ -83,8 +83,6 @@ interface IProps {
   showRefreshList?: boolean;
   onRefreshLists?: () => void;
   extSearch?: ISearchModel;
-  showAI?: boolean;
-  onAI?: (selected: boolean, searchValue: string) => void;
   showSE?: boolean;
   positionId?: number;
 }
@@ -98,8 +96,6 @@ export const SearchControl = ({
   showRefreshList = false,
   onRefreshLists,
   extSearch,
-  showAI = false,
-  onAI,
   showSE = false,
   positionId=0
 }: IProps) => {
@@ -112,7 +108,6 @@ export const SearchControl = ({
     advancedValue: "",
   });
   const [sortAsc, setSortAsc] = useState(false);
-  const [selectedAI, setSelectedAI] = useState(false);
   const [seDialogOpen, setSeDialogOpen] = useState(false);
   const [refreshList, setRefreshList] = useState(true);
   const [isExecSearch, setIsExecSearch] = useState<boolean>(false);
@@ -226,37 +221,6 @@ export const SearchControl = ({
             </IconWrapper>
           )}
         </Search>
-         {showAI && (
-          <ToggleButton
-            sx={{
-              direction: "ltr",
-              "&.MuiButtonBase-root": {
-                padding: "2px 10px",
-                fontSize: "0.8rem",
-                fontWeight: "bold",
-                border: "1px solid #64a3fb",
-                margin: "0 4px",
-              },
-              "&.Mui-selected": {
-                color: "white",
-                backgroundColor: "#64a3fb",
-                "&:hover": { backgroundColor: "#5090e0" },
-              },
-            }}
-            value="check"
-            color="primary"
-            selected={selectedAI}
-            onChange={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              const next = !selectedAI;
-              setSelectedAI(next);
-              onAI && onAI(next, searchVals.value || "");
-            }}
-          >
-            AI
-          </ToggleButton>
-        )}
         {showSE && (
           <ToggleButton
             sx={{
@@ -284,7 +248,7 @@ export const SearchControl = ({
               handleGetPositionSearchTerms();
             }}
           >
-            {positionId > 0 ? "Find Matches" : "SE"}
+           SE
           </ToggleButton>
         )}
         {shoeAdvancedIcon && (

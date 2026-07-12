@@ -124,7 +124,7 @@ namespace CvUpAPI.Controllers
                 candsIdsList = candsIds.GetRange(0, candsIds.Count > 300 ? 300 : candsIds.Count);
             }
 
-            if (!string.IsNullOrWhiteSpace(request.AiSearchPhrase))
+            if (request.IsAiSearch && !string.IsNullOrWhiteSpace(request.AiSearchPhrase))
             {
                 var aiResults = await _aiSearchCvsService.SearchCvs(request.AiSearchPhrase, candsIdsList, limit: 100);
                 candsIdsList = aiResults.Select(e => e.candidateId).ToList();

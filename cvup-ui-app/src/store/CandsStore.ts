@@ -54,6 +54,7 @@ searchTermsShouldHave = "";
 searchTermsMustHaveInResult = "";
 searchTermsShouldHaveInResult = "";
 searchTermsAiSearchPhrase = "";
+searchTermsIsAiSearch = true;
 
   constructor(
     private rootStore: RootStore,
@@ -1041,6 +1042,7 @@ searchTermsAiSearchPhrase = "";
       mustHaveInResult: splitTerms(this.searchTermsMustHaveInResult),
       shouldHaveInResult: splitTerms(this.searchTermsShouldHaveInResult),
       aiSearchPhrase: this.searchTermsAiSearchPhrase.trim() || undefined,
+      isAiSearch: this.searchTermsIsAiSearch,
     };
 
     if (
@@ -1071,6 +1073,7 @@ private applySearchTerms(data: SearchTermsModel | null) {
   this.searchTermsMustHaveInResult = (data?.mustHaveInResult ?? []).join(", ");
   this.searchTermsShouldHaveInResult = (data?.shouldHaveInResult ?? []).join(", ");
   this.searchTermsAiSearchPhrase = data?.aiSearchPhrase ?? "";
+  this.searchTermsIsAiSearch = data?.isAiSearch ?? true;
 }
 
 async getPositionSearchTerms(positionId: number, isReAnalyze: boolean = false) {

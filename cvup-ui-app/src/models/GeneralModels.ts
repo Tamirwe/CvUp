@@ -287,6 +287,7 @@ export interface SearchTermsModel {
   mustHaveInResult: string[];
   shouldHaveInResult: string[];
   aiSearchPhrase?: string;
+  isAiSearch: boolean;
 }
 
 export interface ISearchTermsListItem {

@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
@@ -61,6 +63,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
       candsStore.searchTermsMustHaveInResult = "";
       candsStore.searchTermsShouldHaveInResult = "";
       candsStore.searchTermsAiSearchPhrase = "";
+      candsStore.searchTermsIsAiSearch = true;
     });
   };
 
@@ -92,7 +95,7 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
             }
           >
             {generalStore.searchTermsList.map((item) => (
-              <MenuItem key={item.id} value={item.id}>
+              <MenuItem key={item.id} value={item.id} sx={{ direction: "rtl" }}>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -161,6 +164,17 @@ export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
       </Stack>
 
       <SectionLabel label="AI search within results" />
+      <FormControlLabel
+        control={
+          <Checkbox
+            id="isAiSearch"
+            checked={candsStore.searchTermsIsAiSearch}
+            onChange={(e) => runInAction(() => { candsStore.searchTermsIsAiSearch = e.target.checked; })}
+          />
+        }
+        label="AI search"
+        sx={{ direction: "rtl", mr: 0 }}
+      />
       <TextField
         fullWidth
         multiline

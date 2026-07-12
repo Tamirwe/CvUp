@@ -24,7 +24,7 @@ interface IProps {
   positionId?: number;
 }
 
-export const LuceneSearchForm = observer(({ onClose, positionId }: IProps) => {
+export const ComplexSearchForm = observer(({ onClose, positionId }: IProps) => {
   const { candsStore, generalStore } = useStore();
   const [selectedSearchId, setSelectedSearchId] = useState<number | "">("");
 

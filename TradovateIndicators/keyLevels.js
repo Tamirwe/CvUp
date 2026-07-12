@@ -2,8 +2,6 @@ const predef = require("./tools/predef");
 const meta = require("./tools/meta");
 const p = require("./tools/plotting");
 
-const MS_PER_HOUR = 60 * 60 * 1000;
-
 class keyLevels {
     map(d, index, history) {
         return {
@@ -39,20 +37,23 @@ function findPivots(series) {
 
 // Crossing/invalidation checks run against ALL bars, including the live one,
 // so a level disappears the instant price actually crosses it.
+// Age is now measured in BAR COUNT, not wall-clock time — this makes the
+// lifetime consistent across timeframes and immune to session gaps.
 function computeValidPivots(instance, series, pivots) {
     const props = instance.props;
-    const maxAgeMs = props.maxAgeHours * MS_PER_HOUR;
+    const maxAgeBars = props.maxAgeBars;
     const maxCount = props.maxLevels;
     const size = series.data.length;
 
     if (size === 0) return { validUpper: [], validLower: [], current: null };
 
     const current = series.get(size - 1);
-    const now = current.time;
+    const currentIndex = size - 1;
 
     function stillValid(pivot) {
-        const formedAt = series.get(pivot.index).time;
-        if (now - formedAt > maxAgeMs) return false;
+        // pivot formed too many bars ago
+        if (currentIndex - pivot.index > maxAgeBars) return false;
+
         for (let j = pivot.index + 1; j < size; j++) {
             const bar = series.get(j);
             if (pivot.type === "upper" && bar.high > pivot.value) return false;
@@ -138,7 +139,6 @@ function proximityPlotter(canvas, instance, series) {
     const distLower = nearestLower ? (price - nearestLower.value) : Infinity;
     const closerIsUpper = distUpper <= distLower;
 
-    // always draw — no threshold check anymore
     if (closerIsUpper) {
         drawDot(canvas, x, current.high + markOffset, props.proximityColor, props.proximityDotSizePx, nudge);
     } else {
@@ -154,7 +154,7 @@ module.exports = {
     params: {
         pivotOffsetTicks: predef.paramSpecs.number(3, 1, 1),
         validOffsetTicks: predef.paramSpecs.number(2, 1, 1),
-        maxAgeHours: predef.paramSpecs.number(48, 1, 1),
+        maxAgeBars: predef.paramSpecs.number(150, 1, 1),
         maxLevels: predef.paramSpecs.number(40, 1, 1),
         dotSizePx: predef.paramSpecs.number(6, 1, 1),
         upperColor: predef.paramSpecs.color("#4da6ff"),

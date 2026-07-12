@@ -226,6 +226,19 @@ else
             .ForJob(queueCleanup)
             .WithIdentity("Queue-Cleanup")
             .WithCronSchedule("0 0 4 * * ?"));
+
+        // --- Job 7: Search Terms Cleanup ---
+        var searchTermsCleanup = new JobKey("SearchTermsCleanupJob");
+
+        q.AddJob<SearchTermsCleanupJob>(opts => opts
+           .WithIdentity(searchTermsCleanup)
+           .WithDescription("Search Terms Cleanup"));
+
+        // once a day at 4:15 AM
+        q.AddTrigger(opts => opts
+            .ForJob(searchTermsCleanup)
+            .WithIdentity("Search-Terms-Cleanup")
+            .WithCronSchedule("0 15 4 * * ?"));
     });
 }
 

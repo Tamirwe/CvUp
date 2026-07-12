@@ -73,6 +73,11 @@ namespace CandsPositionsLibrary
             await _cvsPositionsQueries.DeleteSearchTerms(id);
         }
 
+        public async Task CleanupOldSearchTerms(int keepCount = 100)
+        {
+            await _cvsPositionsQueries.CleanupOldSearchTerms(keepCount);
+        }
+
         public async Task<SearchTermsModel?> GetPositionSearchTerms(int positionId, bool isReAnalyze = false, int companyId = 154)
         {
             var searchTerms = isReAnalyze ? null : await _cvsPositionsQueries.GetExistPositionSearchTerms(positionId, 0);

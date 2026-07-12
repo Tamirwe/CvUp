@@ -66,5 +66,6 @@ namespace DataModelsLibrary.Queries
         Task SaveSearchTerms(SearchTermsModel searchTerms);
         Task<List<SearchTermsListItemModel>> GetSearchTermsList();
         Task DeleteSearchTerms(int id);
+        Task CleanupOldSearchTerms(int keepCount = 100);
     }
 }

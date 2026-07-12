@@ -17,5 +17,6 @@ namespace CandsPositionsLibrary
         Task<List<SearchTermsListItemModel>> GetSearchTermsList();
         Task<SearchTermsModel?> GetSearchTermsById(int id);
         Task DeleteSearchTerms(int id);
+        Task CleanupOldSearchTerms(int keepCount = 100);
     }
 }

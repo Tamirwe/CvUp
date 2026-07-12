@@ -1023,9 +1023,11 @@ namespace DataModelsLibrary.Queries
         {
             using var dbContext = new cvupdbContext();
 
+            var searchDescr = BuildSearchDescr(searchTerms);
+
             var existing = searchTerms.PositionId > 0
                 ? await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id == searchTerms.PositionId)
-                : null;
+                : await dbContext.search_terms.FirstOrDefaultAsync(t => t.position_id <= 0 && t.search_descr == searchDescr);
 
             if (existing == null)
             {
@@ -1038,7 +1040,7 @@ namespace DataModelsLibrary.Queries
             existing.must_have_in_result = searchTerms.MustHaveInResult;
             existing.should_have_in_result = searchTerms.ShouldHaveInResult;
             existing.ai_search_phrase = searchTerms.AiSearchPhrase;
-            existing.search_descr = BuildSearchDescr(searchTerms);
+            existing.search_descr = searchDescr;
             existing.updated_at = DateTime.UtcNow;
 
             await dbContext.SaveChangesAsync();
@@ -1081,6 +1083,21 @@ namespace DataModelsLibrary.Queries
                 dbContext.search_terms.Remove(existing);
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task CleanupOldSearchTerms(int keepCount = 100)
+        {
+            using var dbContext = new cvupdbContext();
+
+            var toDelete = await dbContext.search_terms
+                .OrderByDescending(t => t.updated_at)
+                .Skip(keepCount)
+                .ToListAsync();
+
+            if (toDelete.Count == 0) return;
+
+            dbContext.search_terms.RemoveRange(toDelete);
+            await dbContext.SaveChangesAsync();
         }
 
     }

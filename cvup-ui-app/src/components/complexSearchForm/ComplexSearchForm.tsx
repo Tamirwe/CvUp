@@ -64,6 +64,7 @@ export const ComplexSearchForm = observer(({ onClose, positionId }: IProps) => {
       candsStore.searchTermsShouldHaveInResult = "";
       candsStore.searchTermsAiSearchPhrase = "";
       candsStore.searchTermsIsAiSearch = true;
+      candsStore.searchTermsIsIndexSearch = true;
     });
   };
 
@@ -118,6 +119,17 @@ export const ComplexSearchForm = observer(({ onClose, positionId }: IProps) => {
       </Stack>
 
       <SectionLabel label="Index Search" />
+      <FormControlLabel
+        control={
+          <Checkbox
+            id="isIndexSearch"
+            checked={candsStore.searchTermsIsIndexSearch}
+            onChange={(e) => runInAction(() => { candsStore.searchTermsIsIndexSearch = e.target.checked; })}
+          />
+        }
+        label="Index search"
+        sx={{ direction: "rtl", mr: 0 }}
+      />
       <Stack spacing={1.5} sx={{ mb: 3 }}>
         <TextField
           fullWidth
@@ -178,7 +190,7 @@ export const ComplexSearchForm = observer(({ onClose, positionId }: IProps) => {
       <TextField
         fullWidth
         multiline
-        rows={4}
+        rows={3}
         label="Describe the candidate you are looking for"
         placeholder="e.g. Senior C# developer with fintech experience and strong SQL skills..."
         value={candsStore.searchTermsAiSearchPhrase}

@@ -115,7 +115,7 @@ namespace CvUpAPI.Controllers
             List<int> candsIdsList = [];
             List<SearchEntry> indexSearchResult = [];
 
-            if (hasTerms)
+            if (request.IsIndexSearch && hasTerms)
             {
                 indexSearchResult = await _candsListsService.ComplexSearchCands(Globals.CompanyId, request);
 

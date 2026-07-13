@@ -393,5 +393,30 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<candidate>> GetCandsByEmail(string candEmail)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                return await dbContext.candidates
+                    .FromSqlInterpolated($@"SELECT * FROM public.candidates where LOWER(email) = {candEmail}")
+                    .ToListAsync();
+            }
+        }
+
+        public async Task UpdateCvsCandId(int candMainId, List<int> candIds)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var cvsToUpdate = await dbContext.cvs.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+
+                foreach (var cvItem in cvsToUpdate)
+                {
+                    cvItem.candidate_id = candMainId;
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

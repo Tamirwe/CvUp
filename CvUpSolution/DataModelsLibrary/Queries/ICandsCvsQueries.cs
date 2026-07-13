@@ -21,5 +21,7 @@ namespace DataModelsLibrary.Queries
         Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail();
+        Task<List<candidate>> GetCandsByEmail(string candEmail);
+        Task UpdateCvsCandId(int candMainId, List<int> candIds);
     }
 }

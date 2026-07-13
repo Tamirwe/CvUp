@@ -15,7 +15,9 @@ using OpenAiLibrary.SearchCvs;
 using OpenAiLibrary.AnalyzeCv;
 using AiLibrary;
 using AiLibrary.AnalyzeCvs;
+using AiLibrary.PositionPropsWriter;
 using AiLibrary.SearchCvs;
+using OpenAiLibrary.PositionPropsWriter;
 using Quartz;
 using QueueLibrary;
 using SchedulerWorkerService.Jobs;
@@ -69,6 +71,9 @@ builder.Services.AddTransient<IAnalyzeCvsService, AnalyzeCvsService>();
 builder.Services.AddTransient<IOpenAiEmbeddingService, OpenAiEmbeddingService>();
 builder.Services.AddTransient<IOpenAiSearchCvsService, OpenAiSearchCvsService>();
 builder.Services.AddTransient<ISearchCvsService, SearchCvsService>();
+builder.Services.AddTransient<IOpenAiPositionPropsWriterService, OpenAiPositionPropsWriterService>();
+builder.Services.AddTransient<IOpenAiGetPositionSearchTermsService, OpenAiGetPositionSearchTermsService>();
+builder.Services.AddTransient<IPositionPropsWriterService, PositionPropsWriterService>();
 
 EventViewerWriter.InfoMessage($"Scheduler started at: {DateTimeOffset.Now}");
 

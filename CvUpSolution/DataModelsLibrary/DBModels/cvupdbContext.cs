@@ -86,6 +86,8 @@ public partial class cvupdbContext : DbContext
         {
             entity.HasKey(e => e.id).HasName("analyzed_cvs_pkey");
 
+            entity.HasIndex(e => e.candidate_id, "fki_fk_analyzed_cvs_candidate_id_candidates_id");
+
             entity.Property(e => e.area).HasMaxLength(20);
             entity.Property(e => e.city_he).HasMaxLength(50);
             entity.Property(e => e.created_at).HasDefaultValueSql("now()");
@@ -103,8 +105,7 @@ public partial class cvupdbContext : DbContext
 
             entity.HasOne(d => d.candidate).WithMany(p => p.analyzed_cvs)
                 .HasForeignKey(d => d.candidate_id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("analyzed_cvs_candidate_id_fkey");
+                .HasConstraintName("fk_analyzed_cvs_candidate_id_candidates_id");
 
             entity.HasOne(d => d.cv).WithMany(p => p.analyzed_cvs)
                 .HasForeignKey(d => d.cv_id)

@@ -194,8 +194,8 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvupdbContext())
             {
-                candidate? cand = await dbContext.candidates.Where(x => x.email == email).FirstOrDefaultAsync();
-                return cand;
+                List<candidate> cands = await dbContext.candidates.Where(x => x.email != null && x.email.ToLower() == email.ToLower()).ToListAsync();
+                return cands.FirstOrDefault();
             }
         }
 

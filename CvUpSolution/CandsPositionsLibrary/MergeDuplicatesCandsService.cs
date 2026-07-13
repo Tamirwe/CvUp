@@ -1,10 +1,11 @@
 using Database.models;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using Microsoft.Extensions.Logging;
 
 namespace CandsPositionsLibrary
 {
-    public class MergeDuplicatesCandsService(ICandsCvsQueries candsCvsQueries) : IMergeDuplicatesCandsService
+    public class MergeDuplicatesCandsService(ICandsCvsQueries candsCvsQueries, IFoldersQueries foldersQueries, ILogger<MergeDuplicatesCandsService> logger) : IMergeDuplicatesCandsService
     {
         public async Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail()
         {
@@ -18,31 +19,51 @@ namespace CandsPositionsLibrary
             return duplicates;
         }
 
-        private async Task<int> FindCandPrimaryRecord(string candEmail)
+        private async Task<int?> FindCandPrimaryRecord(string candEmail)
         {
-            var cands = await candsCvsQueries.GetCandsByEmail(candEmail);
+            // Single shared context/connection for this candEmail, so all writes commit or
+            // roll back together. A TransactionScope would open a separate connection per
+            // query call, which forces Npgsql to escalate to a distributed transaction it
+            // doesn't support.
+            using var dbContext = new cvupdbContext();
+            using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-            var candIds = cands.Select(c => c.id).ToList();
+            try
+            {
+                var cands = await candsCvsQueries.GetCandsByEmail(candEmail, dbContext);
 
-            var orderedCands = cands.OrderByDescending(c => c.date_updated).ToList();
-            var mainCand = orderedCands.First();
-            var candMainId = mainCand.id;
+                var candIds = cands.Select(c => c.id).ToList();
 
-            var otherCandIds = candIds.Where(id => id != candMainId).ToList();
+                var orderedCands = cands.OrderByDescending(c => c.date_updated).ToList();
+                var mainCand = orderedCands.First();
+                var candMainId = mainCand.id;
 
-            MergeCandReview(orderedCands, mainCand);
-            MergeCandDetails(orderedCands, mainCand);
+                var otherCandIds = candIds.Where(id => id != candMainId).ToList();
 
-            await candsCvsQueries.UpdateCandidate(mainCand);
+                MergeCandReview(orderedCands, mainCand);
+                MergeCandDetails(orderedCands, mainCand);
 
-            await candsCvsQueries.UpdateCvsCandId(candMainId, otherCandIds);
-            await candsCvsQueries.UpdateCvsTxtCandId(candMainId, otherCandIds);
-            await candsCvsQueries.UpdateFoldersCandsCandId(candMainId, otherCandIds);
-            await candsCvsQueries.UpdatePositionCandidatesCandId(candMainId, otherCandIds);
+                await candsCvsQueries.UpdateCandidate(mainCand, dbContext);
 
-            await candsCvsQueries.DeleteCands(otherCandIds);
+                await candsCvsQueries.UpdateCvsCandId(candMainId, otherCandIds, dbContext);
+                await candsCvsQueries.UpdateCvsTxtCandId(candMainId, otherCandIds, dbContext);
+                await candsCvsQueries.UpdateFoldersCandsCandId(candMainId, otherCandIds, dbContext);
+                await candsCvsQueries.UpdatePositionCandidatesCandId(candMainId, otherCandIds, dbContext);
 
-            return candMainId;
+                await candsCvsQueries.DeleteCands(otherCandIds, dbContext);
+
+                await transaction.CommitAsync();
+
+                await foldersQueries.UpdateCandidateFolders(companyId: 154, candidateId: candMainId);
+
+                return candMainId;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                logger.LogError(ex, "Failed to merge duplicate candidates for email {CandEmail}", candEmail);
+                return null;
+            }
         }
 
         private static void MergeCandReview(List<candidate> orderedCands, candidate mainCand)

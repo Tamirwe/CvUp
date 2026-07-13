@@ -15,17 +15,17 @@ namespace DataModelsLibrary.Queries
         Task UpdateCvDate(int cvId);
         Task UpdateCvKeyId(ImportCvModel importCv);
         Task<int> AddCandidate(candidate newCand);
-        Task UpdateCandidate(candidate cand);
+        Task UpdateCandidate(candidate cand, cvupdbContext? dbContext = null);
         Task<candidate?> GetCandidateByEmail(string email);
         Task<candidate?> GetCandidateByPhone(string phone);
         Task<List<CandCvModel>> GetCandCvsList(int companyId, int candidateId);
         Task UpdateCvsAsciiSum(int companyId);
         Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail();
-        Task<List<candidate>> GetCandsByEmail(string candEmail);
-        Task UpdateCvsCandId(int candMainId, List<int> candIds);
-        Task UpdateCvsTxtCandId(int candMainId, List<int> candIds);
-        Task UpdateFoldersCandsCandId(int candMainId, List<int> candIds);
-        Task UpdatePositionCandidatesCandId(int candMainId, List<int> candIds);
-        Task DeleteCands(List<int> candIds);
+        Task<List<candidate>> GetCandsByEmail(string candEmail, cvupdbContext? dbContext = null);
+        Task UpdateCvsCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null);
+        Task UpdateCvsTxtCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null);
+        Task UpdateFoldersCandsCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null);
+        Task UpdatePositionCandidatesCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null);
+        Task DeleteCands(List<int> candIds, cvupdbContext? dbContext = null);
     }
 }

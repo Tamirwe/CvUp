@@ -181,12 +181,19 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task UpdateCandidate(candidate cand)
+        public async Task UpdateCandidate(candidate cand, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var result = dbContext.candidates.Update(cand);
-                await dbContext.SaveChangesAsync();
+                context.candidates.Update(cand);
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 
@@ -393,63 +400,87 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<candidate>> GetCandsByEmail(string candEmail)
+        public async Task<List<candidate>> GetCandsByEmail(string candEmail, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                return await dbContext.candidates
+                return await context.candidates
                     .FromSqlInterpolated($@"SELECT * FROM public.candidates where LOWER(email) = {candEmail}")
                     .ToListAsync();
             }
+            finally
+            {
+                ownContext?.Dispose();
+            }
         }
 
-        public async Task UpdateCvsCandId(int candMainId, List<int> candIds)
+        public async Task UpdateCvsCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var cvsToUpdate = await dbContext.cvs.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+                var cvsToUpdate = await context.cvs.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
 
                 foreach (var cvItem in cvsToUpdate)
                 {
                     cvItem.candidate_id = candMainId;
                 }
 
-                await dbContext.SaveChangesAsync();
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 
-        public async Task UpdateCvsTxtCandId(int candMainId, List<int> candIds)
+        public async Task UpdateCvsTxtCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var cvsTxtToUpdate = await dbContext.cvs_txts.Where(x => x.candidate_id.HasValue && candIds.Contains(x.candidate_id.Value)).ToListAsync();
+                var cvsTxtToUpdate = await context.cvs_txts.Where(x => x.candidate_id.HasValue && candIds.Contains(x.candidate_id.Value)).ToListAsync();
 
                 foreach (var cvTxtItem in cvsTxtToUpdate)
                 {
                     cvTxtItem.candidate_id = candMainId;
                 }
 
-                await dbContext.SaveChangesAsync();
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 
-        public async Task UpdateFoldersCandsCandId(int candMainId, List<int> candIds)
+        public async Task UpdateFoldersCandsCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var mainFolderIds = await dbContext.folders_cands
+                var mainFolderIds = await context.folders_cands
                     .Where(x => x.candidate_id == candMainId)
                     .Select(x => x.folder_id)
                     .ToListAsync();
 
-                var foldersCandsToUpdate = await dbContext.folders_cands.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+                var foldersCandsToUpdate = await context.folders_cands.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
 
                 foreach (var folderCandItem in foldersCandsToUpdate)
                 {
                     if (mainFolderIds.Contains(folderCandItem.folder_id))
                     {
                         // Main candidate already has this folder — remove the duplicate row to avoid a constraint violation
-                        dbContext.folders_cands.Remove(folderCandItem);
+                        context.folders_cands.Remove(folderCandItem);
                     }
                     else
                     {
@@ -458,27 +489,34 @@ namespace DataModelsLibrary.Queries
                     }
                 }
 
-                await dbContext.SaveChangesAsync();
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 
-        public async Task UpdatePositionCandidatesCandId(int candMainId, List<int> candIds)
+        public async Task UpdatePositionCandidatesCandId(int candMainId, List<int> candIds, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var mainPositionIds = await dbContext.position_candidates
+                var mainPositionIds = await context.position_candidates
                     .Where(x => x.candidate_id == candMainId)
                     .Select(x => x.position_id)
                     .ToListAsync();
 
-                var positionCandidatesToUpdate = await dbContext.position_candidates.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+                var positionCandidatesToUpdate = await context.position_candidates.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
 
                 foreach (var posCandItem in positionCandidatesToUpdate)
                 {
                     if (mainPositionIds.Contains(posCandItem.position_id))
                     {
                         // Main candidate already has this position — remove the duplicate row to avoid a constraint violation
-                        dbContext.position_candidates.Remove(posCandItem);
+                        context.position_candidates.Remove(posCandItem);
                     }
                     else
                     {
@@ -487,17 +525,28 @@ namespace DataModelsLibrary.Queries
                     }
                 }
 
-                await dbContext.SaveChangesAsync();
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 
-        public async Task DeleteCands(List<int> candIds)
+        public async Task DeleteCands(List<int> candIds, cvupdbContext? dbContext = null)
         {
-            using (var dbContext = new cvupdbContext())
+            var ownContext = dbContext == null ? new cvupdbContext() : null;
+            var context = dbContext ?? ownContext!;
+
+            try
             {
-                var candsToDelete = await dbContext.candidates.Where(x => candIds.Contains(x.id)).ToListAsync();
-                dbContext.candidates.RemoveRange(candsToDelete);
-                await dbContext.SaveChangesAsync();
+                var candsToDelete = await context.candidates.Where(x => candIds.Contains(x.id)).ToListAsync();
+                context.candidates.RemoveRange(candsToDelete);
+                await context.SaveChangesAsync();
+            }
+            finally
+            {
+                ownContext?.Dispose();
             }
         }
 

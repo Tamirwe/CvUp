@@ -379,5 +379,19 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail()
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                return await dbContext.Database.SqlQuery<DuplicateEmailCandModel>($@"
+                    SELECT LOWER(email) AS email, COUNT(*) AS cnt
+                    FROM public.candidates
+                    WHERE email IS NOT NULL
+                    GROUP BY LOWER(email)
+                    HAVING COUNT(*) > 1
+                    ORDER BY cnt DESC").ToListAsync();
+            }
+        }
+
     }
 }

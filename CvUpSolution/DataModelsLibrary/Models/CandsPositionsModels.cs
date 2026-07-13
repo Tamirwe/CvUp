@@ -381,4 +381,10 @@ namespace DataModelsLibrary.Models
         public string cvFileType { get; set; } = string.Empty;
         public string fileName { get; set; } = string.Empty;
     }
+
+    public class DuplicateEmailCandModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public int Cnt { get; set; }
+    }
 }

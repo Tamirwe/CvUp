@@ -23,5 +23,6 @@ namespace DataModelsLibrary.Queries
         Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail();
         Task<List<candidate>> GetCandsByEmail(string candEmail);
         Task UpdateCvsCandId(int candMainId, List<int> candIds);
+        Task UpdateCvsTxtCandId(int candMainId, List<int> candIds);
     }
 }

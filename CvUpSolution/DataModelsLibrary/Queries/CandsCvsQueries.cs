@@ -418,5 +418,20 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task UpdateCvsTxtCandId(int candMainId, List<int> candIds)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var cvsTxtToUpdate = await dbContext.cvs_txts.Where(x => x.candidate_id.HasValue && candIds.Contains(x.candidate_id.Value)).ToListAsync();
+
+                foreach (var cvTxtItem in cvsTxtToUpdate)
+                {
+                    cvTxtItem.candidate_id = candMainId;
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

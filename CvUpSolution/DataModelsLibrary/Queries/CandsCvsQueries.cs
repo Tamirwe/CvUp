@@ -433,5 +433,73 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task UpdateFoldersCandsCandId(int candMainId, List<int> candIds)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var mainFolderIds = await dbContext.folders_cands
+                    .Where(x => x.candidate_id == candMainId)
+                    .Select(x => x.folder_id)
+                    .ToListAsync();
+
+                var foldersCandsToUpdate = await dbContext.folders_cands.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+
+                foreach (var folderCandItem in foldersCandsToUpdate)
+                {
+                    if (mainFolderIds.Contains(folderCandItem.folder_id))
+                    {
+                        // Main candidate already has this folder — remove the duplicate row to avoid a constraint violation
+                        dbContext.folders_cands.Remove(folderCandItem);
+                    }
+                    else
+                    {
+                        folderCandItem.candidate_id = candMainId;
+                        mainFolderIds.Add(folderCandItem.folder_id);
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdatePositionCandidatesCandId(int candMainId, List<int> candIds)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var mainPositionIds = await dbContext.position_candidates
+                    .Where(x => x.candidate_id == candMainId)
+                    .Select(x => x.position_id)
+                    .ToListAsync();
+
+                var positionCandidatesToUpdate = await dbContext.position_candidates.Where(x => candIds.Contains(x.candidate_id)).ToListAsync();
+
+                foreach (var posCandItem in positionCandidatesToUpdate)
+                {
+                    if (mainPositionIds.Contains(posCandItem.position_id))
+                    {
+                        // Main candidate already has this position — remove the duplicate row to avoid a constraint violation
+                        dbContext.position_candidates.Remove(posCandItem);
+                    }
+                    else
+                    {
+                        posCandItem.candidate_id = candMainId;
+                        mainPositionIds.Add(posCandItem.position_id);
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteCands(List<int> candIds)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                var candsToDelete = await dbContext.candidates.Where(x => candIds.Contains(x.id)).ToListAsync();
+                dbContext.candidates.RemoveRange(candsToDelete);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

@@ -37,6 +37,10 @@ namespace CandsPositionsLibrary
 
             await candsCvsQueries.UpdateCvsCandId(candMainId, otherCandIds);
             await candsCvsQueries.UpdateCvsTxtCandId(candMainId, otherCandIds);
+            await candsCvsQueries.UpdateFoldersCandsCandId(candMainId, otherCandIds);
+            await candsCvsQueries.UpdatePositionCandidatesCandId(candMainId, otherCandIds);
+
+            await candsCvsQueries.DeleteCands(otherCandIds);
 
             return candMainId;
         }

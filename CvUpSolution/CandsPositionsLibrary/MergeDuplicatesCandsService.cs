@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CandsPositionsLibrary
 {
-    public class MergeDuplicatesCandsService(ICandsCvsQueries candsCvsQueries, IFoldersQueries foldersQueries, ILogger<MergeDuplicatesCandsService> logger) : IMergeDuplicatesCandsService
+    public class MergeDuplicatesCandsService(ICandsCvsQueries candsCvsQueries, IFoldersQueries foldersQueries, IPositionsQueries positionsQueries, ILogger<MergeDuplicatesCandsService> logger) : IMergeDuplicatesCandsService
     {
         public async Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail()
         {
@@ -55,6 +55,7 @@ namespace CandsPositionsLibrary
                 await transaction.CommitAsync();
 
                 await foldersQueries.UpdateCandidateFolders(companyId: 154, candidateId: candMainId);
+                await positionsQueries.UpdateCandPosArrays(companyId: 154, candidateId: candMainId);
 
                 return candMainId;
             }

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneConsoleApp", "LuceneC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralLibrary", "GeneralLibrary\GeneralLibrary.csproj", "{2C0A33CC-C03B-47FE-8098-E3A9C51CC05C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CvsFilesConsoleApp", "CvsFilesConsoleApp\CvsFilesConsoleApp.csproj", "{61F87A28-E44F-45EE-A008-F41D14B5B0A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralConsoleApp", "GeneralConsoleApp\GeneralConsoleApp.csproj", "{61F87A28-E44F-45EE-A008-F41D14B5B0A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandsPositionsLibrary", "CandsPositionsLibrary\CandsPositionsLibrary.csproj", "{DDF6C09B-ADD6-4BAB-B9FB-BE90B4F5578B}"
 EndProject

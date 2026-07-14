@@ -4,6 +4,6 @@ namespace CandsPositionsLibrary
 {
     public interface IMergeDuplicatesCandsService
     {
-        Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail();
+        Task<List<DuplicateEmailCandModel>> MergeDuplicateCandsByEmail(string email = "");
     }
 }

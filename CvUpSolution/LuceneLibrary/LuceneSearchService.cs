@@ -20,6 +20,7 @@ namespace LuceneLibrary
         // Must match field constants in LuceneIndexService
         private const string F_CANDIDATE_ID = "Id";
         private const string F_FULL_NAME = "Name";
+        private const string F_EMAIL = "Email";
         private const string F_CV_TEXT = "CV";
         private const string F_REVIEW = "Review";
         private const string F_AI_SUMMARY = "AiSummary";
@@ -30,6 +31,7 @@ namespace LuceneLibrary
         // All content fields searched in CV/keyword queries
         private static readonly (string Field, float Boost)[] ContentFields =
         [
+            (F_EMAIL,        3.0f),
             (F_REVIEW,       3.0f),
             (F_AI_SUMMARY,   1.5f),
             (F_AI_WORK,      1.5f),

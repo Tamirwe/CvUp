@@ -13,6 +13,9 @@ namespace CandsPositionsLibrary
                 ? await candsCvsQueries.GetDuplicateCandsByEmail()
                 : new List<DuplicateEmailCandModel> { new() { Email = email } };
 
+            if (!string.IsNullOrEmpty(email))
+                duplicates = duplicates.Where(dup => dup.Email == email).ToList();
+
             foreach (var dup in duplicates)
             {
                 await FindCandPrimaryRecord(dup.Email);

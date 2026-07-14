@@ -27,6 +27,3 @@ using IHost host = Host.CreateDefaultBuilder(args)
 //var cvsFilesServise = host.Services.GetRequiredService<ICvsFilesService>();
 //await cvsFilesServise.ImportNewCvsExternalDisk(154,@"E:\\CvsFolders");
 //cvsFilesServise.RemoveUnRelatedCvsFiles();
-
-var mergeDuplicatesCandsService = host.Services.GetRequiredService<IMergeDuplicatesCandsService>();
-await mergeDuplicatesCandsService.MergeDuplicateCandsByEmail("amir.geller@gmail.com");

@@ -393,7 +393,7 @@ namespace DataModelsLibrary.Queries
                 return await dbContext.Database.SqlQuery<DuplicateEmailCandModel>($@"
                     SELECT LOWER(email) AS email, COUNT(*) AS cnt
                     FROM public.candidates
-                    WHERE email IS NOT NULL
+                    WHERE email IS NOT NULL AND TRIM(email) <> ''
                     GROUP BY LOWER(email)
                     HAVING COUNT(*) > 1
                     ORDER BY cnt DESC").ToListAsync();

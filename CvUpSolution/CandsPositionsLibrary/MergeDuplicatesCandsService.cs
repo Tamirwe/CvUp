@@ -7,9 +7,12 @@ namespace CandsPositionsLibrary
 {
     public class MergeDuplicatesCandsService(ICandsCvsQueries candsCvsQueries, IFoldersQueries foldersQueries, IPositionsQueries positionsQueries, ILogger<MergeDuplicatesCandsService> logger) : IMergeDuplicatesCandsService
     {
-        public async Task<List<DuplicateEmailCandModel>> GetDuplicateCandsByEmail()
+        public async Task<List<DuplicateEmailCandModel>> MergeDuplicateCandsByEmail(string email = "")
         {
             var duplicates = await candsCvsQueries.GetDuplicateCandsByEmail();
+
+            if (!string.IsNullOrEmpty(email))
+                duplicates = duplicates.Where(dup => dup.Email == email).ToList();
 
             foreach (var dup in duplicates)
             {

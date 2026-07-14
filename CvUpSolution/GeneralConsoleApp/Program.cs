@@ -29,4 +29,4 @@ using IHost host = Host.CreateDefaultBuilder(args)
 //cvsFilesServise.RemoveUnRelatedCvsFiles();
 
 var mergeDuplicatesCandsService = host.Services.GetRequiredService<IMergeDuplicatesCandsService>();
-await mergeDuplicatesCandsService.MergeDuplicateCandsByEmail("eskanderlife@gmail.com");
+await mergeDuplicatesCandsService.MergeDuplicateCandsByEmail("");

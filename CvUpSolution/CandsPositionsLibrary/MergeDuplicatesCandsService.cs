@@ -111,6 +111,9 @@ namespace CandsPositionsLibrary
 
             if (string.IsNullOrWhiteSpace(mainCand.city))
                 mainCand.city = orderedCands.Select(c => c.city).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+
+            if (!string.IsNullOrWhiteSpace(mainCand.email))
+                mainCand.email = mainCand.email.ToLower();
         }
     }
 }

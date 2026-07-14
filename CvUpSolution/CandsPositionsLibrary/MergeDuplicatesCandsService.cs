@@ -86,8 +86,7 @@ namespace CandsPositionsLibrary
                 if (reviewParts.Count > 0)
                 {
                     reviewParts.Add("");
-                    reviewParts.Add("************");
-                    reviewParts.Add($"review by duplicate candidate from {cand.date_updated}");
+                    reviewParts.Add($"********   duplicate candidate review from {cand.date_updated}");
                     reviewParts.Add("");
                 }
 

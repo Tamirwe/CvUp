@@ -507,15 +507,90 @@ namespace ImportCvsLibrary
 
         private void GetCandidateEmail()
         {
-            Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*",
-            RegexOptions.IgnoreCase);
-            MatchCollection emailMatches = emailRegex.Matches(_importCv.cvTxt);
+            string text = _importCv.cvTxt;
+            var tokens = Regex.Split(text, @"\s+");
 
-            if (emailMatches.Count > 0)
+            Regex emailCore = new Regex(
+                @"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+                RegexOptions.IgnoreCase);
+
+            foreach (var token in tokens)
             {
-                _importCv.emailAddress = emailMatches[0].Value;
+                if (!token.Contains("@"))
+                    continue;
+
+                string email = null;
+
+                var match = emailCore.Match(token);
+                if (match.Success)
+                {
+                    email = match.Value;
+                    email = Regex.Replace(email, @"^\d+", "");
+                    email = Regex.Replace(email, @"\d+$", "");
+                }
+                else
+                {
+                    email = TryExtractReversedEmail(token);
+                }
+
+                if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+                    continue;
+
+                _importCv.emailAddress = email.ToLowerInvariant();
+                break;
             }
         }
+
+        /// <summary>
+        /// Handles rare bidi/RTL extraction artifacts where the email segments
+        /// come out reversed, e.g. "com.gmail@ariel881" -> "ariel881@gmail.com".
+        /// </summary>
+        private string TryExtractReversedEmail(string token)
+        {
+            var reversedEmail = new Regex(
+                @"^(?<tld>[A-Za-z]{2,6})\.(?<domain>[A-Za-z0-9-]+)@(?<local>[A-Za-z0-9._%+-]+)$",
+                RegexOptions.IgnoreCase);
+
+            var match = reversedEmail.Match(token);
+            if (!match.Success)
+                return null;
+
+            var local = match.Groups["local"].Value;
+            var domain = match.Groups["domain"].Value;
+            var tld = match.Groups["tld"].Value;
+
+            local = Regex.Replace(local, @"^\d+", "").TrimEnd('.', ',', ':', ';');
+
+            if (string.IsNullOrEmpty(local))
+                return null;
+
+            return $"{local}@{domain}.{tld}";
+        }
+
+        //private void GetCandidateEmail()
+        //{
+        //    Regex emailRegex = new Regex(
+        //        @"[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+        //        RegexOptions.IgnoreCase);
+
+        //    var match = emailRegex.Match(_importCv.cvTxt);
+        //    if (match.Success)
+        //    {
+        //        _importCv.emailAddress = match.Value;
+        //    }
+        //}
+
+        //private void GetCandidateEmail()
+        //{
+        //    Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*",
+        //    RegexOptions.IgnoreCase);
+        //    MatchCollection emailMatches = emailRegex.Matches(_importCv.cvTxt);
+
+        //    if (emailMatches.Count > 0)
+        //    {
+        //        _importCv.emailAddress = emailMatches[0].Value;
+        //    }
+        //}
 
         private void GetCandidateCity()
         {

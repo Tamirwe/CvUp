@@ -2,6 +2,7 @@
 using Docnet.Core.Models;
 using GeneralLibrary;
 using Spire.Doc;
+using Spire.Doc.Collections;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 using Spire.Pdf;
@@ -70,7 +71,7 @@ namespace ImportCvsLibrary
 
         }
 
-      
+
         #endregion
 
         #region WORD Extract Text
@@ -80,58 +81,80 @@ namespace ImportCvsLibrary
             var document = new Spire.Doc.Document();
             document.LoadFromFile(fileNamePath);
 
-            var sb = new StringBuilder();
+            var text = document.GetText();
 
-            foreach (Section section in document.Sections)
-            {
-                foreach (DocumentObject obj in section.Body.ChildObjects)
-                {
-                    if (obj is Paragraph paragraph)
-                    {
-                        var paraText = ExtractParagraphText(paragraph);
-                        if (!string.IsNullOrWhiteSpace(paraText))
-                            sb.Append(paraText.Trim()).Append(" ");
-                    }
-                    else if (obj is Table table)
-                    {
-                        foreach (TableRow row in table.Rows)
-                        {
-                            foreach (TableCell cell in row.Cells)
-                            {
-                                foreach (Paragraph cellPara in cell.Paragraphs)
-                                {
-                                    var cellText = ExtractParagraphText(cellPara);
-                                    if (!string.IsNullOrWhiteSpace(cellText))
-                                        sb.Append(cellText.Trim()).Append(" ");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
+            return Regex.Replace(text, @"\s+", " ").Trim();
         }
 
+        //public static string ExtractWordText(string fileNamePath)
+        //{
+        //    var document = new Spire.Doc.Document();
+        //    document.LoadFromFile(fileNamePath);
 
-        private static string ExtractParagraphText(Paragraph paragraph)
-        {
-            var sb = new StringBuilder();
+        //    var sb = new StringBuilder();
 
-            foreach (DocumentObject child in paragraph.ChildObjects)
-            {
-                if (child is TextRange textRange)
-                {
-                    sb.Append(textRange.Text).Append(" ");
-                }
-                else if (child is Break)
-                {
-                    sb.Append(" ");
-                }
-            }
+        //    foreach (Section section in document.Sections)
+        //    {
+        //        // Header first, so it reads in document order
+        //        var header = section.HeadersFooters.Header;
+        //        if (header != null)
+        //        {
+        //            AppendChildObjectsText(header.ChildObjects, sb);
+        //        }
 
-            return sb.ToString();
-        }
+        //        AppendChildObjectsText(section.Body.ChildObjects, sb);
+        //    }
+
+        //    return Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
+        //}
+
+        //private static void AppendChildObjectsText(DocumentObjectCollection childObjects, StringBuilder sb)
+        //{
+        //    foreach (DocumentObject obj in childObjects)
+        //    {
+        //        if (obj is Paragraph paragraph)
+        //        {
+        //            var paraText = ExtractParagraphText(paragraph);
+        //            if (!string.IsNullOrWhiteSpace(paraText))
+        //                sb.Append(paraText.Trim()).Append(" ");
+        //        }
+        //        else if (obj is Table table)
+        //        {
+        //            foreach (TableRow row in table.Rows)
+        //            {
+        //                foreach (TableCell cell in row.Cells)
+        //                {
+        //                    foreach (Paragraph cellPara in cell.Paragraphs)
+        //                    {
+        //                        var cellText = ExtractParagraphText(cellPara);
+        //                        if (!string.IsNullOrWhiteSpace(cellText))
+        //                            sb.Append(cellText.Trim()).Append(" ");
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+
+        //private static string ExtractParagraphText(Paragraph paragraph)
+        //{
+        //    var sb = new StringBuilder();
+
+        //    foreach (DocumentObject child in paragraph.ChildObjects)
+        //    {
+        //        if (child is TextRange textRange)
+        //        {
+        //            sb.Append(textRange.Text).Append(" ");
+        //        }
+        //        else if (child is Break)
+        //        {
+        //            sb.Append(" ");
+        //        }
+        //    }
+
+        //    return sb.ToString();
+        //}
 
         #endregion
 

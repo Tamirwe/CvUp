@@ -41,7 +41,7 @@ namespace ImportCvsLibrary
         List<ParserRulesModel>? _parsersRulesAllCompanies;
         List<ParserRulesModel>? _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
-        private List<blackCandModel>? _blackCandidatesList =null;
+        private List<blackCandModel>? _blackCandidatesList = null;
         private readonly IMemoryCache _cache;
 
         public ImportCvs(IMemoryCache cache, ICandsServise candsServise, IPositionsServise positionsServise, IConfiguration configuration, IDbQueueService queueService)
@@ -57,14 +57,14 @@ namespace ImportCvsLibrary
             _cache = cache;
         }
 
-        public async Task ImportFromGmail( )
+        public async Task ImportFromGmail()
         {
 
             _blackCandidatesList = _cache.Get<List<blackCandModel>>("blackCandidatesList");
 
             if (_blackCandidatesList == null)
             {
-                 _blackCandidatesList = await _candsServise.GetBlackCandidatesList();
+                _blackCandidatesList = await _candsServise.GetBlackCandidatesList();
                 _cache.Set("blackCandidatesList", _blackCandidatesList, TimeSpan.FromHours(1));
             }
 
@@ -96,7 +96,7 @@ namespace ImportCvsLibrary
             IList<UniqueId>? uids = null;
             IMailFolder? inbox = client.Inbox;
 
-            if (inbox == null || client.Inbox == null)  return;
+            if (inbox == null || client.Inbox == null) return;
 
             inbox.Open(FolderAccess.ReadWrite);
             uids = client.Inbox.Search(SearchQuery.NotSeen);
@@ -173,7 +173,7 @@ namespace ImportCvsLibrary
                                         await CvExtractDataAndSave();
                                         _importCv.exceptionRow = "1500";
 
-                                        
+
                                     }
                                 }
                             }
@@ -242,20 +242,6 @@ namespace ImportCvsLibrary
             }
         }
 
-
-        //private async Task UpdateCandidateLastCv()
-        //{
-        //    await _cvsPositionsServise.UpdateCandLastCv(_importCv.companyId, _importCv.candidateId, _importCv.cvId, _importCv.isDuplicate, _importCv.dateCreated);
-        //}
-
-        //private async Task UpdateCvKeyId()
-        //{
-        //    if (!_importCv.isSameCv)
-        //    {
-        //        await _cvsPositionsServise.UpdateCvKeyId(_importCv);
-        //    }
-        //}
-
         private void CreateCvFolder(int companyId)
         {
             Directory.CreateDirectory($"{_filesRootFolder}\\_{_companyFolder}\\cvs");
@@ -297,9 +283,7 @@ namespace ImportCvsLibrary
         {
             if (_importCv.fileExtension == PDF_EXTENSION)
             {
-                //_importCv.cvTxt = CvParser.ExtractPdfTextBySpire(_importCv.tempFilePath);
                 _importCv.cvTxt = CvParser.ExtractPdfTextByDocnetCore(_importCv.tempFilePath);
-
             }
             else
             {
@@ -321,7 +305,7 @@ namespace ImportCvsLibrary
                 _importCv.lastName = lastName;
                 _importCv.candidateName = fullName;
             }
-            
+
             GetCandidatePhone();
             GetCandidateCity();
         }
@@ -465,12 +449,7 @@ namespace ImportCvsLibrary
 
         private async Task AddCvToDb()
         {
-            //if (_importCv.isSameCv)
-            //{
-            //    await _cvsPositionsServise.UpdateCvDate(int cvId);
-            //}
-            //else
-            //{
+            
             if (!string.IsNullOrEmpty(_importCv.positionRelated))
             {
                 int? posTypeId = await _positionsServise.GetPositionTypeId(_importCv.companyId, _importCv.positionRelated);
@@ -485,13 +464,8 @@ namespace ImportCvsLibrary
             }
 
             _importCv.cvId = await _candsServise.AddCv(_importCv);
-            //}
         }
 
-        //private async Task AddCvToIndex()
-        //{
-        //    await _cvsPositionsServise.SaveCandidateToIndex(_importCv.companyId, _importCv.candidateId);
-        //}
 
         private void GetCandidatePhone()
         {
@@ -567,30 +541,6 @@ namespace ImportCvsLibrary
             return $"{local}@{domain}.{tld}";
         }
 
-        //private void GetCandidateEmail()
-        //{
-        //    Regex emailRegex = new Regex(
-        //        @"[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
-        //        RegexOptions.IgnoreCase);
-
-        //    var match = emailRegex.Match(_importCv.cvTxt);
-        //    if (match.Success)
-        //    {
-        //        _importCv.emailAddress = match.Value;
-        //    }
-        //}
-
-        //private void GetCandidateEmail()
-        //{
-        //    Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*",
-        //    RegexOptions.IgnoreCase);
-        //    MatchCollection emailMatches = emailRegex.Matches(_importCv.cvTxt);
-
-        //    if (emailMatches.Count > 0)
-        //    {
-        //        _importCv.emailAddress = emailMatches[0].Value;
-        //    }
-        //}
 
         private void GetCandidateCity()
         {
@@ -616,106 +566,6 @@ namespace ImportCvsLibrary
                 }
             }
         }
-
-        private string GetCvTxtPdf(string fileNamePath)
-        {
-            StringBuilder cvTxtSB = new StringBuilder();
-
-            Spire.Pdf.PdfDocument doc = new Spire.Pdf.PdfDocument();
-            doc.LoadFromFile(fileNamePath);
-
-            StringBuilder buffer = new StringBuilder();
-            PdfTextExtractOptions extractOptions = new PdfTextExtractOptions();
-            extractOptions.IsExtractAllText = true;
-
-            foreach (PdfPageBase page in doc.Pages)
-            {
-                PdfTextExtractor textExtractor = new PdfTextExtractor(page);
-                cvTxtSB.Append(textExtractor.ExtractText(extractOptions));
-            }
-
-            doc.Close();
-            string cvTxt = cvTxtSB.ToString();
-            return StringMethods.RemovePdfUnicodeBidirectionalChars(cvTxt);
-        }
-
-        //private string GetCvTxtWord(string fileNamePath)
-        //{
-        //    Spire.Doc.Document document = new Spire.Doc.Document(fileNamePath);
-        //    string cvTxt = document.GetText();
-        //    return RemovePdfUnicodeBidirectionalChars(cvTxt);
-        //}
-
-
-        private static string GetCvTxtWord(string fileNamePath)
-        {
-            var document = new Spire.Doc.Document();
-            document.LoadFromFile(fileNamePath);
-
-            var sb = new StringBuilder();
-
-            foreach (Section section in document.Sections)
-            {
-                foreach (DocumentObject obj in section.Body.ChildObjects)
-                {
-                    if (obj is Paragraph paragraph)
-                    {
-                        var paraText = ExtractParagraphText(paragraph);
-                        if (!string.IsNullOrWhiteSpace(paraText))
-                            sb.Append(paraText.Trim()).Append(" ");
-                    }
-                    else if (obj is Table table)
-                    {
-                        foreach (TableRow row in table.Rows)
-                        {
-                            foreach (TableCell cell in row.Cells)
-                            {
-                                foreach (Paragraph cellPara in cell.Paragraphs)
-                                {
-                                    var cellText = ExtractParagraphText(cellPara);
-                                    if (!string.IsNullOrWhiteSpace(cellText))
-                                        sb.Append(cellText.Trim()).Append(" ");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
-        }
-
-        private static string ExtractParagraphText(Paragraph paragraph)
-        {
-            var sb = new StringBuilder();
-
-            foreach (DocumentObject child in paragraph.ChildObjects)
-            {
-                if (child is TextRange textRange)
-                {
-                    sb.Append(textRange.Text).Append(" ");
-                }
-                else if (child is Break)
-                {
-                    sb.Append(" ");
-                }
-            }
-
-            return sb.ToString();
-        }
-
-
-
-        private static bool IsHebrewWord(string word)
-        {
-            // Allow Hebrew letters and hyphen only
-            return Regex.IsMatch(word, @"^[\u05D0-\u05EA\-]+$");
-        }
-
-
-
-
-
 
         private void GetCvAsciiSum()
         {
@@ -756,360 +606,7 @@ namespace ImportCvsLibrary
 
             EventViewerWriter.ErrorMessage(cvData + ex.ToString());
 
-            //using (EventLog eventLog = new())
-            //{
-            //    if (!EventLog.SourceExists("CvUpImport"))
-            //    {
-            //        EventLog.CreateEventSource("CvUpImport", "CvUpImport");
-            //    }
-
-
-
-            //    eventLog.Source = "CvUpImport";
-            //    eventLog.WriteEntry(cvData + ex.ToString(), EventLogEntryType.Information);
-            //}
         }
 
-        #region Candidate Name
-
-        private void GetCandidateName()
-        {
-            string[] cvWords = _importCv.cvTxt.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            string firstName = "";
-            string lastName1 = "";
-            string lastName2 = "";
-
-
-            for (int i = 0; i < cvWords.Length - 10; i++)
-            {
-                firstName = cvWords[i];
-                lastName1 = cvWords[i + 1];
-
-                if (isCanBeFirstOrLastName(firstName) && isCanBeFirstOrLastName(lastName1))
-                {
-
-
-                    if (isCanBeFirstOrLastName(cvWords[i + 2]))
-                    {
-                        lastName2 = cvWords[i + 2];
-                    }
-                    else if (isCanBeFirstOrLastName(cvWords[i + 3]))
-                    {
-                        lastName2 = cvWords[i + 3];
-                    }
-                }
-
-            }
-
-            string hebChars = Rx.RemoveNoneHebChars(_importCv.cvTxt);
-
-            if (hebChars.Length > 50)
-            {
-
-            }
-            else
-            {
-
-            }
-
-            //string name;
-            //List<string> lines;
-
-            //lines = getCvLines(_importCv.cvTxt);
-            //if (lines.Count < 6)//cv contains less then 5 rows
-            //{
-            //    return;
-            //}
-
-            //name = findNameByPrefixPattern(lines);
-
-            //if (name == string.Empty)
-            //{
-            //    name = findNameByNamesList(lines);
-            //}
-
-
-        }
-
-        private void potentialLastNames(string lastName1, string lastName2, string lastName3)
-        {
-            string lastName = "";
-
-            if (isCanBeFirstOrLastName(lastName1))
-            {
-                if (isCanBeFirstOrLastName(lastName2))
-                {
-
-                }
-                else if (isCanBeFirstOrLastName(lastName3))
-                {
-
-                }
-            }
-            else if (isCanBeFirstOrLastName(lastName2))
-            {
-
-            }
-        }
-
-        private bool isCanBeFirstOrLastName(string name)
-        {
-            bool isAble = true;
-
-            if (name.Length < 2)
-            {
-                isAble = false;
-            }
-
-            return isAble;
-        }
-
-        //private string findNameByPrefixPattern(List<string> lines)
-        //{
-        //    //שם: שמלא
-        //    //שם: שמפרטי
-        //    //משפחה: שמשפחה
-        //    //שם פרטי: שמפרטי
-        //    //שם משפחה: שמשפחה
-
-        //    string line, name = "";
-
-        //    for (int i = 0; i < 6; i++)
-        //    {
-        //        name = "";
-        //        line = lines[i];
-        //        line = Rx.MultipleSpacesToOneSpace(line);
-        //        line = Rx.RemoveEnglishLetters(line);
-        //        line = Rx.RemoveSpacesBeforeColon(line);
-
-        //        if (line.IndexOf("שם:") > -1)
-        //        {
-        //            line = line.Replace("שם:", "");
-        //            name = getNameFromString(line);
-        //            break;
-        //        }
-        //        else if (line.IndexOf("שם מלא") > -1)
-        //        {
-        //            line = line.Replace("שם מלא", "");
-        //            name = getNameFromString(line);
-        //            break;
-        //        }
-        //        else if (line.IndexOf("שם ומשפחה") > -1)
-        //        {
-        //            line = line.Replace("שם ומשפחה", "");
-        //            name = getNameFromString(line);
-        //            break;
-        //        }
-        //        else if (line.IndexOf("שם פרטי:") > -1)
-        //        {
-
-        //        }
-        //        else if (line.IndexOf("משפחה") > -1)
-        //        {
-
-        //        }
-        //        else if (line.IndexOf("שם") > -1)
-        //        {
-        //            line = line.Replace("שם", "");
-        //            name = getNameFromString(line);
-        //            break;
-        //        }
-        //    }
-
-        //    return name;
-        //}
-
-        //private string findNameByNamesList(List<string> lines)
-        //{
-        //    string name1 = "", name2 = "", name3 = "", name4 = "";
-
-        //    for (int i = 0; i < 6; i++)
-        //    {
-        //        if (name1 != "" && name2 != "")
-        //        {
-        //            if (name3 != "")
-        //            {
-        //                return name1 + " " + name2 + " " + name3;
-        //            }
-        //            else
-        //            {
-        //                return name1 + " " + name2;
-        //            }
-        //        }
-
-        //        name1 = "";
-
-        //        var lineTxt = Rx.ReplaceNoneHebNameCharsToSpace(lines[i]);
-        //        lineTxt = lineTxt.Replace("קורות חיים", " ");
-        //        lineTxt = lineTxt.Replace("תז", " ");
-
-        //        var lineSplited = lineTxt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //        foreach (var name in lineSplited)
-        //        {
-        //            if (UniqueCandNames.Contains(rp(name)))
-        //            {
-        //                if (name1 == "")
-        //                {
-        //                    name1 = name;
-        //                }
-        //                else if (name2 == "")
-        //                {
-        //                    name2 = name;
-        //                }
-        //                else if (name3 == "")
-        //                {
-        //                    name3 = name;
-        //                }
-        //                else if (name4 == "")
-        //                {
-        //                    name4 = name;
-        //                    return name1 + " " + name2 + " " + name3 + " " + name4;
-        //                }
-        //            }
-        //            else if (name1 != "" && name2 != "")
-        //            {
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    return "";
-        //}
-
-        //private string getNameFromString(string line)
-        //{
-        //    string name = "";
-        //    string[] lineArr;
-
-        //    if (line.IndexOf(',') > -1)
-        //    {
-        //        line = line.Substring(0, line.IndexOf(','));
-        //    }
-
-        //    line = removeNotNamesWords(line);
-        //    line = Rx.TrimNoneAlfabeit(line);
-
-        //    line = Rx.RemoveSpacesBeforeAfterDash(line);//בן - ארי , בן-ארי
-        //    lineArr = line.Split(new char[] { ' ' });
-
-        //    if (lineArr.Length > 4)
-        //    {
-        //        name = "";
-        //    }
-        //    else
-        //    {
-        //        foreach (var item in lineArr)
-        //        {
-        //            if (Rx.IsHebrewCharsExist(item))
-        //            {
-        //                name += Rx.TrimNoneAlfabeit(item) + " ";
-        //            }
-        //        }
-        //        name = name.Trim();
-        //    }
-        //    return name;
-        //}
-
-        //private List<string> getCvLines(string cvText)
-        //{
-        //    List<string> lines = new List<string>();
-
-        //    using (System.IO.StringReader reader = new System.IO.StringReader(cvText))
-        //    {
-        //        string line;
-        //        while ((line = reader.ReadLine()) != null)
-        //        {
-        //            if (line.Trim() != string.Empty)
-        //            {
-        //                lines.Add(line.Trim());
-        //            }
-        //        }
-        //    }
-        //    return lines;
-        //}
-
-        //private string removeNotNamesWords(string str)
-        //{
-        //    string newStr = "";
-        //    str = str.Replace("\t", " ");
-        //    str = str.Replace("\v", " ");
-        //    str = str.Replace("-", "").Replace("\"", "");//בן-דוד TO בןדוד, באב"ד TO באבד
-
-        //    foreach (var item in notNameMultiWordsBefore)
-        //    {
-        //        str = str.Replace(item, "");
-        //    }
-
-        //    foreach (var item in notNameMultiWordsAfter)
-        //    {
-        //        if (str.IndexOf(item) > -1)
-        //        {
-        //            str = str.Substring(0, str.IndexOf(item));
-        //        }
-        //    }
-
-        //    //str = rx.RemovePunctuation(str);
-        //    str = Rx.RemoveDigits(str);
-        //    str = str.Trim();
-
-        //    if (str.Length > 0)
-        //    {
-        //        string[] wordsArr = str.Split(new char[] { ' ' });
-
-        //        for (int i = 0; i < wordsArr.Length; i++)
-        //        {
-        //            if (notNameWordsBefore.Contains(Rx.RemovePunctuation(wordsArr[i])))
-        //            {
-        //            }
-        //            else
-        //            {
-        //                newStr += wordsArr[i] + " ";
-        //            }
-        //        }
-
-        //        wordsArr = newStr.Trim().Split(new char[] { ' ' });
-        //        newStr = "";
-
-        //        for (int i = 0; i < wordsArr.Length; i++)
-        //        {
-        //            if (notNameWordsAfter.Contains(Rx.RemovePunctuation(wordsArr[i])))
-        //            {
-        //                for (int j = i; j < wordsArr.Length; j++)
-        //                {
-        //                    wordsArr[j] = "";
-        //                }
-        //            }
-        //            else
-        //            {
-        //                newStr += wordsArr[i] + " ";
-        //            }
-        //        }
-        //    }
-
-        //    return newStr.Trim();
-        //}
-
-        #endregion
-
-        //private int GetCompanyIdFromAddress(InternetAddressList addressList)
-        //{
-        //    foreach (var toEmail in addressList.ToList())
-        //    {
-        //        if (_companiesEmail != null)
-        //        {
-        //            var toAddress = toEmail.ToString();
-
-        //            var companyEmail = _companiesEmail.Where(x => x.email == toAddress).FirstOrDefault();
-
-        //            if (companyEmail != null)
-        //            {
-        //                return companyEmail.company_id;
-        //            }
-        //        }
-        //    }
-
-        //    return 0;
-        //}
     }
 }

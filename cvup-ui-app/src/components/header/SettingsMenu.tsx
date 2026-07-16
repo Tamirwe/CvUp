@@ -90,7 +90,7 @@ export const SettingsMenu = () => {
           <Avatar />{" "}
           {`${authStore.currentUser?.firstName} ${authStore.currentUser?.lastName}`}
         </MenuItem>
-        <Divider />
+        {/* <Divider />
         <MenuItem
           onClick={() => {
             generalStore.showRestoreReviewDialog =
@@ -101,7 +101,7 @@ export const SettingsMenu = () => {
             <MdRule />
           </Avatar>
           Restore last interview
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
         <MenuItem onClick={handleReports}>
           <Avatar sx={{ bgcolor: green[400] }}>
@@ -123,7 +123,7 @@ export const SettingsMenu = () => {
         {/* <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem> */}
-        <Divider />
+        {/* <Divider />
         <MenuItem
           onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(
@@ -141,7 +141,7 @@ export const SettingsMenu = () => {
             <MdOutlineDelete />
           </Avatar>
           Delete Cv
-        </MenuItem>
+        </MenuItem> */}
         {/* <MenuItem
           onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(

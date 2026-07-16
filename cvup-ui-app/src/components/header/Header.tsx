@@ -133,17 +133,8 @@ export const Header = observer(() => {
               <SettingsMenu />
               {candsStore.candDisplay && location.pathname === "/cv" && (
                 <>
+                
                   {/* <IconButton
-                      title="Email to candidate"
-                      sx={{ fontSize: "1.56rem" }}
-                      size="medium"
-                      onClick={() =>
-                        (generalStore.showEmailDialog = EmailTypeEnum.Candidate)
-                      }
-                    >
-                      <MdOutlineMarkEmailRead />
-                    </IconButton> */}
-                  <IconButton
                     title="Review"
                     sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
                     size="small"
@@ -153,8 +144,8 @@ export const Header = observer(() => {
                     }}
                   >
                     <CiEdit />
-                  </IconButton>
-                  {!isMobile && (
+                  </IconButton> */}
+                  {/* {!isMobile && (
                     <IconButton
                       title="Full window Review"
                       sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
@@ -166,8 +157,8 @@ export const Header = observer(() => {
                     >
                       <img src={expandIcon} alt="Interview full window" />
                     </IconButton>
-                  )}
-                  <IconButton
+                  )} */}
+                  {/* <IconButton
                     title="Email to customer"
                     sx={{ fontSize: "1.54rem" }}
                     size="small"
@@ -176,7 +167,7 @@ export const Header = observer(() => {
                     }
                   >
                     <MdOutlineMarkEmailUnread />
-                  </IconButton>
+                  </IconButton> */}
                   {/*
                     <Link
                       href={`${candsStore.downloadUrl}DD/GetFileStream?id=${candsStore.candDisplay.keyId}`}
@@ -191,7 +182,7 @@ export const Header = observer(() => {
                       </IconButton>
                     </Link> */}
 
-                  <IconButton
+                  {/* <IconButton
                     title="Download original file"
                     sx={{ fontSize: "1.54rem" }}
                     size="small"
@@ -227,9 +218,9 @@ export const Header = observer(() => {
                     }}
                   >
                     <MdOutlineFileDownload />
-                  </IconButton>
+                  </IconButton> */}
 
-                  {candsStore.candDisplay &&
+                  {/* {candsStore.candDisplay &&
                     positionsStore.candDisplayPosition && (
                       <IconButton
                         title="Customer review"
@@ -242,10 +233,10 @@ export const Header = observer(() => {
                       >
                         <MdOutlineEditNotifications />
                       </IconButton>
-                    )}
+                    )} */}
                 </>
               )}
-              <IconButton
+              {/* <IconButton
                 title="Saved Searches"
                 sx={{ fontSize: "1.54rem" }}
                 size="small"
@@ -255,7 +246,7 @@ export const Header = observer(() => {
                 }
               >
                 <MdManageSearch />
-              </IconButton>
+              </IconButton> */}
               {/* <IconButton
                 title="Restore last interview"
                 sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}

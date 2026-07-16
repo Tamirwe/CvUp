@@ -12,7 +12,11 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { CandsSourceEnum, EmailTypeEnum } from "../../models/GeneralEnums";
+import {
+  AlertConfirmDialogEnum,
+  CandsSourceEnum,
+  EmailTypeEnum,
+} from "../../models/GeneralEnums";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
@@ -28,7 +32,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { PosStages } from "./PosStages";
 import useDebounce from "../../Hooks/useDebounce";
 import { CiEdit } from "react-icons/ci";
-import { FiEdit } from "react-icons/fi";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -38,6 +41,7 @@ export const CvView = observer(() => {
   const [review, setReview] = useState("");
   const debouncedValue = useDebounce<string>(review, 2000);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showActionButtons, setShowActionButtons] = useState(false);
 
   const scrollRef = useRef<any>(null);
 
@@ -154,58 +158,58 @@ export const CvView = observer(() => {
                     paddingTop: "1rem",
                   }}
                 >
-                  <Grid
-                    container
-                    sx={{
-                      gap: "1rem",
-                    }}
-                  >
-                    <Grid item>
-                      <Link
-                        sx={{ whiteSpace: "nowrap" }}
-                        href="#"
-                        onClick={() => {
-                          generalStore.showCandFormDialog = true;
-                        }}
-                      >
-                        {candidateName}{" "}
-                        {candsStore.candDisplay?.city && (
-                          <span style={{ color: "gray" }}>
-                            {" - "} {candsStore.candDisplay?.city}
-                          </span>
-                        )}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link
-                        href="#"
-                        onClick={() => {
-                          generalStore.showEmailDialog =
-                            EmailTypeEnum.Candidate;
-                        }}
-                      >
-                        {candsStore.candDisplay?.email}{" "}
-                      </Link>
-                      &nbsp;
-                      {!isMobile && (
-                        <Link
-                          title="Copy email"
-                          href="#"
-                          onClick={async () => {
-                            await copyToClipBoard(
-                              candsStore.candDisplay?.email || "",
-                            );
+                  <Grid item>
+                    <span
+                      style={{
+                        whiteSpace: "nowrap",
+                        fontSize: "1.3rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {candidateName}{" "}
+                      {candsStore.candDisplay?.city && (
+                        <span
+                          style={{
+                            color: "gray",
+                            fontSize: "1rem",
+                            fontWeight: 400,
                           }}
                         >
-                          <MdContentCopy />
-                        </Link>
+                          {" - "} {candsStore.candDisplay?.city}
+                        </span>
                       )}
-                    </Grid>
-                    <Grid item>
-                      <a href={"tel:" + candsStore.candDisplay?.phone}>
-                        {candsStore.candDisplay?.phone}
-                      </a>
-                    </Grid>
+                    </span>
+                  </Grid>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "1rem",
+                    paddingTop: "0.5rem",
+                  }}
+                >
+                  <Grid item>
+                    <span>{candsStore.candDisplay?.email} </span>
+                    &nbsp;
+                    {!isMobile && (
+                      <Link
+                        title="Copy email"
+                        href="#"
+                        onClick={async () => {
+                          await copyToClipBoard(
+                            candsStore.candDisplay?.email || "",
+                          );
+                        }}
+                      >
+                        <MdContentCopy />
+                      </Link>
+                    )}
+                  </Grid>
+                  <Grid item>
+                    <span>{candsStore.candDisplay?.phone}</span>
                   </Grid>
                 </Grid>
               </Grid>
@@ -272,22 +276,162 @@ export const CvView = observer(() => {
             </Grid>
 
             <Grid item xs={12}>
-              {!isMobile && (
-                <IconButton
-                  title="Full window Review"
-                  sx={{
-                    fontSize: "1.54rem",
-                    paddingTop: "0.4rem",
-                    paddingBottom: 0,
-                  }}
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                gap={1}
+                alignItems="center"
+                sx={{ paddingTop: "0.5rem" }}
+              >
+                <Button
                   size="small"
+                  variant="outlined"
                   onClick={() => {
-                    generalStore.showInterviewFullDialog =
-                      !generalStore.showInterviewFullDialog;
+                    if (isMobile) {
+                      generalStore.showReviewCandDialog =
+                        !generalStore.showReviewCandDialog;
+                    } else {
+                      setReview(candsStore.candDisplay?.review || "");
+                      generalStore.showInterviewFullDialog =
+                        !generalStore.showInterviewFullDialog;
+                    }
                   }}
                 >
-                  <FiEdit />
-                </IconButton>
+                  Review
+                </Button>
+               
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="success"
+                  onClick={() =>
+                    (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+                  }
+                >
+                  Customer Email
+                </Button>
+                 <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => {
+                          generalStore.showCandFormDialog = true;
+                        }}
+                      >
+                        Edit cand
+                      </Button>
+                 <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    generalStore.showCustomerReviewCandDialog =
+                      !generalStore.showCustomerReviewCandDialog;
+                  }}
+                >
+                  Customer review
+                </Button>
+                 <Button
+                  size="small"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    generalStore.showEmailDialog = EmailTypeEnum.Candidate;
+                  }}
+                >
+                  Cand. Email
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  title={showActionButtons ? "Hide buttons" : "Show buttons"}
+                  onClick={() => {
+                    setShowActionButtons(!showActionButtons);
+                  }}
+                  sx={{ minWidth: "2rem", fontSize: "1.4rem" }}
+                >
+                  {showActionButtons ? (
+                    <MdKeyboardArrowUp />
+                  ) : (
+                    <MdKeyboardArrowDown />
+                  )}
+                </Button>
+              </Stack>
+              {showActionButtons && (
+                <Stack
+                  direction="row"
+                  flexWrap="wrap"
+                  gap={1}
+                  sx={{ paddingTop: "0.5rem" }}
+                >
+                  <Button size="small" variant="outlined">
+                    Add to Black List
+                  </Button>
+                  <Button size="small" variant="outlined">
+                    Merge Candidates
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={async () => {
+                      const isDelete = await generalStore.alertConfirmDialog(
+                        AlertConfirmDialogEnum.Confirm,
+                        "Delete Cv",
+                        "Are you sure you want to delete this cv?",
+                      );
+
+                      if (isDelete) {
+                        await candsStore.deleteCv();
+                      }
+                    }}
+                  >
+                    Delete CV
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      generalStore.showRestoreReviewDialog =
+                        !generalStore.showRestoreReviewDialog;
+                    }}
+                  >
+                    Restore Interview
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={async () => {
+                      const keyId = candsStore.candDisplay?.keyId;
+
+                      const data = await candsStore.getfile(keyId);
+                      if (!(data instanceof Blob)) return;
+                      const downloadedFile = new Blob([data!], {
+                        type: data.type,
+                      });
+
+                      const a = document.createElement("a");
+                      a.setAttribute("style", "display:none;");
+                      document.body.appendChild(a);
+                      switch (data.type) {
+                        case "application/pdf":
+                          a.download = `${keyId}.pdf`;
+                          break;
+                        case "application/msword":
+                          a.download = `${keyId}.doc`;
+                          break;
+                        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                          a.download = `${keyId}.docx`;
+                          break;
+                        default:
+                          break;
+                      }
+                      a.href = URL.createObjectURL(downloadedFile);
+                      a.target = "_blank";
+                      a.click();
+                      document.body.removeChild(a);
+                    }}
+                  >
+                    Download original file
+                  </Button>
+                </Stack>
               )}
             </Grid>
 

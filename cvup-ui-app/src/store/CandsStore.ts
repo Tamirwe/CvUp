@@ -20,7 +20,6 @@ export class CandsStore {
   private candIdDuplicateCvs: number = 0;
   private searchesList: ISearchModel[] = [];
   private externalSearch?: ISearchModel;
-  private isShoePosStages?: boolean = false;
   private lastReviewCandId: number = 0;
   private syncCandReview: string = "";
   searchesSearchVals?: ISearchModel;
@@ -101,14 +100,6 @@ searchTermsIsIndexSearch = true;
 
   get extSearch() {
     return this.externalSearch;
-  }
-
-  set shoePosStages(val) {
-    this.isShoePosStages = val;
-  }
-
-  get shoePosStages() {
-    return this.isShoePosStages;
   }
 
   get keywordsHighLight() {

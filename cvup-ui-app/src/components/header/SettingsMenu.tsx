@@ -126,16 +126,6 @@ export const SettingsMenu = () => {
         <Divider />
         <MenuItem
           onClick={async () => {
-            candsStore.shoePosStages = !candsStore.shoePosStages;
-          }}
-        >
-          <Avatar>
-            <MdRule />
-          </Avatar>
-          Show Candidate History
-        </MenuItem>
-        <MenuItem
-          onClick={async () => {
             const isDelete = await generalStore.alertConfirmDialog(
               AlertConfirmDialogEnum.Confirm,
               "Delete Cv",

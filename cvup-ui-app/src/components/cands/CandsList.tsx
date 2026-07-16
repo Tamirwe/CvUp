@@ -23,8 +23,6 @@ import { ICand, ICandPosStage } from "../../models/GeneralModels";
 import { isMobile } from "react-device-detect";
 import styles from "./CandsList.module.scss";
 import classNames from "classnames";
-import { CandsPosStagesList } from "./CandsPosStagesList";
-import { strict } from "assert";
 
 interface IProps {
   candsListData: ICand[];
@@ -52,12 +50,6 @@ export const CandsList = observer(
 
       //setDupOpenCandId(0);
     }, [candsListData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // useEffect(() => {
-    //   if (!candsStore.candDisplay) {
-    //     setDupOpenCandId(0);
-    //   }
-    // }, [candsStore.candDisplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
       setTimeout(() => {
@@ -281,43 +273,6 @@ export const CandsList = observer(
                             </ListItemIcon>
                           </>
                         )}
-                        {/* <ListItemIcon
-                        sx={{
-                          visibility:
-                            cand.posStages && cand.posStages?.length > 0
-                              ? "visible"
-                              : "hidden",
-                        }}
-                        onClick={async (event) => {
-                          event.stopPropagation();
-                          event.preventDefault();
-
-                          if (location.pathname !== "/cv") {
-                            navigate(`/cv`);
-                          }
-
-                          await candsStore.displayCv(cand, candsSource);
-                          // await candsStore.getDuplicatesCvsList(cand);
-
-                          if (dupOpenCandId !== cand.candidateId) {
-                            setDupOpenCandId(cand.candidateId);
-                          } else {
-                            setDupOpenCandId(0);
-                          }
-                        }}
-                      >
-                        <IconButton
-                          color="primary"
-                          aria-label="upload picture"
-                          component="label"
-                        >
-                          {dupOpenCandId === cand.candidateId ? (
-                            <MdExpandLess />
-                          ) : (
-                            <MdExpandMore />
-                          )}
-                        </IconButton>
-                      </ListItemIcon> */}
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
@@ -419,41 +374,8 @@ export const CandsList = observer(
                           </table>
                         )}
                     </>
-                    {candsStore.shoePosStages && (
-                      <CandsPosStagesList
-                        cand={cand}
-                        candsSource={candsSource}
-                      />
-                    )}
-                    {/* {candsSource !== CandsSourceEnum.Position &&
-                    cand.posStages &&
-                    cand.posStages?.length > 0 && (
-                      <CandsPosStagesList
-                        cand={cand}
-                        candsSource={candsSource}
-                      />
-                    )} */}
                   </Box>
                 </ListItemButton>
-                {/* {dupOpenCandId > 0 && (
-                <Collapse
-                  in={dupOpenCandId === cand.candidateId}
-                  timeout="auto"
-                  unmountOnExit
-                > */}
-                {/* {candsSource === CandsSourceEnum.Position &&
-                    cand.posStages &&
-                    cand.posStages?.length > 0 && ( */}
-                {/* <div style={{ padding: " 0.2rem 0.75rem 0.75rem 0.75rem" }}> */}
-                {/* <div style={{ fontWeight: 700, padding: "0.2rem" }}>
-                          Candidate Positions
-                        </div> */}
-                {/* <CandsPosStagesList cand={cand} candsSource={candsSource} />
-                  </div> */}
-                {/* )} */}
-                {/* <CandDupCvsList candPosCvId={cand.posCvId} /> */}
-                {/* </Collapse>
-              )} */}
               </ListItem>
             );
           })}

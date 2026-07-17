@@ -373,12 +373,12 @@ namespace CandsPositionsLibrary
 
         public async Task<List<blackCandModel>> GetBlackCandidatesList()
         {
-            return await _cvsPositionsQueries.GetBlackCandidatesList();
+            return await _blackCandQueries.GetBlackCandidatesList();
         }
 
         public async Task UpdateBlackCandidateEmailCount(blackCandModel blackCand)
         {
-            await _cvsPositionsQueries.UpdateBlackCandidateEmailCount(blackCand);
+            await _blackCandQueries.UpdateBlackCandidateEmailCount(blackCand);
         }
 
         public List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<AiCandidateSearchModel> aiResults)

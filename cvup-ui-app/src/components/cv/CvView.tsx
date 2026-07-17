@@ -36,6 +36,7 @@ export const CvView = observer(() => {
   const [review, setReview] = useState("");
   const debouncedValue = useDebounce<string>(review, 2000);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showActionButtons, setShowActionButtons] = useState(false);
 
   const scrollRef = useRef<any>(null);
 

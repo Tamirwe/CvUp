@@ -343,10 +343,10 @@ namespace CvUpAPI.Controllers
 
         [HttpDelete]
         [Route("DeleteCv")]
-        public async Task<CandModel?> DeleteCv(int cnid, int cvId)
+        public async Task<IActionResult> DeleteCv(int cnid, int cvId)
         {
             await _candsService.DeleteCv(Globals.CompanyId, cnid, cvId);
-            return await _candsService.GetCandidate(Globals.CompanyId, cnid);
+            return Ok();
         }
 
         [HttpDelete]

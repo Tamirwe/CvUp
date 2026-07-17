@@ -828,20 +828,22 @@ searchTermsIsIndexSearch = true;
       this.candDisplay?.cvId,
     );
 
-    if (res.isSuccess) {
-      if (res.data && res.data.candidateId) {
-        this.updateLists(res.data);
-        this.duplicateCvsCandId = 0;
-      } else {
-        this.removeCandFromLists(this.candDisplay?.candidateId);
-      }
+    // if (res.isSuccess) {
+    //   if (res.data && res.data.candidateId) {
+    //     this.updateLists(res.data);
+    //     this.duplicateCvsCandId = 0;
+    //   } else {
+    //     this.removeCandFromLists(this.candDisplay?.candidateId);
+    //   }
 
-      runInAction(() => {
-        this.candDisplay = undefined;
-      });
-    }
+    //   runInAction(() => {
+    //     this.candDisplay = undefined;
+    //   });
+    // }
 
     this.rootStore.generalStore.backdrop = false;
+
+    return res;
   }
 
   async deleteCandidate() {
@@ -851,14 +853,16 @@ searchTermsIsIndexSearch = true;
       this.candDisplay?.candidateId,
     );
 
-    runInAction(() => {
-      if (res.isSuccess) {
-        this.removeCandFromLists(this.candDisplay?.candidateId);
-        this.candDisplay = undefined;
-      }
-    });
+    // runInAction(() => {
+    //   if (res.isSuccess) {
+    //     this.removeCandFromLists(this.candDisplay?.candidateId);
+    //     this.candDisplay = undefined;
+    //   }
+    // });
 
     this.rootStore.generalStore.backdrop = false;
+
+    return res;
   }
 
   removeCandFromLists(candId?: number) {

@@ -107,59 +107,6 @@ export const CvViewButtons = observer(({ setReview }: IProps) => {
           <Button
             size="small"
             variant="outlined"
-            disabled={!candsStore.candDisplay?.email}
-            onClick={async () => {
-              const email = candsStore.candDisplay?.email;
-
-              if (!email) {
-                return;
-              }
-
-              const isMerge = await generalStore.alertConfirmDialog(
-                AlertConfirmDialogEnum.Confirm,
-                "Merge Candidates",
-                `Are you sure you want to merge all duplicate candidates with email "${email}"?`,
-              );
-
-              if (!isMerge) {
-                return;
-              }
-
-              const res = await candsStore.mergeDuplicateCandsByEmail(email);
-
-              if (res.isSuccess) {
-                candsStore.candDisplay = undefined;
-                window.location.reload();
-              } else {
-                generalStore.alertSnackbar(
-                  "error",
-                  "Failed to merge candidates",
-                );
-              }
-            }}
-          >
-            Merge Candidates
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={async () => {
-              const isDelete = await generalStore.alertConfirmDialog(
-                AlertConfirmDialogEnum.Confirm,
-                "Delete Cv",
-                "Are you sure you want to delete this cv?",
-              );
-
-              if (isDelete) {
-                await candsStore.deleteCv();
-              }
-            }}
-          >
-            Delete CV
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
             onClick={() => {
               generalStore.showRestoreReviewDialog =
                 !generalStore.showRestoreReviewDialog;
@@ -202,6 +149,110 @@ export const CvViewButtons = observer(({ setReview }: IProps) => {
             }}
           >
             Download original file
+          </Button>
+        </Stack>
+      )}
+      {showActionButtons && (
+        <Stack
+          direction="row"
+          flexWrap="wrap"
+          gap={1}
+          sx={{ paddingTop: "0.5rem" }}
+        >
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={!candsStore.candDisplay?.email}
+            onClick={async () => {
+              const email = candsStore.candDisplay?.email;
+
+              if (!email) {
+                return;
+              }
+
+              const isMerge = await generalStore.alertConfirmDialog(
+                AlertConfirmDialogEnum.Confirm,
+                "Merge Candidates",
+                `Are you sure you want to merge all duplicate candidates with email "${email}"?`,
+              );
+
+              if (!isMerge) {
+                return;
+              }
+
+              const res = await candsStore.mergeDuplicateCandsByEmail(email);
+
+              if (res.isSuccess) {
+                candsStore.candDisplay = undefined;
+                window.location.reload();
+              } else {
+                generalStore.alertSnackbar(
+                  "error",
+                  "Failed to merge candidates",
+                );
+              }
+            }}
+          >
+            Merge Candidates
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={async () => {
+              const isDelete = await generalStore.alertConfirmDialog(
+                AlertConfirmDialogEnum.Confirm,
+                "Delete Cv",
+                "Are you sure you want to delete this cv? The candidate will also be deleted if this is their last cv.",
+              );
+
+              if (isDelete) {
+                const res = await candsStore.deleteCv();
+
+                if (res.isSuccess) {
+                  await generalStore.alertConfirmDialog(
+                    AlertConfirmDialogEnum.Alert,
+                    "Delete Cv",
+                    "Cv deleted successfully",
+                  );
+                  window.location.reload();
+                } else {
+                  generalStore.alertSnackbar("error", "Failed to delete cv");
+                }
+              }
+            }}
+          >
+            Delete CV
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={async () => {
+              const isDelete = await generalStore.alertConfirmDialog(
+                AlertConfirmDialogEnum.Confirm,
+                "Delete Candidate",
+                "Are you sure you want to delete this candidate? All of their cv's will also be deleted.",
+              );
+
+              if (isDelete) {
+                const res = await candsStore.deleteCandidate();
+
+                if (res.isSuccess) {
+                  await generalStore.alertConfirmDialog(
+                    AlertConfirmDialogEnum.Alert,
+                    "Delete Candidate",
+                    "Candidate deleted successfully",
+                  );
+                  window.location.reload();
+                } else {
+                  generalStore.alertSnackbar(
+                    "error",
+                    "Failed to delete candidate",
+                  );
+                }
+              }
+            }}
+          >
+            Delete Candidate
           </Button>
         </Stack>
       )}

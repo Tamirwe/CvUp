@@ -52,6 +52,10 @@ namespace CandsPositionsLibrary
             {
                 await _candsCvsQueries.UpdateCandLastCv(companyId, candidateId, lastCv.id, isDuplicate, lastCv.date_created);
             }
+            else
+            {
+                await DeleteCandidate(companyId, candidateId);
+            }
         }
 
         public async Task DeleteCandidate(int companyId, int candidateId)

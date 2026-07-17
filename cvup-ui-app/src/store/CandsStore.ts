@@ -1094,4 +1094,13 @@ async loadSearchTermsById(id: number) {
   this.rootStore.generalStore.backdrop = false;
 }
 
+async mergeDuplicateCandsByEmail(email: string = "") {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.mergeDuplicateCandsByEmail(email);
+
+  this.rootStore.generalStore.backdrop = false;
+  return res;
+}
+
 }

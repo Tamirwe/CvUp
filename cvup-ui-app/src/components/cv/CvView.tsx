@@ -1,6 +1,5 @@
 import { observer } from "mobx-react";
 import { PdfViewer } from "../../components/pdfViewer/PdfViewer";
-import "react-quill/dist/quill.snow.css";
 import { useStore } from "../../Hooks/useStore";
 import styles from "./CvView.module.scss";
 import {
@@ -31,7 +30,6 @@ import { CandDupCvsList } from "../cands/CandDupCvsList";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PosStages } from "./PosStages";
 import useDebounce from "../../Hooks/useDebounce";
-import { CiEdit } from "react-icons/ci";
 
 export const CvView = observer(() => {
   const { candsStore, authStore, generalStore, positionsStore } = useStore();
@@ -299,7 +297,7 @@ export const CvView = observer(() => {
                 >
                   Review
                 </Button>
-               
+
                 <Button
                   size="small"
                   variant="outlined"
@@ -310,16 +308,16 @@ export const CvView = observer(() => {
                 >
                   Customer Email
                 </Button>
-                 <Button
-                        size="small"
-                        variant="outlined"
-                        onClick={() => {
-                          generalStore.showCandFormDialog = true;
-                        }}
-                      >
-                        Edit cand
-                      </Button>
-                 <Button
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    generalStore.showCandFormDialog = true;
+                  }}
+                >
+                  Edit cand
+                </Button>
+                <Button
                   size="small"
                   variant="outlined"
                   onClick={() => {
@@ -329,7 +327,7 @@ export const CvView = observer(() => {
                 >
                   Customer review
                 </Button>
-                 <Button
+                <Button
                   size="small"
                   variant="outlined"
                   color="secondary"
@@ -365,7 +363,37 @@ export const CvView = observer(() => {
                   <Button size="small" variant="outlined">
                     Add to Black List
                   </Button>
-                  <Button size="small" variant="outlined">
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    disabled={!candsStore.candDisplay?.email}
+                    onClick={async () => {
+                      const email = candsStore.candDisplay?.email;
+
+                      if (!email) {
+                        return;
+                      }
+
+                      const isMerge = await generalStore.alertConfirmDialog(
+                        AlertConfirmDialogEnum.Confirm,
+                        "Merge Candidates",
+                        `Are you sure you want to merge all duplicate candidates with email "${email}"?`,
+                      );
+
+                      if (isMerge) {
+                        const res =
+                          await candsStore.mergeDuplicateCandsByEmail(email);
+
+                        if (res.isSuccess) {
+                          generalStore.alertSnackbar(
+                            "success",
+                            "Candidates merged successfully",
+                          );
+                          candsStore.candDisplay = undefined;
+                        }
+                      }
+                    }}
+                  >
                     Merge Candidates
                   </Button>
                   <Button

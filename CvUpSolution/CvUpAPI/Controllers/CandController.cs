@@ -21,9 +21,11 @@ namespace CvUpAPI.Controllers
         private IAuthServise _authServise;
         private ICvsFilesService _cvsFilesService;
         private ISearchCvsService _aiSearchCvsService;
+        private IMergeDuplicatesCandsService _mergeDuplicatesCandsService;
 
         public CandController(ICandsServise candsService, ICandsListsServise candsListsService, IPositionsServise positionsService,
-            IAuthServise authServise, ICvsFilesService cvsFilesService, ISearchCvsService aiSearchCvsService)
+            IAuthServise authServise, ICvsFilesService cvsFilesService, ISearchCvsService aiSearchCvsService,
+            IMergeDuplicatesCandsService mergeDuplicatesCandsService)
         {
             _candsService = candsService;
             _candsListsService = candsListsService;
@@ -31,6 +33,7 @@ namespace CvUpAPI.Controllers
             _authServise = authServise;
             _cvsFilesService = cvsFilesService;
             _aiSearchCvsService = aiSearchCvsService;
+            _mergeDuplicatesCandsService = mergeDuplicatesCandsService;
         }
 
         [HttpGet]
@@ -444,6 +447,14 @@ namespace CvUpAPI.Controllers
         public async Task<IActionResult> DeleteKeyword(int id)
         {
             await _candsService.DeleteKeyword(Globals.CompanyId, id);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("MergeDuplicateCandsByEmail")]
+        public async Task<IActionResult> MergeDuplicateCandsByEmail(string email = "")
+        {
+            //await _mergeDuplicatesCandsService.MergeDuplicateCandsByEmail(email);
             return Ok();
         }
     }

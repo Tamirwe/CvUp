@@ -296,4 +296,12 @@ async getSearchTermsById(id: number) {
     });
   });
 }
+
+async mergeDuplicateCandsByEmail(email: string = "") {
+  return await this.apiWrapper2(async () => {
+    return await this.http.post(`Cand/MergeDuplicateCandsByEmail`, null, {
+      params: { email },
+    });
+  });
+}
 }

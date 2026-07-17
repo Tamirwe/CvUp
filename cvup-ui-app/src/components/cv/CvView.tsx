@@ -134,6 +134,7 @@ export const CvView = observer(() => {
                   fontSize: isMobile ? "0.9rem" : "1.1rem",
                 }}
               >
+                {/*  customer Name and Position name */}
                 <Link href="#" onClick={handlePositionClick} dir="ltr">
                   {positionsStore.candDisplayPosition?.name || ""}
                   &nbsp;-&nbsp;
@@ -143,6 +144,7 @@ export const CvView = observer(() => {
             )}
             <Grid item xs={12}>
               <Grid container sx={{ paddingTop: "1rem" }}>
+                {/* Candidate name, email, phone */}
                 <Grid item xs={12} lg={7}>
                   <Grid
                     container
@@ -197,6 +199,7 @@ export const CvView = observer(() => {
                     </Grid>
                   </Grid>
                 </Grid>
+                {/* Position stages */}
                 <Grid item xs={12} lg={5}>
                   <PosStages />
                 </Grid>

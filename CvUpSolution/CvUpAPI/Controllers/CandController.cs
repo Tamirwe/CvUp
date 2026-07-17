@@ -460,9 +460,9 @@ namespace CvUpAPI.Controllers
 
         [HttpPost]
         [Route("AddBlackCand")]
-        public async Task<IActionResult> AddBlackCand(blackCandModel blackCand)
+        public async Task<IActionResult> AddBlackCand(int candidateId)
         {
-            await _candsService.AddBlackCand(blackCand);
+            await _candsService.AddBlackCand(Globals.CompanyId, candidateId);
             return Ok();
         }
 

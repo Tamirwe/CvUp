@@ -133,6 +133,20 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        public async Task UpdateCandLastCvSent(int candidateId, DateTime lastCvSent)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                candidate? cand = dbContext.candidates.Where(x => x.id == candidateId).FirstOrDefault();
+
+                if (cand != null)
+                {
+                    cand.last_cv_sent = lastCvSent;
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
 
         public async Task DeleteCandidate(int companyId, int candidateId)
         {

@@ -11,6 +11,7 @@ namespace DataModelsLibrary.Queries
         Task DeleteCv(int companyId, int candidateId, int cvId);
         Task<Tuple<cv?, bool>> GetCandLastCv(int companyId, int candidateId);
         Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
+        Task UpdateCandLastCvSent(int candidateId, DateTime lastCvSent);
         Task DeleteCandidate(int companyId, int candidateId);
         Task UpdateCvDate(int cvId);
         Task UpdateCvKeyId(ImportCvModel importCv);

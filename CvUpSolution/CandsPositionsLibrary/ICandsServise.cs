@@ -18,6 +18,7 @@ namespace CandsPositionsLibrary
         Task<CvModel?> GetCv(int cvId, int companyId);
         Task<cvs_txt?> CheckIsSameCv(int companyId, int candidateId, int cvAsciiSum);
         Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent);
+        Task UpdateCandLastCvSent(int candidateId, DateTime lastCvSent);
         Task UpdateCvDate(int cvId);
         Task AttachPosCandCv(AttachePosCandCvModel posCv);
         Task DetachPosCand(AttachePosCandCvModel posCv);
@@ -52,7 +53,7 @@ namespace CandsPositionsLibrary
         Task DeleteKeyword(int companyId, int id);
         Task<List<blackCandModel>> GetBlackCandidatesList();
         Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
-        Task AddBlackCand(blackCandModel blackCand);
+        Task AddBlackCand(int companyId, int candidateId);
         Task RemoveBlackCand(int candidateId);
         List<CandModel> MergeAiResultsWithCandsList(List<CandModel> candsList, List<AiCandidateSearchModel> aiResults);
     }

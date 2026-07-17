@@ -329,6 +329,7 @@ namespace ImportCvsLibrary
                 isBlackCand = true;
                 blackCand.cvs_count = blackCand.cvs_count + 1;
                 Task.Run(() => _candsServise.UpdateBlackCandidateEmailCount(blackCand));
+                Task.Run(() => _candsServise.UpdateCandLastCvSent(blackCand.candidate_id, DateTime.Now));
             }
 
             return isBlackCand;

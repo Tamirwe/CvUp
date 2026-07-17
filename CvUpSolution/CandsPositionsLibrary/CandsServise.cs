@@ -37,8 +37,19 @@ namespace CandsPositionsLibrary
             _blackCandQueries = blackCandQueries;
         }
 
-        public async Task AddBlackCand(blackCandModel blackCand)
+        public async Task AddBlackCand(int companyId, int candidateId)
         {
+            CandModel? cand = await _candsCvsQueries.GetCandidate(companyId, candidateId);
+            List<CandCvModel> cvs = await _candsCvsQueries.GetCandCvsList(companyId, candidateId);
+
+            blackCandModel blackCand = new blackCandModel
+            {
+                candidate_id = candidateId,
+                email = cand?.email,
+                phone = cand?.phone,
+                cvs_count = cvs.Count
+            };
+
             await _blackCandQueries.AddBlackCand(blackCand);
         }
 
@@ -176,6 +187,11 @@ namespace CandsPositionsLibrary
         public async Task UpdateCandLastCv(int companyId, int candidateId, int cvId, bool isDuplicate, DateTime lastCvSent)
         {
             await _candsCvsQueries.UpdateCandLastCv(companyId, candidateId, cvId, isDuplicate, lastCvSent);
+        }
+
+        public async Task UpdateCandLastCvSent(int candidateId, DateTime lastCvSent)
+        {
+            await _candsCvsQueries.UpdateCandLastCvSent(candidateId, lastCvSent);
         }
 
         public async Task UpdateCvDate(int cvId)

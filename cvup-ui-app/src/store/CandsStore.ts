@@ -1107,4 +1107,22 @@ async mergeDuplicateCandsByEmail(email: string = "") {
   return res;
 }
 
+async addBlackCand(candidateId: number) {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.addBlackCand(candidateId);
+
+  this.rootStore.generalStore.backdrop = false;
+  return res;
+}
+
+async removeBlackCand(candidateId: number) {
+  this.rootStore.generalStore.backdrop = true;
+
+  const res = await this.cvsApi.removeBlackCand(candidateId);
+
+  this.rootStore.generalStore.backdrop = false;
+  return res;
+}
+
 }

@@ -304,4 +304,20 @@ async mergeDuplicateCandsByEmail(email: string = "") {
     });
   });
 }
+
+async addBlackCand(candidateId: number) {
+  return await this.apiWrapper2(async () => {
+    return await this.http.post(`Cand/AddBlackCand`, null, {
+      params: { candidateId },
+    });
+  });
+}
+
+async removeBlackCand(candidateId: number) {
+  return await this.apiWrapper2(async () => {
+    return await this.http.delete(`Cand/RemoveBlackCand`, {
+      params: { candidateId },
+    });
+  });
+}
 }

@@ -124,78 +124,83 @@ export const CvView = observer(() => {
               padding: "1rem 1.5rem 1rem 1rem",
             }}
           >
-            <Grid item xs={12} lg={6}>
+            {positionsStore.candDisplayPosition && (
               <Grid
-                container
+                item
+                xs={12}
                 sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  gap: "1rem",
+                  color: "#7b84ff",
+                  fontWeight: 700,
+                  fontSize: isMobile ? "0.9rem" : "1.1rem",
                 }}
               >
-                {positionsStore.candDisplayPosition && (
+                <Link href="#" onClick={handlePositionClick} dir="ltr">
+                  {positionsStore.candDisplayPosition?.name || ""}
+                  &nbsp;-&nbsp;
+                  {positionsStore.candDisplayPosition?.customerName || ""}
+                </Link>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Grid container sx={{ paddingTop: "1rem" }}>
+                <Grid item xs={12} lg={7}>
                   <Grid
-                    item
+                    container
                     sx={{
-                      color: "#7b84ff",
-                      fontWeight: 700,
-                      fontSize: isMobile ? "0.9rem" : "1.1rem",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                      gap: "1rem",
                     }}
                   >
-                    <Link href="#" onClick={handlePositionClick} dir="ltr">
-                      {positionsStore.candDisplayPosition?.name || ""}
-                      &nbsp;-&nbsp;
-                      {positionsStore.candDisplayPosition?.customerName || ""}
-                    </Link>
-                  </Grid>
-                )}
-                <Grid item>
-                  <span
-                    style={{
-                      whiteSpace: "nowrap",
-                      fontSize: "1.3rem",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {candidateName}{" "}
-                    {candsStore.candDisplay?.city && (
+                    <Grid item>
                       <span
                         style={{
-                          color: "gray",
-                          fontSize: "1rem",
-                          fontWeight: 400,
+                          whiteSpace: "nowrap",
+                          fontSize: "1.3rem",
+                          fontWeight: 700,
                         }}
                       >
-                        {" - "} {candsStore.candDisplay?.city}
+                        {candidateName}{" "}
+                        {candsStore.candDisplay?.city && (
+                          <span
+                            style={{
+                              color: "gray",
+                              fontSize: "1rem",
+                              fontWeight: 400,
+                            }}
+                          >
+                            {" - "} {candsStore.candDisplay?.city}
+                          </span>
+                        )}
                       </span>
-                    )}
-                  </span>
+                    </Grid>
+                    <Grid item>
+                      <span>{candsStore.candDisplay?.email} </span>
+                      &nbsp;
+                      {!isMobile && (
+                        <Link
+                          title="Copy email"
+                          href="#"
+                          onClick={async () => {
+                            await copyToClipBoard(
+                              candsStore.candDisplay?.email || "",
+                            );
+                          }}
+                        >
+                          <MdContentCopy />
+                        </Link>
+                      )}
+                    </Grid>
+                    <Grid item>
+                      <span>{candsStore.candDisplay?.phone}</span>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <span>{candsStore.candDisplay?.email} </span>
-                  &nbsp;
-                  {!isMobile && (
-                    <Link
-                      title="Copy email"
-                      href="#"
-                      onClick={async () => {
-                        await copyToClipBoard(
-                          candsStore.candDisplay?.email || "",
-                        );
-                      }}
-                    >
-                      <MdContentCopy />
-                    </Link>
-                  )}
-                </Grid>
-                <Grid item>
-                  <span>{candsStore.candDisplay?.phone}</span>
+                <Grid item xs={12} lg={5}>
+                  <PosStages />
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <PosStages />
             </Grid>
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.allCustomersReviews && (

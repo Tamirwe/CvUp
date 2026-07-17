@@ -101,9 +101,67 @@ export const CvViewButtons = observer(({ setReview }: IProps) => {
           gap={1}
           sx={{ paddingTop: "0.5rem" }}
         >
-          <Button size="small" variant="outlined">
-            Add to Black List
-          </Button>
+          {candsStore.candDisplay?.isBlackList ? (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={async () => {
+                const candidateId = candsStore.candDisplay?.candidateId;
+
+                if (!candidateId) {
+                  return;
+                }
+
+                const res = await candsStore.removeBlackCand(candidateId);
+
+                if (res.isSuccess) {
+                  await generalStore.alertConfirmDialog(
+                    AlertConfirmDialogEnum.Alert,
+                    "Remove from Black List",
+                    "Candidate removed from black list successfully",
+                  );
+                  window.location.reload();
+                } else {
+                  generalStore.alertSnackbar(
+                    "error",
+                    "Failed to remove from black list",
+                  );
+                }
+              }}
+            >
+              Remove from Black List
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={async () => {
+                const candidateId = candsStore.candDisplay?.candidateId;
+
+                if (!candidateId) {
+                  return;
+                }
+
+                const res = await candsStore.addBlackCand(candidateId);
+
+                if (res.isSuccess) {
+                  await generalStore.alertConfirmDialog(
+                    AlertConfirmDialogEnum.Alert,
+                    "Add to Black List",
+                    "Candidate added to black list successfully",
+                  );
+                  window.location.reload();
+                } else {
+                  generalStore.alertSnackbar(
+                    "error",
+                    "Failed to add to black list",
+                  );
+                }
+              }}
+            >
+              Add to Black List
+            </Button>
+          )}
           <Button
             size="small"
             variant="outlined"

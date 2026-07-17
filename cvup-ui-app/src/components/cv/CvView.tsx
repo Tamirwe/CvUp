@@ -161,6 +161,9 @@ export const CvView = observer(() => {
                           whiteSpace: "nowrap",
                           fontSize: "1.3rem",
                           fontWeight: 700,
+                          color: candsStore.candDisplay?.isBlackList
+                            ? "#ff229b"
+                            : undefined,
                         }}
                       >
                         {candidateName}{" "}

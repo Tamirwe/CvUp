@@ -60,8 +60,6 @@ namespace DataModelsLibrary.Queries
         Task<List<keywordModel>> GetKeywords(int companyId);
         Task SaveKeyword(int companyId, keywordModel keyword);
         Task DeleteKeyword(int companyId, int id);
-        Task<List<blackCandModel>> GetBlackCandidatesList();
-        Task UpdateBlackCandidateEmailCount(blackCandModel blackCand);
         Task<SearchTermsModel?> GetExistPositionSearchTerms(int positionId, int id);
         Task SaveSearchTerms(SearchTermsModel searchTerms);
         Task<List<SearchTermsListItemModel>> GetSearchTermsList();

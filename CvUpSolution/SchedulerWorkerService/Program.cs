@@ -59,6 +59,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IEmailQueries, EmailQueries>();
 builder.Services.AddTransient<ICvsFilesService, CvsFilesService>();
 builder.Services.AddTransient<IPositionsQueries, PositionsQueries>();
+builder.Services.AddTransient<IBlackCandQueries, BlackCandQueries>();
 builder.Services.AddTransient<ICandsListsQueries, CandsListsQueries>();
 builder.Services.AddTransient<ICandsServise, CandsServise>();
 builder.Services.AddTransient<ICandsListsServise, CandsListsServise>();

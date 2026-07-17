@@ -18,12 +18,14 @@ namespace CandsPositionsLibrary
         private IEmailQueries _emailQueries;
         private ICvsFilesService _cvsFilesService;
         private IDbQueueService _queueService;
+        private IBlackCandQueries _blackCandQueries;
 
         public CandsServise(IPositionsQueries cvsPositionsQueries,
             ICandsCvsQueries candsCvsQueries,
             ILuceneSearchService luceneSearchService,
             IEmailService emailService, IEmailQueries emailQueries,
-            ICvsFilesService cvsFilesService, IDbQueueService queueService)
+            ICvsFilesService cvsFilesService, IDbQueueService queueService,
+            IBlackCandQueries blackCandQueries)
         {
             _cvsPositionsQueries = cvsPositionsQueries;
             _candsCvsQueries = candsCvsQueries;
@@ -32,6 +34,17 @@ namespace CandsPositionsLibrary
             _emailQueries = emailQueries;
             _cvsFilesService = cvsFilesService;
             _queueService = queueService;
+            _blackCandQueries = blackCandQueries;
+        }
+
+        public async Task AddBlackCand(blackCandModel blackCand)
+        {
+            await _blackCandQueries.AddBlackCand(blackCand);
+        }
+
+        public async Task RemoveBlackCand(int candidateId)
+        {
+            await _blackCandQueries.RemoveBlackCand(candidateId);
         }
 
         public async Task<int> AddCv(ImportCvModel importCv)

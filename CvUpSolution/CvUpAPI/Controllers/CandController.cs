@@ -454,7 +454,23 @@ namespace CvUpAPI.Controllers
         [Route("MergeDuplicateCandsByEmail")]
         public async Task<IActionResult> MergeDuplicateCandsByEmail(string email = "")
         {
-            //await _mergeDuplicatesCandsService.MergeDuplicateCandsByEmail(email);
+            await _mergeDuplicatesCandsService.MergeDuplicateCandsByEmail(email);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("AddBlackCand")]
+        public async Task<IActionResult> AddBlackCand(blackCandModel blackCand)
+        {
+            await _candsService.AddBlackCand(blackCand);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("RemoveBlackCand")]
+        public async Task<IActionResult> RemoveBlackCand(int candidateId)
+        {
+            await _candsService.RemoveBlackCand(candidateId);
             return Ok();
         }
     }

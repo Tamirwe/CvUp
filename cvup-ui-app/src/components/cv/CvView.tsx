@@ -179,6 +179,8 @@ export const CvView = observer(() => {
                 </Grid>
               </Grid>
             </Grid>
+            <CvViewButtons setReview={setReview} />
+
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.allCustomersReviews && (
                 <div>
@@ -237,7 +239,6 @@ export const CvView = observer(() => {
               )}
             </Grid>
 
-            <CvViewButtons setReview={setReview} />
 
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.review &&

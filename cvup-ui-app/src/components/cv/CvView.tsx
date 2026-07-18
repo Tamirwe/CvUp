@@ -29,7 +29,7 @@ import { PosStages } from "./PosStages";
 import useDebounce from "../../Hooks/useDebounce";
 
 export const CvView = observer(() => {
-  const { candsStore, authStore, generalStore, positionsStore } = useStore();
+  const { candsStore, authStore, generalStore } = useStore();
   const navigate = useNavigate();
   let location = useLocation();
   const [candidateName, setCandidateName] = useState("");
@@ -83,17 +83,6 @@ export const CvView = observer(() => {
     setCandidateName(fullName);
   }, []);
 
-  const handlePositionClick = useCallback(
-    async (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      await positionsStore.positionClick(
-        positionsStore.candDisplayPosition!.id,
-        true,
-      );
-      candsStore.setDisplayCandOntopPCList();
-    },
-    [],
-  );
-
   useEffect(() => {
     if (generalStore.showInterviewFullDialog) {
       candsStore.candReviewSync = review;
@@ -124,24 +113,6 @@ export const CvView = observer(() => {
               padding: "1rem 1.5rem 1rem 1rem",
             }}
           >
-            {positionsStore.candDisplayPosition && (
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  color: "#7b84ff",
-                  fontWeight: 700,
-                  fontSize: isMobile ? "0.9rem" : "1.1rem",
-                }}
-              >
-                {/*  customer Name and Position name */}
-                <Link href="#" onClick={handlePositionClick} dir="ltr">
-                  {positionsStore.candDisplayPosition?.name || ""}
-                  &nbsp;-&nbsp;
-                  {positionsStore.candDisplayPosition?.customerName || ""}
-                </Link>
-              </Grid>
-            )}
             <Grid item xs={12}>
               <Grid container sx={{ paddingTop: "1rem" }}>
                 {/* Candidate name, email, phone */}

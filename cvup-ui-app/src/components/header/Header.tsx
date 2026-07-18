@@ -1,7 +1,7 @@
 import { useStore } from "../../Hooks/useStore";
-import { Grid, IconButton, Stack } from "@mui/material";
+import { Grid, IconButton, Link, Stack } from "@mui/material";
 import { SettingsMenu } from "./SettingsMenu";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
 import {
@@ -44,6 +44,17 @@ export const Header = observer(() => {
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const handlePositionClick = useCallback(
+    async (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+      await positionsStore.positionClick(
+        positionsStore.candDisplayPosition!.id,
+        true,
+      );
+      candsStore.setDisplayCandOntopPCList();
+    },
+    [],
+  );
+
   return (
     // <div
     //   style={{
@@ -77,7 +88,7 @@ export const Header = observer(() => {
         }}
       >
         <Grid container spacing={0}>
-          <Grid item xs={7} pl={1}>
+          <Grid item xs={4} sm={7} pl={1}>
             <Stack direction="row" alignItems="center" spacing={1}>
               {/* <IconButton
                   size="medium"
@@ -131,10 +142,10 @@ export const Header = observer(() => {
               )}
 
               <SettingsMenu />
-              {candsStore.candDisplay && location.pathname === "/cv" && (
+               {/* {candsStore.candDisplay && location.pathname === "/cv" && (
                 <>
-                
-                  {/* <IconButton
+
+                 <IconButton
                     title="Review"
                     sx={{ fontSize: "1.54rem", paddingTop: "0.4rem" }}
                     size="small"
@@ -233,9 +244,9 @@ export const Header = observer(() => {
                       >
                         <MdOutlineEditNotifications />
                       </IconButton>
-                    )} */}
+                    )} 
                 </>
-              )}
+              )}*/}
               {/* <IconButton
                 title="Saved Searches"
                 sx={{ fontSize: "1.54rem" }}
@@ -271,7 +282,41 @@ export const Header = observer(() => {
               </IconButton> */}
             </Stack>
           </Grid>
-          <Grid item xs={5} sx={{ textAlign: "right" }} pr={1}>
+          <Grid
+            item
+            xs={8}
+            sm={5}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+            pr={1}
+          >
+            {candsStore.candDisplay &&
+              location.pathname === "/cv" &&
+              positionsStore.candDisplayPosition && (
+                <Link
+                  href="#"
+                  onClick={handlePositionClick}
+                  dir="rtl"
+                  sx={{
+                    flexGrow: 1,
+                    minWidth: 0,
+                    color: "#7b84ff",
+                    fontWeight: 700,
+                    fontSize: isMobile ? "0.9rem" : "1.1rem",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    textAlign: "right",
+                  }}
+                >
+                  {positionsStore.candDisplayPosition?.name || ""}
+                  &nbsp;-&nbsp;
+                  {positionsStore.candDisplayPosition?.customerName || ""}
+                </Link>
+              )}
             {isMobile && (
               <IconButton
                 size="medium"

@@ -1,14 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Dialog, DialogContent, IconButton, Paper, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { IRestoreCandDetails } from "../../models/GeneralModels";
@@ -47,69 +37,67 @@ export const RestoreReviewDialog = ({ isOpen, onClose }: IProps) => {
         Restore Candidate Review
       </BootstrapDialogTitle>
       <DialogContent sx={{ overflow: "hidden", paddingBottom: "15px" }}>
-        <TableContainer sx={{ direction: "rtl" }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="right">Name</TableCell>
-                  <TableCell align="right">Date</TableCell>
-                  <TableCell align="right">Review</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {history.map((cand, index) => (
-                  <TableRow key={index}>
-                    <TableCell
-                      align="right"
-                      sx={{ whiteSpace: "nowrap", verticalAlign: "top" }}
+        <Stack spacing={1.5} sx={{ direction: "rtl" }}>
+          {history.map((cand, index) => (
+            <Paper key={index} variant="outlined" sx={{ padding: "0.75rem" }}>
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                justifyContent="space-between"
+                alignItems="center"
+                gap={1}
+              >
+                <span style={{ fontWeight: 700, color: "#7b84ff" }}>
+                  {cand.firstName} {cand.lastName}
+                </span>
+                <Stack direction="row" alignItems="center" gap={0.5}>
+                  {cand.updatedDateTime && (
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "gray",
+                        fontWeight: 700,
+                      }}
                     >
-                      {cand.firstName} {cand.lastName}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{ whiteSpace: "nowrap", verticalAlign: "top" }}
-                    >
-                      {cand.updatedDateTime &&
-                        new Date(cand.updatedDateTime).toLocaleString()}
-                    </TableCell>
-                    <TableCell align="right" sx={{ verticalAlign: "top" }}>
-                      <IconButton
-                        title="Copy Text"
-                        sx={{ fontSize: "1.54rem" }}
-                        size="small"
-                        onClick={() =>
-                          navigator.clipboard.writeText(cand.review)
-                        }
-                      >
-                        <CiUsb />
-                      </IconButton>
+                      {new Date(cand.updatedDateTime).toLocaleString()}
+                    </span>
+                  )}
+                  <IconButton
+                    title="Copy Text"
+                    sx={{ fontSize: "1.54rem" }}
+                    size="small"
+                    onClick={() =>
+                      navigator.clipboard.writeText(cand.review)
+                    }
+                  >
+                    <CiUsb />
+                  </IconButton>
+                </Stack>
+              </Stack>
 
-                      <div
-                        style={{
-                          maxHeight: "12rem",
-                          overflow: "auto",
-                          padding: "5px",
-                        }}
-                      >
-                        <pre
-                          style={{
-                            whiteSpace: "break-spaces",
-                            direction: "rtl",
-                            textAlign: "right",
-                            fontFamily: "inherit",
-                            margin: 0,
-                          }}
-                          dangerouslySetInnerHTML={{
-                            __html: cand.review || "",
-                          }}
-                        ></pre>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-        </TableContainer>
+              <div
+                style={{
+                  maxHeight: "12rem",
+                  overflow: "auto",
+                  padding: "5px",
+                }}
+              >
+                <pre
+                  style={{
+                    whiteSpace: "break-spaces",
+                    direction: "rtl",
+                    textAlign: "right",
+                    fontFamily: "inherit",
+                    margin: 0,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: cand.review || "",
+                  }}
+                ></pre>
+              </div>
+            </Paper>
+          ))}
+        </Stack>
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,14 @@
-import { Dialog, DialogContent, IconButton } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { IRestoreCandDetails } from "../../models/GeneralModels";
@@ -11,28 +21,14 @@ interface IProps {
 
 export const RestoreReviewDialog = ({ isOpen, onClose }: IProps) => {
   const [open, setOpen] = useState(false);
-  const [review1, setReview1] = useState("");
-  const [cand1, setCand1] = useState<IRestoreCandDetails>();
-  const [review2, setReview2] = useState("");
-  const [cand2, setCand2] = useState<IRestoreCandDetails>();
+  const [history, setHistory] = useState<IRestoreCandDetails[]>([]);
 
   useEffect(() => {
-    const lastReviewCandDetails: IRestoreCandDetails = JSON.parse(
-      localStorage.getItem("LastReviewCandDetails") || '{"candidateId":0}'
+    const reviewHistory: IRestoreCandDetails[] = JSON.parse(
+      localStorage.getItem("ReviewHistory") || "[]"
     );
 
-    setCand1(lastReviewCandDetails);
-
-    const lastReview = localStorage.getItem("LastReview") || "0";
-    setReview1(lastReview);
-
-    const prevReviewCandDetails: IRestoreCandDetails = JSON.parse(
-      localStorage.getItem("PrevReviewCandDetails") || '{"candidateId":0}'
-    );
-    setCand2(prevReviewCandDetails);
-
-    const prevReview = localStorage.getItem("PrevReview") || "0";
-    setReview2(prevReview);
+    setHistory(reviewHistory);
   }, []);
 
   useEffect(() => {
@@ -45,120 +41,75 @@ export const RestoreReviewDialog = ({ isOpen, onClose }: IProps) => {
       fullWidth
       maxWidth={"md"}
       onClose={() => onClose(false)}
+      PaperProps={{ sx: { minHeight: "30vh" } }}
     >
       <BootstrapDialogTitle id="dialog-title" onClose={() => onClose(false)}>
         Restore Candidate Review
       </BootstrapDialogTitle>
       <DialogContent sx={{ overflow: "hidden", paddingBottom: "15px" }}>
-        {cand1?.candId! > 0 || cand2?.candId! > 0 ? (
-          <div
-            style={{
-              direction: "rtl",
-            }}
-          >
-            <div>
-              {review1 && (
-                <div>
-                  {cand1?.firstName && (
-                    <div
-                      style={{
-                        fontSize: "1rem",
-                        fontWeight: "bold",
-                        color: "gray",
-                      }}
-                    >{`${cand1?.firstName} ${cand1?.lastName}${
-                      cand1?.customerName ? " - " + cand1?.customerName : ""
-                    }${
-                      cand1?.positionName ? " - " + cand1?.positionName : ""
-                    }`}</div>
-                  )}
-                  <div
-                    style={{
-                      maxHeight: "20rem",
-                      overflow: "auto",
-                      padding: "5px",
-                    }}
-                  >
-                    <IconButton
-                      title="Copy Text"
-                      sx={{ fontSize: "1.54rem" }}
-                      size="small"
-                      onClick={() => navigator.clipboard.writeText(review1)}
+        <TableContainer sx={{ direction: "rtl" }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">Name</TableCell>
+                  <TableCell align="right">Date</TableCell>
+                  <TableCell align="right">Review</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {history.map((cand, index) => (
+                  <TableRow key={index}>
+                    <TableCell
+                      align="right"
+                      sx={{ whiteSpace: "nowrap", verticalAlign: "top" }}
                     >
-                      <CiUsb />
-                    </IconButton>
-
-                    <pre
-                      style={{
-                        whiteSpace: "break-spaces",
-                        direction: "rtl",
-                        textAlign: "right",
-                        fontFamily: "inherit",
-                        margin: 0,
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: review1 || "",
-                      }}
-                    ></pre>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div style={{ padding: "2rem", textAlign: "center" }}>
-              ------------------------------------------------------
-            </div>
-            <div style={{ paddingBottom: "1rem" }}>
-              {review2 && (
-                <div>
-                  {cand2?.firstName && (
-                    <div
-                      style={{
-                        fontSize: "1rem",
-                        fontWeight: "bold",
-                        color: "gray",
-                      }}
-                    >{`${cand2?.firstName} ${cand2?.lastName}${
-                      cand2?.customerName ? " - " + cand2?.customerName : ""
-                    }${
-                      cand2?.positionName ? " - " + cand2?.positionName : ""
-                    }`}</div>
-                  )}
-                  <div
-                    style={{
-                      maxHeight: "20rem",
-                      overflow: "auto",
-                      padding: "5px",
-                    }}
-                  >
-                    <IconButton
-                      title="Copy Text"
-                      sx={{ fontSize: "1.54rem" }}
-                      size="small"
-                      onClick={() => navigator.clipboard.writeText(review2)}
+                      {cand.firstName} {cand.lastName}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ whiteSpace: "nowrap", verticalAlign: "top" }}
                     >
-                      <CiUsb />
-                    </IconButton>
+                      {cand.updatedDateTime &&
+                        new Date(cand.updatedDateTime).toLocaleString()}
+                    </TableCell>
+                    <TableCell align="right" sx={{ verticalAlign: "top" }}>
+                      <IconButton
+                        title="Copy Text"
+                        sx={{ fontSize: "1.54rem" }}
+                        size="small"
+                        onClick={() =>
+                          navigator.clipboard.writeText(cand.review)
+                        }
+                      >
+                        <CiUsb />
+                      </IconButton>
 
-                    <pre
-                      style={{
-                        whiteSpace: "break-spaces",
-                        direction: "rtl",
-                        textAlign: "right",
-                        fontFamily: "inherit",
-                        margin: 0,
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: review2 || "",
-                      }}
-                    ></pre>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div style={{ fontSize: "2rem", padding: "4rem" }}>No data yet.</div>
-        )}
+                      <div
+                        style={{
+                          maxHeight: "12rem",
+                          overflow: "auto",
+                          padding: "5px",
+                        }}
+                      >
+                        <pre
+                          style={{
+                            whiteSpace: "break-spaces",
+                            direction: "rtl",
+                            textAlign: "right",
+                            fontFamily: "inherit",
+                            margin: 0,
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: cand.review || "",
+                          }}
+                        ></pre>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+        </TableContainer>
       </DialogContent>
     </Dialog>
   );

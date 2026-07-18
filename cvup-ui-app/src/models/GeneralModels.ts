@@ -266,12 +266,11 @@ export interface ICandsReport {
 }
 
 export interface IRestoreCandDetails {
-  candId: number;
+  id: number;
   firstName: string;
   lastName: string;
-  positionId?: number;
-  customerName?: number;
-  positionName?: string;
+  review: string;
+  updatedDateTime: string;
 }
 
 export interface IPositionAiRewriteResult {

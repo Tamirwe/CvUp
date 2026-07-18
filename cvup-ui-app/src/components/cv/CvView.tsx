@@ -34,7 +34,7 @@ export const CvView = observer(() => {
   let location = useLocation();
   const [candidateName, setCandidateName] = useState("");
   const [review, setReview] = useState("");
-  const debouncedValue = useDebounce<string>(review, 2000);
+  const debouncedValue = useDebounce<string>(review, 500);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showActionButtons, setShowActionButtons] = useState(false);
 

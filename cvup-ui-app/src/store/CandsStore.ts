@@ -11,6 +11,7 @@ import {
   ISearchModel,
   ICandsReport,
   SearchTermsModel,
+  IRestoreCandDetails,
 } from "../models/GeneralModels";
 import CandsApi from "./api/CandsApi";
 import { RootStore } from "./RootStore";
@@ -20,7 +21,6 @@ export class CandsStore {
   private candIdDuplicateCvs: number = 0;
   private searchesList: ISearchModel[] = [];
   private externalSearch?: ISearchModel;
-  private lastReviewCandId: number = 0;
   private syncCandReview: string = "";
   searchesSearchVals?: ISearchModel;
   // private isPdfLoaded: boolean = false;
@@ -255,31 +255,28 @@ searchTermsIsIndexSearch = true;
   }
 
   saveReviewToLocalStorage(review: string) {
-    if (this.candDisplay?.candidateId !== this.lastReviewCandId) {
-      localStorage.setItem(
-        "PrevReview",
-        localStorage.getItem("LastReview") || "",
-      );
-      localStorage.setItem(
-        "PrevReviewCandDetails",
-        localStorage.getItem("LastReviewCandDetails") || "",
-      );
+    const history: IRestoreCandDetails[] = JSON.parse(
+      localStorage.getItem("ReviewHistory") || "[]",
+    );
+
+    const candidateId = this.candDisplay?.candidateId!;
+    const entry: IRestoreCandDetails = {
+      id: candidateId,
+      firstName: this.candDisplay?.firstName!,
+      lastName: this.candDisplay?.lastName!,
+      review,
+      updatedDateTime: new Date().toISOString(),
+    };
+
+    if (history[0]?.id === candidateId) {
+      history[0] = entry;
+    } else {
+      history.unshift(entry);
     }
 
-    this.lastReviewCandId = this.candDisplay?.candidateId!;
-
-    localStorage.setItem("LastReview", review);
     localStorage.setItem(
-      "LastReviewCandDetails",
-      JSON.stringify({
-        candId: this.candDisplay?.candidateId!,
-        positionId: this.rootStore.positionsStore.candDisplayPosition?.id,
-        firstName: this.candDisplay?.firstName,
-        lastName: this.candDisplay?.lastName,
-        customerName:
-          this.rootStore.positionsStore.candDisplayPosition?.customerName,
-        positionName: this.rootStore.positionsStore.candDisplayPosition?.name,
-      }),
+      "ReviewHistory",
+      JSON.stringify(history.slice(0, 3)),
     );
   }
 

@@ -44,16 +44,16 @@ export const CvViewButtons = observer(() => {
 <Button
           size="small"
           variant="outlined"
-          color="secondary"
-          startIcon={<MdOutlineEmail />}
+          color="warning"
+          startIcon={<MdOutlineEdit />}
           sx={{
             "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
           }}
           onClick={() => {
-            generalStore.showEmailDialog = EmailTypeEnum.Candidate;
+            generalStore.showCandFormDialog = true;
           }}
         >
-          Candidate
+          Edit cand
         </Button>
         <Button
           size="small"
@@ -72,16 +72,16 @@ export const CvViewButtons = observer(() => {
         <Button
           size="small"
           variant="outlined"
-          color="warning"
-          startIcon={<MdOutlineEdit />}
+          color="secondary"
+          startIcon={<MdOutlineEmail />}
           sx={{
             "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
           }}
           onClick={() => {
-            generalStore.showCandFormDialog = true;
+            generalStore.showEmailDialog = EmailTypeEnum.Candidate;
           }}
         >
-          Edit cand
+          Candidate
         </Button>
         <Button
           size="small"

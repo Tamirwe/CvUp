@@ -311,6 +311,22 @@ export const CandidateEmailSender = observer((props: IProps) => {
             </Stack>
           </Grid>
           <Grid item xs={12} lg={12} pt={1}>
+            <Stack direction="row" flexWrap="wrap" gap={1}>
+              {candsStore.emailTemplates?.slice(0, 5).map((item) => {
+                return (
+                  <Button
+                    key={item.id}
+                    size="small"
+                    variant="outlined"
+                    onClick={() => setEmailTemplate(item)}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })}
+            </Stack>
+          </Grid>
+          <Grid item xs={12} lg={12} pt={1}>
             <QuillRte ref={refQuill} quillHtml={bodyHtml} />
           </Grid>
           <Grid item xs={12} lg={12} pt={1}>

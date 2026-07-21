@@ -19,6 +19,7 @@ import {
   MdContentCopy,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
+  MdOutlineOpenInFull,
 } from "react-icons/md";
 import { copyToClipBoard } from "../../utils/GeneralUtils";
 import { CandsPosStagesList } from "../cands/CandsPosStagesList";
@@ -169,7 +170,14 @@ export const CvView = observer(() => {
                       )}
                     </Grid>
                     <Grid item>
-                      <span>{candsStore.candDisplay?.phone}</span>
+                      {candsStore.candDisplay?.phone && (
+                        <Link
+                          href={`tel:${candsStore.candDisplay.phone}`}
+                          sx={{ fontWeight: "bold", fontSize: "1.1rem" }}
+                        >
+                          {candsStore.candDisplay.phone}
+                        </Link>
+                      )}
                     </Grid>
                   </Grid>
                 </Grid>
@@ -179,7 +187,7 @@ export const CvView = observer(() => {
                 </Grid>
               </Grid>
             </Grid>
-            <CvViewButtons setReview={setReview} />
+            <CvViewButtons />
 
             <Grid item xs={12} lg={12}>
               {candsStore.candDisplay?.allCustomersReviews && (
@@ -295,6 +303,16 @@ export const CvView = observer(() => {
                     </Grid>
                     <Grid item xs={12}>
                       <Stack direction="row" justifyContent="flex-end" gap={1}>
+                        <IconButton
+                          title="Open review in full window"
+                          onClick={() => {
+                            setReview(candsStore.candDisplay?.review || "");
+                            generalStore.showInterviewFullDialog =
+                              !generalStore.showInterviewFullDialog;
+                          }}
+                        >
+                          <MdOutlineOpenInFull />
+                        </IconButton>
                         <Button
                           color="secondary"
                           onClick={() => {

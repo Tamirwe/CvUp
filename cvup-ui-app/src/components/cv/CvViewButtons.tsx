@@ -1,19 +1,20 @@
 import { observer } from "mobx-react";
 import { Button, Grid, Stack } from "@mui/material";
 import { useState } from "react";
-import { isMobile } from "react-device-detect";
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import {
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdOutlineEdit,
+  MdOutlineEmail,
+  MdOutlineRateReview,
+} from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import {
   AlertConfirmDialogEnum,
   EmailTypeEnum,
 } from "../../models/GeneralEnums";
 
-interface IProps {
-  setReview: (review: string) => void;
-}
-
-export const CvViewButtons = observer(({ setReview }: IProps) => {
+export const CvViewButtons = observer(() => {
   const { candsStore, generalStore } = useStore();
   const [showActionButtons, setShowActionButtons] = useState(false);
 
@@ -29,58 +30,58 @@ export const CvViewButtons = observer(({ setReview }: IProps) => {
         <Button
           size="small"
           variant="outlined"
+          startIcon={<MdOutlineRateReview />}
+          sx={{
+            "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
+          }}
           onClick={() => {
-            if (isMobile) {
-              generalStore.showReviewCandDialog =
-                !generalStore.showReviewCandDialog;
-            } else {
-              setReview(candsStore.candDisplay?.review || "");
-              generalStore.showInterviewFullDialog =
-                !generalStore.showInterviewFullDialog;
-            }
+            generalStore.showReviewCandDialog =
+              !generalStore.showReviewCandDialog;
           }}
         >
           Review
         </Button>
-
-        <Button
+<Button
           size="small"
           variant="outlined"
-          color="success"
-          onClick={() =>
-            (generalStore.showEmailDialog = EmailTypeEnum.Contact)
-          }
+          color="secondary"
+          startIcon={<MdOutlineEmail />}
+          sx={{
+            "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
+          }}
+          onClick={() => {
+            generalStore.showEmailDialog = EmailTypeEnum.Candidate;
+          }}
         >
-          Customer Email
+          Candidate
         </Button>
         <Button
           size="small"
           variant="outlined"
+          color="success"
+          startIcon={<MdOutlineEmail />}
+          sx={{
+            "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
+          }}
+          onClick={() =>
+            (generalStore.showEmailDialog = EmailTypeEnum.Contact)
+          }
+        >
+          Customer
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          color="warning"
+          startIcon={<MdOutlineEdit />}
+          sx={{
+            "& .MuiButton-startIcon": { marginLeft: "10px", marginRight: "1px" },
+          }}
           onClick={() => {
             generalStore.showCandFormDialog = true;
           }}
         >
           Edit cand
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => {
-            generalStore.showCustomerReviewCandDialog =
-              !generalStore.showCustomerReviewCandDialog;
-          }}
-        >
-          Customer review
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          color="secondary"
-          onClick={() => {
-            generalStore.showEmailDialog = EmailTypeEnum.Candidate;
-          }}
-        >
-          Cand. Email
         </Button>
         <Button
           size="small"
@@ -101,6 +102,16 @@ export const CvViewButtons = observer(({ setReview }: IProps) => {
           gap={1}
           sx={{ paddingTop: "0.5rem" }}
         >
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => {
+              generalStore.showCustomerReviewCandDialog =
+                !generalStore.showCustomerReviewCandDialog;
+            }}
+          >
+            Customer review
+          </Button>
           {candsStore.candDisplay?.isBlackList ? (
             <Button
               size="small"

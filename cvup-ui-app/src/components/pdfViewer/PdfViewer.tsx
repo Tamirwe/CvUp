@@ -43,7 +43,7 @@ export const PdfViewer = observer(() => {
   //   // SwitchThemeMenuItem: () => <></>,
   // });
   const searchPluginInstance = searchPlugin({
-    keyword: candsStore.keywordsHighLight.split(" ").filter((i) => i),
+    keyword: candsStore.keywordsHighLight,
   });
 
   const toolbarPluginInstance = toolbarPlugin();

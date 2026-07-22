@@ -72,6 +72,27 @@ export const CvView = observer(() => {
     }
   }, [candsStore.posCandsList]);
 
+  const highlightReviewKeywords = (html: string) => {
+    const keywords = candsStore.keywordsHighLight;
+
+    if (!html || !keywords?.length) {
+      return html;
+    }
+
+    const pattern = keywords
+      .map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("|");
+
+    const regex = new RegExp(`(${pattern})`, "gi");
+
+    return html
+      .split(/(<[^>]+>)/g)
+      .map((part) =>
+        part.startsWith("<") ? part : part.replace(regex, "<mark>$1</mark>"),
+      )
+      .join("");
+  };
+
   const getCandName = useCallback(() => {
     let fullName = `${candsStore.candDisplay?.firstName || ""} ${
       candsStore.candDisplay?.lastName || ""
@@ -348,7 +369,9 @@ export const CvView = observer(() => {
                       margin: 0,
                     }}
                     dangerouslySetInnerHTML={{
-                      __html: candsStore.candDisplay?.review || "",
+                      __html: highlightReviewKeywords(
+                        candsStore.candDisplay?.review || "",
+                      ),
                     }}
                   ></pre>
                 )}

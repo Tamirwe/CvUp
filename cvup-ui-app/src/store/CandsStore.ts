@@ -45,7 +45,7 @@ export class CandsStore {
   posStages?: IPosStagesType[];
   emailTemplates?: IEmailTemplate[];
   candsReportData?: ICandsReport[];
-  lastSearchVals: string = "";
+  lastSearchVals: string[] = [];
 
 searchTerms: SearchTermsModel | null = null;
 searchTermsMustHave = "";
@@ -103,9 +103,7 @@ searchTermsIsIndexSearch = true;
   }
 
   get keywordsHighLight() {
-    const keywordsarray = this.lastSearchVals.replaceAll('"', " ");
-
-    return keywordsarray;
+    return this.lastSearchVals;;
   }
 
   get candReviewSync() {
@@ -342,7 +340,7 @@ searchTermsIsIndexSearch = true;
       this.saveSearch(searchVals);
     }
 
-    this.lastSearchVals = searchKeywords;
+    this.lastSearchVals = searchKeywords.replaceAll('"', " ").split(" ").filter((i) => i);
   }
 
   async AiSearchCands(searchVals: ISearchModel) {
@@ -377,7 +375,7 @@ searchTermsIsIndexSearch = true;
       this.saveSearch(searchVals);
     }
 
-    this.lastSearchVals = searchKeywords;
+    this.lastSearchVals = searchKeywords.replaceAll('"', " ").split(" ").filter((i) => i);
   }
 
   async searchPositionTypeCands(searchVals: ISearchModel) {
@@ -399,7 +397,7 @@ searchTermsIsIndexSearch = true;
       this.saveSearch(searchVals);
     }
 
-    this.lastSearchVals = searchKeywords;
+    this.lastSearchVals = searchKeywords.replaceAll('"', " ").split(" ").filter((i) => i);
   }
 
   async searchFolderCands(searchVals: ISearchModel) {
@@ -421,7 +419,7 @@ searchTermsIsIndexSearch = true;
       this.saveSearch(searchVals);
     }
 
-    this.lastSearchVals = searchKeywords;
+    this.lastSearchVals = searchKeywords.replaceAll('"', " ").split(" ").filter((i) => i);
   }
 
   async getCandsList() {
@@ -429,6 +427,7 @@ searchTermsIsIndexSearch = true;
     const res = await this.cvsApi.getCandsList();
     runInAction(() => {
       this.allCandsList = res.data;
+      this.lastSearchVals = [];
     });
     this.rootStore.generalStore.backdrop = false;
   }
@@ -1046,6 +1045,11 @@ searchTermsIsIndexSearch = true;
     )
       return;
 
+      this.lastSearchVals = [
+        ...searchTerms.mustHave,
+       ...searchTerms.mustHaveInResult,
+      ];
+      
     this.rootStore.generalStore.backdrop = true;
 
     const res = await this.cvsApi.searchCandsByUiSearchForm(searchTerms);

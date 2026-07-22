@@ -1047,9 +1047,14 @@ searchTermsIsIndexSearch = true;
 
       this.lastSearchVals = [
         ...searchTerms.mustHave,
-       ...searchTerms.mustHaveInResult,
-      ];
-      
+        ...searchTerms.mustHaveInResult,
+      ]
+        .join(" ")
+        .replaceAll(",", " ")
+        .split(" ")
+        .filter((i) => i);
+
+
     this.rootStore.generalStore.backdrop = true;
 
     const res = await this.cvsApi.searchCandsByUiSearchForm(searchTerms);

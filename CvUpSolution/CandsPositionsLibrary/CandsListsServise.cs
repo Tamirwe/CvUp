@@ -92,8 +92,9 @@ namespace CandsPositionsLibrary
                     searchTerms = new SearchTermsModel
                     {
                         PositionId = positionId,
-                        ShouldHave = generated.LuceneKeywords,
-                        AiSearchPhrase = generated.SearchPhrase,
+                        MustHave = generated.MustHaveInIndexSearch,
+                        ShouldHave = generated.ShouldHaveInIndexSearch,
+                        AiSearchPhrase = generated.AiSearchPrompt,
                     };
                 }
             }

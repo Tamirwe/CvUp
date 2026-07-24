@@ -130,8 +130,9 @@ namespace DataModelsLibrary.Models
 
     public class PositionSearchTermsModel
     {
-        public List<string> LuceneKeywords { get; set; } = [];
-        public string? SearchPhrase { get; set; }
+        public List<string> ShouldHaveInIndexSearch { get; set; } = [];
+        public List<string> MustHaveInIndexSearch { get; set; } = [];
+        public string? AiSearchPrompt { get; set; }
     }
 
     public class SearchTermsModel

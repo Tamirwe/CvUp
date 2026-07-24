@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using OpenAI;
 using OpenAI.Chat;
-using System.Text.RegularExpressions;
 
 namespace OpenAiLibrary.PositionPropsWriter
 {
@@ -83,27 +82,9 @@ namespace OpenAiLibrary.PositionPropsWriter
             return new PositionSearchTermsModel
             {
                 ShouldHaveInIndexSearch = luceneKeywords.He.Concat(luceneKeywords.En).ToList(),
-                MustHaveInIndexSearch = CleanTerms(obj["must_have"]),
+                MustHaveInIndexSearch = obj["must_have"]?.ToObject<List<string>>() ?? [],
                 AiSearchPrompt = obj.Value<string>("search_phrase"),
             };
-        }
-
-        // Keeps letters and single spaces only, so a must have term can never reach the index
-        // search carrying a digit or a sign. Accepts either a json array or one comma separated
-        // string, splitting on the comma before the rest is stripped.
-        private static List<string> CleanTerms(JToken? token)
-        {
-            var rawTerms = token is JArray array
-                ? array.Select(t => t.ToString())
-                : [token?.ToString() ?? ""];
-
-            return rawTerms
-                .SelectMany(t => t.Split(','))
-                .Select(t => Regex.Replace(t, @"[^\p{L}\s]", " "))
-                .Select(t => Regex.Replace(t, @"\s+", " ").Trim())
-                .Where(t => t.Length > 0)
-                .Take(2)
-                .ToList();
         }
     }
 }

@@ -1,13 +1,15 @@
 You are a recruitment analyst.
-Analyze the following job position and extract structured search terms for a CV matching system.
-
-The position text may contain a formal job description and informal recruiter notes — extract from both.
+Analyze the job position below — formal description and informal recruiter notes alike — and extract search terms for a CV matching system.
 
 Return ONLY a JSON object with these fields:
 
-- lucene_keywords: { he: [...], en: [...] } — EXACTLY 5 terms per language, ranked by importance.
-  Choose only high-signal, discriminating terms: the job title (and its closest synonym), the 2-3 core hard skills/certifications/tools that separate a qualified candidate from an unqualified one, and the field/domain (e.g. degree or profession name).
-  Do NOT include: soft skills (team player, analytical thinking, works under pressure), generic phrases (full-time, excellent interpersonal skills), location, or anything that would match almost any CV in the field. If a term wouldn't help distinguish a strong match from a weak one, leave it out.
-  he and en arrays must be translations of the same 5 concepts, not independently chosen.
+- lucene_keywords: { he: [...], en: [...] } — EXACTLY 5 terms per language, ranked by importance: the job title, the 2-3 core hard skills/tools/certifications, and the field or profession.
+  he and en must be translations of the same 5 concepts.
+  Skip soft skills, generic phrases and location — anything that would match almost any CV in the field.
 
-- search_phrase: ONE short paragraph (2-3 sentences max, under 40 words), mixing Hebrew and English naturally as an Israeli recruiter would write it — not two separate translations. Describe the role, seniority, and core domain expertise in natural language for semantic embedding. No keyword lists, no soft-skill filler.
+- must_have: [...] — ALWAYS one or two terms, never empty: the keyword that defines the position, usually the core profession or technology from the title.
+  Taken VERBATIM from the position text, in its own language — never invent, infer or translate.
+  These are AND'd as a hard filter, so no nice-to-haves and no two variants of one concept.
+  Example: ["machine learning", "בקרת איכות"]
+
+- search_phrase: ONE paragraph, under 40 words, mixing Hebrew and English as an Israeli recruiter would write it — not two translations. Describe the role, seniority and core domain for semantic embedding. No keyword lists, no soft-skill filler.

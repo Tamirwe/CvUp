@@ -13,26 +13,43 @@ class keyLevels {
     }
 }
 
+// Scan closed bars for pivots of one type. Consecutive bars sharing the same
+// extreme are grouped into a "plateau" and treated as one pivot, so double
+// tops / double bottoms are detected instead of being silently skipped.
+function scanPivots(series, last, type) {
+    const isUpper = type === "upper";
+    const val = isUpper ? (bar) => bar.high : (bar) => bar.low;
+    const beats = isUpper ? (a, b) => a > b : (a, b) => a < b;
+    const pivots = [];
+
+    let i = 1;
+    while (i <= last - 1) {
+        const v = val(series.get(i));
+
+        // extend across neighbours with an identical extreme
+        let end = i;
+        while (end + 1 <= last - 1 && val(series.get(end + 1)) === v) end++;
+
+        const before = val(series.get(i - 1));
+        const after = val(series.get(end + 1));
+
+        if (beats(v, before) && beats(v, after)) {
+            // anchor the level on the LAST bar of the plateau
+            pivots.push({ index: end, value: v, type: type });
+        }
+        i = end + 1;
+    }
+    return pivots;
+}
+
 // Pivots are only ever formed from fully-closed bars — the last (possibly
 // still-forming) bar is excluded from being a candidate pivot or a neighbor.
 function findPivots(series) {
-    const size = series.data.length;
-    const closedSize = size - 1;
-    const pivots = [];
+    const closedSize = series.data.length - 1;
+    if (closedSize < 3) return [];
 
-    for (let i = 1; i < closedSize - 1; i++) {
-        const prev = series.get(i - 1);
-        const curr = series.get(i);
-        const next = series.get(i + 1);
-
-        if (curr.high > prev.high && curr.high > next.high) {
-            pivots.push({ index: i, value: curr.high, type: "upper" });
-        }
-        if (curr.low < prev.low && curr.low < next.low) {
-            pivots.push({ index: i, value: curr.low, type: "lower" });
-        }
-    }
-    return pivots;
+    const last = closedSize - 1; // last usable closed-bar index
+    return scanPivots(series, last, "upper").concat(scanPivots(series, last, "lower"));
 }
 
 // Crossing/invalidation checks run against ALL bars, including the live one,

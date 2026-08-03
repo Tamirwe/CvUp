@@ -1,12 +1,10 @@
 var fs = require("fs");
+var path = require("path");
 
-fs.cp(
-  "C:\\GitHub\\CvUp\\cvup-ui-app\\build",
-  "C:\\inetpub\\wwwroot\\CvUpUI",
-  { recursive: true },
-  (err) => {
-    if (err) {
-      console.error(err);
-    }
+var buildDir = path.resolve(__dirname, "..", "..", "build");
+
+fs.cp(buildDir, "C:\\inetpub\\wwwroot\\CvUpUI", { recursive: true }, (err) => {
+  if (err) {
+    console.error(err);
   }
-);
+});

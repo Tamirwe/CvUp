@@ -29,8 +29,7 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "6",
     "react-window": "^1.8.8",
-    "stylis": "^4.1.3",
-    "web-vitals": "^2.1.4"
+    "stylis": "^4.1.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -56,6 +55,6 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx",
-    "build:deploy": " node ./src/utils/update-build.js && npm run build && node ./src/utils/deploy.js"
+    "build:deploy": "npm run build && node ./src/utils/deploy.js"
   }
 }

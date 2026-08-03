@@ -47,6 +47,7 @@
     "@vitejs/plugin-react-swc": "^3.11.0",
     "eslint": "^8.25.0",
     "eslint-plugin-mobx": "^0.0.9",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "vite": "^5.4.21"
   },
   "scripts": {
@@ -54,6 +55,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx",
     "build:deploy": " node ./src/utils/update-build.js && npm run build && node ./src/utils/deploy.js",
     "test": "react-scripts test"
   },

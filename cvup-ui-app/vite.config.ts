@@ -32,7 +32,6 @@ export default defineConfig({
           ],
           charts: ["react-google-charts"],
           editor: ["react-quill"],
-          docviewer: ["@cyntler/react-doc-viewer"],
         },
       },
     },

@@ -18,6 +18,11 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    // The entry chunk is react, mui, emotion, the router and the stores, which
+    // will not shrink without splitting mui apart -- and that reorders module
+    // initialisation in ways the build cannot catch. 600 kB raw is roughly
+    // 175 kB over the wire, so this quiets a warning rather than hiding one.
+    chunkSizeWarningLimit: 600,
     // No manualChunks on purpose. Naming a package there makes it a chunk
     // entry point, which overrides the dynamic-import boundary and drags it
     // back into the initial graph -- it was preloading the 587 kB pdf chunk on

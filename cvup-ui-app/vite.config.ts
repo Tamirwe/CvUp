@@ -18,22 +18,9 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
-    rollupOptions: {
-      output: {
-        // Only the self-contained heavy leaves are split out. React, MUI and
-        // emotion stay in the main chunk on purpose: separating emotion from
-        // MUI reorders their module initialisation and breaks styling at
-        // runtime in ways the build cannot catch.
-        manualChunks: {
-          pdf: [
-            "pdfjs-dist",
-            "@react-pdf-viewer/core",
-            "@react-pdf-viewer/default-layout",
-          ],
-          charts: ["react-google-charts"],
-          editor: ["react-quill"],
-        },
-      },
-    },
+    // No manualChunks on purpose. Naming a package there makes it a chunk
+    // entry point, which overrides the dynamic-import boundary and drags it
+    // back into the initial graph -- it was preloading the 587 kB pdf chunk on
+    // the login screen. The lazy routes in Router.tsx split these far better.
   },
 });

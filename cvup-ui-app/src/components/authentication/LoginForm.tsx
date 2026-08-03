@@ -64,9 +64,18 @@ export const LoginForm = ({ loginType }: IProps) => {
 
     // if (apiUrlFlag === "on") {
     // setApiUrlsSelectBoxShow(apiUrlFlag === "on");
+    // JSON.parse("") throws, so an absent or corrupt settings key used to take
+    // the whole login form down rather than just leaving the server unselected.
     const storedSettings = localStorage.getItem("settings");
-    const settingsObj: IAppSettings = JSON.parse(storedSettings || "");
-    setApiUrl(settingsObj.apiUrl);
+
+    if (storedSettings) {
+      try {
+        const settingsObj: IAppSettings = JSON.parse(storedSettings);
+        setApiUrl(settingsObj.apiUrl);
+      } catch {
+        setApiUrl("");
+      }
+    }
 
     fetch(`${import.meta.env.BASE_URL}appSettings.json`)
       .then((res) => res.json())

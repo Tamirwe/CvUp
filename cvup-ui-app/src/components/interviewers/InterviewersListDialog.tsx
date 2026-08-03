@@ -10,7 +10,7 @@ import { GoPlus } from "react-icons/go";
 import { MdClose } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { IInterviewer } from "../../models/AuthModels";
-import { CrudTypesEnum } from "../../models/GeneralEnums";
+import { CrudTypesEnum, PermissionTypeEnum } from "../../models/GeneralEnums";
 import { InterviewerFormDialog } from "./InterviewerFormDialog";
 import { InterviewersList } from "./InterviewersList";
 
@@ -74,7 +74,11 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
                 firstName: "",
                 lastName: "",
                 email: "",
-                permissionType: 20,
+                // FIXME: 20 is not a PermissionTypeEnum member (Admin=0, User=1).
+                // Preserved as-is by the TypeScript 5 upgrade rather than guessed
+                // at; the equivalent new-user default in UserForm is
+                // PermissionTypeEnum.User.
+                permissionType: 20 as PermissionTypeEnum,
               },
               CrudTypesEnum.Insert
             )

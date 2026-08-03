@@ -24,7 +24,7 @@ function App() {
       setIsServersLoaded(true);
     } else {
       try {
-        fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
+        fetch(`${import.meta.env.BASE_URL}appSettings.json`)
           .then((res) => res.json())
           .then((data: IAppSettingsFile) => {
             setIsServersLoaded(true);

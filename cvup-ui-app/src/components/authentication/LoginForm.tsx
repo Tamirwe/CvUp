@@ -68,7 +68,7 @@ export const LoginForm = ({ loginType }: IProps) => {
     const settingsObj: IAppSettings = JSON.parse(storedSettings || "");
     setApiUrl(settingsObj.apiUrl);
 
-    fetch(`${process.env.PUBLIC_URL}/appSettings.json`)
+    fetch(`${import.meta.env.BASE_URL}appSettings.json`)
       .then((res) => res.json())
       .then((data: IAppSettingsFile) => {
         setServersApi(data.servers);

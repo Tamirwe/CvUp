@@ -214,6 +214,17 @@ namespace DataModelsLibrary.Queries
             }
         }
 
+        // System.Text.Json casts any integer straight onto the enum without
+        // validating it, so a payload carrying something like 20 would other-
+        // wise be persisted as the string "20" and read back as an out-of-range
+        // UserPermission that no screen can render.
+        private static UserPermission CoercePermission(UserPermission permission)
+        {
+            return Enum.IsDefined(typeof(UserPermission), permission)
+                ? permission
+                : UserPermission.User;
+        }
+
         public async Task AddInterviewer(InterviewerModel data, int companyId)
         {
             using (var dbContext = new cvupdbContext())
@@ -225,7 +236,7 @@ namespace DataModelsLibrary.Queries
                     first_name = data.firstName,
                     last_name = data.lastName,
                     active_status = UserActiveStatus.Waite_Complete_Registration.ToString(),
-                    permission_type = UserPermission.User.ToString(),
+                    permission_type = CoercePermission(data.permissionType).ToString(),
                 };
 
                 dbContext.users.Add(user);
@@ -244,7 +255,7 @@ namespace DataModelsLibrary.Queries
                     user.email = data.email;
                     user.first_name = data.firstName;
                     user.last_name = data.lastName;
-                    user.permission_type = data.permissionType.ToString();
+                    user.permission_type = CoercePermission(data.permissionType).ToString();
 
                     var result = dbContext.users.Update(user);
                     await dbContext.SaveChangesAsync();
@@ -366,7 +377,7 @@ namespace DataModelsLibrary.Queries
                     user.first_name_en = data.firstNameEn;
                     user.last_name_en = data.lastNameEn;
                     user.signature = data.signature;
-                    user.permission_type = data.permissionType.ToString();
+                    user.permission_type = CoercePermission(data.permissionType).ToString();
 
                     var result = dbContext.users.Update(user);
                     await dbContext.SaveChangesAsync();

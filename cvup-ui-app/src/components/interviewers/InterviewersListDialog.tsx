@@ -74,11 +74,7 @@ export const InterviewersListDialog = ({ isOpen, close }: IProps) => {
                 firstName: "",
                 lastName: "",
                 email: "",
-                // FIXME: 20 is not a PermissionTypeEnum member (Admin=0, User=1).
-                // Preserved as-is by the TypeScript 5 upgrade rather than guessed
-                // at; the equivalent new-user default in UserForm is
-                // PermissionTypeEnum.User.
-                permissionType: 20 as PermissionTypeEnum,
+                permissionType: PermissionTypeEnum.User,
               },
               CrudTypesEnum.Insert
             )

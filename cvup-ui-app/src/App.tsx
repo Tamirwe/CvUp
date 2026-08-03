@@ -1,4 +1,3 @@
-import { Worker } from "@react-pdf-viewer/core";
 import Router from "./Router";
 import { StoreProvider } from "./services/StoreProvider";
 import { RootStore } from "./store/RootStore";
@@ -51,9 +50,7 @@ function App() {
     <ThemeCustomization>
       {isServersLoaded ? (
         <StoreProvider store={getRootStore()}>
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
-            <Router />
-          </Worker>
+          <Router />
         </StoreProvider>
       ) : (
         <div></div>

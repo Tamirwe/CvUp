@@ -4,6 +4,7 @@ import {
   SpecialZoomLevel,
   TextDirection,
   Viewer,
+  Worker,
 } from "@react-pdf-viewer/core";
 // import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
@@ -95,6 +96,7 @@ export const PdfViewer = observer(() => {
   };
 
   return (
+    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
     <div
       className="rpv-core__viewer"
       style={{
@@ -251,5 +253,6 @@ export const PdfViewer = observer(() => {
         )}
       </div>
     </div>
+    </Worker>
   );
 });

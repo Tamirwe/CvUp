@@ -304,6 +304,81 @@ namespace DataModelsLibrary.Queries
             return candsParams;
         }
 
+        public async Task<CvsDistinctWordsModel> GetDistinctCvsWords(int companyId = 154, int candidateId = 0)
+        {
+            List<AnalyzedCvWordsModel> analyzedCvsWords = await GetAnalyzedCvsWords(companyId, candidateId);
+
+            HashSet<string> jobTitlesHe = new HashSet<string>();
+            HashSet<string> professionWordsHe = new HashSet<string>();
+
+            foreach (var item in analyzedCvsWords)
+            {
+                if (!string.IsNullOrWhiteSpace(item.workExperience))
+                {
+                    var workExperienceItems = JsonConvert.DeserializeObject<WorkExperienceItemModel[]>(item.workExperience);
+
+                    if (workExperienceItems != null)
+                    {
+                        foreach (var workItem in workExperienceItems)
+                        {
+                            if (!string.IsNullOrWhiteSpace(workItem.title_he))
+                            {
+                                jobTitlesHe.Add(workItem.title_he.Trim());
+                            }
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(item.professionWords))
+                {
+                    var professionWordsItems = JsonConvert.DeserializeObject<ProfessionWordModel[]>(item.professionWords);
+
+                    if (professionWordsItems != null)
+                    {
+                        foreach (var wordItem in professionWordsItems)
+                        {
+                            if (!string.IsNullOrWhiteSpace(wordItem.hebrew))
+                            {
+                                professionWordsHe.Add(wordItem.hebrew.Trim());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new CvsDistinctWordsModel
+            {
+                jobTitlesHe = jobTitlesHe.OrderBy(x => x).ToList(),
+                professionWordsHe = professionWordsHe.OrderBy(x => x).ToList(),
+            };
+        }
+
+        private async Task<List<AnalyzedCvWordsModel>> GetAnalyzedCvsWords(int companyId = 154, int candidateId = 0)
+        {
+            using (var dbContext = new cvupdbContext())
+            {
+                dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+                var analyzedCvs = from acv in dbContext.analyzed_cvs
+                                  join cand in dbContext.candidates on acv.candidate_id equals cand.id
+                                  where cand.company_id == companyId
+                                  && (acv.work_experience != null || acv.profession_words != null)
+                                  select acv;
+
+                // Conditionally append the candidateId filter strictly in C#
+                if (candidateId > 0)
+                {
+                    analyzedCvs = analyzedCvs.Where(acv => acv.candidate_id == candidateId);
+                }
+
+                return await analyzedCvs.Select(acv => new AnalyzedCvWordsModel
+                {
+                    workExperience = acv.work_experience,
+                    professionWords = acv.profession_words,
+                }).ToListAsync();
+            }
+        }
+
         private async Task<List<CvTxtModel>> GetCvsText(int companyId = 154, int candidateId = 0)
         {
             using (var dbContext = new cvupdbContext())

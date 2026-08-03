@@ -91,6 +91,18 @@ namespace DataModelsLibrary.Models
         public string? fullName { get; set; } = "";
         public string? cvsTxt { get; set; } = "";
     }
+    public class AnalyzedCvWordsModel
+    {
+        public string? workExperience { get; set; }
+        public string? professionWords { get; set; }
+    }
+
+    public class CvsDistinctWordsModel
+    {
+        public List<string> jobTitlesHe { get; set; } = new List<string>();
+        public List<string> professionWordsHe { get; set; } = new List<string>();
+    }
+
     public class CvPropsToIndexModel
     {
         public int id { get; set; }

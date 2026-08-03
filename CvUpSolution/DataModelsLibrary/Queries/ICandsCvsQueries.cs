@@ -6,6 +6,7 @@ namespace DataModelsLibrary.Queries
     public interface ICandsCvsQueries
     {
         Task<List<AiCvModel>> GetDistinctCandsCvs(int companyId = 154, int candidateId = 0);
+        Task<CvsDistinctWordsModel> GetDistinctCvsWords(int companyId = 154, int candidateId = 0);
         Task<CandModel?> GetCandidate(int companyId, int candId);
         Task<int> AddCv(ImportCvModel importCv);
         Task DeleteCv(int companyId, int candidateId, int cvId);

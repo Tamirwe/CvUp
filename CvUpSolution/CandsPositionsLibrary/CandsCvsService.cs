@@ -17,6 +17,12 @@ namespace CandsPositionsLibrary
             List<AiCvModel> cvPropsToIndexList = await _candsCvsQueries.GetDistinctCandsCvs(companyId, candidateId);
             return cvPropsToIndexList;
         }
+
+        public async Task<CvsDistinctWordsModel> GetCandsCvsDistinctWords(int companyId = 154, int candidateId = 0)
+        {
+            CvsDistinctWordsModel distinctWords = await _candsCvsQueries.GetDistinctCvsWords(companyId, candidateId);
+            return distinctWords;
+        }
     }
 }
 

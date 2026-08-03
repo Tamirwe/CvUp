@@ -20,6 +20,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICandsCvsQueries, CandsCvsQueries>();
         services.AddTransient<IFoldersQueries, FoldersQueries>();
         services.AddTransient<IMergeDuplicatesCandsService, MergeDuplicatesCandsService>();
+        services.AddTransient<ICandsCvsService, CandsCvsService>();
     })
     .Build();
 
@@ -28,5 +29,20 @@ using IHost host = Host.CreateDefaultBuilder(args)
 //await cvsFilesServise.ImportNewCvsExternalDisk(154,@"E:\\CvsFolders");
 //cvsFilesServise.RemoveUnRelatedCvsFiles();
 
-var mergeDuplicatesCandsService = host.Services.GetRequiredService<IMergeDuplicatesCandsService>();
-await mergeDuplicatesCandsService.MergeDuplicateCandsByEmail("");
+//var mergeDuplicatesCandsService = host.Services.GetRequiredService<IMergeDuplicatesCandsService>();
+//await mergeDuplicatesCandsService.MergeDuplicateCandsByEmail("");
+
+var candsCvsService = host.Services.GetRequiredService<ICandsCvsService>();
+var distinctWords = await candsCvsService.GetCandsCvsDistinctWords(154);
+
+Console.WriteLine($"job titles (title_he): {distinctWords.jobTitlesHe.Count}");
+foreach (var jobTitle in distinctWords.jobTitlesHe)
+{
+    Console.WriteLine(jobTitle);
+}
+
+Console.WriteLine($"profession words (hebrew): {distinctWords.professionWordsHe.Count}");
+foreach (var professionWord in distinctWords.professionWordsHe)
+{
+    Console.WriteLine(professionWord);
+}

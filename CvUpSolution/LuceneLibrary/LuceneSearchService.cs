@@ -575,11 +575,10 @@ namespace LuceneLibrary
         {
             var bq = new BooleanQuery();
 
+            // Must values are matched exactly — no fuzziness, no prefix wildcards —
+            // so a result can only come back if it really contains the term/phrase.
             foreach (var value in mustValues)
-            {
-                var query = value.Contains(' ') ? BuildExactPhraseQuery(value) : BuildFuzzyTermQuery(value);
-                bq.Add(query, Occur.MUST);
-            }
+                bq.Add(BuildExactPhraseQuery(value), Occur.MUST);
 
             foreach (var value in shouldValues)
                 bq.Add(BuildFuzzyTermQuery(value), Occur.SHOULD);

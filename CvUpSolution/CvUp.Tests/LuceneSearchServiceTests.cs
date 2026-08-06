@@ -249,6 +249,57 @@ public class LuceneSearchServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ComplexSearch_MustTerm_DoesNotMatchFuzzyVariant()
+    {
+        // "javo" is one edit away from candidate 3's "java" — a must term is exact,
+        // so nothing should come back
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["javo"],
+        });
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task ComplexSearch_MustTerm_DoesNotMatchPrefixOnly()
+    {
+        // "fintec" is a prefix of "fintech" — a must term is exact, not a prefix wildcard
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["fintec"],
+        });
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task ComplexSearch_MustHaveInResult_DoesNotMatchFuzzyVariant()
+    {
+        // First: csharp → {1, 2}; within: "fintec" is only a prefix of candidate 1's
+        // "fintech", so the refinement must exclude it
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            MustHave = ["csharp"],
+            MustHaveInResult = ["fintec"],
+        });
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task ComplexSearch_ShouldTerm_StaysFuzzy()
+    {
+        // Should terms keep their fuzziness — "javo" still reaches candidate 3
+        var results = await _service.ComplexSearch(new SearchTermsModel
+        {
+            ShouldHave = ["javo"],
+        });
+
+        Assert.Contains(results, r => r.Id == 3);
+    }
+
+    [Fact]
     public async Task ComplexSearch_ReturnsEmpty_WhenFirstSearchIsEmpty()
     {
         var results = await _service.ComplexSearch(new SearchTermsModel());

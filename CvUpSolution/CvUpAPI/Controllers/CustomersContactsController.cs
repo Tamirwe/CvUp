@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CvUpAPI.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CustomersContactsController : ControllerBase
     {

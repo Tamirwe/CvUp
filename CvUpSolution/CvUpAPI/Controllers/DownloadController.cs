@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CvUpAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class DownloadController : ControllerBase
     {

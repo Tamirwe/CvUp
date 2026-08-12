@@ -118,6 +118,9 @@ builder.Services.RegisterServices(builder);
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+    app.UsePathBase("/api");
+
 app.UseCors(CorsPolicy);
 //app.UseCors(builder =>
 //{

@@ -7,7 +7,8 @@ export default abstract class BaseApi {
   http: AxiosInstance;
 
   constructor(appSettings: IAppSettings) {
-    this.http = axiosService(appSettings.apiUrl);
+    // this.http = axiosService(appSettings.apiUrl);
+    this.http = axiosService("/api/");
   }
 
   async apiWrapper<T>(apiCall: () => Promise<T>): Promise<ResponseModel<T>> {

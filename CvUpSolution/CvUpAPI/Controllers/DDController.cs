@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace CvUpAPI.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class DDController : ControllerBase
     {

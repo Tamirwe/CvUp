@@ -11,7 +11,7 @@ using System.Buffers;
 namespace CvUpAPI.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CandController : ControllerBase
     {

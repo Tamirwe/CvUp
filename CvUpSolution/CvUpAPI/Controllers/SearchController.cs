@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CvUpAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class SearchController : ControllerBase
     {

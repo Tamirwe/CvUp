@@ -1,10 +1,27 @@
-import { defineConfig } from "vite";
+import { defineConfig , loadEnv} from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return {
+    plugins: [react()],
   server: {
     port: 3030,
+    proxy: {
+      '/api': {
+        target: env.VITE_API_TARGET ?? 'http://localhost:7218',
+        changeOrigin: true,
+         configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            console.log('[proxy →]', options.target + proxyReq.path);
+          });
+          proxy.on('proxyRes', (proxyRes, req) => {
+            console.log('[proxy ←]', proxyRes.statusCode, options.target + req.url);
+          });
+        },
+      }
+    },
     // Fail rather than slide onto the next free port. The origin is part of the
     // localStorage key, so a silent move to 3031 hands the app an empty
     // settings bucket and looks like a broken login instead of a busy port.
@@ -28,4 +45,5 @@ export default defineConfig({
     // back into the initial graph -- it was preloading the 587 kB pdf chunk on
     // the login screen. The lazy routes in Router.tsx split these far better.
   },
+ };
 });

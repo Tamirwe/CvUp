@@ -16,7 +16,7 @@ import { CandidateEmailSender } from "../components/email/CandidateEmailSender";
 import { ContactEmailSender } from "../components/email/ContactEmailSender";
 import { ContactsFormDialog } from "../components/contacts/ContactsFormDialog";
 import { FolderFormDialog } from "../components/folders/FolderFormDialog";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomersListDialog } from "../components/customers/CustomersListDialog";
@@ -35,41 +35,86 @@ import { StageDateDialog } from "../components/cv/StageDateDialog";
 import { InterviewFullDialog } from "../components/cands/InterviewFullDialog";
 import { RestoreReviewDialog } from "../components/cands/RestoreReviewDialog";
 
+const AUTH_CHECK_INTERVAL_MS = 60000;
+const MAX_NOT_AUTH_COUNT = 5;
+
 export const LayoutAuthWrapper = observer(() => {
   const { generalStore } = useStore();
-  const [pause, setPause] = useState(false);
 
   useEffect(() => {
     let countNotAuth = 0;
+    let isChecking = false;
 
-    const interval = setInterval(async () => {
-      if (!pause) {
+    const checkAuthorized = async () => {
+      // The tab can trigger several checks at once when it wakes up, and the whole
+      // dialog wait happens inside this flag, so the expired dialog cannot stack.
+      if (isChecking) {
+        return;
+      }
+
+      // A dead network is not an expired session. Waking from sleep routinely fails
+      // the first pings while wifi reassociates.
+      if (!navigator.onLine) {
+        return;
+      }
+
+      isChecking = true;
+
+      try {
         const res = await generalStore.getIsAuthorized();
 
-        if (!res.isSuccess) {
-          countNotAuth++;
-
-          if (countNotAuth >= 5) {
-            setPause(true);
-            const isOk = await generalStore.alertConfirmDialog(
-              AlertConfirmDialogEnum.Confirm,
-              "Your session expired",
-              "Please login again"
-            );
-
-            setPause(false);
-
-            if (isOk) {
-              document.location.href = "/";
-            }
-          }
-        } else {
+        if (res.isSuccess) {
           countNotAuth = 0;
+          return;
         }
-      }
-    }, 60000);
 
-    return () => clearInterval(interval);
+        // Only an actual rejection counts towards expiry - a timeout or a 502 means
+        // the server is unhappy, not that the user has been logged out.
+        if (res.status !== 401 && res.status !== 403) {
+          return;
+        }
+
+        countNotAuth++;
+
+        if (countNotAuth >= MAX_NOT_AUTH_COUNT) {
+          const isOk = await generalStore.alertConfirmDialog(
+            AlertConfirmDialogEnum.Confirm,
+            "Your session expired",
+            "Please login again"
+          );
+
+          countNotAuth = 0;
+
+          if (isOk) {
+            document.location.href = "/";
+          }
+        }
+      } finally {
+        isChecking = false;
+      }
+    };
+
+    const interval = setInterval(checkAuthorized, AUTH_CHECK_INTERVAL_MS);
+
+    // Chrome throttles and then freezes timers in background tabs, so after the tab
+    // has been idle this interval may not have run for hours. Check as soon as the
+    // tab is usable again instead of waiting five more minutes to notice.
+    const checkOnWakeUp = () => {
+      if (document.visibilityState === "visible") {
+        checkAuthorized();
+      }
+    };
+
+    document.addEventListener("visibilitychange", checkOnWakeUp);
+    window.addEventListener("focus", checkOnWakeUp);
+    window.addEventListener("online", checkOnWakeUp);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", checkOnWakeUp);
+      window.removeEventListener("focus", checkOnWakeUp);
+      window.removeEventListener("online", checkOnWakeUp);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

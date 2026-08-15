@@ -46,7 +46,10 @@ namespace CvUpAPI.Controllers
 
             if (newToken is null)
             {
-                return Ok();
+                // Must not be Ok(): an empty 200 is indistinguishable from a network
+                // hiccup on the client, which then cannot tell a dead session from a
+                // retryable failure.
+                return Unauthorized();
             }
 
             return Ok(newToken);

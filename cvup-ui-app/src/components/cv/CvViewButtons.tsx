@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
+  MdOutlineCalendarToday,
   MdOutlineEdit,
   MdOutlineEmail,
   MdOutlineRateReview,
@@ -13,10 +14,12 @@ import {
   AlertConfirmDialogEnum,
   EmailTypeEnum,
 } from "../../models/GeneralEnums";
+import { CalendarAppointmentDialog } from "../calendarAppointment/CalendarAppointmentDialog";
 
 export const CvViewButtons = observer(() => {
-  const { candsStore, generalStore } = useStore();
+  const { candsStore, generalStore, positionsStore } = useStore();
   const [showActionButtons, setShowActionButtons] = useState(false);
+  const [appointmentDialogOpen, setAppointmentDialogOpen] = useState(false);
 
   return (
     <Grid item xs={12}>
@@ -83,6 +86,25 @@ export const CvViewButtons = observer(() => {
         >
           Candidate
         </Button>
+        {positionsStore.candDisplayPosition && (
+          <Button
+            size="small"
+            variant="outlined"
+            color="primary"
+            startIcon={<MdOutlineCalendarToday />}
+            sx={{
+              "& .MuiButton-startIcon": {
+                marginLeft: "10px",
+                marginRight: "1px",
+              },
+            }}
+            onClick={() => {
+              setAppointmentDialogOpen(true);
+            }}
+          >
+            Appointment
+          </Button>
+        )}
         <Button
           size="small"
           variant="outlined"
@@ -325,6 +347,10 @@ export const CvViewButtons = observer(() => {
           </Button>
         </Stack>
       )}
+      <CalendarAppointmentDialog
+        isOpen={appointmentDialogOpen}
+        onClose={() => setAppointmentDialogOpen(false)}
+      />
     </Grid>
   );
 });

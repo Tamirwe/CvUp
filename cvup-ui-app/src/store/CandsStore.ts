@@ -53,7 +53,7 @@ searchTermsShouldHave = "";
 searchTermsMustHaveInResult = "";
 searchTermsShouldHaveInResult = "";
 searchTermsAiSearchPhrase = "";
-searchTermsIsAiSearch = true;
+searchTermsIsAiSearch = false;
 searchTermsIsIndexSearch = true;
 
   constructor(
@@ -1076,7 +1076,7 @@ private applySearchTerms(data: SearchTermsModel | null) {
   this.searchTermsMustHaveInResult = (data?.mustHaveInResult ?? []).join(", ");
   this.searchTermsShouldHaveInResult = (data?.shouldHaveInResult ?? []).join(", ");
   this.searchTermsAiSearchPhrase = data?.aiSearchPhrase ?? "";
-  this.searchTermsIsAiSearch = data?.isAiSearch ?? true;
+  this.searchTermsIsAiSearch = data?.isAiSearch ?? false;
   this.searchTermsIsIndexSearch = data?.isIndexSearch ?? true;
 }
 

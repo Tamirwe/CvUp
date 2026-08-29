@@ -6,6 +6,9 @@ import { isEmailValid } from "../../utils/Validation";
 interface IProps {
   optionsList: IEmailsAddress[];
   listValues: IEmailsAddress[];
+  id?: string;
+  label?: string;
+  placeholder?: string;
   onChange: (vals: IEmailsAddress[]) => void;
 }
 
@@ -19,12 +22,10 @@ export const EmailsToControl = (props: IProps) => {
   }, [props.optionsList]);
 
   useEffect(() => {
-    if (props.listValues.length) {
-      setVals([...props.listValues]);
+    setVals([...props.listValues]);
 
-      if (props.optionsList.length) {
-        filterEmailToList(props.listValues);
-      }
+    if (props.optionsList.length) {
+      filterEmailToList(props.listValues);
     }
   }, [props.listValues, props.optionsList]);
 
@@ -39,7 +40,7 @@ export const EmailsToControl = (props: IProps) => {
   return (
     <Autocomplete
       multiple
-      id="tags-standard"
+      id={props.id || "tags-standard"}
       options={emailsToList}
       getOptionLabel={(option) => {
         return option ? (option.Name ? option.Name : option.Address!) : "";
@@ -75,8 +76,8 @@ export const EmailsToControl = (props: IProps) => {
         <TextField
           {...params}
           variant="outlined"
-          label="To"
-          placeholder="Email Address"
+          label={props.label || "To"}
+          placeholder={props.placeholder || "Email Address"}
         />
       )}
     />

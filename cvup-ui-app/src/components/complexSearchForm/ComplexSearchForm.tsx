@@ -63,7 +63,7 @@ export const ComplexSearchForm = observer(({ onClose, positionId }: IProps) => {
       candsStore.searchTermsMustHaveInResult = "";
       candsStore.searchTermsShouldHaveInResult = "";
       candsStore.searchTermsAiSearchPhrase = "";
-      candsStore.searchTermsIsAiSearch = true;
+      candsStore.searchTermsIsAiSearch = false;
       candsStore.searchTermsIsIndexSearch = true;
     });
   };

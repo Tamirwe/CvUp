@@ -144,7 +144,7 @@ namespace DataModelsLibrary.Models
         public List<string> MustHaveInResult { get; set; } = [];
         public List<string> ShouldHaveInResult { get; set; } = [];
         public string? AiSearchPhrase { get; set; }
-        public bool IsAiSearch { get; set; } = true;
+        public bool IsAiSearch { get; set; } = false;
         public bool IsIndexSearch { get; set; } = true;
     }
 

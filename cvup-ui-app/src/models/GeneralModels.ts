@@ -295,6 +295,20 @@ export interface ISearchTermsListItem {
   searchDescr?: string;
 }
 
+export interface IAppointmentSend {
+  positionId?: number;
+  candidateId?: number;
+  subject: string;
+  start: string;
+  durationMinutes: number;
+  location?: string;
+  notes?: string;
+  candidates: IEmailsAddress[];
+  contacts: IEmailsAddress[];
+  optionalParticipants: IEmailsAddress[];
+  isAddMeAsOptionalGuest: boolean;
+}
+
 export interface IAppointment {
   id: number;
   subject: string;

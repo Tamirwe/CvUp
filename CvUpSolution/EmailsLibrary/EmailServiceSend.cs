@@ -62,6 +62,21 @@ namespace EmailsLibrary
                 }
             }
 
+            if (!string.IsNullOrEmpty(eml.IcsContent))
+            {
+                var invite = new MimePart("text", "calendar")
+                {
+                    Content = new MimeContent(new MemoryStream(Encoding.UTF8.GetBytes(eml.IcsContent))),
+                    ContentTransferEncoding = ContentEncoding.Base64,
+                    FileName = "invite.ics",
+                };
+
+                invite.ContentType.Parameters.Add("method", "REQUEST");
+                invite.ContentType.Parameters.Add("charset", "utf-8");
+
+                builder.Attachments.Add(invite);
+            }
+
             message.Body = builder.ToMessageBody();
 
             using (var client = new SmtpClient())

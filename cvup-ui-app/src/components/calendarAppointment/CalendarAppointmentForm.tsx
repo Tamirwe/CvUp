@@ -1,6 +1,8 @@
 import {
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
@@ -8,7 +10,9 @@ import {
   Select,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -17,7 +21,11 @@ import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
-import { IAppointment, IEmailsAddress } from "../../models/GeneralModels";
+import {
+  IAppointment,
+  IAppointmentSend,
+  IEmailsAddress,
+} from "../../models/GeneralModels";
 import { EmailsToControl } from "../email/EmailsToControl";
 
 interface IProps {
@@ -33,6 +41,27 @@ const durationsList: IIdName[] = [
   { id: 120, name: "2 hours" },
 ];
 
+// Tomorrow, unless it falls on the weekend - then the upcoming Sunday
+const defaultStartDate = () => {
+  const startDate = new Date();
+  startDate.setHours(0, 0, 0, 0);
+  startDate.setDate(startDate.getDate() + 1);
+
+  while (startDate.getDay() === 5 || startDate.getDay() === 6) {
+    startDate.setDate(startDate.getDate() + 1);
+  }
+
+  return startDate;
+};
+
+// Interviews are set to 11:00 unless another time is picked
+const defaultStartTime = () => {
+  const startTime = new Date();
+  startTime.setHours(11, 0, 0, 0);
+
+  return startTime;
+};
+
 const newAppointment: IAppointment = {
   id: 0,
   subject: "",
@@ -44,8 +73,13 @@ const newAppointment: IAppointment = {
 };
 
 export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
-  const { candsStore, customersContactsStore, positionsStore } = useStore();
-  const [formModel, setFormModel] = useState<IAppointment>(newAppointment);
+  const { appointmentsStore, candsStore, customersContactsStore, generalStore, positionsStore } =
+    useStore();
+  const [formModel, setFormModel] = useState<IAppointment>({
+    ...newAppointment,
+    startDate: defaultStartDate(),
+    startTime: defaultStartTime(),
+  });
   const [submitError, setSubmitError] = useState("");
   const [isSubjectEdited, setIsSubjectEdited] = useState(false);
 
@@ -57,6 +91,9 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
     IEmailsAddress[]
   >([]);
   const [contactsToList, setContactsToList] = useState<IEmailsAddress[]>([]);
+  const [isOptionalOpen, setIsOptionalOpen] = useState(false);
+  const [optionalToList, setOptionalToList] = useState<IEmailsAddress[]>([]);
+  const [isAddMeAsOptional, setIsAddMeAsOptional] = useState(false);
 
   // Same as CandidateEmailSender - the displayed candidate is the option/value
   const addCandidateEmail = () => {
@@ -154,13 +191,56 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
   };
 
   const submitForm = async () => {
-    // TODO: call the appointments store
-    console.log({
-      ...formModel,
+    if (!candsToList.length) {
+      setSubmitError("Select at least one candidate");
+      return;
+    }
+
+    if (!contactsToList.length) {
+      setSubmitError("Select at least one contact");
+      return;
+    }
+
+    if ((formModel.location || "").trim().length < 20) {
+      setSubmitError("Location must be at least 20 characters");
+      return;
+    }
+
+    if (!formModel.startDate || !formModel.startTime) {
+      setSubmitError("Select a date and a time");
+      return;
+    }
+
+    const start = new Date(formModel.startDate);
+    start.setHours(
+      formModel.startTime.getHours(),
+      formModel.startTime.getMinutes(),
+      0,
+      0
+    );
+
+    const appointment: IAppointmentSend = {
+      positionId: candDisplayPosition?.id,
+      candidateId: candsStore.candDisplay?.candidateId,
+      subject: formModel.subject,
+      start: start.toISOString(),
+      durationMinutes: formModel.durationMinutes,
+      location: formModel.location,
+      notes: formModel.notes,
       candidates: candsToList,
       contacts: contactsToList,
-    });
-    onClose();
+      optionalParticipants: optionalToList,
+      isAddMeAsOptionalGuest: isAddMeAsOptional,
+    };
+
+    const res = await appointmentsStore.addAppointment(appointment);
+
+    if (res.isSuccess) {
+      generalStore.alertSnackbar("success", "Interview appointment sent");
+      onClose();
+    } else {
+      generalStore.alertSnackbar("error", "Failed to set the appointment");
+    }
   };
 
   return (
@@ -183,7 +263,7 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <EmailsToControl
               id="appointmentCands"
               label="Candidate"
@@ -197,7 +277,7 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <EmailsToControl
               id="appointmentContacts"
               label="Contact"
@@ -209,6 +289,45 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
                 setSubmitError("");
               }}
             />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={0.5}
+              onClick={() => setIsOptionalOpen(!isOptionalOpen)}
+              sx={{ cursor: "pointer", width: "fit-content", fontSize: "1.3rem" }}
+            >
+              <Typography>Optional participants</Typography>
+              {isOptionalOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+            </Stack>
+
+            {isOptionalOpen && (
+              <Stack gap={1} sx={{ pt: 2 }}>
+                <EmailsToControl
+                  id="appointmentOptionalParticipants"
+                  label="Optional participant"
+                  placeholder="Optional participant"
+                  optionsList={contactsOptionsList}
+                  listValues={optionalToList}
+                  onChange={(vals) => {
+                    setOptionalToList(vals);
+                    setSubmitError("");
+                  }}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      id="isAddMeAsOptional"
+                      checked={isAddMeAsOptional}
+                      onChange={(e) => setIsAddMeAsOptional(e.target.checked)}
+                    />
+                  }
+                  label="Add me as optional guest"
+                />
+              </Stack>
+            )}
           </Grid>
 
           <Grid item xs={12} sm={4}>
@@ -302,10 +421,10 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
                 color="secondary"
                 onClick={() => submitForm()}
               >
-                Save
+                Set interview appointment
               </Button>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="secondary"
                 onClick={() => onClose()}
               >

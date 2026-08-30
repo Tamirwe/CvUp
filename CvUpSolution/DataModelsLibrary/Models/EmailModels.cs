@@ -46,6 +46,7 @@ namespace DataModelsLibrary.Models
         public string? Subject { get; set; } = string.Empty;
         public string? Body { get; set; } = string.Empty;
         public List<AttachmentModel>? Attachments { get; set; }
+        public string? IcsContent { get; set; }
         public string? MailSenderUserName { get; set; } = string.Empty;
         public string? MailSenderPassword { get; set; } = string.Empty;
     }

@@ -17,6 +17,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
 
+    public virtual DbSet<appointment> appointments { get; set; }
+
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
 
     public virtual DbSet<black_cand> black_cands { get; set; }
@@ -575,6 +577,19 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.company_id)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("searches_company_id_companies_id");
+        });
+
+        modelBuilder.Entity<appointment>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("appointments_pkey");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.candidates).HasColumnType("jsonb");
+            entity.Property(e => e.contacts).HasColumnType("jsonb");
+            entity.Property(e => e.optional_participants).HasColumnType("jsonb");
+            entity.Property(e => e.duration_minutes).HasDefaultValue(60);
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<search_term>(entity =>

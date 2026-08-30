@@ -49,6 +49,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IOpenAiGetPositionSearchTermsService, OpenAiGetPositionSearchTermsService>();
             services.AddTransient<IPositionPropsWriterService, PositionPropsWriterService>();
             services.AddTransient<IMergeDuplicatesCandsService, MergeDuplicatesCandsService>();
+            services.AddTransient<IAppointmentsQueries, AppointmentsQueries>();
+            services.AddTransient<IAppointmentsService, AppointmentsService>();
 
             return services;
         }

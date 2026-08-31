@@ -316,8 +316,8 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
       return;
     }
 
-    if ((formModel.location || "").trim().length < 20) {
-      setSubmitError("Location must be at least 20 characters");
+    if ((formModel.location || "").trim().length < 5) {
+      setSubmitError("Location must be at least 5 characters");
       return;
     }
 

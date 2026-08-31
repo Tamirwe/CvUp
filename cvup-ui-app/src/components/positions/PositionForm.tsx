@@ -1,10 +1,10 @@
 import {
   Autocomplete,
   Button,
+  Link,
   FormControl,
   FormHelperText,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { MdAdd } from "react-icons/md";
 import { useFormErrors } from "../../Hooks/useFormErrors";
 import { useStore } from "../../Hooks/useStore";
 import {
@@ -24,6 +23,7 @@ import {
 } from "../../models/GeneralEnums";
 import { IContact, IPosition } from "../../models/GeneralModels";
 import { validateSelect, validateTxt } from "../../utils/Validation";
+import { CustomerFormDialog } from "../customers/CustomerFormDialog";
 import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
@@ -40,6 +40,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
   const [submitError, setSubmitError] = useState("");
   const [contactsList, setContactsList] = useState<IContact[]>();
   const [isDirty, setIsDirty] = useState(false);
+  const [openCustomerForm, setOpenCustomerForm] = useState(false);
   const [formModel, setFormModel] = useState<IPosition>({
     id: 0,
     name: "",
@@ -309,7 +310,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                           label: x.name,
                         })
                       )}
-                      sx={{ width: "88%" }}
+                      sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField
                           helperText={errModel.customerId}
@@ -319,23 +320,6 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                         />
                       )}
                     />
-                    <IconButton
-                      size="medium"
-                      aria-label="toggle password visibility"
-                      onClick={() =>
-                        (generalStore.showContactFormDialog = true)
-                      }
-                      edge="end"
-                      sx={{
-                        marginTop: 1,
-                        marginLeft: 1,
-                        alignItems: "center",
-                        height: "40px",
-                        width: "40px",
-                      }}
-                    >
-                      <MdAdd />
-                    </IconButton>
                   </Stack>
                 </Grid>
                 <Grid item xs={12} lg={6} mt={1} sx={{ direction: "ltr" }}>
@@ -451,12 +435,24 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     value={formModel.emailsubjectAddon || ""}
                   />
                 </Grid>
+                {crudType === CrudTypesEnum.Update && (
+                  <Grid item xs={12} sx={{ direction: "ltr" }}>
+                    <Link
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      onClick={onAiRewriteDescrRequirements}
+                    >
+                      Rephrasing Description & Requirements by AI
+                    </Link>
+                  </Grid>
+                )}
                 <Grid item xs={12} lg={6}>
                   <TextField
                     sx={{ direction: "rtl" }}
                     fullWidth
                     multiline
-                    rows={isMobile ? 18 : 20}
+                    rows={isMobile ? 18 : 18}
                     margin="normal"
                     type="text"
                     id="description"
@@ -477,7 +473,7 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                     sx={{ direction: "rtl" }}
                     fullWidth
                     multiline
-                    rows={isMobile ? 18 : 20}
+                    rows={isMobile ? 18 : 18}
                     margin="normal"
                     type="text"
                     id="requirements"
@@ -504,14 +500,19 @@ export const PositionForm = observer(({ onClose }: IProps) => {
               </Grid>
             )}
             <Grid item xs={12} mt={1}>
-              <Grid container justifyContent="space-between">
+              <Grid container justifyContent="flex-end">
                 <Grid item>
-                  {crudType === CrudTypesEnum.Update &&
-                    authStore.claims.UserId &&
-                    parseInt(authStore.claims.UserId) !== formModel.id && (
-                      <Stack direction="row" alignItems="center" gap={1}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    flexWrap="wrap"
+                    gap={1}
+                  >
+                    {crudType === CrudTypesEnum.Update &&
+                      authStore.claims.UserId &&
+                      parseInt(authStore.claims.UserId) !== formModel.id && (
                         <Button
-                          fullWidth
+                          variant="outlined"
                           color="error"
                           onClick={() => {
                             deletePosition();
@@ -519,37 +520,55 @@ export const PositionForm = observer(({ onClose }: IProps) => {
                         >
                           Delete
                         </Button>
-                      </Stack>
-                    )}
-                </Grid>
-                <Grid item>
-                  <Stack direction="row" alignItems="center" gap={1}>
-                    {crudType === CrudTypesEnum.Update && (
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        onClick={onAiRewriteDescrRequirements}
-                        sx={{ whiteSpace: "nowrap", px: 5 }}
-                      >
-                        AI Rewrite
-                      </Button>
-                    )}
+                      )}
 
                     <Button
-                      fullWidth
+                      variant="outlined"
+                      color="primary"
+                      disabled={!formModel.customerId}
+                      onClick={() => {
+                        customersContactsStore.selectedCustomer =
+                          customersContactsStore.customersList.find(
+                            (x) => x.id === formModel.customerId
+                          ) || {
+                            id: formModel.customerId,
+                            name: formModel.customerName || "",
+                          };
+
+                        setOpenCustomerForm(true);
+                      }}
+                      sx={{ whiteSpace: "nowrap" }}
+                    >
+                      Update customer
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() =>
+                        (generalStore.showContactFormDialog = true)
+                      }
+                      sx={{ whiteSpace: "nowrap" }}
+                    >
+                      Add customer contact
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      disabled={!isDirty}
+                      color="secondary"
+                      onClick={handleSubmit}
+                      sx={{ ml: 4 }}
+                    >
+                      Save
+                    </Button>
+
+                    <Button
+                      variant="outlined"
                       color="secondary"
                       onClick={() => onClose()}
                     >
                       Cancel
-                    </Button>
-
-                    <Button
-                      disabled={!isDirty}
-                      fullWidth
-                      color="secondary"
-                      onClick={handleSubmit}
-                    >
-                      Save
                     </Button>
                   </Stack>
                 </Grid>
@@ -557,6 +576,18 @@ export const PositionForm = observer(({ onClose }: IProps) => {
             </Grid>
           </Grid>
         </form>
+      )}
+      {openCustomerForm && (
+        <CustomerFormDialog
+          isOpen={openCustomerForm}
+          onClose={(isSaved) => {
+            setOpenCustomerForm(false);
+
+            if (isSaved) {
+              customersContactsStore.getCustomersList();
+            }
+          }}
+        />
       )}
     </>
   );

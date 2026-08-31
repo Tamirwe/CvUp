@@ -159,7 +159,17 @@ export const CvView = observer(() => {
                             : undefined,
                         }}
                       >
-                        {candidateName}{" "}
+                        <Link
+                          href="#"
+                          title="Edit candidate details"
+                          underline="hover"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            generalStore.showCandFormDialog = true;
+                          }}
+                        >
+                          {candidateName}
+                        </Link>{" "}
                         {candsStore.candDisplay?.city && (
                           <span
                             style={{

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Database.models;
@@ -36,4 +36,6 @@ public partial class appointment
     public DateTime created_at { get; set; }
 
     public DateTime updated_at { get; set; }
+
+    public int ics_sequence { get; set; }
 }

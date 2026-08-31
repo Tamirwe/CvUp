@@ -79,7 +79,6 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
@@ -113,6 +112,32 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.cv_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("analyzed_cvs_cv_id_fkey");
+        });
+
+        modelBuilder.Entity<appointment>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("appointments_pkey");
+
+            entity.HasIndex(e => e.candidate_id, "ix_appointments_candidate_id");
+
+            entity.HasIndex(e => new { e.company_id, e.start_time }, "ix_appointments_company_id_start_time");
+
+            entity.HasIndex(e => e.position_id, "ix_appointments_position_id");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.candidates)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.contacts)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.duration_minutes).HasDefaultValue(60);
+            entity.Property(e => e.optional_participants)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.subject).HasDefaultValueSql("''::text");
+            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<auth_out_email>(entity =>
@@ -577,19 +602,6 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.company_id)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("searches_company_id_companies_id");
-        });
-
-        modelBuilder.Entity<appointment>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("appointments_pkey");
-
-            entity.Property(e => e.id).UseIdentityAlwaysColumn();
-            entity.Property(e => e.candidates).HasColumnType("jsonb");
-            entity.Property(e => e.contacts).HasColumnType("jsonb");
-            entity.Property(e => e.optional_participants).HasColumnType("jsonb");
-            entity.Property(e => e.duration_minutes).HasDefaultValue(60);
-            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
-            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<search_term>(entity =>

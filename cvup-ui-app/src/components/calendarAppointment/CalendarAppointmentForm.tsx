@@ -18,9 +18,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
+import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import {
   IAppointment,
   IAppointmentSend,
@@ -29,6 +30,7 @@ import {
 import { EmailsToControl } from "../email/EmailsToControl";
 
 interface IProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
@@ -72,7 +74,7 @@ const newAppointment: IAppointment = {
   notes: "",
 };
 
-export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
+export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) => {
   const { appointmentsStore, candsStore, customersContactsStore, generalStore, positionsStore } =
     useStore();
   const [formModel, setFormModel] = useState<IAppointment>({
@@ -94,6 +96,11 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
   const [isOptionalOpen, setIsOptionalOpen] = useState(false);
   const [optionalToList, setOptionalToList] = useState<IEmailsAddress[]>([]);
   const [isAddMeAsOptional, setIsAddMeAsOptional] = useState(false);
+  const [appointmentId, setAppointmentId] = useState(0);
+
+  // An appointment that was loaded from the server keeps its own guests,
+  // the position / candidate defaults must not run over them
+  const isLoadedAppointment = useRef(false);
 
   // Same as CandidateEmailSender - the displayed candidate is the option/value
   const addCandidateEmail = () => {
@@ -111,10 +118,16 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
       ];
 
       setCandsOptionsList(candsList);
-      setCandsToList(candsList);
+
+      if (!isLoadedAppointment.current) {
+        setCandsToList(candsList);
+      }
     } else {
       setCandsOptionsList([]);
-      setCandsToList([]);
+
+      if (!isLoadedAppointment.current) {
+        setCandsToList([]);
+      }
     }
   };
 
@@ -154,7 +167,9 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
       };
     });
 
-    setContactsToList(toList || []);
+    if (!isLoadedAppointment.current) {
+      setContactsToList(toList || []);
+    }
   };
 
   // The displayed candidate is auto selected, and follows the displayed cv
@@ -168,6 +183,73 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
   useEffect(() => {
     fillContactsList();
   }, [contactsCount, candDisplayPosition]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const candidateId = candsStore.candDisplay?.candidateId;
+  const positionId = candDisplayPosition?.id;
+
+  // The api serializes with camelCase, the emails control works with Name / Address
+  const toGuests = (guests?: IEmailsAddress[]): IEmailsAddress[] => {
+    return (guests || []).map((guest: any) => {
+      return {
+        Name: guest.Name ?? guest.name,
+        Address: guest.Address ?? guest.address,
+      };
+    });
+  };
+
+  // An interview that is already set for this candidate on this position
+  // is edited by the form, instead of being set again
+  const loadAppointment = async () => {
+    const res = await appointmentsStore.getAppointment(positionId, candidateId);
+    const data = res.isSuccess ? res.data : null;
+
+    setSubmitError("");
+
+    if (data) {
+      const start = new Date(data.start);
+
+      isLoadedAppointment.current = true;
+      setAppointmentId(data.id || 0);
+      setFormModel({
+        id: data.id || 0,
+        subject: data.subject,
+        candidates: [],
+        contacts: [],
+        durationMinutes: data.durationMinutes,
+        startDate: start,
+        startTime: start,
+        location: data.location || "",
+        notes: data.notes || "",
+      });
+      setIsSubjectEdited(true);
+      const optionalGuests = toGuests(data.optionalParticipants);
+
+      setCandsToList(toGuests(data.candidates));
+      setContactsToList(toGuests(data.contacts));
+      setOptionalToList(optionalGuests);
+      setIsOptionalOpen(optionalGuests.length > 0);
+    } else {
+      isLoadedAppointment.current = false;
+      setAppointmentId(0);
+      setFormModel({
+        ...newAppointment,
+        startDate: defaultStartDate(),
+        startTime: defaultStartTime(),
+      });
+      setIsSubjectEdited(false);
+      setOptionalToList([]);
+      setIsOptionalOpen(false);
+      setIsAddMeAsOptional(false);
+      addCandidateEmail();
+      fillContactsList();
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      loadAppointment();
+    }
+  }, [isOpen, positionId, candidateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // A different position / candidate is a different appointment,
   // so the generated subject takes over again
@@ -190,6 +272,39 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
     setFormModel((currentProps) => ({ ...currentProps, [field]: value }));
   };
 
+  const appointmentStart = () => {
+    if (!formModel.startDate || !formModel.startTime) {
+      return null;
+    }
+
+    const start = new Date(formModel.startDate);
+    start.setHours(
+      formModel.startTime.getHours(),
+      formModel.startTime.getMinutes(),
+      0,
+      0
+    );
+
+    return start;
+  };
+
+  const buildAppointment = (start: Date): IAppointmentSend => {
+    return {
+      id: appointmentId,
+      positionId: positionId,
+      candidateId: candidateId,
+      subject: formModel.subject,
+      start: start.toISOString(),
+      durationMinutes: formModel.durationMinutes,
+      location: formModel.location,
+      notes: formModel.notes,
+      candidates: candsToList,
+      contacts: contactsToList,
+      optionalParticipants: optionalToList,
+      isAddMeAsOptionalGuest: isAddMeAsOptional,
+    };
+  };
+
   const submitForm = async () => {
     if (!candsToList.length) {
       setSubmitError("Select at least one candidate");
@@ -206,40 +321,52 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
       return;
     }
 
-    if (!formModel.startDate || !formModel.startTime) {
+    const start = appointmentStart();
+
+    if (!start) {
       setSubmitError("Select a date and a time");
       return;
     }
 
-    const start = new Date(formModel.startDate);
-    start.setHours(
-      formModel.startTime.getHours(),
-      formModel.startTime.getMinutes(),
-      0,
-      0
-    );
+    const appointment = buildAppointment(start);
 
-    const appointment: IAppointmentSend = {
-      positionId: candDisplayPosition?.id,
-      candidateId: candsStore.candDisplay?.candidateId,
-      subject: formModel.subject,
-      start: start.toISOString(),
-      durationMinutes: formModel.durationMinutes,
-      location: formModel.location,
-      notes: formModel.notes,
-      candidates: candsToList,
-      contacts: contactsToList,
-      optionalParticipants: optionalToList,
-      isAddMeAsOptionalGuest: isAddMeAsOptional,
-    };
-
-    const res = await appointmentsStore.addAppointment(appointment);
+    const res = appointmentId
+      ? await appointmentsStore.updateAppointment(appointment)
+      : await appointmentsStore.addAppointment(appointment);
 
     if (res.isSuccess) {
-      generalStore.alertSnackbar("success", "Interview appointment sent");
+      generalStore.alertSnackbar(
+        "success",
+        appointmentId
+          ? "Interview appointment updated"
+          : "Interview appointment sent"
+      );
       onClose();
     } else {
       generalStore.alertSnackbar("error", "Failed to set the appointment");
+    }
+  };
+
+  const removeAppointment = async () => {
+    const isRemove = await generalStore.alertConfirmDialog(
+      AlertConfirmDialogEnum.Confirm,
+      "Remove appointment",
+      "Are you sure you want to remove this appointment? A cancellation will be sent to the guests."
+    );
+
+    if (!isRemove) {
+      return;
+    }
+
+    const res = await appointmentsStore.cancelAppointment(
+      buildAppointment(appointmentStart() || new Date())
+    );
+
+    if (res.isSuccess) {
+      generalStore.alertSnackbar("success", "Appointment removed");
+      onClose();
+    } else {
+      generalStore.alertSnackbar("error", "Failed to remove the appointment");
     }
   };
 
@@ -421,8 +548,19 @@ export const CalendarAppointmentForm = observer(({ onClose }: IProps) => {
                 color="secondary"
                 onClick={() => submitForm()}
               >
-                Set interview appointment
+                {appointmentId
+                  ? "Update interview appointment"
+                  : "Set interview appointment"}
               </Button>
+              {appointmentId > 0 && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => removeAppointment()}
+                >
+                  Remove appointment
+                </Button>
+              )}
               <Button
                 variant="outlined"
                 color="secondary"

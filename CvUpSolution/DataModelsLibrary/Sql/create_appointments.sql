@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.appointments
     contacts              jsonb       NOT NULL DEFAULT '[]'::jsonb,
     optional_participants jsonb       NOT NULL DEFAULT '[]'::jsonb,
     ics_uid               text        NOT NULL,
+    ics_sequence          integer     NOT NULL DEFAULT 0,
     created_at            timestamptz NOT NULL DEFAULT now(),
     updated_at            timestamptz NOT NULL DEFAULT now()
 );
@@ -29,3 +30,8 @@ CREATE INDEX IF NOT EXISTS ix_appointments_position_id
 
 CREATE INDEX IF NOT EXISTS ix_appointments_candidate_id
     ON public.appointments (candidate_id);
+
+-- Existing installations.
+ALTER TABLE public.appointments
+    ADD COLUMN IF NOT EXISTS ics_sequence integer NOT NULL DEFAULT 0;
+

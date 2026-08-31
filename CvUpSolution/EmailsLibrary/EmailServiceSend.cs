@@ -1,23 +1,16 @@
 ﻿using DataModelsLibrary.Models;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
+using MailKit.Security;
 using MimeKit;
-using MimeKit.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace EmailsLibrary
 {
     public partial class EmailService : IEmailService
     {
-       
-
         public async Task Send(EmailModel eml)
         {
-
             var message = new MimeMessage();
 
             if (eml.From != null && eml.From.Address != null)
@@ -30,7 +23,6 @@ namespace EmailsLibrary
                 foreach (var item in eml.To)
                 {
                     message.To.Add(new MailboxAddress(item.Name, item.Address));
-                    //message.To.Add(new MailboxAddress("Tamir Weiss", "tamir.we@gmail.com"));
                 }
             }
 
@@ -38,7 +30,7 @@ namespace EmailsLibrary
             {
                 foreach (var item in eml.Cc)
                 {
-                    //message.Cc.Add(new MailboxAddress(item.Name, item.Address));
+                    message.Cc.Add(new MailboxAddress(item.Name, item.Address));
                 }
             }
 
@@ -46,58 +38,93 @@ namespace EmailsLibrary
             {
                 foreach (var item in eml.Bcc)
                 {
-                    //message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
+                    message.Bcc.Add(new MailboxAddress(item.Name, item.Address));
                 }
             }
 
             message.Subject = eml.Subject;
 
-            var builder = new BodyBuilder { HtmlBody = eml.Body };
-       
-            if (eml.Attachments != null)
-            {
-                foreach (var item in eml.Attachments)
-                {
-                    builder.Attachments.Add($"{item.name.Replace(' ','_')}.pdf", item.Attachment);
-                }
-            }
+            // ---- multipart/alternative: plain, html, calendar ----
+            // Order matters: least preferred first, calendar last.
+            var alternative = new MultipartAlternative();
+
+            var plain = new TextPart("plain");
+            plain.SetText(Encoding.UTF8, HtmlToPlainText(eml.Body));
+            alternative.Add(plain);
+
+            var html = new TextPart("html");
+            html.SetText(Encoding.UTF8, eml.Body ?? string.Empty);
+            alternative.Add(html);
 
             if (!string.IsNullOrEmpty(eml.IcsContent))
             {
-                var invite = new MimePart("text", "calendar")
-                {
-                    Content = new MimeContent(new MemoryStream(Encoding.UTF8.GetBytes(eml.IcsContent))),
-                    ContentTransferEncoding = ContentEncoding.Base64,
-                    FileName = "invite.ics",
-                };
+                // TextPart, NOT MimePart. No FileName, no ContentDisposition —
+                // either one turns this back into an attachment.
+                var invite = new TextPart("calendar");
 
-                invite.ContentType.Parameters.Add("method", "REQUEST");
-                invite.ContentType.Parameters.Add("charset", "utf-8");
+                invite.ContentType.Parameters.Add("method", string.IsNullOrEmpty(eml.IcsMethod) ? "REQUEST" : eml.IcsMethod);
+                invite.SetText(Encoding.UTF8, eml.IcsContent);
+                invite.ContentTransferEncoding = ContentEncoding.Base64;
 
-                builder.Attachments.Add(invite);
+                alternative.Add(invite);
             }
 
-            message.Body = builder.ToMessageBody();
+            // ---- real attachments, if any, go in an outer multipart/mixed ----
+            if (eml.Attachments != null && eml.Attachments.Any())
+            {
+                var mixed = new Multipart("mixed") { alternative };
+
+                foreach (var item in eml.Attachments)
+                {
+                    if (item.Attachment.CanSeek)
+                    {
+                        item.Attachment.Position = 0;
+                    }
+
+                    var pdf = new MimePart("application", "pdf")
+                    {
+                        Content = new MimeContent(item.Attachment),
+                        ContentTransferEncoding = ContentEncoding.Base64,
+                        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                        FileName = $"{item.name.Replace(' ', '_')}.pdf",
+                    };
+
+                    mixed.Add(pdf);
+                }
+
+                message.Body = mixed;
+            }
+            else
+            {
+                message.Body = alternative;
+            }
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.gmail.com", 587);
+                await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
 
-
-                // Note: since we don't have an OAuth2 token, disable
-                // the XOAUTH2 authentication mechanism.
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(eml.MailSenderUserName, eml.MailSenderPassword);
-
+                await client.AuthenticateAsync(eml.MailSenderUserName, eml.MailSenderPassword);
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);
             }
-            //});
+        }
 
-            //    emailThread.IsBackground = true;
-            //    emailThread.Start();
+        private static string HtmlToPlainText(string? html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return string.Empty;
+            }
+
+            var text = Regex.Replace(html, @"<br\s*/?>|</p>|</div>|</tr>", "\n", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, "<.*?>", string.Empty, RegexOptions.Singleline);
+            text = System.Net.WebUtility.HtmlDecode(text);
+            text = Regex.Replace(text, @"[ \t]+", " ");
+            text = Regex.Replace(text, @"\n{3,}", "\n\n");
+
+            return text.Trim();
         }
     }
 }

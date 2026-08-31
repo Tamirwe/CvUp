@@ -296,6 +296,7 @@ export interface ISearchTermsListItem {
 }
 
 export interface IAppointmentSend {
+  id?: number;
   positionId?: number;
   candidateId?: number;
   subject: string;

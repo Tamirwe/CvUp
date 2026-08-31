@@ -29,7 +29,7 @@ export const CalendarAppointmentDialog = ({ isOpen, onClose }: IProps) => {
         Appointment
       </BootstrapDialogTitle>
       <DialogContent sx={{ pt: 1 }}>
-        <CalendarAppointmentForm onClose={onClose} />
+        <CalendarAppointmentForm isOpen={isOpen} onClose={onClose} />
       </DialogContent>
     </Dialog>
   );

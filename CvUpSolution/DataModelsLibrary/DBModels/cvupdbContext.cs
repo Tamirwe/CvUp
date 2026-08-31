@@ -17,7 +17,7 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
 
-    public virtual DbSet<appointment> appointments { get; set; }
+    public virtual DbSet<schedule_interview> schedule_interviews { get; set; }
 
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
 
@@ -114,15 +114,15 @@ public partial class cvupdbContext : DbContext
                 .HasConstraintName("analyzed_cvs_cv_id_fkey");
         });
 
-        modelBuilder.Entity<appointment>(entity =>
+        modelBuilder.Entity<schedule_interview>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("appointments_pkey");
+            entity.HasKey(e => e.id).HasName("schedule_interviews_pkey");
 
-            entity.HasIndex(e => e.candidate_id, "ix_appointments_candidate_id");
+            entity.HasIndex(e => e.candidate_id, "ix_schedule_interviews_candidate_id");
 
-            entity.HasIndex(e => new { e.company_id, e.start_time }, "ix_appointments_company_id_start_time");
+            entity.HasIndex(e => new { e.company_id, e.start_time }, "ix_schedule_interviews_company_id_start_time");
 
-            entity.HasIndex(e => e.position_id, "ix_appointments_position_id");
+            entity.HasIndex(e => e.position_id, "ix_schedule_interviews_position_id");
 
             entity.Property(e => e.id).UseIdentityAlwaysColumn();
             entity.Property(e => e.candidates)

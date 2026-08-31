@@ -14,12 +14,12 @@ import {
   AlertConfirmDialogEnum,
   EmailTypeEnum,
 } from "../../models/GeneralEnums";
-import { CalendarAppointmentDialog } from "../calendarAppointment/CalendarAppointmentDialog";
+import { ScheduleInterviewDialog } from "../scheduleInterview/ScheduleInterviewDialog";
 
 export const CvViewButtons = observer(() => {
   const { candsStore, generalStore, positionsStore } = useStore();
   const [showActionButtons, setShowActionButtons] = useState(false);
-  const [appointmentDialogOpen, setAppointmentDialogOpen] = useState(false);
+  const [scheduleInterviewDialogOpen, setScheduleInterviewDialogOpen] = useState(false);
 
   return (
     <Grid item xs={12}>
@@ -99,10 +99,10 @@ export const CvViewButtons = observer(() => {
               },
             }}
             onClick={() => {
-              setAppointmentDialogOpen(true);
+              setScheduleInterviewDialogOpen(true);
             }}
           >
-            Appointment
+            Schedule Interview
           </Button>
         )}
         <Button
@@ -347,9 +347,9 @@ export const CvViewButtons = observer(() => {
           </Button>
         </Stack>
       )}
-      <CalendarAppointmentDialog
-        isOpen={appointmentDialogOpen}
-        onClose={() => setAppointmentDialogOpen(false)}
+      <ScheduleInterviewDialog
+        isOpen={scheduleInterviewDialogOpen}
+        onClose={() => setScheduleInterviewDialogOpen(false)}
       />
     </Grid>
   );

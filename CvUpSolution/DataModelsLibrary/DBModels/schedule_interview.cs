@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.models;
 
-public partial class appointment
+public partial class schedule_interview
 {
     public int id { get; set; }
 

@@ -295,7 +295,7 @@ export interface ISearchTermsListItem {
   searchDescr?: string;
 }
 
-export interface IAppointmentSend {
+export interface IScheduleInterviewSend {
   id?: number;
   positionId?: number;
   candidateId?: number;
@@ -310,7 +310,7 @@ export interface IAppointmentSend {
   isAddMeAsOptionalGuest: boolean;
 }
 
-export interface IAppointment {
+export interface IScheduleInterview {
   id: number;
   subject: string;
   candidates: IEmailsAddress[];

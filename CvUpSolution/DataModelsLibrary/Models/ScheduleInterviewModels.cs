@@ -1,6 +1,6 @@
 namespace DataModelsLibrary.Models
 {
-    public class AppointmentModel
+    public class ScheduleInterviewModel
     {
         public int id { get; set; }
         public int companyId { get; set; }

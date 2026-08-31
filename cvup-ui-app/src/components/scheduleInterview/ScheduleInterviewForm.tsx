@@ -23,8 +23,8 @@ import { useStore } from "../../Hooks/useStore";
 import { IIdName } from "../../models/AuthModels";
 import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import {
-  IAppointment,
-  IAppointmentSend,
+  IScheduleInterview,
+  IScheduleInterviewSend,
   IEmailsAddress,
 } from "../../models/GeneralModels";
 import { EmailsToControl } from "../email/EmailsToControl";
@@ -64,7 +64,7 @@ const defaultStartTime = () => {
   return startTime;
 };
 
-const newAppointment: IAppointment = {
+const newScheduleInterview: IScheduleInterview = {
   id: 0,
   subject: "",
   candidates: [],
@@ -74,11 +74,11 @@ const newAppointment: IAppointment = {
   notes: "",
 };
 
-export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) => {
-  const { appointmentsStore, candsStore, customersContactsStore, generalStore, positionsStore } =
+export const ScheduleInterviewForm = observer(({ isOpen, onClose }: IProps) => {
+  const { scheduleInterviewStore, candsStore, customersContactsStore, generalStore, positionsStore } =
     useStore();
-  const [formModel, setFormModel] = useState<IAppointment>({
-    ...newAppointment,
+  const [formModel, setFormModel] = useState<IScheduleInterview>({
+    ...newScheduleInterview,
     startDate: defaultStartDate(),
     startTime: defaultStartTime(),
   });
@@ -96,11 +96,11 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
   const [isOptionalOpen, setIsOptionalOpen] = useState(false);
   const [optionalToList, setOptionalToList] = useState<IEmailsAddress[]>([]);
   const [isAddMeAsOptional, setIsAddMeAsOptional] = useState(false);
-  const [appointmentId, setAppointmentId] = useState(0);
+  const [scheduleInterviewId, setScheduleInterviewId] = useState(0);
 
-  // An appointment that was loaded from the server keeps its own guests,
+  // An interview that was loaded from the server keeps its own guests,
   // the position / candidate defaults must not run over them
-  const isLoadedAppointment = useRef(false);
+  const isLoadedScheduleInterview = useRef(false);
 
   // Same as CandidateEmailSender - the displayed candidate is the option/value
   const addCandidateEmail = () => {
@@ -119,13 +119,13 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
 
       setCandsOptionsList(candsList);
 
-      if (!isLoadedAppointment.current) {
+      if (!isLoadedScheduleInterview.current) {
         setCandsToList(candsList);
       }
     } else {
       setCandsOptionsList([]);
 
-      if (!isLoadedAppointment.current) {
+      if (!isLoadedScheduleInterview.current) {
         setCandsToList([]);
       }
     }
@@ -167,7 +167,7 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
       };
     });
 
-    if (!isLoadedAppointment.current) {
+    if (!isLoadedScheduleInterview.current) {
       setContactsToList(toList || []);
     }
   };
@@ -199,8 +199,8 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
 
   // An interview that is already set for this candidate on this position
   // is edited by the form, instead of being set again
-  const loadAppointment = async () => {
-    const res = await appointmentsStore.getAppointment(positionId, candidateId);
+  const loadScheduleInterview = async () => {
+    const res = await scheduleInterviewStore.getScheduleInterview(positionId, candidateId);
     const data = res.isSuccess ? res.data : null;
 
     setSubmitError("");
@@ -208,8 +208,8 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
     if (data) {
       const start = new Date(data.start);
 
-      isLoadedAppointment.current = true;
-      setAppointmentId(data.id || 0);
+      isLoadedScheduleInterview.current = true;
+      setScheduleInterviewId(data.id || 0);
       setFormModel({
         id: data.id || 0,
         subject: data.subject,
@@ -229,10 +229,10 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
       setOptionalToList(optionalGuests);
       setIsOptionalOpen(optionalGuests.length > 0);
     } else {
-      isLoadedAppointment.current = false;
-      setAppointmentId(0);
+      isLoadedScheduleInterview.current = false;
+      setScheduleInterviewId(0);
       setFormModel({
-        ...newAppointment,
+        ...newScheduleInterview,
         startDate: defaultStartDate(),
         startTime: defaultStartTime(),
       });
@@ -247,11 +247,11 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
 
   useEffect(() => {
     if (isOpen) {
-      loadAppointment();
+      loadScheduleInterview();
     }
   }, [isOpen, positionId, candidateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // A different position / candidate is a different appointment,
+  // A different position / candidate is a different interview,
   // so the generated subject takes over again
   useEffect(() => {
     setIsSubjectEdited(false);
@@ -267,12 +267,12 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
     }
   }, [candDisplayPosition?.name, isSubjectEdited]);
 
-  const updateField = (field: keyof IAppointment, value: any) => {
+  const updateField = (field: keyof IScheduleInterview, value: any) => {
     setSubmitError("");
     setFormModel((currentProps) => ({ ...currentProps, [field]: value }));
   };
 
-  const appointmentStart = () => {
+  const scheduleInterviewStart = () => {
     if (!formModel.startDate || !formModel.startTime) {
       return null;
     }
@@ -288,9 +288,9 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
     return start;
   };
 
-  const buildAppointment = (start: Date): IAppointmentSend => {
+  const buildScheduleInterview = (start: Date): IScheduleInterviewSend => {
     return {
-      id: appointmentId,
+      id: scheduleInterviewId,
       positionId: positionId,
       candidateId: candidateId,
       subject: formModel.subject,
@@ -321,52 +321,52 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
       return;
     }
 
-    const start = appointmentStart();
+    const start = scheduleInterviewStart();
 
     if (!start) {
       setSubmitError("Select a date and a time");
       return;
     }
 
-    const appointment = buildAppointment(start);
+    const scheduleInterview = buildScheduleInterview(start);
 
-    const res = appointmentId
-      ? await appointmentsStore.updateAppointment(appointment)
-      : await appointmentsStore.addAppointment(appointment);
+    const res = scheduleInterviewId
+      ? await scheduleInterviewStore.updateScheduleInterview(scheduleInterview)
+      : await scheduleInterviewStore.addScheduleInterview(scheduleInterview);
 
     if (res.isSuccess) {
       generalStore.alertSnackbar(
         "success",
-        appointmentId
-          ? "Interview appointment updated"
-          : "Interview appointment sent"
+        scheduleInterviewId
+          ? "Interview updated"
+          : "Interview scheduled"
       );
       onClose();
     } else {
-      generalStore.alertSnackbar("error", "Failed to set the appointment");
+      generalStore.alertSnackbar("error", "Failed to schedule the interview");
     }
   };
 
-  const removeAppointment = async () => {
+  const removeScheduleInterview = async () => {
     const isRemove = await generalStore.alertConfirmDialog(
       AlertConfirmDialogEnum.Confirm,
-      "Remove appointment",
-      "Are you sure you want to remove this appointment? A cancellation will be sent to the guests."
+      "Remove interview",
+      "Are you sure you want to remove this interview? A cancellation will be sent to the guests."
     );
 
     if (!isRemove) {
       return;
     }
 
-    const res = await appointmentsStore.cancelAppointment(
-      buildAppointment(appointmentStart() || new Date())
+    const res = await scheduleInterviewStore.cancelScheduleInterview(
+      buildScheduleInterview(scheduleInterviewStart() || new Date())
     );
 
     if (res.isSuccess) {
-      generalStore.alertSnackbar("success", "Appointment removed");
+      generalStore.alertSnackbar("success", "Interview removed");
       onClose();
     } else {
-      generalStore.alertSnackbar("error", "Failed to remove the appointment");
+      generalStore.alertSnackbar("error", "Failed to remove the interview");
     }
   };
 
@@ -392,7 +392,7 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
 
           <Grid item xs={12}>
             <EmailsToControl
-              id="appointmentCands"
+              id="scheduleInterviewCands"
               label="Candidate"
               placeholder="Candidate"
               optionsList={candsOptionsList}
@@ -406,7 +406,7 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
 
           <Grid item xs={12}>
             <EmailsToControl
-              id="appointmentContacts"
+              id="scheduleInterviewContacts"
               label="Contact"
               placeholder="Contact person"
               optionsList={contactsOptionsList}
@@ -433,7 +433,7 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
             {isOptionalOpen && (
               <Stack gap={1} sx={{ pt: 2 }}>
                 <EmailsToControl
-                  id="appointmentOptionalParticipants"
+                  id="scheduleInterviewOptionalParticipants"
                   label="Optional participant"
                   placeholder="Optional participant"
                   optionsList={contactsOptionsList}
@@ -548,17 +548,17 @@ export const CalendarAppointmentForm = observer(({ isOpen, onClose }: IProps) =>
                 color="secondary"
                 onClick={() => submitForm()}
               >
-                {appointmentId
-                  ? "Update interview appointment"
-                  : "Set interview appointment"}
+                {scheduleInterviewId
+                  ? "Update interview"
+                  : "Schedule interview"}
               </Button>
-              {appointmentId > 0 && (
+              {scheduleInterviewId > 0 && (
                 <Button
                   variant="outlined"
                   color="error"
-                  onClick={() => removeAppointment()}
+                  onClick={() => removeScheduleInterview()}
                 >
-                  Remove appointment
+                  Remove interview
                 </Button>
               )}
               <Button

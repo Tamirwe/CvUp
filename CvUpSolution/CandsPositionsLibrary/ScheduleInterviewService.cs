@@ -5,68 +5,68 @@ using System.Text;
 
 namespace CandsPositionsLibrary
 {
-    public class AppointmentsService : IAppointmentsService
+    public class ScheduleInterviewService : IScheduleInterviewService
     {
-        private IAppointmentsQueries _appointmentsQueries;
+        private IScheduleInterviewQueries _scheduleInterviewQueries;
         private IEmailService _emailService;
 
-        public AppointmentsService(IAppointmentsQueries appointmentsQueries, IEmailService emailService)
+        public ScheduleInterviewService(IScheduleInterviewQueries scheduleInterviewQueries, IEmailService emailService)
         {
-            _appointmentsQueries = appointmentsQueries;
+            _scheduleInterviewQueries = scheduleInterviewQueries;
             _emailService = emailService;
         }
 
-        public async Task<AppointmentModel?> GetAppointment(int companyId, int? positionId, int? candidateId)
+        public async Task<ScheduleInterviewModel?> GetScheduleInterview(int companyId, int? positionId, int? candidateId)
         {
-            return await _appointmentsQueries.GetAppointment(companyId, positionId, candidateId);
+            return await _scheduleInterviewQueries.GetScheduleInterview(companyId, positionId, candidateId);
         }
 
-        public async Task<int> AddAppointment(AppointmentModel appointment, UserModel? user)
+        public async Task<int> AddScheduleInterview(ScheduleInterviewModel scheduleInterview, UserModel? user)
         {
             var icsUid = $"{Guid.NewGuid()}@cvup";
-            var appointmentId = await _appointmentsQueries.AddAppointment(appointment, icsUid);
+            var scheduleInterviewId = await _scheduleInterviewQueries.AddScheduleInterview(scheduleInterview, icsUid);
 
             if (user != null)
             {
-                await SendInvite(appointment, user, icsUid, 0, "REQUEST");
+                await SendInvite(scheduleInterview, user, icsUid, 0, "REQUEST");
             }
 
-            return appointmentId;
+            return scheduleInterviewId;
         }
 
         /// <summary>
         /// Reschedule / edit. Reuses the original UID so clients update the existing
         /// event in place instead of creating a duplicate.
         /// </summary>
-        public async Task UpdateAppointment(AppointmentModel appointment, UserModel? user)
+        public async Task UpdateScheduleInterview(ScheduleInterviewModel scheduleInterview, UserModel? user)
         {
-            var (icsUid, sequence) = await _appointmentsQueries.GetIcsInfo(appointment.id);
+            var (icsUid, sequence) = await _scheduleInterviewQueries.GetIcsInfo(scheduleInterview.id);
 
             sequence++;
 
-            await _appointmentsQueries.UpdateAppointment(appointment, sequence);
+            await _scheduleInterviewQueries.UpdateScheduleInterview(scheduleInterview, sequence);
 
             if (user != null)
             {
-                await SendInvite(appointment, user, icsUid, sequence, "REQUEST");
+                await SendInvite(scheduleInterview, user, icsUid, sequence, "REQUEST");
             }
         }
 
-        public async Task CancelAppointment(AppointmentModel appointment, UserModel? user)
+        public async Task CancelScheduleInterview(ScheduleInterviewModel scheduleInterview, UserModel? user)
         {
-            var (icsUid, sequence) = await _appointmentsQueries.GetIcsInfo(appointment.id);
+            var (icsUid, sequence) = await _scheduleInterviewQueries.GetIcsInfo(scheduleInterview.id);
 
             sequence++;
 
-            await _appointmentsQueries.CancelAppointment(appointment.id);
+            await _scheduleInterviewQueries.CancelScheduleInterview(scheduleInterview.id);
 
             if (user != null)
             {
-                await SendInvite(appointment, user, icsUid, sequence, "CANCEL");
+                await SendInvite(scheduleInterview, user, icsUid, sequence, "CANCEL");
             }
         }
 
-        private async Task SendInvite(AppointmentModel appointment, UserModel user,
+        private async Task SendInvite(ScheduleInterviewModel scheduleInterview, UserModel user,
             string icsUid, int sequence, string method)
         {
             var organizer = new EmailAddress
@@ -75,11 +75,11 @@ namespace CandsPositionsLibrary
                 Address = user.email,
             };
 
-            var requiredGuests = DistinctGuests(appointment.candidates.Concat(appointment.contacts));
+            var requiredGuests = DistinctGuests(scheduleInterview.candidates.Concat(scheduleInterview.contacts));
 
-            var optional = appointment.optionalParticipants.ToList();
+            var optional = scheduleInterview.optionalParticipants.ToList();
 
-            if (appointment.isAddMeAsOptionalGuest)
+            if (scheduleInterview.isAddMeAsOptionalGuest)
             {
                 optional.Add(organizer);
             }
@@ -99,10 +99,10 @@ namespace CandsPositionsLibrary
             var email = new EmailModel
             {
                 To = requiredGuests.Concat(optionalGuests).ToList(),
-                Subject = isCancel ? $"בוטל: {appointment.subject}" : appointment.subject,
-                Body = InviteBody(appointment, user, isCancel),
+                Subject = isCancel ? $"בוטל: {scheduleInterview.subject}" : scheduleInterview.subject,
+                Body = InviteBody(scheduleInterview, user, isCancel),
                 From = organizer,
-                IcsContent = BuildIcs(appointment, organizer, requiredGuests, optionalGuests,
+                IcsContent = BuildIcs(scheduleInterview, organizer, requiredGuests, optionalGuests,
                     icsUid, sequence, method),
                 IcsMethod = method,
                 MailSenderUserName = user.mailUsername,
@@ -121,7 +121,7 @@ namespace CandsPositionsLibrary
                 .ToList();
         }
 
-        private string InviteBody(AppointmentModel appointment, UserModel user, bool isCancel)
+        private string InviteBody(ScheduleInterviewModel scheduleInterview, UserModel user, bool isCancel)
         {
             var body = new StringBuilder();
 
@@ -130,17 +130,17 @@ namespace CandsPositionsLibrary
                 body.Append("<p style=\"text-align: right; direction: rtl;\">הפגישה בוטלה.</p>");
             }
 
-            body.Append($"<p style=\"text-align: right; direction: rtl;\">{appointment.subject}</p>");
-            body.Append($"<p style=\"text-align: right; direction: rtl;\">{appointment.start.ToLocalTime():dd/MM/yyyy HH:mm} ({appointment.durationMinutes} minutes)</p>");
+            body.Append($"<p style=\"text-align: right; direction: rtl;\">{scheduleInterview.subject}</p>");
+            body.Append($"<p style=\"text-align: right; direction: rtl;\">{scheduleInterview.start.ToLocalTime():dd/MM/yyyy HH:mm} ({scheduleInterview.durationMinutes} minutes)</p>");
 
-            if (!string.IsNullOrWhiteSpace(appointment.location))
+            if (!string.IsNullOrWhiteSpace(scheduleInterview.location))
             {
-                body.Append($"<p style=\"text-align: right; direction: rtl;\">{appointment.location}</p>");
+                body.Append($"<p style=\"text-align: right; direction: rtl;\">{scheduleInterview.location}</p>");
             }
 
-            if (!string.IsNullOrWhiteSpace(appointment.notes))
+            if (!string.IsNullOrWhiteSpace(scheduleInterview.notes))
             {
-                body.Append($"<p style=\"text-align: right; direction: rtl;\">{appointment.notes}</p>");
+                body.Append($"<p style=\"text-align: right; direction: rtl;\">{scheduleInterview.notes}</p>");
             }
 
             body.Append(user.signature);
@@ -148,21 +148,21 @@ namespace CandsPositionsLibrary
             return body.ToString();
         }
 
-        private string BuildIcs(AppointmentModel appointment, EmailAddress organizer,
+        private string BuildIcs(ScheduleInterviewModel scheduleInterview, EmailAddress organizer,
             List<EmailAddress> requiredGuests, List<EmailAddress> optionalGuests,
             string icsUid, int sequence, string method)
         {
             var isCancel = method.Equals("CANCEL", StringComparison.OrdinalIgnoreCase);
 
-            var startUtc = appointment.start.UtcDateTime;
-            var endUtc = startUtc.AddMinutes(appointment.durationMinutes);
+            var startUtc = scheduleInterview.start.UtcDateTime;
+            var endUtc = startUtc.AddMinutes(scheduleInterview.durationMinutes);
 
             var ics = new StringBuilder();
 
             void Add(string line) => ics.Append(Fold(line));
 
             Add("BEGIN:VCALENDAR");
-            Add("PRODID:-//CvUp//Appointments//EN");
+            Add("PRODID:-//CvUp//Interviews//EN");
             Add("VERSION:2.0");
             Add("CALSCALE:GREGORIAN");
             Add($"METHOD:{method}");
@@ -171,16 +171,16 @@ namespace CandsPositionsLibrary
             Add($"DTSTAMP:{IcsDate(DateTime.UtcNow)}");
             Add($"DTSTART:{IcsDate(startUtc)}");
             Add($"DTEND:{IcsDate(endUtc)}");
-            Add($"SUMMARY:{IcsText(appointment.subject)}");
+            Add($"SUMMARY:{IcsText(scheduleInterview.subject)}");
 
-            if (!string.IsNullOrWhiteSpace(appointment.location))
+            if (!string.IsNullOrWhiteSpace(scheduleInterview.location))
             {
-                Add($"LOCATION:{IcsText(appointment.location)}");
+                Add($"LOCATION:{IcsText(scheduleInterview.location)}");
             }
 
-            if (!string.IsNullOrWhiteSpace(appointment.notes))
+            if (!string.IsNullOrWhiteSpace(scheduleInterview.notes))
             {
-                Add($"DESCRIPTION:{IcsText(appointment.notes)}");
+                Add($"DESCRIPTION:{IcsText(scheduleInterview.notes)}");
             }
 
             Add($"ORGANIZER;CN={IcsParam(organizer.Name)}:mailto:{organizer.Address}");

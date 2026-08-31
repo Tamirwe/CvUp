@@ -17,8 +17,6 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<analyzed_cv> analyzed_cvs { get; set; }
 
-    public virtual DbSet<schedule_interview> schedule_interviews { get; set; }
-
     public virtual DbSet<auth_out_email> auth_out_emails { get; set; }
 
     public virtual DbSet<black_cand> black_cands { get; set; }
@@ -69,6 +67,8 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<registeration_key> registeration_keys { get; set; }
 
+    public virtual DbSet<schedule_interview> schedule_interviews { get; set; }
+
     public virtual DbSet<search> searches { get; set; }
 
     public virtual DbSet<search_term> search_terms { get; set; }
@@ -112,32 +112,6 @@ public partial class cvupdbContext : DbContext
                 .HasForeignKey(d => d.cv_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("analyzed_cvs_cv_id_fkey");
-        });
-
-        modelBuilder.Entity<schedule_interview>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("schedule_interviews_pkey");
-
-            entity.HasIndex(e => e.candidate_id, "ix_schedule_interviews_candidate_id");
-
-            entity.HasIndex(e => new { e.company_id, e.start_time }, "ix_schedule_interviews_company_id_start_time");
-
-            entity.HasIndex(e => e.position_id, "ix_schedule_interviews_position_id");
-
-            entity.Property(e => e.id).UseIdentityAlwaysColumn();
-            entity.Property(e => e.candidates)
-                .HasDefaultValueSql("'[]'::jsonb")
-                .HasColumnType("jsonb");
-            entity.Property(e => e.contacts)
-                .HasDefaultValueSql("'[]'::jsonb")
-                .HasColumnType("jsonb");
-            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
-            entity.Property(e => e.duration_minutes).HasDefaultValue(60);
-            entity.Property(e => e.optional_participants)
-                .HasDefaultValueSql("'[]'::jsonb")
-                .HasColumnType("jsonb");
-            entity.Property(e => e.subject).HasDefaultValueSql("''::text");
-            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<auth_out_email>(entity =>
@@ -584,6 +558,32 @@ public partial class cvupdbContext : DbContext
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone");
             entity.Property(e => e.email).HasMaxLength(250);
+        });
+
+        modelBuilder.Entity<schedule_interview>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("schedule_interviews_pkey");
+
+            entity.HasIndex(e => e.candidate_id, "ix_schedule_interviews_candidate_id");
+
+            entity.HasIndex(e => new { e.company_id, e.start_time }, "ix_schedule_interviews_company_id_start_time");
+
+            entity.HasIndex(e => e.position_id, "ix_schedule_interviews_position_id");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.candidates)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.contacts)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.duration_minutes).HasDefaultValue(60);
+            entity.Property(e => e.optional_participants)
+                .HasDefaultValueSql("'[]'::jsonb")
+                .HasColumnType("jsonb");
+            entity.Property(e => e.subject).HasDefaultValueSql("''::text");
+            entity.Property(e => e.updated_at).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<search>(entity =>

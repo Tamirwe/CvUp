@@ -33,9 +33,9 @@ public partial class schedule_interview
 
     public string ics_uid { get; set; } = null!;
 
+    public int ics_sequence { get; set; }
+
     public DateTime created_at { get; set; }
 
     public DateTime updated_at { get; set; }
-
-    public int ics_sequence { get; set; }
 }

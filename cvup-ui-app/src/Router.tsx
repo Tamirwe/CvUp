@@ -36,11 +36,6 @@ const CandidatesReport = lazy(() =>
     default: m.CandidatesReport,
   }))
 );
-const FuturesStatistics = lazy(() =>
-  import("./pages/FuturesStatistics").then((m) => ({
-    default: m.FuturesStatistics,
-  }))
-);
 
 const AuthRoutes = () => {
   const rootStore = useStore();
@@ -73,7 +68,6 @@ const Router = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password-reset" element={<PasswordReset />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/fustat" element={<FuturesStatistics />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

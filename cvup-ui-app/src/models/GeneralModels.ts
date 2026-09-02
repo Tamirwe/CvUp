@@ -1,19 +1,5 @@
 import { PositionStatusEnum, UserRoleEnum } from "./GeneralEnums";
 
-export interface IApiUrl {
-  apiUrl: string;
-}
-
-export interface IAppSettingsFile {
-  servers: IApiUrl[];
-  appMode: string;
-}
-
-export interface IAppSettings {
-  apiUrl: string;
-  appMode: string;
-}
-
 export interface ISelectBox {
   id: number;
   name: string;

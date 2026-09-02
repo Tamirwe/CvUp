@@ -7,8 +7,6 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  MenuItem,
-  Select,
   Stack,
   TextField,
   Typography,
@@ -22,11 +20,6 @@ import { useStore } from "../../Hooks/useStore";
 import { IUserLogin } from "../../models/AuthModels";
 import { TextValidateTypeEnum } from "../../models/GeneralEnums";
 import { passwordValidate, validteEmail } from "../../utils/Validation";
-import {
-  IApiUrl,
-  IAppSettings,
-  IAppSettingsFile,
-} from "../../models/GeneralModels";
 
 interface IProps {
   loginType: string;
@@ -39,9 +32,6 @@ export const LoginForm = ({ loginType }: IProps) => {
   const [isDirty, setIsDirty] = useState(true);
   const [submitError, setSubmitError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [serversApi, setServersApi] = useState<IApiUrl[]>();
-  const [apiUrl, setApiUrl] = useState("");
-  const [apiUrlsSelectBoxShow, setApiUrlsSelectBoxShow] = useState(false);
 
   const [formModel, setFormModel] = useState<IUserLogin>({
     email: "",
@@ -59,38 +49,6 @@ export const LoginForm = ({ loginType }: IProps) => {
     candsStore.reset();
     generalStore.reset();
     positionsStore.reset();
-
-    // const apiUrlFlag = localStorage.getItem("apiUrlOn");
-
-    // if (apiUrlFlag === "on") {
-    // setApiUrlsSelectBoxShow(apiUrlFlag === "on");
-    // JSON.parse("") throws, so an absent or corrupt settings key used to take
-    // the whole login form down rather than just leaving the server unselected.
-    const storedSettings = localStorage.getItem("settings");
-
-    if (storedSettings) {
-      try {
-        const settingsObj: IAppSettings = JSON.parse(storedSettings);
-        setApiUrl(settingsObj.apiUrl);
-      } catch {
-        setApiUrl("");
-      }
-    }
-
-    fetch(`${import.meta.env.BASE_URL}appSettings.json`)
-      .then((res) => res.json())
-      .then((data: IAppSettingsFile) => {
-        setServersApi(data.servers);
-        Object.freeze(serversApi);
-      });
-    // }
-
-    // if (
-    //   window.location.href.indexOf("10.100") === -1 &&
-    //   window.location.href.indexOf("localhost") === -1
-    // ) {
-    //   setLocalStorageIP("http://" + window.location.hostname + ":8079/api/");
-    // }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateForm = () => {
@@ -124,45 +82,9 @@ export const LoginForm = ({ loginType }: IProps) => {
     }
   };
 
-  const handleShowServersList = () => {
-    setApiUrlsSelectBoxShow(!apiUrlsSelectBoxShow);
-  };
-
-  const setLocalStorageIP = (ip: string) => {
-    const settingsObj: IAppSettings = JSON.parse(
-      localStorage.getItem("settings") || ""
-    );
-    settingsObj.apiUrl = ip;
-    localStorage.setItem("settings", JSON.stringify(settingsObj));
-  };
-
   return (
     <form noValidate spellCheck="false" autoComplete="off">
       <Grid container>
-        {apiUrlsSelectBoxShow && (
-          <Grid item xs={12}>
-            <Select
-              labelId="companylabel"
-              id="companySelect"
-              label="Company"
-              sx={{ width: "100%" }}
-              onChange={(e) => {
-                setApiUrl(e.target.value);
-                setLocalStorageIP(e.target.value);
-                window.location.reload();
-              }}
-              value={apiUrl}
-            >
-              {serversApi?.map((server, i) => {
-                return (
-                  <MenuItem key={i} value={server.apiUrl}>
-                    {server.apiUrl}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </Grid>
-        )}
         <Grid item xs={12}>
           <TextField
             fullWidth
@@ -282,20 +204,6 @@ export const LoginForm = ({ loginType }: IProps) => {
               Sign in
             </Button>
           </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            mt: 3,
-            textAlign: "right",
-            color: "#9e9e9e",
-            cursor: "pointer",
-            fontSize: "0.75rem",
-          }}
-          onClick={handleShowServersList}
-        >
-          {apiUrl || "Select Server"}
         </Grid>
       </Grid>
     </form>

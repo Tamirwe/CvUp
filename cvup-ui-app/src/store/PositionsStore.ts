@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import {
-  IAppSettings,
   IPosition,
   IPositionType,
   IPositionTypeCount,
@@ -26,12 +25,9 @@ export class PositionsStore {
   posTypescountList: IPositionTypeCount[] = [];
   positionAiRewriteData: string | undefined;
 
-  constructor(
-    private rootStore: RootStore,
-    appSettings: IAppSettings,
-  ) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.positionApi = new PositionsApi(appSettings);
+    this.positionApi = new PositionsApi();
   }
 
   reset() {

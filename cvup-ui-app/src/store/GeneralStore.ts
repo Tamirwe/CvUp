@@ -2,12 +2,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
 import {
   AlertConfirmDialogEnum,
-  AppModeEnum,
   CrudTypesEnum,
   EmailTypeEnum,
   TabsGeneralEnum,
 } from "../models/GeneralEnums";
-import { IAppSettings, ISearchTermsListItem } from "../models/GeneralModels";
+import { ISearchTermsListItem } from "../models/GeneralModels";
 import GeneralApi from "./api/GeneralApi";
 import { RootStore } from "./RootStore";
 import { AlertColor } from "@mui/material";
@@ -45,13 +44,8 @@ export class GeneralStore {
   alertConfirmDialogType: AlertConfirmDialogEnum = AlertConfirmDialogEnum.Alert;
   alertConfirmDialogTitle: string = "";
   alertConfirmDialogMessage: string = "";
-  private appModeType: AppModeEnum = AppModeEnum.HRCompany;
   alertSnackbarType?: AlertColor = "success";
   alertSnackbarMessage = "";
-
-  get appMode() {
-    return this.appModeType;
-  }
 
   get alertConfirmDialogOpen() {
     return this.isAlertConfirmDialogOpen;
@@ -229,11 +223,9 @@ export class GeneralStore {
     this.isShowEditSearchesListDialog = val;
   }
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.generalApi = new GeneralApi(appSettings);
-    this.appModeType =
-      AppModeEnum[appSettings.appMode as keyof typeof AppModeEnum];
+    this.generalApi = new GeneralApi();
   }
 
   reset() {

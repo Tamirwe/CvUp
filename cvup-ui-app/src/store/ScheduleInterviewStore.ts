@@ -1,14 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import { IScheduleInterviewSend, IAppSettings } from "../models/GeneralModels";
+import { IScheduleInterviewSend } from "../models/GeneralModels";
 import ScheduleInterviewApi from "./api/ScheduleInterviewApi";
 import { RootStore } from "./RootStore";
 
 export class ScheduleInterviewStore {
   private scheduleInterviewApi;
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.scheduleInterviewApi = new ScheduleInterviewApi(appSettings);
+    this.scheduleInterviewApi = new ScheduleInterviewApi();
   }
 
   reset() {}

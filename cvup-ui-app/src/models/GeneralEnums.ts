@@ -71,11 +71,6 @@ export enum AlertConfirmDialogEnum {
   Confirm,
 }
 
-export enum AppModeEnum {
-  HRCompany,
-  HRDepartment,
-}
-
 export enum CandsSourceEnum {
   AllCands,
   AI,

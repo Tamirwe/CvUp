@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IAppSettings, IFolder, ISearchModel } from "../models/GeneralModels";
+import { IFolder, ISearchModel } from "../models/GeneralModels";
 import FoldersApi from "./api/FoldersApi";
 import { RootStore } from "./RootStore";
 import { TabsCandsEnum } from "../models/GeneralEnums";
@@ -39,9 +39,9 @@ export class FoldersStore {
     this.isfoldersListSortDirectionDesc = val === "desc" ? true : false;
   }
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.foldersApi = new FoldersApi(appSettings);
+    this.foldersApi = new FoldersApi();
   }
 
   reset() {}

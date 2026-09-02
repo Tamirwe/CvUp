@@ -1,13 +1,11 @@
 import { AxiosInstance } from "axios";
 import { ResponseModel } from "../../models/AuthModels";
-import { IAppSettings } from "../../models/GeneralModels";
 import axiosService from "../../services/AxiosService";
 
 export default abstract class BaseApi {
   http: AxiosInstance;
 
-  constructor(appSettings: IAppSettings) {
-    // this.http = axiosService(appSettings.apiUrl);
+  constructor() {
     this.http = axiosService("/api/");
   }
 

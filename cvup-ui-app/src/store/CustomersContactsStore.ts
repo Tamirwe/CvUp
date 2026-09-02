@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IIdName } from "../models/AuthModels";
 import {
-  IAppSettings,
   IContact,
   ICustomer,
   ISearchModel,
@@ -20,9 +19,9 @@ export class CustomersContactsStore {
   customerAddedUpdated?: IIdName;
   contactsList: IContact[] = [];
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.contactsApi = new ContactsApi(appSettings);
+    this.contactsApi = new ContactsApi();
   }
 
   reset() {}

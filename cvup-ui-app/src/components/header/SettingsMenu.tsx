@@ -194,9 +194,6 @@ export const SettingsMenu = () => {
           </ListItemIcon>
           Logout
         </MenuItem>
-        <MenuItem sx={{ pt: 2, fontSize: "0.75rem" }}>
-          {candsStore.downloadUrl}
-        </MenuItem>
       </Menu>
     </>
   );

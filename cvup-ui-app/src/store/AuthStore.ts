@@ -9,7 +9,7 @@ import {
   IUserRegistration,
 } from "../models/AuthModels";
 import { UserRoleEnum } from "../models/GeneralEnums";
-import { IAppSettings, IUserClaims } from "../models/GeneralModels";
+import { IUserClaims } from "../models/GeneralModels";
 import AuthApi from "./api/AuthApi";
 import { RootStore } from "./RootStore";
 
@@ -28,9 +28,9 @@ export class AuthStore {
   usersList: IUser[] = [];
   currentUser?: IUserData;
 
-  constructor(private rootStore: RootStore, appSettings: IAppSettings) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.authApi = new AuthApi(appSettings);
+    this.authApi = new AuthApi();
     const jwt = localStorage.getItem(TOKEN);
 
     if (jwt) {

@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { CandsSourceEnum, TabsCandsEnum } from "../models/GeneralEnums";
 import {
-  IAppSettings,
   ICand,
   ICandCv,
   ICandPosStage,
@@ -56,12 +55,9 @@ searchTermsAiSearchPhrase = "";
 searchTermsIsAiSearch = false;
 searchTermsIsIndexSearch = true;
 
-  constructor(
-    private rootStore: RootStore,
-    private appSettings: IAppSettings,
-  ) {
+  constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
-    this.cvsApi = new CandsApi(appSettings);
+    this.cvsApi = new CandsApi();
   }
 
   get duplicateCvsCandId() {
@@ -89,10 +85,6 @@ searchTermsIsIndexSearch = true;
   // set pdfLoaded(val) {
   //   this.isPdfLoaded = val;
   // }
-
-  get downloadUrl() {
-    return this.appSettings.apiUrl;
-  }
 
   set extSearch(val) {
     this.externalSearch = val;
@@ -229,7 +221,6 @@ searchTermsIsIndexSearch = true;
       this.pdfBlobUrl = URL.createObjectURL(downloadedFile);
     });
 
-    // this.pdfUrl = `${this.appSettings.apiUrl}DD?id=${keyId}`;
   }
 
   async saveCandReview(review: string) {

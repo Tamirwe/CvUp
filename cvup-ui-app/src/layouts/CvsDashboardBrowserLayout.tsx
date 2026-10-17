@@ -1,12 +1,14 @@
 import { Box, Drawer, Grid } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { observer } from "mobx-react";
 import { CandsListsTabs } from "../candsLists/tabs/CandsListsTabs";
 import { LeftListsContainer } from "../components/containers/LeftListsContainer";
 import logo from "../assets/images/CvUpLogo2.png";
 
-export const BrowserAuthLayout = observer(() => {
+export const CvsDashboardBrowserLayout = observer(() => {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container columns={24} spacing={0}>
@@ -24,12 +26,19 @@ export const BrowserAuthLayout = observer(() => {
                       position: "relative",
                     }}
                   >
+                    {/* The logo is the switch between the two auth layouts:
+                        from here it goes to the admin dashboard, and the logo
+                        there comes back. */}
                     <img
                       src={logo}
+                      alt="CvUp"
+                      title="Admin dashboard"
+                      onClick={() => navigate("/admin")}
                       style={{
                         width: "5rem",
                         position: "absolute",
                         top: "5px",
+                        cursor: "pointer",
                       }}
                     />
                   </div>

@@ -9,7 +9,7 @@ import { isMobile } from "react-device-detect";
 
 type Anchor = "left" | "right";
 
-export const MobileAuthLayout = observer(() => {
+export const CvsDashboardMobileLayout = observer(() => {
   const { generalStore } = useStore();
 
   useEffect(() => {

@@ -23,11 +23,11 @@ import { CustomersListDialog } from "../components/customers/CustomersListDialog
 import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 import { BrowserView, MobileView, isMobile } from "react-device-detect";
-import { MobileAuthLayout } from "./MobileAuthLayout";
+import { CvsDashboardMobileLayout } from "./CvsDashboardMobileLayout";
 import { ReviewCandDialog } from "../components/cands/ReviewCandDialog";
 import { EmailTemplateFormDialog } from "../components/email/EmailTemplateFormDialog";
 import { CandFormDialog } from "../components/cands/CandFormDialog";
-import { BrowserAuthLayout } from "./BrowserAuthLayout";
+import { CvsDashboardBrowserLayout } from "./CvsDashboardBrowserLayout";
 import { CustomerReviewCandDialog } from "../components/cands/CustomerReviewCandDialog";
 import { SearchesListDialog } from "../components/searches/SearchesListDialog";
 import { EditSearchesListDialog } from "../components/searches/EditSearchesListDialog";
@@ -38,7 +38,7 @@ import { RestoreReviewDialog } from "../components/cands/RestoreReviewDialog";
 const AUTH_CHECK_INTERVAL_MS = 60000;
 const MAX_NOT_AUTH_COUNT = 5;
 
-export const LayoutAuthWrapper = observer(() => {
+export const CvsDashboardLayout = observer(() => {
   const { generalStore } = useStore();
 
   useEffect(() => {
@@ -246,10 +246,10 @@ export const LayoutAuthWrapper = observer(() => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <BrowserView>
-        <BrowserAuthLayout />
+        <CvsDashboardBrowserLayout />
       </BrowserView>
       <MobileView>
-        <MobileAuthLayout />
+        <CvsDashboardMobileLayout />
       </MobileView>
     </Box>
   );

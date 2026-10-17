@@ -1,8 +1,17 @@
 import { defineConfig , loadEnv} from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
+
+  // `npm run dev` only -- command is also "serve" for `vite preview`.
+  // \x1b[35m paints the line magenta and \x1b[0m resets it, so the colour does
+  // not bleed into vite's own startup banner.
+  if (command === "serve" && mode === "development") {
+    console.log(
+      "\x1b[35mTAMIR TAMIR TAMIR: You can change the API server in .env.local (VITE_API_TARGET).\x1b[0m"
+    );
+  }
 
   return {
     plugins: [react()],

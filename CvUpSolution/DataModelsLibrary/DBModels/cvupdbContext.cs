@@ -33,7 +33,11 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<contact> contacts { get; set; }
 
+    public virtual DbSet<contract_template> contract_templates { get; set; }
+
     public virtual DbSet<customer> customers { get; set; }
+
+    public virtual DbSet<customer_contract> customer_contracts { get; set; }
 
     public virtual DbSet<cv> cvs { get; set; }
 
@@ -254,6 +258,21 @@ public partial class cvupdbContext : DbContext
                 .HasConstraintName("fk_contacts_customer_id_customers_id");
         });
 
+        modelBuilder.Entity<contract_template>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("contract_templates_pkey");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.date_created)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.date_updated)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.descr).HasMaxLength(1000);
+            entity.Property(e => e.name).HasMaxLength(300);
+        });
+
         modelBuilder.Entity<customer>(entity =>
         {
             entity.HasKey(e => e.id).HasName("customers_pkey");
@@ -268,6 +287,40 @@ public partial class cvupdbContext : DbContext
             entity.HasOne(d => d.company).WithMany(p => p.customers)
                 .HasForeignKey(d => d.company_id)
                 .HasConstraintName("fk_customers_company_id_companies_id");
+        });
+
+        modelBuilder.Entity<customer_contract>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("customer_contracts_pkey");
+
+            entity.HasIndex(e => e.contact_id, "ix_customer_contracts_contact_id");
+
+            entity.HasIndex(e => e.contract_template_id, "ix_customer_contracts_contract_template_id");
+
+            entity.HasIndex(e => e.customer_id, "ix_customer_contracts_customer_id");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.date_created)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.date_sent).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.descr).HasMaxLength(1000);
+            entity.Property(e => e.email_body).HasMaxLength(2000);
+            entity.Property(e => e.email_subject).HasMaxLength(300);
+
+            entity.HasOne(d => d.contact).WithMany(p => p.customer_contracts)
+                .HasForeignKey(d => d.contact_id)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_customer_contracts_contact_id_contacts_id");
+
+            entity.HasOne(d => d.contract_template).WithMany(p => p.customer_contracts)
+                .HasForeignKey(d => d.contract_template_id)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_customer_contracts_template_id_contract_templates_id");
+
+            entity.HasOne(d => d.customer).WithMany(p => p.customer_contracts)
+                .HasForeignKey(d => d.customer_id)
+                .HasConstraintName("fk_customer_contracts_customer_id_customers_id");
         });
 
         modelBuilder.Entity<cv>(entity =>

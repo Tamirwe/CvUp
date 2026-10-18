@@ -1,5 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../Hooks/useStore";
 import {
   Box,
   Button,
@@ -54,10 +56,11 @@ interface IPanelProps {
   title: string;
   icon: ReactNode;
   action?: string;
+  onAction?: () => void;
   children: ReactNode;
 }
 
-const Panel = ({ title, icon, action, children }: IPanelProps) => {
+const Panel = ({ title, icon, action, onAction, children }: IPanelProps) => {
   return (
     <Paper
       elevation={0}
@@ -95,6 +98,7 @@ const Panel = ({ title, icon, action, children }: IPanelProps) => {
         {action && (
           <Button
             size="small"
+            onClick={onAction}
             endIcon={<MdChevronRight />}
             sx={{
               textTransform: "none",
@@ -190,6 +194,69 @@ const PlaceholderRows = ({ rows }: { rows: number }) => {
   );
 };
 
+// The last ten contracts the module sent. A row opens the module on that
+// customer, which is what the ?customerId= parameter is for.
+const LatestContracts = observer(() => {
+  const { customerContractsStore } = useStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    customerContractsStore.getLatestContracts();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (customerContractsStore.latestContracts.length === 0) {
+    return (
+      <Typography sx={{ fontSize: "0.85rem" }} color={INK_MUTED}>
+        No contracts have been sent yet.
+      </Typography>
+    );
+  }
+
+  return (
+    <Stack divider={<Divider />} spacing={0}>
+      {customerContractsStore.latestContracts.map((contract) => (
+        <Stack
+          key={contract.id}
+          direction="row"
+          alignItems="center"
+          spacing={1.5}
+          onClick={() =>
+            navigate(`/admin/customers?customerId=${contract.customerId}`)
+          }
+          sx={{
+            paddingY: 1.15,
+            cursor: "pointer",
+            "&:hover": { backgroundColor: PLACEHOLDER_BG },
+          }}
+        >
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Typography
+              sx={{ fontSize: "0.9rem", fontWeight: 600 }}
+              color={INK}
+              noWrap
+            >
+              {contract.customerName}
+            </Typography>
+            <Typography sx={{ fontSize: "0.75rem" }} color={INK_MUTED} noWrap>
+              {[contract.contractTemplateName, contract.contactName]
+                .filter((x) => x)
+                .join(" — ")}
+            </Typography>
+          </Box>
+          <Typography
+            sx={{ fontSize: "0.75rem", flexShrink: 0 }}
+            color={INK_SECONDARY}
+          >
+            {contract.dateSent
+              ? new Date(contract.dateSent).toLocaleDateString()
+              : ""}
+          </Typography>
+        </Stack>
+      ))}
+    </Stack>
+  );
+});
+
 // A headline number with no number yet. Kept plot-free on purpose -- a bare
 // stat tile needs no hover layer.
 const StatTile = ({ label }: { label: string }) => {
@@ -228,6 +295,8 @@ const StatTile = ({ label }: { label: string }) => {
 };
 
 export const AdminDashboard = observer(() => {
+  const navigate = useNavigate();
+
   const statTiles = [
     "Candidates",
     "Open positions",
@@ -290,11 +359,7 @@ export const AdminDashboard = observer(() => {
 
         {/* Charts: a wide trend and a narrower breakdown. */}
         <Grid item xs={12} md={8}>
-          <Panel
-            title="Activity over time"
-            icon={<MdOutlineInsertChart />}
-            action="Open"
-          >
+          <Panel title="Activity over time" icon={<MdOutlineInsertChart />}>
             <Placeholder label="Line chart — one series per stage" height={240} />
           </Panel>
         </Grid>
@@ -304,34 +369,31 @@ export const AdminDashboard = observer(() => {
           </Panel>
         </Grid>
 
-        {/* Reports and the things that need attention. */}
+        {/* The one live panel so far: the contracts module's last ten sends. */}
         <Grid item xs={12} md={8}>
           <Panel
-            title="Reports"
+            title="Latest contracts"
             icon={<MdOutlineDescription />}
-            action="All reports"
+            action="Customers"
+            onAction={() => navigate("/admin/customers")}
           >
-            <PlaceholderRows rows={4} />
+            <LatestContracts />
           </Panel>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Panel title="Reminders" icon={<MdOutlineAlarm />} action="All">
+          <Panel title="Reminders" icon={<MdOutlineAlarm />}>
             <PlaceholderRows rows={4} />
           </Panel>
         </Grid>
 
         {/* Inbox-shaped panels. */}
         <Grid item xs={12} md={4}>
-          <Panel title="Messages" icon={<MdOutlineMailOutline />} action="Inbox">
+          <Panel title="Messages" icon={<MdOutlineMailOutline />}>
             <PlaceholderRows rows={3} />
           </Panel>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Panel
-            title="Notifications"
-            icon={<MdOutlineNotificationsNone />}
-            action="All"
-          >
+          <Panel title="Notifications" icon={<MdOutlineNotificationsNone />}>
             <PlaceholderRows rows={3} />
           </Panel>
         </Grid>

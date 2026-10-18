@@ -81,15 +81,20 @@ namespace EmailsLibrary
                         item.Attachment.Position = 0;
                     }
 
-                    var pdf = new MimePart("application", "pdf")
+                    // Cvs go out as pdf and say nothing about their type; a
+                    // contract names its own, so anything that carries a
+                    // fileName keeps it, spaces and all.
+                    var part = new MimePart(
+                        item.mediaType ?? "application",
+                        item.mediaSubtype ?? "pdf")
                     {
                         Content = new MimeContent(item.Attachment),
                         ContentTransferEncoding = ContentEncoding.Base64,
                         ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-                        FileName = $"{item.name.Replace(' ', '_')}.pdf",
+                        FileName = item.fileName ?? $"{item.name.Replace(' ', '_')}.pdf",
                     };
 
-                    mixed.Add(pdf);
+                    mixed.Add(part);
                 }
 
                 message.Body = mixed;

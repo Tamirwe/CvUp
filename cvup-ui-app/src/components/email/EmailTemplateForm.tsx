@@ -124,6 +124,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
       subject: "",
       body: "",
       stageToUpdate: "",
+      templateType: "",
     });
   };
 
@@ -249,6 +250,33 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                               </MenuItem>
                             );
                           })}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} lg={5} pt={2}>
+                      <FormControl fullWidth>
+                        <InputLabel id="templateTypeLabel">
+                          Template type
+                        </InputLabel>
+                        <Select
+                          sx={{ direction: "ltr" }}
+                          id="templateTypeSelect"
+                          label="Template type"
+                          value={formModel.templateType || ""}
+                          onChange={async (e) => {
+                            setFormModel((currentProps) => ({
+                              ...currentProps,
+                              templateType: e.target.value,
+                            }));
+                          }}
+                        >
+                          {/* The contracts module offers only the templates
+                              typed "contract". */}
+                          <MenuItem value="" key="0"></MenuItem>
+                          <MenuItem value="candidate">candidate</MenuItem>
+                          <MenuItem value="contact">contact</MenuItem>
+                          <MenuItem value="contract">contract</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>

@@ -14,4 +14,6 @@ public partial class emails_template
     public string? stage_to_update { get; set; }
 
     public string body { get; set; } = null!;
+
+    public string? template_type { get; set; }
 }

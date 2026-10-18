@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FreeSpire.Doc" Version="14.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+    <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
   </ItemGroup>
 
 </Project>

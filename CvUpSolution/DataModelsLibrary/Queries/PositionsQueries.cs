@@ -453,7 +453,8 @@ namespace DataModelsLibrary.Queries
                                  name = et.name,
                                  subject = et.subject,
                                  body = et.body,
-                                 stageToUpdate = et.stage_to_update
+                                 stageToUpdate = et.stage_to_update,
+                                 templateType = et.template_type
                              });
 
                 return await query.ToListAsync();
@@ -471,6 +472,7 @@ namespace DataModelsLibrary.Queries
                         name = emailTemplate.name,
                         subject = emailTemplate.subject,
                         stage_to_update = emailTemplate.stageToUpdate,
+                        template_type = emailTemplate.templateType,
                         body = emailTemplate.body,
                     });
                     await dbContext.SaveChangesAsync();
@@ -481,6 +483,7 @@ namespace DataModelsLibrary.Queries
                     etm.name = emailTemplate.name;
                     etm.subject = emailTemplate.subject;
                     etm.stage_to_update = emailTemplate.stageToUpdate;
+                    etm.template_type = emailTemplate.templateType;
                     etm.body = emailTemplate.body;
 
                     var result = dbContext.emails_templates.Update(etm);

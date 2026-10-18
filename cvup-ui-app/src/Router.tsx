@@ -28,6 +28,9 @@ const AdminLayout = lazy(() =>
 const AdminDashboard = lazy(() =>
   import("./pages/AdminDashboard").then((m) => ({ default: m.AdminDashboard }))
 );
+const AdminCustomers = lazy(() =>
+  import("./pages/AdminCustomers").then((m) => ({ default: m.AdminCustomers }))
+);
 const Dashboard = lazy(() =>
   import("./pages/Dashboard").then((m) => ({ default: m.Dashboard }))
 );
@@ -66,6 +69,7 @@ const Router = () => {
               they are built. */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="customers" element={<AdminCustomers />} />
           </Route>
         </Route>
         <Route element={<LayoutNotAuth />}>

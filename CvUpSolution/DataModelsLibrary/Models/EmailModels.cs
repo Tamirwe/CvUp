@@ -56,6 +56,12 @@ namespace DataModelsLibrary.Models
     {
         public string name { get; set; } = string.Empty;
         public MemoryStream Attachment { get; set; } = new MemoryStream();
+
+        // Left null, the attachment goes out as "<name>.pdf" -- what every cv
+        // attachment has always been. Set all three to send anything else.
+        public string? fileName { get; set; }
+        public string? mediaType { get; set; }
+        public string? mediaSubtype { get; set; }
     }
 
     public class GMmailSettings

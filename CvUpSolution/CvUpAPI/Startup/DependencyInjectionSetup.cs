@@ -31,6 +31,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IFoldersService, FoldersService>();
             services.AddTransient<ICvsFilesService, CvsFilesService>();
             services.AddTransient<ICustomersContactsService, CustomersContactsService>();
+            services.AddTransient<ICustomerContractsQueries, CustomerContractsQueries>();
+            services.AddTransient<ICustomerContractsService, CustomerContractsService>();
             services.AddTransient<IQueueQueries, QueueQueries>();
             services.AddTransient<IDbQueueService, DbQueueService>();
             services.AddTransient<IOpenAiEmbeddingService, OpenAiEmbeddingService>();

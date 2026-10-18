@@ -359,6 +359,7 @@ namespace DataModelsLibrary.Models
         public string subject { get; set; } = "";
         public string body { get; set; } = "";
         public string? stageToUpdate { get; set; } = "";
+        public string? templateType { get; set; } = "";
 
     }
 

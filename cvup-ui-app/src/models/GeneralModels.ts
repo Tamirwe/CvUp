@@ -174,6 +174,7 @@ export interface IEmailTemplate {
   subject: string;
   body: string;
   stageToUpdate?: string;
+  templateType?: string;
 }
 
 export interface ICandPosStageTypeUpdate {
@@ -307,4 +308,39 @@ export interface IScheduleInterview {
   durationMinutes: number;
   location?: string;
   notes?: string;
+}
+export interface IContractTemplate {
+  id: number;
+  name: string;
+  descr?: string;
+  dateCreated?: Date;
+  dateUpdated?: Date;
+  // False when the row has no .docx behind it in the company folder; such a
+  // template is listed but cannot be sent.
+  fileExists: boolean;
+}
+
+export interface ICustomerContract {
+  id: number;
+  customerId: number;
+  customerName: string;
+  contactId?: number;
+  contactName: string;
+  contactEmail?: string;
+  contractTemplateId?: number;
+  contractTemplateName: string;
+  descr?: string;
+  emailSubject?: string;
+  emailBody?: string;
+  dateSent?: Date;
+  dateCreated?: Date;
+}
+
+export interface ISendContract {
+  customerId: number;
+  contactId: number;
+  contractTemplateId: number;
+  descr?: string;
+  subject: string;
+  body: string;
 }

@@ -4,13 +4,13 @@ import BaseApi from "./BaseApi";
 
 export default class CustomersContactsApi extends BaseApi {
   async addContact(contactModel: IContact) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<IContact>(async () => {
       return await this.http.post("CustomersContacts/AddContact", contactModel);
     });
   }
 
   async updateContact(contactModel: IContact) {
-    return await this.apiWrapper2(async () => {
+    return await this.apiWrapper2<IContact>(async () => {
       return await this.http.put(
         "CustomersContacts/UpdateContact",
         contactModel

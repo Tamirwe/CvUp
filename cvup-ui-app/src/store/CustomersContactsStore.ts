@@ -15,7 +15,7 @@ export class CustomersContactsStore {
   private searchPhrase?: ISearchModel;
   private isContactsListSortDesc: boolean = true;
 
-  customersList: IIdName[] = [];
+  customersList: ICustomer[] = [];
   customerAddedUpdated?: IIdName;
   contactsList: IContact[] = [];
 

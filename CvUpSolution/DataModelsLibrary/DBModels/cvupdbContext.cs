@@ -383,6 +383,7 @@ public partial class cvupdbContext : DbContext
             entity.Property(e => e.name).HasMaxLength(50);
             entity.Property(e => e.stage_to_update).HasMaxLength(50);
             entity.Property(e => e.subject).HasMaxLength(300);
+            entity.Property(e => e.template_type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<folder>(entity =>

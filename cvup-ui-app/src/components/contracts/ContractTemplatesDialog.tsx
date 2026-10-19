@@ -115,7 +115,14 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
       );
 
       if (!res.isSuccess) {
-        setError("The template could not be uploaded.");
+        // The server answers 400 with a plain-text reason ("No file.", "Only
+        // .docx templates can be uploaded."); show it instead of guessing.
+        const reason = (res.errorData as any)?.response?.data;
+        setError(
+          typeof reason === "string" && reason
+            ? reason
+            : "The template could not be uploaded."
+        );
         return;
       }
     }

@@ -74,14 +74,25 @@ export default function axiosService(
   instance.interceptors.request.use(
     async (config) => {
       const jwt = localStorage.getItem("jwt");
+      const isFormData =
+        typeof FormData !== "undefined" && config.data instanceof FormData;
 
       if (jwt) {
-        config.headers = {
+        const headers: any = {
           ...config.headers,
           Accept: "application/json",
           "Content-Type": "application/json; charset=utf-8",
           authorization: `Bearer ${jwt}`,
         };
+
+        // A file upload has to keep the content type the browser generates:
+        // it carries the multipart boundary, and json in its place leaves the
+        // server unable to find the file at all.
+        if (isFormData) {
+          delete headers["Content-Type"];
+        }
+
+        config.headers = headers;
       }
 
       return config;

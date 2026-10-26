@@ -22,12 +22,6 @@ const CvsDashboardLayout = lazy(() =>
     default: m.CvsDashboardLayout,
   }))
 );
-const AdminLayout = lazy(() =>
-  import("./layouts/AdminLayout").then((m) => ({ default: m.AdminLayout }))
-);
-const AdminDashboard = lazy(() =>
-  import("./pages/AdminDashboard").then((m) => ({ default: m.AdminDashboard }))
-);
 const Dashboard = lazy(() =>
   import("./pages/Dashboard").then((m) => ({ default: m.Dashboard }))
 );
@@ -61,11 +55,6 @@ const Router = () => {
             <Route path="/position/:pid" element={<Position />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/candidatesreport" element={<CandidatesReport />} />
-          </Route>
-          {/* The second authenticated layout. Nest further admin pages here as
-              they are built. */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
           </Route>
         </Route>
         <Route element={<LayoutNotAuth />}>

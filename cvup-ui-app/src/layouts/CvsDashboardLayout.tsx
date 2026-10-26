@@ -19,7 +19,7 @@ import { FolderFormDialog } from "../components/folders/FolderFormDialog";
 import { useEffect } from "react";
 import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
-import { CustomersListDialog } from "../components/customers/CustomersListDialog";
+import { CustomerDialog } from "../components/customers/CustomerDialog";
 import { UsersListDialog } from "../components/users/UsersListDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 import { BrowserView, MobileView, isMobile } from "react-device-detect";
@@ -156,7 +156,7 @@ export const CvsDashboardLayout = observer(() => {
         />
       )}
       {generalStore.showCustomersListDialog && (
-        <CustomersListDialog
+        <CustomerDialog
           isOpen={generalStore.showCustomersListDialog}
           onClose={() => (generalStore.showCustomersListDialog = false)}
         />

@@ -23,7 +23,7 @@ import {
 } from "../../models/GeneralEnums";
 import { IContact, IPosition } from "../../models/GeneralModels";
 import { validateSelect, validateTxt } from "../../utils/Validation";
-import { CustomerFormDialog } from "../customers/CustomerFormDialog";
+import { CustomerDialog } from "../customers/CustomerDialog";
 import { ContactsAutoCompleteMulty } from "./ContactsAutoCompleteMulty";
 import { format } from "date-fns";
 import { isMobile } from "react-device-detect";
@@ -578,15 +578,9 @@ export const PositionForm = observer(({ onClose }: IProps) => {
         </form>
       )}
       {openCustomerForm && (
-        <CustomerFormDialog
+        <CustomerDialog
           isOpen={openCustomerForm}
-          onClose={(isSaved) => {
-            setOpenCustomerForm(false);
-
-            if (isSaved) {
-              customersContactsStore.getCustomersList();
-            }
-          }}
+          onClose={() => setOpenCustomerForm(false)}
         />
       )}
     </>

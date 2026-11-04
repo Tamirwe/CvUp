@@ -1,4 +1,5 @@
 import {
+  alpha,
   Box,
   Button,
   Dialog,
@@ -14,9 +15,11 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { MdClose } from "react-icons/md";
 import { format } from "date-fns";
@@ -28,6 +31,7 @@ import {
 } from "../../models/GeneralEnums";
 import { ICustomer } from "../../models/GeneralModels";
 import { validateTxt } from "../../utils/Validation";
+import { CustomerContacts } from "./CustomerContacts";
 
 interface IProps {
   isOpen: boolean;
@@ -43,6 +47,9 @@ const emptyCustomer: ICustomer = {
 
 export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
   const { customersContactsStore, generalStore } = useStore();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const formRef = useRef<HTMLDivElement>(null);
   const [searchTxt, setSearchTxt] = useState("");
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -65,6 +72,9 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
     if (customersContactsStore.selectedCustomer) {
       selectCustomer(customersContactsStore.selectedCustomer as ICustomer);
     }
+    if (customersContactsStore.contactsList.length === 0) {
+      customersContactsStore.getContactsList();
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetFormState = () => {
@@ -77,6 +87,13 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
     customersContactsStore.selectedCustomer = customer;
     setFormModel({ ...emptyCustomer, ...customer });
     resetFormState();
+  };
+
+  const onCustomerClick = (customer: ICustomer) => {
+    selectCustomer(customer);
+    if (isMobile) {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   const newCustomer = () => {
@@ -150,16 +167,58 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth={"md"}>
-      <DialogTitle>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      fullWidth
+      maxWidth={"md"}
+      fullScreen={isMobile}
+    >
+      <DialogTitle sx={{ position: "relative", pr: 6 }}>
         Customers
         <Button
-          onClick={newCustomer}
+          onClick={() => {
+            newCustomer();
+            if (isMobile) {
+              formRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+          }}
           startIcon={<GoPlus />}
           sx={{ ml: 2 }}
         >
-          Add New Customer
+          {isMobile ? "Add New" : "Add New Customer"}
         </Button>
+        {customersContactsStore.selectedCustomer && (
+          <Typography
+            variant="h6"
+            component="span"
+            noWrap
+            sx={{
+              position: { xs: "static", sm: "absolute" },
+              left: "50%",
+              top: "50%",
+              transform: { xs: "none", sm: "translate(-50%, -50%)" },
+              display: { xs: "block", sm: "inline" },
+              width: { xs: "fit-content", sm: "auto" },
+              maxWidth: { xs: "100%", sm: "30%" },
+              mt: { xs: 1, sm: 0 },
+              fontWeight: 700,
+              fontSize: "1.35rem",
+              color: "primary.main",
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+              border: 1,
+              borderColor: (theme) => alpha(theme.palette.primary.main, 0.3),
+              borderRadius: 2,
+              px: 2,
+              py: 0.5,
+            }}
+          >
+            {customersContactsStore.selectedCustomer.name}
+          </Typography>
+        )}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -174,8 +233,12 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Stack direction="row" gap={3} sx={{ minHeight: 480 }}>
-          <Box sx={{ width: 280, flexShrink: 0 }}>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          gap={{ xs: 1, sm: 3 }}
+          sx={{ minHeight: { xs: 0, sm: 480 } }}
+        >
+          <Box sx={{ width: { xs: "100%", sm: 280 }, flexShrink: 0 }}>
             <TextField
               fullWidth
               margin="normal"
@@ -191,14 +254,14 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
                 width: "100%",
                 bgcolor: "background.paper",
                 overflow: "auto",
-                maxHeight: 400,
+                maxHeight: { xs: 200, sm: 400 },
               }}
             >
               {dataList.map((item) => (
                 <ListItemButton
                   key={item.id}
                   selected={item.id === formModel.id}
-                  onClick={() => selectCustomer(item)}
+                  onClick={() => onCustomerClick(item)}
                   sx={{ borderBottom: "1px solid #f1f1f1" }}
                 >
                   <ListItemText>{item.name}</ListItemText>
@@ -207,110 +270,126 @@ export const CustomerDialog = observer(({ isOpen, onClose }: IProps) => {
             </List>
           </Box>
 
-          <Divider orientation="vertical" flexItem />
+          <Divider
+            orientation={isMobile ? "horizontal" : "vertical"}
+            flexItem
+          />
 
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1" mt={2}>
-              {isNew ? "Add Customer" : "Edit Customer"}
-            </Typography>
-            <form noValidate spellCheck="false">
-              <Grid container>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    autoFocus
-                    margin="normal"
-                    type="text"
-                    id="name"
-                    label="Name"
-                    variant="outlined"
-                    onChange={(e) => {
-                      updateField("name", e.target.value);
-                      clearError("name");
-                    }}
-                    error={errModel.name !== ""}
-                    helperText={errModel.name}
-                    value={formModel.name}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{ direction: "rtl" }}
-                    inputProps={{ maxLength: 255 }}
-                    fullWidth
-                    margin="normal"
-                    type="text"
-                    id="address"
-                    label="Address"
-                    variant="outlined"
-                    onChange={(e) => updateField("address", e.target.value)}
-                    value={formModel.address || ""}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{ direction: "rtl" }}
-                    multiline
-                    rows={5}
-                    inputProps={{ maxLength: 255 }}
-                    fullWidth
-                    margin="normal"
-                    type="text"
-                    id="descr"
-                    label="Description"
-                    variant="outlined"
-                    onChange={(e) => updateField("descr", e.target.value)}
-                    value={formModel.descr || ""}
-                  />
-                </Grid>
-                {!isNew && (
+          <Box ref={formRef} sx={{ flexGrow: 1, pt: { xs: 1, sm: 2 } }}>
+            <Box
+              sx={{
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 2,
+                p: { xs: 1.5, sm: 2 },
+              }}
+            >
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography variant="subtitle1">
+                  {isNew ? "Add Customer" : "Edit Customer"}
+                </Typography>
+                {!isNew && formModel.created && (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    title="Created"
+                  >
+                    {format(new Date(formModel.created), "MMM d, yyyy")}
+                  </Typography>
+                )}
+              </Stack>
+              <form noValidate spellCheck="false">
+                <Grid container>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
-                      disabled
+                      autoFocus={!isMobile}
                       margin="normal"
                       type="text"
-                      id="created"
-                      label="Created"
+                      id="name"
+                      label="Name"
                       variant="outlined"
-                      value={
-                        formModel.created
-                          ? format(new Date(formModel.created), "MMM d, yyyy")
-                          : ""
-                      }
+                      onChange={(e) => {
+                        updateField("name", e.target.value);
+                        clearError("name");
+                      }}
+                      error={errModel.name !== ""}
+                      helperText={errModel.name}
+                      value={formModel.name}
                     />
                   </Grid>
-                )}
-                <Grid item xs={12}>
-                  <FormHelperText error>{submitError}</FormHelperText>
-                </Grid>
-                <Grid item xs={12} mt={2}>
-                  <Grid container justifyContent="space-between">
-                    <Grid item>
-                      {!isNew && (
-                        <Button color="warning" onClick={deleteRecord}>
-                          Delete
-                        </Button>
-                      )}
-                    </Grid>
-                    <Grid item>
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        <Button color="secondary" onClick={onClose}>
-                          Cancel
-                        </Button>
-                        <Button
-                          disabled={!isDirty}
-                          color="secondary"
-                          onClick={handleSubmit}
-                        >
-                          Save
-                        </Button>
-                      </Stack>
+                  <Grid item xs={12}>
+                    <TextField
+                      sx={{ direction: "rtl" }}
+                      inputProps={{ maxLength: 255 }}
+                      fullWidth
+                      margin="normal"
+                      type="text"
+                      id="address"
+                      label="Address"
+                      variant="outlined"
+                      onChange={(e) => updateField("address", e.target.value)}
+                      value={formModel.address || ""}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      sx={{ direction: "rtl" }}
+                      multiline
+                      rows={5}
+                      inputProps={{ maxLength: 255 }}
+                      fullWidth
+                      margin="normal"
+                      type="text"
+                      id="descr"
+                      label="Description"
+                      variant="outlined"
+                      onChange={(e) => updateField("descr", e.target.value)}
+                      value={formModel.descr || ""}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormHelperText error>{submitError}</FormHelperText>
+                  </Grid>
+                  <Grid item xs={12} mt={2}>
+                    <Grid container justifyContent="space-between">
+                      <Grid item>
+                        {!isNew && (
+                          <Button color="warning" onClick={deleteRecord}>
+                            Delete
+                          </Button>
+                        )}
+                      </Grid>
+                      <Grid item>
+                        <Stack direction="row" alignItems="center" gap={1}>
+                          <Button color="secondary" onClick={onClose}>
+                            Cancel
+                          </Button>
+                          <Button
+                            disabled={!isDirty}
+                            color="secondary"
+                            onClick={handleSubmit}
+                          >
+                            Save
+                          </Button>
+                        </Stack>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </form>
+              </form>
+            </Box>
+            {!isNew && (
+              <CustomerContacts
+                key={formModel.id}
+                customerId={formModel.id}
+                customerName={formModel.name}
+              />
+            )}
           </Box>
         </Stack>
       </DialogContent>

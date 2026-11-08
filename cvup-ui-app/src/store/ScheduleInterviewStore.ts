@@ -31,6 +31,10 @@ export class ScheduleInterviewStore {
 
     const res = await this.scheduleInterviewApi.addScheduleInterview(scheduleInterview);
 
+    if (res.isSuccess) {
+      await this.rootStore.candsStore.updateCandPositionStatus("customer_interview");
+    }
+
     this.rootStore.generalStore.backdrop = false;
 
     return res;

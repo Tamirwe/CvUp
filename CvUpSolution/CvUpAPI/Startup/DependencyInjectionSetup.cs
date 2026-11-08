@@ -51,6 +51,8 @@ namespace CvUpAPI.Startup
             services.AddTransient<IMergeDuplicatesCandsService, MergeDuplicatesCandsService>();
             services.AddTransient<IScheduleInterviewQueries, ScheduleInterviewQueries>();
             services.AddTransient<IScheduleInterviewService, ScheduleInterviewService>();
+            services.AddTransient<IContractTemplatesQueries, ContractTemplatesQueries>();
+            services.AddTransient<IContractTemplatesService, ContractTemplatesService>();
 
             return services;
         }

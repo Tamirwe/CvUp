@@ -281,6 +281,13 @@ export interface ISearchTermsListItem {
   searchDescr?: string;
 }
 
+export interface IContractTemplate {
+  id: number;
+  name: string;
+  descr?: string;
+  dateCreated: Date;
+}
+
 export interface IScheduleInterviewSend {
   id?: number;
   positionId?: number;

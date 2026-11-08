@@ -79,7 +79,10 @@ export default function axiosService(
         config.headers = {
           ...config.headers,
           Accept: "application/json",
-          "Content-Type": "application/json; charset=utf-8",
+          // A file upload needs the browser to set its multipart boundary
+          ...(config.data instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json; charset=utf-8" }),
           authorization: `Bearer ${jwt}`,
         };
       }

@@ -23,6 +23,7 @@ export class GeneralStore {
   private FolderFormDialogModeOpen: CrudTypesEnum = CrudTypesEnum.None;
   private isShowContactFormDialog: boolean = false;
   private isShowCustomersListDialog: boolean = false;
+  private isShowContractTemplatesDialog: boolean = false;
   private isShowUserFormDialog: boolean = false;
   private isShowUserListDialog: boolean = false;
   private isAlertConfirmDialogOpen: boolean = false;
@@ -132,6 +133,14 @@ export class GeneralStore {
 
   set showCustomersListDialog(val) {
     this.isShowCustomersListDialog = val;
+  }
+
+  get showContractTemplatesDialog() {
+    return this.isShowContractTemplatesDialog;
+  }
+
+  set showContractTemplatesDialog(val) {
+    this.isShowContractTemplatesDialog = val;
   }
 
   get showUserFormDialog() {

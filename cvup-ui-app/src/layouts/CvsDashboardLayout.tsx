@@ -21,6 +21,7 @@ import { AlertConfirmDialog } from "./AlertConfirmDialog";
 import { UsersFormDialog } from "../components/users/UsersFormDialog";
 import { CustomerDialog } from "../components/customers/CustomerDialog";
 import { UsersListDialog } from "../components/users/UsersListDialog";
+import { ContractTemplatesDialog } from "../components/contractTemplates/ContractTemplatesDialog";
 import { PositionFormDialog } from "../components/positions/PositionFormDialog";
 import { BrowserView, MobileView, isMobile } from "react-device-detect";
 import { CvsDashboardMobileLayout } from "./CvsDashboardMobileLayout";
@@ -159,6 +160,12 @@ export const CvsDashboardLayout = observer(() => {
         <CustomerDialog
           isOpen={generalStore.showCustomersListDialog}
           onClose={() => (generalStore.showCustomersListDialog = false)}
+        />
+      )}
+      {generalStore.showContractTemplatesDialog && (
+        <ContractTemplatesDialog
+          isOpen={generalStore.showContractTemplatesDialog}
+          onClose={() => (generalStore.showContractTemplatesDialog = false)}
         />
       )}
       {generalStore.showUserFormDialog && (

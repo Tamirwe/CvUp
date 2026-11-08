@@ -15,6 +15,7 @@ import {
   MdDelete,
   MdGroup,
   MdOutlineDelete,
+  MdOutlineDescription,
   MdOutlineTextSnippet,
   MdRule,
 } from "react-icons/md";
@@ -202,6 +203,16 @@ export const SettingsMenu = ({ withLabel = false }: IProps) => {
           </MenuItem>
         )}
         {/* )} */}
+        <MenuItem
+          onClick={() => {
+            generalStore.showContractTemplatesDialog = true;
+          }}
+        >
+          <Avatar>
+            <MdOutlineDescription />
+          </Avatar>
+          Contract Templates
+        </MenuItem>
         {!withLabel && (
           <MenuItem
             onClick={() => {

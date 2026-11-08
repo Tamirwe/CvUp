@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useStore } from "../../Hooks/useStore";
 import { PositionForm } from "./PositionForm";
 import { PositionAdWriter } from "./PositionAdWriter";
+import { PositionCandsNames } from "./PositionCandsNames";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
 interface IProps {
@@ -32,11 +33,13 @@ export const PositionFormDialog = ({ isOpen, onClose }: IProps) => {
         <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
           <Tab label="Details" />
           <Tab label="Position Ad" />
+          <Tab label="Candidates" />
         </Tabs>
       </Box>
       <DialogContent sx={{ pt: 1 }}>
         {tabValue === 0 && <PositionForm onClose={onClose} />}
         {tabValue === 1 && <PositionAdWriter />}
+        {tabValue === 2 && <PositionCandsNames />}
       </DialogContent>
     </Dialog>
   );

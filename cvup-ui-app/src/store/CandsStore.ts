@@ -456,6 +456,21 @@ searchTermsIsIndexSearch = true;
     });
   }
 
+  // Returns the list without replacing the displayed posCandsList
+  async fetchPositionCands(posId: number) {
+    runInAction(() => {
+      this.rootStore.generalStore.backdrop = true;
+    });
+
+    const res = await this.cvsApi.getPosCandsList(posId);
+
+    runInAction(() => {
+      this.rootStore.generalStore.backdrop = false;
+    });
+
+    return res.data || [];
+  }
+
   async getPositionTypeCandsList(posTypeId: number) {
     runInAction(() => {
       this.rootStore.generalStore.backdrop = true;

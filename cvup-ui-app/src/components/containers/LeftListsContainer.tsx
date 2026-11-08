@@ -79,7 +79,7 @@ export const LeftListsContainer = observer(() => {
             onChange={handleTabChange}
             sx={{ "& .MuiButtonBase-root": { fontSize: "0.8rem" } }}
           >
-            <Tab label="Contacts" value={TabsGeneralEnum.Contacts} />
+            {/* <Tab label="Contacts" value={TabsGeneralEnum.Contacts} /> */}
             <Tab label="P.Groups" value={TabsGeneralEnum.Types} />
             <Tab label="Folders" value={TabsGeneralEnum.Folders} />
             <Tab label="Positions" value={TabsGeneralEnum.Positions} />

@@ -1,6 +1,14 @@
 import { useStore } from "../../Hooks/useStore";
-import { Grid, IconButton, Link, Stack } from "@mui/material";
+import {
+  Grid,
+  IconButton,
+  Link,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { SettingsMenu } from "./SettingsMenu";
+import { HeaderNav } from "./HeaderNav";
 import { useCallback, useEffect } from "react";
 import { BsList } from "react-icons/bs";
 import { isMobile } from "react-device-detect";
@@ -9,6 +17,8 @@ import { useLocation } from "react-router-dom";
 
 export const Header = observer(() => {
   const location = useLocation();
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const {
     candsStore,
@@ -82,7 +92,7 @@ export const Header = observer(() => {
                 </IconButton>
               )}
 
-              <SettingsMenu />
+              {isLargeScreen ? <HeaderNav /> : <SettingsMenu />}
             </Stack>
           </Grid>
           <Grid

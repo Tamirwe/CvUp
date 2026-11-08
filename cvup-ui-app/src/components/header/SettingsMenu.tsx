@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Divider,
   IconButton,
   ListItemAvatar,
@@ -25,7 +26,12 @@ import {
 } from "../../models/GeneralEnums";
 import { green } from "@mui/material/colors";
 
-export const SettingsMenu = () => {
+interface IProps {
+  // Large screens: labeled button; Customers and Logout are in the nav bar
+  withLabel?: boolean;
+}
+
+export const SettingsMenu = ({ withLabel = false }: IProps) => {
   const { generalStore, authStore, candsStore } = useStore();
   const navigate = useNavigate();
 
@@ -47,9 +53,20 @@ export const SettingsMenu = () => {
 
   return (
     <>
-      <IconButton size="medium" onClick={handleClick}>
-        <CiSettings />
-      </IconButton>
+      {withLabel ? (
+        <Button
+          color="inherit"
+          onClick={handleClick}
+          startIcon={<CiSettings />}
+          sx={{ textTransform: "none" }}
+        >
+          Settings
+        </Button>
+      ) : (
+        <IconButton size="medium" onClick={handleClick}>
+          <CiSettings />
+        </IconButton>
+      )}
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -172,28 +189,32 @@ export const SettingsMenu = () => {
           </Avatar>
           Users
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            generalStore.showCustomersListDialog = true;
-          }}
-        >
-          <Avatar>
-            <MdGroup />
-          </Avatar>
-          Customers
-        </MenuItem>
+        {!withLabel && (
+          <MenuItem
+            onClick={() => {
+              generalStore.showCustomersListDialog = true;
+            }}
+          >
+            <Avatar>
+              <MdGroup />
+            </Avatar>
+            Customers
+          </MenuItem>
+        )}
         {/* )} */}
-        <MenuItem
-          onClick={() => {
-            authStore.logout();
-            navigate("/login");
-          }}
-        >
-          <ListItemIcon>
-            <CiLogout />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        {!withLabel && (
+          <MenuItem
+            onClick={() => {
+              authStore.logout();
+              navigate("/login");
+            }}
+          >
+            <ListItemIcon>
+              <CiLogout />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

@@ -211,7 +211,7 @@ export const SettingsMenu = ({ withLabel = false }: IProps) => {
           <Avatar>
             <MdOutlineDescription />
           </Avatar>
-          Contract Templates
+          Send Contract to Customer
         </MenuItem>
         {!withLabel && (
           <MenuItem

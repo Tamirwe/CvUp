@@ -3,26 +3,25 @@ import {
   Button,
   Dialog,
   DialogContent,
-  Divider,
-  FormHelperText,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
+import { GoPlus } from "react-icons/go";
 import { MdOutlineDelete } from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import { IContractTemplate } from "../../models/GeneralModels";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
+import { ContractUploadDialog } from "./ContractUploadDialog";
 
 interface IProps {
   isOpen: boolean;
@@ -31,10 +30,7 @@ interface IProps {
 
 export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) => {
   const { contractTemplatesStore, generalStore } = useStore();
-  const [file, setFile] = useState<File | null>(null);
-  const [name, setName] = useState("");
-  const [descr, setDescr] = useState("");
-  const [submitError, setSubmitError] = useState("");
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
   const [previewUrl, setPreviewUrl] = useState("");
 
@@ -64,34 +60,10 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
     }
   };
 
-  const uploadTemplate = async () => {
-    if (!file) {
-      setSubmitError("Select a document to upload");
-      return;
-    }
-
-    if (!name.trim()) {
-      setSubmitError("Enter the contract name");
-      return;
-    }
-
-    const res = await contractTemplatesStore.addContractTemplate(
-      name.trim(),
-      descr.trim(),
-      file
-    );
-
-    if (res.isSuccess && res.data) {
-      setFile(null);
-      setName("");
-      setDescr("");
-      setSubmitError("");
-      generalStore.alertSnackbar("success", "Contract template uploaded");
-      await contractTemplatesStore.getContractTemplates();
-      await showTemplate(res.data);
-    } else {
-      generalStore.alertSnackbar("error", "Failed to upload the document");
-    }
+  const onTemplateUploaded = async (template: IContractTemplate) => {
+    setIsUploadOpen(false);
+    await contractTemplatesStore.getContractTemplates();
+    await showTemplate(template);
   };
 
   const deleteTemplate = async (template: IContractTemplate) => {
@@ -123,83 +95,35 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
   return (
     <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth={"lg"}>
       <BootstrapDialogTitle id="contract-templates-title" onClose={onClose}>
-        Contract Templates
+        Send Contract to Customer
       </BootstrapDialogTitle>
       <DialogContent>
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          alignItems={{ xs: "stretch", md: "flex-start" }}
-          gap={2}
-          sx={{ pt: 1 }}
-        >
-          <Box sx={{ flexShrink: 0, width: { xs: "100%", md: 220 } }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              component="label"
-              sx={{ height: 56 }}
-            >
-              Choose document
-              <input
-                hidden
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={(e) => {
-                  setFile(e.target.files?.[0] || null);
-                  setSubmitError("");
-                  e.target.value = "";
-                }}
-              />
-            </Button>
-            <Typography variant="caption" color="text.secondary" noWrap component="div">
-              {file?.name || "pdf, doc or docx"}
-            </Typography>
-          </Box>
-          <TextField
-            fullWidth
-            id="contractName"
-            label="Contract name"
-            variant="outlined"
-            inputProps={{ maxLength: 300 }}
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setSubmitError("");
-            }}
+        {isUploadOpen && (
+          <ContractUploadDialog
+            isOpen={isUploadOpen}
+            onClose={() => setIsUploadOpen(false)}
+            onUploaded={onTemplateUploaded}
           />
-          <TextField
-            sx={{ direction: "rtl" }}
-            fullWidth
-            id="contractDescr"
-            label="Contract description"
-            variant="outlined"
-            inputProps={{ maxLength: 1000 }}
-            value={descr}
-            onChange={(e) => setDescr(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={uploadTemplate}
-            sx={{ height: 56, flexShrink: 0 }}
-          >
-            Upload
-          </Button>
-        </Stack>
-        <FormHelperText error>{submitError}</FormHelperText>
+        )}
 
-        <Divider sx={{ my: 1 }} />
-
-        <Stack direction={{ xs: "column", md: "row" }} gap={2}>
-          <List
+        <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ pt: 1 }}>
+          <Box
             sx={{
               width: { xs: "100%", md: 280 },
               flexShrink: 0,
-              overflow: "auto",
-              maxHeight: { xs: 200, md: "65vh" },
+              height: { md: "65vh" },
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            {contractTemplatesStore.contractTemplatesList.map((item) => (
+            <List
+              sx={{
+                flexGrow: 1,
+                overflow: "auto",
+                maxHeight: { xs: 200, md: "none" },
+              }}
+            >
+              {contractTemplatesStore.contractTemplatesList.map((item) => (
               <ListItem
                 key={item.id}
                 disablePadding
@@ -222,8 +146,16 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
                   <ListItemText primary={item.name} secondary={item.descr} />
                 </ListItemButton>
               </ListItem>
-            ))}
-          </List>
+              ))}
+            </List>
+            <Button
+              startIcon={<GoPlus />}
+              onClick={() => setIsUploadOpen(true)}
+              sx={{ alignSelf: "flex-start", flexShrink: 0, mt: 1 }}
+            >
+              Upload contract
+            </Button>
+          </Box>
           <Box sx={{ flexGrow: 1, minWidth: 0, height: "65vh", overflow: "auto" }}>
             {previewUrl ? (
               <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">

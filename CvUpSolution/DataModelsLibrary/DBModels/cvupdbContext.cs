@@ -83,7 +83,7 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
 
-   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("vector");
@@ -362,6 +362,9 @@ public partial class cvupdbContext : DbContext
             entity.Property(e => e.name).HasMaxLength(50);
             entity.Property(e => e.stage_to_update).HasMaxLength(50);
             entity.Property(e => e.subject).HasMaxLength(300);
+            entity.Property(e => e.template_type)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("'cand_email'::character varying");
         });
 
         modelBuilder.Entity<folder>(entity =>

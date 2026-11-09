@@ -445,7 +445,10 @@ namespace DataModelsLibrary.Queries
         {
             using (var dbContext = new cvupdbContext())
             {
+                var templateType = EmailTemplateType.cand_email.ToString();
+
                 var query = (from et in dbContext.emails_templates
+                             where et.template_type == templateType
                              orderby et.name
                              select new EmailTemplateModel
                              {
@@ -471,6 +474,7 @@ namespace DataModelsLibrary.Queries
                         name = emailTemplate.name,
                         subject = emailTemplate.subject,
                         stage_to_update = emailTemplate.stageToUpdate,
+                        template_type = EmailTemplateType.cand_email.ToString(),
                         body = emailTemplate.body,
                     });
                     await dbContext.SaveChangesAsync();

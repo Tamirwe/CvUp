@@ -46,6 +46,13 @@ namespace DataModelsLibrary.Enums
         Registration_Approved,
         Confirm_Registration
     }
+    // The values are stored as text in emails_templates.template_type
+    public enum EmailTemplateType
+    {
+        cand_email,
+        contract_email
+    }
+
     public enum Lung
     {
         HE,

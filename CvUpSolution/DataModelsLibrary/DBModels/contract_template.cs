@@ -14,6 +14,4 @@ public partial class contract_template
     public DateTime date_created { get; set; }
 
     public DateTime date_updated { get; set; }
-
-    public virtual ICollection<customer_contract> customer_contracts { get; set; } = new List<customer_contract>();
 }

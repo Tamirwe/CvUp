@@ -33,11 +33,11 @@ public partial class cvupdbContext : DbContext
 
     public virtual DbSet<contact> contacts { get; set; }
 
+    public virtual DbSet<contract_send> contract_sends { get; set; }
+
     public virtual DbSet<contract_template> contract_templates { get; set; }
 
     public virtual DbSet<customer> customers { get; set; }
-
-    public virtual DbSet<customer_contract> customer_contracts { get; set; }
 
     public virtual DbSet<cv> cvs { get; set; }
 
@@ -82,6 +82,10 @@ public partial class cvupdbContext : DbContext
     public virtual DbSet<user> users { get; set; }
 
     public virtual DbSet<users_refresh_token> users_refresh_tokens { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=cvupdb;Username=postgres;Password=!Shalot5");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -258,6 +262,18 @@ public partial class cvupdbContext : DbContext
                 .HasConstraintName("fk_contacts_customer_id_customers_id");
         });
 
+        modelBuilder.Entity<contract_send>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("contract_sends_pkey");
+
+            entity.HasIndex(e => e.date_sent, "ix_contract_sends_date_sent");
+
+            entity.Property(e => e.id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.date_sent)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone");
+        });
+
         modelBuilder.Entity<contract_template>(entity =>
         {
             entity.HasKey(e => e.id).HasName("contract_templates_pkey");
@@ -287,40 +303,6 @@ public partial class cvupdbContext : DbContext
             entity.HasOne(d => d.company).WithMany(p => p.customers)
                 .HasForeignKey(d => d.company_id)
                 .HasConstraintName("fk_customers_company_id_companies_id");
-        });
-
-        modelBuilder.Entity<customer_contract>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("customer_contracts_pkey");
-
-            entity.HasIndex(e => e.contact_id, "ix_customer_contracts_contact_id");
-
-            entity.HasIndex(e => e.contract_template_id, "ix_customer_contracts_contract_template_id");
-
-            entity.HasIndex(e => e.customer_id, "ix_customer_contracts_customer_id");
-
-            entity.Property(e => e.id).UseIdentityAlwaysColumn();
-            entity.Property(e => e.date_created)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone");
-            entity.Property(e => e.date_sent).HasColumnType("timestamp without time zone");
-            entity.Property(e => e.descr).HasMaxLength(1000);
-            entity.Property(e => e.email_body).HasMaxLength(2000);
-            entity.Property(e => e.email_subject).HasMaxLength(300);
-
-            entity.HasOne(d => d.contact).WithMany(p => p.customer_contracts)
-                .HasForeignKey(d => d.contact_id)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_customer_contracts_contact_id_contacts_id");
-
-            entity.HasOne(d => d.contract_template).WithMany(p => p.customer_contracts)
-                .HasForeignKey(d => d.contract_template_id)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_customer_contracts_template_id_contract_templates_id");
-
-            entity.HasOne(d => d.customer).WithMany(p => p.customer_contracts)
-                .HasForeignKey(d => d.customer_id)
-                .HasConstraintName("fk_customer_contracts_customer_id_customers_id");
         });
 
         modelBuilder.Entity<cv>(entity =>
@@ -383,6 +365,7 @@ public partial class cvupdbContext : DbContext
             entity.Property(e => e.name).HasMaxLength(50);
             entity.Property(e => e.stage_to_update).HasMaxLength(50);
             entity.Property(e => e.subject).HasMaxLength(300);
+            entity.Property(e => e.template_type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<folder>(entity =>

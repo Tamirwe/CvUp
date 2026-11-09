@@ -23,7 +23,5 @@ public partial class customer
 
     public virtual ICollection<contact> contacts { get; set; } = new List<contact>();
 
-    public virtual ICollection<customer_contract> customer_contracts { get; set; } = new List<customer_contract>();
-
     public virtual ICollection<position> positions { get; set; } = new List<position>();
 }

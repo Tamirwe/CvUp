@@ -79,6 +79,12 @@ export enum CandsSourceEnum {
   Folder,
 }
 
+// Matches EmailTemplateType on the server (emails_templates.template_type)
+export enum EmailTemplateTypeEnum {
+  cand_email = "cand_email",
+  contract_email = "contract_email",
+}
+
 export enum DynamicEmailDataEnum {
   FirstName,
   FullName,

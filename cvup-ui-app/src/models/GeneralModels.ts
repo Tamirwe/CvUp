@@ -174,6 +174,7 @@ export interface IEmailTemplate {
   subject: string;
   body: string;
   stageToUpdate?: string;
+  templateType?: string;
 }
 
 export interface ICandPosStageTypeUpdate {
@@ -279,6 +280,15 @@ export interface SearchTermsModel {
 export interface ISearchTermsListItem {
   id: number;
   searchDescr?: string;
+}
+
+export interface ISendContract {
+  contractTemplateId: number;
+  companyName: string;
+  contactName: string;
+  emailAddress: string;
+  emailSubject: string;
+  emailBody: string;
 }
 
 export interface IContractTemplate {

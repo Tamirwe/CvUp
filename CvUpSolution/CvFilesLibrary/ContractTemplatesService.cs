@@ -1,5 +1,6 @@
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
+using EmailsLibrary;
 using Microsoft.Extensions.Configuration;
 using Spire.Pdf;
 
@@ -13,10 +14,12 @@ namespace CvFilesLibrary
         private const int SpireEvalPageIndex = 3;
 
         private IContractTemplatesQueries _contractTemplatesQueries;
+        private IEmailService _emailService;
         private string _templatesFolder;
 
-        public ContractTemplatesService(IConfiguration configuration, IContractTemplatesQueries contractTemplatesQueries)
+        public ContractTemplatesService(IConfiguration configuration, IContractTemplatesQueries contractTemplatesQueries, IEmailService emailService)
         {
+            _emailService = emailService;
             _templatesFolder = Path.Combine(configuration["APP_LOCAL_ROOT_FOLDER"]!, "contractTemplates");
             _contractTemplatesQueries = contractTemplatesQueries;
         }
@@ -84,6 +87,47 @@ namespace CvFilesLibrary
             {
                 File.Delete(filePath);
             }
+        }
+
+        /// <summary>
+        /// Attaches the original uploaded file, not the converted preview, because
+        /// converting a Word document to pdf cuts it off after 3 pages.
+        /// Returns false when the template or its file no longer exists.
+        /// </summary>
+        public async Task<bool> SendContract(SendContractModel contract, UserModel user)
+        {
+            var template = await _contractTemplatesQueries.GetContractTemplate(contract.contractTemplateId);
+            var filePath = FindTemplateFile(contract.contractTemplateId);
+
+            if (template == null || filePath == null)
+            {
+                return false;
+            }
+
+            var attachment = new AttachmentModel
+            {
+                name = template.name,
+                extension = Path.GetExtension(filePath),
+                Attachment = new MemoryStream(await File.ReadAllBytesAsync(filePath)),
+            };
+
+            await _emailService.Send(new EmailModel
+            {
+                To = new List<EmailAddress>
+                {
+                    new EmailAddress { Name = contract.contactName ?? "", Address = contract.emailAddress },
+                },
+                Subject = contract.emailSubject,
+                Body = $"{contract.emailBody} {user.signature} ",
+                Attachments = new List<AttachmentModel> { attachment },
+                From = new EmailAddress { Address = user.email, Name = $"{user.firstName} {user.lastName}" },
+                MailSenderUserName = user.mailUsername,
+                MailSenderPassword = user.mailPassword,
+            });
+
+            await _contractTemplatesQueries.AddContractSend(contract, template);
+
+            return true;
         }
 
         private string? FindTemplateFile(int id)

@@ -81,15 +81,17 @@ namespace EmailsLibrary
                         item.Attachment.Position = 0;
                     }
 
-                    var pdf = new MimePart("application", "pdf")
+                    var fileName = $"{item.name.Replace(' ', '_')}{item.extension}";
+
+                    var attachment = new MimePart(ContentType.Parse(MimeTypes.GetMimeType(fileName)))
                     {
                         Content = new MimeContent(item.Attachment),
                         ContentTransferEncoding = ContentEncoding.Base64,
                         ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-                        FileName = $"{item.name.Replace(' ', '_')}.pdf",
+                        FileName = fileName,
                     };
 
-                    mixed.Add(pdf);
+                    mixed.Add(attachment);
                 }
 
                 message.Body = mixed;

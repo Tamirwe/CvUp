@@ -55,6 +55,7 @@ namespace DataModelsLibrary.Models
     public class AttachmentModel
     {
         public string name { get; set; } = string.Empty;
+        public string extension { get; set; } = ".pdf";
         public MemoryStream Attachment { get; set; } = new MemoryStream();
     }
 

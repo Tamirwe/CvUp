@@ -1,7 +1,20 @@
-import { IContractTemplate } from "../../models/GeneralModels";
+import { EmailTemplateTypeEnum } from "../../models/GeneralEnums";
+import {
+  IContractTemplate,
+  IEmailTemplate,
+  ISendContract,
+} from "../../models/GeneralModels";
 import BaseApi from "./BaseApi";
 
 export default class ContractTemplatesApi extends BaseApi {
+  async getContractEmailTemplates() {
+    return await this.apiWrapper2<IEmailTemplate[]>(async () => {
+      return await this.http.get("Cand/GetEmailTemplates", {
+        params: { templateType: EmailTemplateTypeEnum.contract_email },
+      });
+    });
+  }
+
   async getContractTemplates() {
     return await this.apiWrapper2<IContractTemplate[]>(async () => {
       return await this.http.get("ContractTemplates/GetContractTemplates");
@@ -21,6 +34,14 @@ export default class ContractTemplatesApi extends BaseApi {
         formData,
         { timeout: 120000 }
       );
+    });
+  }
+
+  async sendContract(contract: ISendContract) {
+    return await this.apiWrapper2(async () => {
+      return await this.http.post("ContractTemplates/SendContract", contract, {
+        timeout: 60000,
+      });
     });
   }
 

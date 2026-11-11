@@ -441,14 +441,14 @@ namespace DataModelsLibrary.Queries
             }
         }
 
-        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId, EmailTemplateType templateType)
         {
             using (var dbContext = new cvupdbContext())
             {
-                var templateType = EmailTemplateType.cand_email.ToString();
+                var templateTypeName = templateType.ToString();
 
                 var query = (from et in dbContext.emails_templates
-                             where et.template_type == templateType
+                             where et.template_type == templateTypeName
                              orderby et.name
                              select new EmailTemplateModel
                              {
@@ -456,7 +456,8 @@ namespace DataModelsLibrary.Queries
                                  name = et.name,
                                  subject = et.subject,
                                  body = et.body,
-                                 stageToUpdate = et.stage_to_update
+                                 stageToUpdate = et.stage_to_update,
+                                 templateType = et.template_type
                              });
 
                 return await query.ToListAsync();
@@ -474,7 +475,9 @@ namespace DataModelsLibrary.Queries
                         name = emailTemplate.name,
                         subject = emailTemplate.subject,
                         stage_to_update = emailTemplate.stageToUpdate,
-                        template_type = EmailTemplateType.cand_email.ToString(),
+                        template_type = Enum.TryParse(emailTemplate.templateType, out EmailTemplateType templateType)
+                            ? templateType.ToString()
+                            : EmailTemplateType.cand_email.ToString(),
                         body = emailTemplate.body,
                     });
                     await dbContext.SaveChangesAsync();

@@ -1,6 +1,7 @@
 ﻿using AuthLibrary;
 using CandsPositionsLibrary;
 using CvFilesLibrary;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -288,9 +289,9 @@ namespace CvUpAPI.Controllers
 
         [HttpGet]
         [Route("GetEmailTemplates")]
-        public async Task<List<EmailTemplateModel>> GetEmailTemplates()
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates(EmailTemplateType templateType = EmailTemplateType.cand_email)
         {
-            return await _candsService.GetEmailTemplates(Globals.CompanyId);
+            return await _candsService.GetEmailTemplates(Globals.CompanyId, templateType);
         }
 
         [HttpPost]

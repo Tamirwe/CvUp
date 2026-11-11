@@ -1,11 +1,16 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { IContractTemplate } from "../models/GeneralModels";
+import {
+  IContractTemplate,
+  IEmailTemplate,
+  ISendContract,
+} from "../models/GeneralModels";
 import ContractTemplatesApi from "./api/ContractTemplatesApi";
 import { RootStore } from "./RootStore";
 
 export class ContractTemplatesStore {
   private contractTemplatesApi;
   contractTemplatesList: IContractTemplate[] = [];
+  contractEmailTemplates: IEmailTemplate[] = [];
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -32,6 +37,16 @@ export class ContractTemplatesStore {
     return res;
   }
 
+  async getContractEmailTemplates() {
+    const res = await this.contractTemplatesApi.getContractEmailTemplates();
+
+    runInAction(() => {
+      this.contractEmailTemplates = res.data || [];
+    });
+
+    return res;
+  }
+
   async addContractTemplate(name: string, descr: string, file: File) {
     this.setBackdrop(true);
 
@@ -40,6 +55,16 @@ export class ContractTemplatesStore {
       descr,
       file
     );
+
+    this.setBackdrop(false);
+
+    return res;
+  }
+
+  async sendContract(contract: ISendContract) {
+    this.setBackdrop(true);
+
+    const res = await this.contractTemplatesApi.sendContract(contract);
 
     this.setBackdrop(false);
 

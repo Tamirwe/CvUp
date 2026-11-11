@@ -41,6 +41,41 @@ namespace DataModelsLibrary.Queries
             };
         }
 
+        public async Task<ContractTemplateModel?> GetContractTemplate(int id)
+        {
+            using var dbContext = new cvupdbContext();
+
+            return await dbContext.contract_templates
+                .AsNoTracking()
+                .Where(x => x.id == id)
+                .Select(x => new ContractTemplateModel
+                {
+                    id = x.id,
+                    name = x.name,
+                    descr = x.descr,
+                    dateCreated = x.date_created,
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task AddContractSend(SendContractModel contract, ContractTemplateModel template)
+        {
+            using var dbContext = new cvupdbContext();
+
+            dbContext.contract_sends.Add(new contract_send
+            {
+                contract_template_name = template.name,
+                contract_template_descr = template.descr,
+                company_name = contract.companyName,
+                contact_name = contract.contactName,
+                email_address = contract.emailAddress,
+                email_subject = contract.emailSubject,
+                email_body = contract.emailBody,
+            });
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteContractTemplate(int id)
         {
             using var dbContext = new cvupdbContext();

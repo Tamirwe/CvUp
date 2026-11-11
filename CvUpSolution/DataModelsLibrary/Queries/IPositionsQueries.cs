@@ -1,4 +1,5 @@
 ﻿using Database.models;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 
 namespace DataModelsLibrary.Queries
@@ -26,7 +27,7 @@ namespace DataModelsLibrary.Queries
         Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId);
         Task<List<cv>> GetCompanyCvs(int companyId);
         Task SaveCandReview(int companyId, CandReviewModel candReview);
-        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
+        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId, EmailTemplateType templateType);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task UpdateCandDetails(CandDetailsModel candDetails);

@@ -1,4 +1,5 @@
 using Database.models;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using LuceneLibrary;
 
@@ -32,7 +33,7 @@ namespace CandsPositionsLibrary
         Task<List<CandPosStageTypeModel>> GetCandPosStagesTypes(int companyId);
         Task SendEmail(SendEmailModel emailData, UserModel? user);
         Task SaveCandReview(int companyId, CandReviewModel candReview);
-        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId);
+        Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId, EmailTemplateType templateType);
         Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate);
         Task DeleteEmailTemplate(int companyId, int id);
         Task UpdateCandDetails(CandDetailsModel candDetails);

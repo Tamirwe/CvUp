@@ -4,12 +4,8 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
 } from "@mui/material";
@@ -36,7 +32,7 @@ import {
   PositionStatusEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
-import { CiEdit } from "react-icons/ci";
+import { GoPlus } from "react-icons/go";
 import { observer } from "mobx-react-lite";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 
@@ -234,7 +230,7 @@ export const CandidateEmailSender = observer((props: IProps) => {
               }}
             />
           </Grid>
-          <Grid item xs={12} lg={8} pt={2}>
+          <Grid item xs={12} lg={12} pt={2}>
             <TextField
               sx={{
                 mt: 0,
@@ -259,60 +255,19 @@ export const CandidateEmailSender = observer((props: IProps) => {
               value={formModel.subject}
             />
           </Grid>
-          <Grid item xs={12} lg={4} pt={2}>
-            <Stack direction="row">
-              <FormControl fullWidth sx={{ direction: "rtl" }}>
-                <InputLabel id="emailTemplatelabel">Email Template</InputLabel>
-                <Select
-                  labelId="emailTemplate"
-                  id="emailTemplate"
-                  label="Email Template"
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      const emTemplate = candsStore.emailTemplates?.find(
-                        (x) => x.id === e.target.value
-                      );
-                      emTemplate && setEmailTemplate(emTemplate);
-                    } else {
-                      setEmailTemplate({
-                        id: 0,
-                        body: "",
-                        name: "",
-                        subject: "",
-                      });
-                    }
-                  }}
-                  value={emailTemplate?.id}
-                >
-                  <MenuItem key={0} value={0} sx={{ direction: "rtl" }}>
-                    &nbsp;
-                  </MenuItem>
-                  {candsStore.emailTemplates?.map((item) => {
-                    return (
-                      <MenuItem
-                        key={item.id}
-                        value={item.id}
-                        sx={{ direction: "rtl" }}
-                      >
-                        {item.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
+          <Grid item xs={12} lg={12} pt={1} sx={{ direction: "rtl" }}>
+            <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
               <IconButton
                 color="primary"
+                title="Edit email template"
+                aria-label="Edit email template"
                 onClick={() => {
                   generalStore.showEmailTemplatesDialog = true;
                 }}
               >
-                <CiEdit />
+                <GoPlus />
               </IconButton>
-            </Stack>
-          </Grid>
-          <Grid item xs={12} lg={12} pt={1}>
-            <Stack direction="row" flexWrap="wrap" gap={1}>
-              {candsStore.emailTemplates?.slice(0, 5).map((item) => {
+              {candsStore.emailTemplates?.map((item) => {
                 return (
                   <Button
                     key={item.id}

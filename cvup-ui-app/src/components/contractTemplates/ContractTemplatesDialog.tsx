@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -21,6 +22,7 @@ import { useStore } from "../../Hooks/useStore";
 import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import { IContractTemplate } from "../../models/GeneralModels";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
+import { ContractSendForm } from "./ContractSendForm";
 import { ContractUploadDialog } from "./ContractUploadDialog";
 
 interface IProps {
@@ -33,9 +35,16 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
   const [previewUrl, setPreviewUrl] = useState("");
+  // Changing the key mounts a new, empty send form
+  const [sendFormKey, setSendFormKey] = useState(0);
+
+  const selectedTemplate = contractTemplatesStore.contractTemplatesList.find(
+    (x) => x.id === selectedId
+  );
 
   useEffect(() => {
     contractTemplatesStore.getContractTemplates();
+    contractTemplatesStore.getContractEmailTemplates();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Releases the previous document when another one is shown or the dialog closes
@@ -105,6 +114,14 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
             onUploaded={onTemplateUploaded}
           />
         )}
+
+        <ContractSendForm
+          key={sendFormKey}
+          template={selectedTemplate}
+          onSent={() => setSendFormKey((key) => key + 1)}
+        />
+
+        <Divider sx={{ my: 2 }} />
 
         <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ pt: 1 }}>
           <Box

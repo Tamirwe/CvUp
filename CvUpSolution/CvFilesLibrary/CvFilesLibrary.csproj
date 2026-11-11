@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataModelsLibrary\DataModelsLibrary.csproj" />
+    <ProjectReference Include="..\EmailsLibrary\EmailsLibrary.csproj" />
   </ItemGroup>
 
 </Project>

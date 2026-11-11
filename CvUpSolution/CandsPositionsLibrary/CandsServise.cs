@@ -1,5 +1,6 @@
 using CvFilesLibrary;
 using Database.models;
+using DataModelsLibrary.Enums;
 using DataModelsLibrary.Models;
 using DataModelsLibrary.Queries;
 using EmailsLibrary;
@@ -290,9 +291,9 @@ namespace CandsPositionsLibrary
             await _queueService.EnqueueAsync("index cv", candReview.candidateId.ToString());
         }
 
-        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId)
+        public async Task<List<EmailTemplateModel>> GetEmailTemplates(int companyId, EmailTemplateType templateType)
         {
-            return await _cvsPositionsQueries.GetEmailTemplates(companyId);
+            return await _cvsPositionsQueries.GetEmailTemplates(companyId, templateType);
         }
 
         public async Task AddUpdateEmailTemplate(EmailTemplateModel emailTemplate)

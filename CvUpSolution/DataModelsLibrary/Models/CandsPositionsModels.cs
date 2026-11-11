@@ -359,7 +359,8 @@ namespace DataModelsLibrary.Models
         public string subject { get; set; } = "";
         public string body { get; set; } = "";
         public string? stageToUpdate { get; set; } = "";
-
+        // One of EmailTemplateType; new templates without it are saved as cand_email
+        public string? templateType { get; set; } = "cand_email";
     }
 
     public class PosCvsModel

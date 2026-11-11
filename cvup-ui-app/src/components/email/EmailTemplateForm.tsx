@@ -18,6 +18,7 @@ import { useStore } from "../../Hooks/useStore";
 import {
   AlertConfirmDialogEnum,
   DynamicEmailDataEnum,
+  EmailTemplateTypeEnum,
   TextValidateTypeEnum,
 } from "../../models/GeneralEnums";
 import { IEmailTemplate } from "../../models/GeneralModels";
@@ -30,11 +31,17 @@ import { BrowserView, MobileView } from "react-device-detect";
 interface IProps {
   onSaved: () => void;
   onCancel: () => void;
+  templateType?: EmailTemplateTypeEnum;
 }
 
-export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
-  const { candsStore, generalStore } = useStore();
+export const EmailTemplateForm = observer(
+  ({ onSaved, onCancel, templateType = EmailTemplateTypeEnum.cand_email }: IProps) => {
+  const { candsStore, contractTemplatesStore, generalStore } = useStore();
   const refQuill = useRef();
+  const isCandTemplate = templateType === EmailTemplateTypeEnum.cand_email;
+  const templates = isCandTemplate
+    ? candsStore.emailTemplates
+    : contractTemplatesStore.contractEmailTemplates;
 
   // const [emailTemplate, setEmailTemplate] = useState( null  );
   const [submitError, setSubmitError] = useState("");
@@ -51,8 +58,11 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
   });
 
   useEffect(() => {
-    if (candsStore.emailTemplates?.length) {
-      setFormModel(candsStore.emailTemplates[0]);
+    if (templates?.length) {
+      setFormModel(templates[0]);
+    } else {
+      // Nothing to edit yet, so start with a new template
+      setFormModel((currentProps) => ({ ...currentProps, id: 0 }));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -89,7 +99,10 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
     if (validateForm()) {
       let response;
 
-      response = await candsStore.addUpdateEmailTemplate(formModel);
+      response = await candsStore.addUpdateEmailTemplate({
+        ...formModel,
+        templateType,
+      });
 
       if (response.isSuccess) {
         onSaved();
@@ -119,7 +132,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
 
   const handleAddTemplate = async () => {
     setFormModel({
-      id: 1,
+      id: 0,
       name: "",
       subject: "",
       body: "",
@@ -181,7 +194,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                             id="emailTemplate"
                             label="Email Template"
                             onChange={(e) => {
-                              const template = candsStore.emailTemplates?.find(
+                              const template = templates?.find(
                                 (x) => x.id === e.target.value
                               );
 
@@ -191,7 +204,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                             }}
                             value={formModel.id}
                           >
-                            {candsStore.emailTemplates?.map((item) => {
+                            {templates?.map((item) => {
                               return (
                                 <MenuItem
                                   key={item.id}
@@ -207,6 +220,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                       </Stack>
                     </Grid>
 
+                    {isCandTemplate && (
                     <Grid item xs={12} lg={5} pt={2}>
                       <FormControl
                         fullWidth
@@ -252,6 +266,7 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
                         </Select>
                       </FormControl>
                     </Grid>
+                    )}
                   </Grid>
                 </Grid>
                 <Grid item xs={12} lg={12}>
@@ -403,4 +418,5 @@ export const EmailTemplateForm = observer(({ onSaved, onCancel }: IProps) => {
       )}
     </>
   );
-});
+  }
+);

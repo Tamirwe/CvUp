@@ -1,4 +1,6 @@
+using AuthLibrary;
 using CvFilesLibrary;
+using DataModelsLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +12,33 @@ namespace CvUpAPI.Controllers
     public class ContractTemplatesController : ControllerBase
     {
         private IContractTemplatesService _contractTemplatesService;
+        private IAuthServise _authServise;
 
-        public ContractTemplatesController(IContractTemplatesService contractTemplatesService)
+        public ContractTemplatesController(IContractTemplatesService contractTemplatesService, IAuthServise authServise)
         {
             _contractTemplatesService = contractTemplatesService;
+            _authServise = authServise;
+        }
+
+        [HttpPost]
+        [Route("SendContract")]
+        public async Task<IActionResult> SendContract(SendContractModel contract)
+        {
+            if (string.IsNullOrWhiteSpace(contract.companyName) || string.IsNullOrWhiteSpace(contract.emailAddress))
+            {
+                return BadRequest("Company name and email address are required");
+            }
+
+            UserModel? user = await _authServise.GetUser(Globals.CompanyId, Globals.UserId);
+
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var isSent = await _contractTemplatesService.SendContract(contract, user);
+
+            return isSent ? Ok() : NotFound();
         }
 
         [HttpGet]

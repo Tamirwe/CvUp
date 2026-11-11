@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import {
   MdHistory,
   MdOutlineDelete,
+  MdOutlineFileDownload,
   MdOutlineUploadFile,
   MdSend,
 } from "react-icons/md";
@@ -29,6 +30,13 @@ import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
 import { ContractSendDialog } from "./ContractSendDialog";
 import { ContractSendsDialog } from "./ContractSendsDialog";
 import { ContractUploadDialog } from "./ContractUploadDialog";
+
+// The server sends the file in its original format
+const FILE_EXTENSIONS: Record<string, string> = {
+  "application/pdf": ".pdf",
+  "application/msword": ".doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+};
 
 interface IProps {
   isOpen: boolean;
@@ -78,6 +86,23 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
     setIsUploadOpen(false);
     await contractTemplatesStore.getContractTemplates();
     await showTemplate(template);
+  };
+
+  const downloadTemplate = async (template: IContractTemplate) => {
+    const res = await contractTemplatesStore.downloadContractTemplate(template.id);
+
+    if (!res.isSuccess || !res.data) {
+      generalStore.alertSnackbar("error", "Failed to download the document");
+      return;
+    }
+
+    const url = URL.createObjectURL(res.data);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${template.name}${FILE_EXTENSIONS[res.data.type] || ""}`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const deleteTemplate = async (template: IContractTemplate) => {
@@ -197,15 +222,26 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
                 key={item.id}
                 disablePadding
                 divider
+                // Room for both action buttons
+                sx={{ "& > .MuiListItemButton-root": { pr: 11 } }}
                 secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label={`Delete ${item.name}`}
-                    title="Delete"
-                    onClick={() => deleteTemplate(item)}
-                  >
-                    <MdOutlineDelete />
-                  </IconButton>
+                  <Stack direction="row">
+                    <IconButton
+                      aria-label={`Download ${item.name}`}
+                      title="Download"
+                      onClick={() => downloadTemplate(item)}
+                    >
+                      <MdOutlineFileDownload />
+                    </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label={`Delete ${item.name}`}
+                      title="Delete"
+                      onClick={() => deleteTemplate(item)}
+                    >
+                      <MdOutlineDelete />
+                    </IconButton>
+                  </Stack>
                 }
               >
                 <ListItemButton

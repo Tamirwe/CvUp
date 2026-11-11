@@ -83,6 +83,15 @@ namespace CvUpAPI.Controllers
             return pdf == null ? NotFound() : File(pdf, "application/pdf");
         }
 
+        [HttpGet]
+        [Route("DownloadContractTemplate")]
+        public IActionResult DownloadContractTemplate(int id)
+        {
+            var file = _contractTemplatesService.GetContractTemplateOriginalFile(id);
+
+            return file == null ? NotFound() : File(file.content, file.contentType);
+        }
+
         [HttpDelete]
         [Route("DeleteContractTemplate")]
         public async Task<IActionResult> DeleteContractTemplate(int id)

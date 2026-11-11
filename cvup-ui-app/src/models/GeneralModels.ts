@@ -287,6 +287,8 @@ export interface IContractSend {
   contractTemplateName: string;
   contractTemplateDescr?: string;
   companyName: string;
+  companyAddress?: string;
+  companyIdNumber?: string;
   contactName?: string;
   emailAddress: string;
   emailSubject?: string;
@@ -297,6 +299,9 @@ export interface IContractSend {
 export interface ISendContract {
   contractTemplateId: number;
   companyName: string;
+  // The customer's business registration number
+  companyIdNumber: string;
+  companyAddress: string;
   contactName: string;
   emailAddress: string;
   emailSubject: string;

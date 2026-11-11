@@ -46,6 +46,16 @@ export default class ContractTemplatesApi extends BaseApi {
     });
   }
 
+  async downloadContractTemplate(id: number) {
+    return await this.apiWrapper2<Blob>(async () => {
+      return await this.http.get("ContractTemplates/DownloadContractTemplate", {
+        params: { id },
+        responseType: "blob",
+        timeout: 30000,
+      });
+    });
+  }
+
   async getContractSends() {
     return await this.apiWrapper2<IContractSend[]>(async () => {
       return await this.http.get("ContractTemplates/GetContractSends");

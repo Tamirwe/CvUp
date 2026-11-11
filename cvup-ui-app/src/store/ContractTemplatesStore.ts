@@ -49,6 +49,16 @@ export class ContractTemplatesStore {
     return res;
   }
 
+  async downloadContractTemplate(id: number) {
+    this.setBackdrop(true);
+
+    const res = await this.contractTemplatesApi.downloadContractTemplate(id);
+
+    this.setBackdrop(false);
+
+    return res;
+  }
+
   async getContractSends() {
     this.setBackdrop(true);
 

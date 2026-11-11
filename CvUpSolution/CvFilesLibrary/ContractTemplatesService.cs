@@ -15,6 +15,13 @@ namespace CvFilesLibrary
         private const int SpireEvalPageIndex = 3;
 
         private const string CustomerNamePlaceholder = "{{CustomerName}}";
+        private const string CompanyAddressPlaceholder = "{{CompanyAddress}}";
+        private const string CompanyIdPlaceholder = "{{CompanyId}}";
+        private const string DatePlaceholder = "{{Date}}";
+        private const string DateFormat = "dd/MM/yyyy";
+
+        // Written where an optional value was left empty, so it can be filled in by hand
+        private const string EmptyValueLine = "___________";
 
         private IContractTemplatesQueries _contractTemplatesQueries;
         private IEmailService _emailService;
@@ -80,6 +87,33 @@ namespace CvFilesLibrary
             return await Task.Run(() => ConvertWordToPdf(filePath));
         }
 
+        /// <summary>
+        /// The uploaded file as it was stored, in its original format.
+        /// Returns null when the template has no file.
+        /// </summary>
+        public ContractTemplateFileModel? GetContractTemplateOriginalFile(int id)
+        {
+            var filePath = FindTemplateFile(id);
+
+            if (filePath == null)
+            {
+                return null;
+            }
+
+            var extension = Path.GetExtension(filePath);
+
+            return new ContractTemplateFileModel
+            {
+                content = File.OpenRead(filePath),
+                contentType = extension switch
+                {
+                    ".pdf" => "application/pdf",
+                    ".doc" => "application/msword",
+                    _ => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                },
+            };
+        }
+
         public async Task DeleteContractTemplate(int id)
         {
             await _contractTemplatesQueries.DeleteContractTemplate(id);
@@ -139,11 +173,20 @@ namespace CvFilesLibrary
             return await _contractTemplatesQueries.GetContractSends();
         }
 
+        private static string ValueOrEmptyLine(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? EmptyValueLine : value.Trim();
+        }
+
         private MemoryStream FillContractPlaceholders(string filePath, SendContractModel contract)
         {
             var placeholders = new Dictionary<string, string>
             {
                 [CustomerNamePlaceholder] = contract.companyName.Trim(),
+                [CompanyAddressPlaceholder] = ValueOrEmptyLine(contract.companyAddress),
+                [CompanyIdPlaceholder] = ValueOrEmptyLine(contract.companyIdNumber),
+                // The send date, in the server's local time
+                [DatePlaceholder] = DateTime.Now.ToString(DateFormat, System.Globalization.CultureInfo.InvariantCulture),
             };
 
             var extension = Path.GetExtension(filePath);

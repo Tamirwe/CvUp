@@ -28,6 +28,8 @@ interface IProps {
 
 const emptyForm = {
   companyName: "",
+  companyIdNumber: "",
+  companyAddress: "",
   contactName: "",
   emailAddress: "",
   emailSubject: "",
@@ -95,6 +97,8 @@ export const ContractSendForm = observer(({ template, onSent }: IProps) => {
     const res = await contractTemplatesStore.sendContract({
       contractTemplateId: template.id,
       companyName: formModel.companyName.trim(),
+      companyIdNumber: formModel.companyIdNumber.trim(),
+      companyAddress: formModel.companyAddress.trim(),
       contactName: formModel.contactName.trim(),
       emailAddress: formModel.emailAddress.trim(),
       emailSubject: formModel.emailSubject.trim(),
@@ -135,6 +139,27 @@ export const ContractSendForm = observer(({ template, onSent }: IProps) => {
         </Grid>
         <Grid item xs={12} md={4}>
           <TextField
+            fullWidth
+            id="contractCompanyIdNumber"
+            label="Company ID"
+            variant="outlined"
+            value={formModel.companyIdNumber}
+            onChange={(e) => updateField("companyIdNumber", e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            sx={{ direction: "rtl" }}
+            fullWidth
+            id="contractCompanyAddress"
+            label="Company address"
+            variant="outlined"
+            value={formModel.companyAddress}
+            onChange={(e) => updateField("companyAddress", e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
             sx={{ direction: "rtl" }}
             fullWidth
             id="contractContactName"
@@ -144,7 +169,7 @@ export const ContractSendForm = observer(({ template, onSent }: IProps) => {
             onChange={(e) => updateField("contactName", e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             required

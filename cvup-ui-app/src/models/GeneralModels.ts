@@ -282,6 +282,18 @@ export interface ISearchTermsListItem {
   searchDescr?: string;
 }
 
+export interface IContractSend {
+  id: number;
+  contractTemplateName: string;
+  contractTemplateDescr?: string;
+  companyName: string;
+  contactName?: string;
+  emailAddress: string;
+  emailSubject?: string;
+  emailBody?: string;
+  dateSent: string;
+}
+
 export interface ISendContract {
   contractTemplateId: number;
   companyName: string;

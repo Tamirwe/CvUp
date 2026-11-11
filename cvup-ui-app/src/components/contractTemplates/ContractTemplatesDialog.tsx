@@ -16,13 +16,18 @@ import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
-import { GoPlus } from "react-icons/go";
-import { MdOutlineDelete } from "react-icons/md";
+import {
+  MdHistory,
+  MdOutlineDelete,
+  MdOutlineUploadFile,
+  MdSend,
+} from "react-icons/md";
 import { useStore } from "../../Hooks/useStore";
 import { AlertConfirmDialogEnum } from "../../models/GeneralEnums";
 import { IContractTemplate } from "../../models/GeneralModels";
 import { BootstrapDialogTitle } from "../dialog/BootstrapDialogTitle";
-import { ContractSendForm } from "./ContractSendForm";
+import { ContractSendDialog } from "./ContractSendDialog";
+import { ContractSendsDialog } from "./ContractSendsDialog";
 import { ContractUploadDialog } from "./ContractUploadDialog";
 
 interface IProps {
@@ -35,8 +40,8 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
   const [previewUrl, setPreviewUrl] = useState("");
-  // Changing the key mounts a new, empty send form
-  const [sendFormKey, setSendFormKey] = useState(0);
+  const [isSendOpen, setIsSendOpen] = useState(false);
+  const [isSendsListOpen, setIsSendsListOpen] = useState(false);
 
   const selectedTemplate = contractTemplatesStore.contractTemplatesList.find(
     (x) => x.id === selectedId
@@ -115,13 +120,60 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
           />
         )}
 
-        <ContractSendForm
-          key={sendFormKey}
-          template={selectedTemplate}
-          onSent={() => setSendFormKey((key) => key + 1)}
-        />
+        {isSendOpen && (
+          <ContractSendDialog
+            isOpen={isSendOpen}
+            template={selectedTemplate}
+            onClose={() => setIsSendOpen(false)}
+          />
+        )}
 
-        <Divider sx={{ my: 2 }} />
+        {isSendsListOpen && (
+          <ContractSendsDialog
+            isOpen={isSendsListOpen}
+            onClose={() => setIsSendsListOpen(false)}
+          />
+        )}
+
+        <Stack
+          component="nav"
+          aria-label="Contract actions"
+          direction="row"
+          flexWrap="wrap"
+          alignItems="center"
+          gap={1}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<MdSend />}
+            disabled={!selectedTemplate}
+            onClick={() => setIsSendOpen(true)}
+          >
+            Send contract
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<MdOutlineUploadFile />}
+            onClick={() => setIsUploadOpen(true)}
+          >
+            Upload new contract
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<MdHistory />}
+            onClick={() => setIsSendsListOpen(true)}
+          >
+            Sent contracts
+          </Button>
+          {!selectedTemplate && (
+            <Typography variant="body2" color="text.secondary">
+              Select a contract to send it
+            </Typography>
+          )}
+        </Stack>
+
+        <Divider sx={{ mt: 2 }} />
 
         <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ pt: 1 }}>
           <Box
@@ -165,13 +217,6 @@ export const ContractTemplatesDialog = observer(({ isOpen, onClose }: IProps) =>
               </ListItem>
               ))}
             </List>
-            <Button
-              startIcon={<GoPlus />}
-              onClick={() => setIsUploadOpen(true)}
-              sx={{ alignSelf: "flex-start", flexShrink: 0, mt: 1 }}
-            >
-              Upload contract
-            </Button>
           </Box>
           <Box sx={{ flexGrow: 1, minWidth: 0, height: "65vh", overflow: "auto" }}>
             {previewUrl ? (

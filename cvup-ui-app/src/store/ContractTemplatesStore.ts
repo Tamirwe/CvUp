@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import {
+  IContractSend,
   IContractTemplate,
   IEmailTemplate,
   ISendContract,
@@ -11,6 +12,7 @@ export class ContractTemplatesStore {
   private contractTemplatesApi;
   contractTemplatesList: IContractTemplate[] = [];
   contractEmailTemplates: IEmailTemplate[] = [];
+  contractSendsList: IContractSend[] = [];
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -43,6 +45,20 @@ export class ContractTemplatesStore {
     runInAction(() => {
       this.contractEmailTemplates = res.data || [];
     });
+
+    return res;
+  }
+
+  async getContractSends() {
+    this.setBackdrop(true);
+
+    const res = await this.contractTemplatesApi.getContractSends();
+
+    runInAction(() => {
+      this.contractSendsList = res.data || [];
+    });
+
+    this.setBackdrop(false);
 
     return res;
   }

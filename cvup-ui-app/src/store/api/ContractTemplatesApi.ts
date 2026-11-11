@@ -1,5 +1,6 @@
 import { EmailTemplateTypeEnum } from "../../models/GeneralEnums";
 import {
+  IContractSend,
   IContractTemplate,
   IEmailTemplate,
   ISendContract,
@@ -42,6 +43,12 @@ export default class ContractTemplatesApi extends BaseApi {
       return await this.http.post("ContractTemplates/SendContract", contract, {
         timeout: 60000,
       });
+    });
+  }
+
+  async getContractSends() {
+    return await this.apiWrapper2<IContractSend[]>(async () => {
+      return await this.http.get("ContractTemplates/GetContractSends");
     });
   }
 

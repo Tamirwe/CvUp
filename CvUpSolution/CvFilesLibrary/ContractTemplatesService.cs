@@ -3,6 +3,7 @@ using DataModelsLibrary.Queries;
 using EmailsLibrary;
 using Microsoft.Extensions.Configuration;
 using Spire.Pdf;
+using Spire.Pdf.Texts;
 
 namespace CvFilesLibrary
 {
@@ -12,6 +13,8 @@ namespace CvFilesLibrary
 
         // Free Spire appends an evaluation notice as page 4 of a converted document
         private const int SpireEvalPageIndex = 3;
+
+        private const string CustomerNamePlaceholder = "{{CustomerName}}";
 
         private IContractTemplatesQueries _contractTemplatesQueries;
         private IEmailService _emailService;
@@ -90,8 +93,9 @@ namespace CvFilesLibrary
         }
 
         /// <summary>
-        /// Attaches the original uploaded file, not the converted preview, because
-        /// converting a Word document to pdf cuts it off after 3 pages.
+        /// Attaches the uploaded file in its original format, not the converted preview,
+        /// because converting a Word document to pdf cuts it off after 3 pages.
+        /// The placeholders are filled in a copy; the stored template is not changed.
         /// Returns false when the template or its file no longer exists.
         /// </summary>
         public async Task<bool> SendContract(SendContractModel contract, UserModel user)
@@ -108,7 +112,7 @@ namespace CvFilesLibrary
             {
                 name = template.name,
                 extension = Path.GetExtension(filePath),
-                Attachment = new MemoryStream(await File.ReadAllBytesAsync(filePath)),
+                Attachment = await Task.Run(() => FillContractPlaceholders(filePath, contract)),
             };
 
             await _emailService.Send(new EmailModel
@@ -128,6 +132,58 @@ namespace CvFilesLibrary
             await _contractTemplatesQueries.AddContractSend(contract, template);
 
             return true;
+        }
+
+        public async Task<List<ContractSendModel>> GetContractSends()
+        {
+            return await _contractTemplatesQueries.GetContractSends();
+        }
+
+        private MemoryStream FillContractPlaceholders(string filePath, SendContractModel contract)
+        {
+            var placeholders = new Dictionary<string, string>
+            {
+                [CustomerNamePlaceholder] = contract.companyName.Trim(),
+            };
+
+            var extension = Path.GetExtension(filePath);
+            var filled = new MemoryStream();
+
+            if (extension == ".pdf")
+            {
+                var pdf = new PdfDocument();
+                pdf.LoadFromFile(filePath);
+
+                foreach (PdfPageBase page in pdf.Pages)
+                {
+                    var replacer = new PdfTextReplacer(page);
+
+                    foreach (var (placeholder, value) in placeholders)
+                    {
+                        replacer.ReplaceAllText(placeholder, value);
+                    }
+                }
+
+                pdf.SaveToStream(filled, FileFormat.PDF);
+                pdf.Close();
+            }
+            else
+            {
+                var document = new Spire.Doc.Document(filePath);
+
+                foreach (var (placeholder, value) in placeholders)
+                {
+                    // Plain text match, case sensitive, not limited to whole words
+                    document.Replace(placeholder, value, true, false);
+                }
+
+                document.SaveToStream(filled, extension == ".doc" ? Spire.Doc.FileFormat.Doc : Spire.Doc.FileFormat.Docx);
+                document.Close();
+            }
+
+            filled.Seek(0, SeekOrigin.Begin);
+
+            return filled;
         }
 
         private string? FindTemplateFile(int id)

@@ -88,7 +88,7 @@ export const ContractSendForm = observer(({ template, onSent }: IProps) => {
     }
 
     if (!template) {
-      setSubmitError("Select a contract from the list below");
+      setSubmitError("Select a contract first");
       return;
     }
 
@@ -208,7 +208,7 @@ export const ContractSendForm = observer(({ template, onSent }: IProps) => {
             <Typography variant="body2" color="text.secondary" noWrap>
               {template
                 ? `Contract: ${template.name}`
-                : "Select a contract from the list below"}
+                : "Select a contract first"}
             </Typography>
             <Button
               variant="contained"

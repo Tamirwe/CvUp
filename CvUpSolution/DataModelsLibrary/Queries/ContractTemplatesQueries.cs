@@ -76,6 +76,28 @@ namespace DataModelsLibrary.Queries
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<List<ContractSendModel>> GetContractSends()
+        {
+            using var dbContext = new cvupdbContext();
+
+            return await dbContext.contract_sends
+                .AsNoTracking()
+                .OrderByDescending(x => x.date_sent)
+                .Select(x => new ContractSendModel
+                {
+                    id = x.id,
+                    contractTemplateName = x.contract_template_name,
+                    contractTemplateDescr = x.contract_template_descr,
+                    companyName = x.company_name,
+                    contactName = x.contact_name,
+                    emailAddress = x.email_address,
+                    emailSubject = x.email_subject,
+                    emailBody = x.email_body,
+                    dateSent = x.date_sent,
+                })
+                .ToListAsync();
+        }
+
         public async Task DeleteContractTemplate(int id)
         {
             using var dbContext = new cvupdbContext();

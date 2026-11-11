@@ -9,5 +9,6 @@ namespace DataModelsLibrary.Queries
         Task DeleteContractTemplate(int id);
         Task<ContractTemplateModel?> GetContractTemplate(int id);
         Task AddContractSend(SendContractModel contract, ContractTemplateModel template);
+        Task<List<ContractSendModel>> GetContractSends();
     }
 }

@@ -42,6 +42,13 @@ namespace CvUpAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetContractSends")]
+        public async Task<IActionResult> GetContractSends()
+        {
+            return Ok(await _contractTemplatesService.GetContractSends());
+        }
+
+        [HttpGet]
         [Route("GetContractTemplates")]
         public async Task<IActionResult> GetContractTemplates()
         {

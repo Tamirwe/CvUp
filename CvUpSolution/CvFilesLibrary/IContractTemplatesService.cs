@@ -10,5 +10,6 @@ namespace CvFilesLibrary
         Task<Stream?> GetContractTemplatePdf(int id);
         Task DeleteContractTemplate(int id);
         Task<bool> SendContract(SendContractModel contract, UserModel user);
+        Task<List<ContractSendModel>> GetContractSends();
     }
 }

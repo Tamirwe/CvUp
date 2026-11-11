@@ -15,10 +15,6 @@ public partial class contract_send
 
     public string? contact_name { get; set; }
 
-    public string? company_address { get; set; }
-
-    public string? company_id_number { get; set; }
-
     public string email_address { get; set; } = null!;
 
     public string? email_subject { get; set; }
@@ -26,4 +22,8 @@ public partial class contract_send
     public string? email_body { get; set; }
 
     public DateTime date_sent { get; set; }
+
+    public string? company_address { get; set; }
+
+    public string? company_id_number { get; set; }
 }

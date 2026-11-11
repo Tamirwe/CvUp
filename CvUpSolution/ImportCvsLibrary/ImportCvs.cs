@@ -9,7 +9,6 @@ using ImportCvsLibrary.RegularExpressions;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using Spire.Doc;
@@ -41,10 +40,9 @@ namespace ImportCvsLibrary
         List<ParserRulesModel>? _parsersRulesAllCompanies;
         List<ParserRulesModel>? _parsersRules;
         ImportCvModel _importCv = new ImportCvModel();
-        private List<blackCandModel>? _blackCandidatesList = null;
-        private readonly IMemoryCache _cache;
+        private List<blackCandModel> _blackCandidatesList = new List<blackCandModel>();
 
-        public ImportCvs(IMemoryCache cache, ICandsServise candsServise, IPositionsServise positionsServise, IConfiguration configuration, IDbQueueService queueService)
+        public ImportCvs(ICandsServise candsServise, IPositionsServise positionsServise, IConfiguration configuration, IDbQueueService queueService)
         {
             _filesRootFolder = configuration["CVS_ROOT_FOLDER"]!;
             _cvupNotBackedUpRootFolder = configuration["APP_LOCAL_ROOT_FOLDER"]!;
@@ -54,19 +52,13 @@ namespace ImportCvsLibrary
             _candsServise = candsServise;
             _positionsServise = positionsServise;
             _queueService = queueService;
-            _cache = cache;
         }
 
         public async Task ImportFromGmail()
         {
-
-            _blackCandidatesList = _cache.Get<List<blackCandModel>>("blackCandidatesList");
-
-            if (_blackCandidatesList == null)
-            {
-                _blackCandidatesList = await _candsServise.GetBlackCandidatesList();
-                _cache.Set("blackCandidatesList", _blackCandidatesList, TimeSpan.FromHours(1));
-            }
+            // Loaded on every run (not cached), so adding or removing a black list
+            // candidate in the app applies from the next import
+            _blackCandidatesList = await _candsServise.GetBlackCandidatesList();
 
             using (var client = new ImapClient())
             {
@@ -199,7 +191,7 @@ namespace ImportCvsLibrary
             ExtractCvText();
             ExtractCvProps();
 
-            bool isBlackCand = CheckIsBlackCand();
+            bool isBlackCand = await CheckIsBlackCand();
 
             if (!isBlackCand)
             {
@@ -310,7 +302,7 @@ namespace ImportCvsLibrary
             GetCandidateCity();
         }
 
-        private bool CheckIsBlackCand()
+        private async Task<bool> CheckIsBlackCand()
         {
             bool isBlackCand = false;
             blackCandModel? blackCand = null;
@@ -328,8 +320,18 @@ namespace ImportCvsLibrary
             {
                 isBlackCand = true;
                 blackCand.cvs_count = blackCand.cvs_count + 1;
-                Task.Run(() => _candsServise.UpdateBlackCandidateEmailCount(blackCand));
-                Task.Run(() => _candsServise.UpdateCandLastCvSent(blackCand.candidate_id, DateTime.Now));
+
+                // A failed update is only logged, so it never changes how the cv is handled
+                try
+                {
+                    await _candsServise.UpdateBlackCandidateEmailCount(blackCand);
+                    await _candsServise.UpdateCandLastCvSent(blackCand.candidate_id, DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    addEventLogEntry(ex, 472);
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             return isBlackCand;

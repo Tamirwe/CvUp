@@ -15,8 +15,8 @@ namespace CvFilesLibrary
         private const int SpireEvalPageIndex = 3;
 
         private const string CustomerNamePlaceholder = "{{CustomerName}}";
-        private const string CompanyAddressPlaceholder = "{{CompanyAddress}}";
-        private const string CompanyIdPlaceholder = "{{CompanyId}}";
+        private const string CompanyAddressPlaceholder = "{{Address}}";
+        private const string CompanyIdPlaceholder = "{{CompanyID}}";
         private const string DatePlaceholder = "{{Date}}";
         private const string DateFormat = "dd/MM/yyyy";
 

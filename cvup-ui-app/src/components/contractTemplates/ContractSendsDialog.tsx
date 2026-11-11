@@ -26,11 +26,13 @@ interface IProps {
   onClose: () => void;
 }
 
-const COLUMNS_COUNT = 6;
+const COLUMNS_COUNT = 8;
 
 const matchesSearch = (item: IContractSend, search: string) =>
   [
     item.companyName,
+    item.companyIdNumber,
+    item.companyAddress,
     item.contactName,
     item.emailAddress,
     item.contractTemplateName,
@@ -69,7 +71,7 @@ export const ContractSendsDialog = observer(({ isOpen, onClose }: IProps) => {
           fullWidth
           size="small"
           id="contractSendsSearch"
-          label="Search company, contact, email or contract"
+          label="Search company, company ID, address, contact, email or contract"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{ mt: 1, mb: 2 }}
@@ -81,6 +83,8 @@ export const ContractSendsDialog = observer(({ isOpen, onClose }: IProps) => {
                 <TableCell padding="checkbox" />
                 <TableCell>Date sent</TableCell>
                 <TableCell>Company</TableCell>
+                <TableCell>Company ID</TableCell>
+                <TableCell>Company address</TableCell>
                 <TableCell>Contact</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Contract</TableCell>
@@ -111,6 +115,12 @@ export const ContractSendsDialog = observer(({ isOpen, onClose }: IProps) => {
                       </TableCell>
                       <TableCell sx={{ direction: "rtl", textAlign: "left" }}>
                         {item.companyName}
+                      </TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {item.companyIdNumber}
+                      </TableCell>
+                      <TableCell sx={{ direction: "rtl", textAlign: "left" }}>
+                        {item.companyAddress}
                       </TableCell>
                       <TableCell sx={{ direction: "rtl", textAlign: "left" }}>
                         {item.contactName}
